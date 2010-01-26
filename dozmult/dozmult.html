@@ -1,0 +1,131 @@
+<!-- +AMDG  This document was begun on 5 August 2009, the
+feast of the dedication of Our Lady of the Snows, and it is
+humbly dedicated to her for her prayers, and to the Sacred
+Heart of Jesus, for His mercy. -->
+
+<html>
+<head>
+<title>Dozenal Multiplication Table Drills</title>
+<script type="text/javascript">
+function simpdoz(number)
+{
+	if (number == 10) 
+		number = "X";
+	else if (number == 11) 
+		number = "E";
+	else if (number == 12) 
+		number = 10;
+	else 
+		number = number;
+return number;
+}
+
+function reverse(string)
+{
+	var revstring='';
+	for (i = string.length-1; i>=0; i--)
+		revstring+=string.charAt(i);
+	return revstring;
+}
+
+function dozenalize(number)
+{
+	doznum = "";
+	while (number >= 12) {
+		nextdig = number % 12;
+		number /= 12;
+		nextdig = simpdoz(Math.floor(nextdig));
+		doznum = doznum + nextdig;
+	}
+	nextdig = number % 12;
+	number /= 12;
+	nextdig = simpdoz(Math.floor(nextdig));
+	doznum += nextdig;
+	doznum = reverse(doznum);
+	return doznum;
+}
+
+function decimalize(number)
+{
+	decans = 0;
+	number = reverse(number);
+	length = number.length;
+	multip = 1;
+	for (i = 0; i < length; i++) {
+		if (number[i] == 'E' || number[i] == 'e' || number[i] == 'B' || number[i] == 'b')
+			newnum = 11;
+		else if (number[i] == 'X' || number[i] == 'x' || number[i] == 'T' || number[i] == 't' || number[i] == 'A' || number[i] == 'a')
+			newnum = 10;
+		else
+			newnum = number[i];
+		decans = decans + (newnum * multip);
+		multip *= 12;
+	}
+	return decans;
+}
+
+// Read a page's GET URL variables and return them as an associative array.
+function getUrlVars()
+{
+    var vars = [], hash;
+    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+
+    for(var i = 0; i < hashes.length; i++)
+    {
+        hash = hashes[i].split('=');
+        vars.push(hash[0]);
+        vars[hash[0]] = hash[1];
+    }
+
+    return vars;
+}
+
+</script>
+</head>
+
+<body>
+<script type="text/javascript">
+document.write("<p>Test your knowledge of the dozenal ");
+document.write("multiplication tables!  Use X/E, T/E, A/B, ");
+document.write("or the lowercase of any combination thereof; ");
+document.write("your results will use the same.  Otherwise, ");
+document.write("results will use X/E.</p>");
+
+var hash = getUrlVars();
+answer = hash['answer'];
+decans = hash['decans'];
+dozans = dozenalize(decans);
+
+document.write("<center>");
+if (typeof(decans) == "undefined") 
+	;
+else {
+	if (decans != decimalize(answer)) {
+		document.write("Wrong!  The correct answer is ");
+		document.write(dozans+"!<br />");
+	}
+	else {
+		document.write("Right!  The answer is "+answer+"!<br />");
+	}
+}
+
+var rand1 = Math.floor((11-1)*Math.random()) + 2;
+var rand2 = Math.floor((11-1)*Math.random()) + 2;
+decans = rand1*rand2;
+document.write(simpdoz(rand1)+"<br />");
+document.write(simpdoz(rand2)+"<br />");
+document.write("__________________");
+document.write("<form method=\"get\" action=\"dozmult.html\"");
+document.write("name=\"answerform\">");
+document.write("<input type=\"text\" maxlength=\"2\" ");
+document.write("name=\"answer\" size=\"3\" /><br />");
+document.write("<input type=\"hidden\" value=\"\" ");
+document.write("name=\"decans\" />");
+document.answerform.decans.value = decans;
+document.write("<input type=\"submit\" value=\"Answer\" /><br />");
+document.write("</form>");
+document.write("</center>");
+
+</script>
+</body>
+</html>

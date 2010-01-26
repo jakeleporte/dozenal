@@ -1,0 +1,77 @@
+#!/bin/bash
+
+dozenify ()
+{
+	i=0;
+	decnum=$1;
+	if [[ $decnum == "00" ]]; then
+		echo -ne "00";
+	fi
+	if [[ $decnum == "0" ]]; then
+		echo -ne "00";
+	fi
+	while [ $decnum -gt 0 ]
+	do
+		modulus=`expr $decnum % 12`;
+		decnum=`expr $decnum / 12`;
+		doznum[$i]=$modulus;
+		i=`expr $i + 1`;
+	done
+	if [[ $i == 1 ]]; then
+		echo -ne "0";
+	fi
+	for ((i; i>=0; i--))
+	do
+		if [[ ${doznum[$i]} == 10 ]]; then
+			echo -ne "X";
+		elif [[ ${doznum[$i]} == "11" ]]; then
+			echo -ne "E";
+		else
+			echo -ne "${doznum[$i]}";
+		fi
+	done
+}
+
+mintotim ()
+{
+	let "minute *= 144";
+	let "minute /= 60";
+	dozenify $minute;
+}
+
+sectotim ()
+{
+	let "minute *= 60";
+	second=$1;
+	second=$second+$minute;
+	let "second *= 144";
+	let "second /= 3600";
+	dozenify $second;
+}
+
+year=`date +%Y`; # get the year
+day=`date +%d`; # get the day
+hour=`date +%H`; # get the hour
+minute="10#`date +%M`"; # get the minute
+second="10#`date +%S`"; # get the seconds
+month=`date +%b`; # get the abbr. month
+
+if [ $# -eq 0 ] # script with no args
+then
+	echo `dozenify $day` $month `dozenify $year`;
+else
+	while getopts ":SdYHMb" Option
+	do
+		case $Option in
+			S	) echo -ne "`sectotim $second` ";;
+			d	) echo -ne "`dozenify $day` ";;
+			Y	) echo -ne "`dozenify $year` ";;
+			H	) echo -ne "`dozenify $hour`;";;
+			M	) echo -ne "`mintotim $minute` ";;
+			b	) echo -ne "$month$sep";;
+		esac
+	done
+	echo "";
+fi
+
+exit;

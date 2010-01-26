@@ -1,0 +1,135 @@
+/* +AMDG */
+/*
+ * This document was begun on 15 January 2010, the feast of
+ * St. Paul the Hermit, and it is humbly dedicated to him
+ * and to the Immaculate Heart of Mary for their prayers,
+ * and to the Sacred Heart of Jesus for His mercy.
+ */
+/*
+ * The main routine for the dozdc program.  Parses options
+ * and gets things rolling.
+ */
+
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+#include<math.h>
+#include "conv.h"
+#include "dozdc.h"
+#include "stack.h"
+
+int runcalc(int places, char expnot);
+double operate(int operator, int *places, char *print);
+double commandcalc(char *word, int type, int places, char expnot);
+
+int main(int argc, char *argv[])
+{
+	char expnot = 0;
+	int places = 4;
+	char c;
+	char word[MAXLINE];
+	int type = NUM;
+	char print = NOTPRINT;
+	double answer;
+
+	while (--argc > 0 && (*++argv)[0] == '-') {
+		while (c = *++argv[0])
+			switch (c) {
+			case '1': case '2': case '3': case '4': case '5':
+			case '6': case '7': case '8': case '9': case '0':
+			case '.':
+				break;
+			case 'k':
+				if (isdigit(*++argv[0])) {
+					places = dozprecis(argv[0]);
+				} else if (*(argv+1) == NULL) {
+					fprintf(stderr,"doz:  invalid precision quantity\n");
+					exit(1);
+				} else if (isdigit(*(argv+1)[0])) {
+					places = dozprecis(*(argv+1));
+					--argc, ++argv;
+				} else {
+					fprintf(stderr,"doz:  invalid precision quantity\n");
+					exit(1);
+				}
+				break;
+			case 'e':
+				expnot = 1;
+				break;
+			case 'd':
+				operate(DEGREES,&places,&print);
+				break;
+			case 'r':
+				operate(RADIANS,&places,&print);
+				break;
+			case 'z':
+				operate(ZENIPI,&places,&print);
+				break;
+			default:
+				fprintf(stderr,"doz:  illegal option \"%c\"\n",c);
+				break;
+			}
+	}
+	if (argc >= 1) {
+		char s[MAXLINE+1];
+		strcpy(s,*argv);
+		s[strlen(s)+1] = '\0';
+		s[strlen(s)] = ' ';
+		while ((type = commandops(s,word)) != EOF)
+			answer = commandcalc(word, type, places, expnot);
+		sprintf(word,"%.*f",places,answer);
+		doz(word,word,places,expnot);
+		clean();
+		return 0;
+	}
+	while (runcalc(places,expnot) != EOF);
+	clean();
+	return 0;
+}
+
+double commandcalc(char *word, int type, int places, char expnot)
+{
+	int operator;
+	char s[MAXLINE];
+	double answer;
+	char print = NOTPRINT;
+
+	if (type == NUM) {
+		push(doztodec(word));
+	} else if (type == OP) {
+		operator = getop(word);
+		if (operator == -1)
+			fprintf(stderr,"dozdc:  unknown operator %s\n",s);
+		else
+			answer = operate(operator,&places,&print);
+	}
+	return answer;
+}
+
+int runcalc(int places, char expnot)
+{
+	int i;
+	int type;
+	int operator;
+	char s[MAXLINE];
+	double answer;
+	char print = NOTPRINT;
+
+	while ((type = gettype(s)) != EOF) {
+		if (type == NUM) {
+			push(doztodec(s));
+		} else if (type == OP) {
+			operator = getop(s);
+			if (operator == -1)
+				fprintf(stderr,"dozdc:  unknown operator %s\n",s);
+			else
+				answer = operate(operator,&places,&print);
+		}
+		if (print == PRINT) {
+			sprintf(s,"%.*f",places,answer);
+			doz(s,s,places,expnot);
+			print = NOTPRINT;
+		}
+	}
+	return EOF;
+}
