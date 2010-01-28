@@ -165,7 +165,7 @@ int dectodoz(char *doznum, double decnum)
 {
 	int i = 0; int sign = 0; int j = 0;
 	double wholedec; /* whole number portion of decnum */
-	double partholder; /* someplace for fmod to dump integral */
+	double partholder; /* someplace for modf to dump integral */
 
 	if (decnum < 0) {
 		decnum = -decnum;
@@ -174,7 +174,7 @@ int dectodoz(char *doznum, double decnum)
 	partholder = modf(decnum,&wholedec);
 	decnum -= wholedec;
 	while (wholedec >= 12) {
-		*(doznum+(i++)) = dozenify(fmod(wholedec,12));
+		*(doznum+(i++)) = dozenify(fmod(wholedec,12.0));
 		wholedec /= 12;
 	}
 	*(doznum+(i++)) = dozenify(fmod(wholedec,12));

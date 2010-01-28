@@ -13,3 +13,4 @@ double doztodec(char *s);
 int dec(char *p, int places, char expnot);
 void reverse(char *s);
 int getword(char *s, int lim);
+int isdozdig(char c);

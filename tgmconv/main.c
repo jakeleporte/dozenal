@@ -23,6 +23,8 @@ int main(int argc, char *argv[])
 {
 	char from[MAXLEN];
 	char to[MAXLEN];
+	char inp[MAXLEN];
+	char outp[MAXLEN];
 	char doznum[MAXLINE];
 	int places = 4;
 	char expnot = 0;
@@ -57,18 +59,18 @@ int main(int argc, char *argv[])
 			case 'o':
 				if (isalpha(*++argv[0]) || isdigit(*argv[0]) ||
 				*argv[0] == '_') {
-					strncpy(to,*argv,MAXLEN-1);
+					strncpy(outp,*argv,MAXLEN-1);
 					if (strlen(*argv) > (MAXLEN-1))
-						to[MAXLEN-1] = '\0';
+						outp[MAXLEN-1] = '\0';
 					goto startopt;
 				} else if (*(argv+1) == NULL) {
 					fprintf(stderr,"tgmconv:  no output unit\n");
 					exit(1);
 				} else if (isalpha(*(argv+1)[0]) ||
 				isdigit(*(argv+1)[0]) || *(argv+1)[0] == '_') {
-					strncpy(to,*argv+1,MAXLEN-1);
+					strncpy(outp,*argv+1,MAXLEN-1);
 					if (strlen(*argv+1) > (MAXLEN-1))
-						to[MAXLEN-1] = '\0';
+						outp[MAXLEN-1] = '\0';
 					--argc, ++argv;
 					goto startopt;
 				} else {
@@ -79,12 +81,56 @@ int main(int argc, char *argv[])
 			case 'i':
 				if (isalpha(*++argv[0]) || isdigit(*argv[0]) ||
 				*argv[0] == '_') {
+					strncpy(inp,*argv,MAXLEN-1);
+					if (strlen(*argv) > (MAXLEN-1))
+						inp[MAXLEN-1] = '\0';
+					goto startopt;
+				} else if (*(argv+1) == NULL) {
+					fprintf(stderr,"tgmconv:  no input unit\n");
+					exit(1);
+				} else if (isalpha(*(argv+1)[0]) ||
+				isdigit(*(argv+1)[0]) || *(argv+1)[0] == '_') {
+					strncpy(inp,*argv+1,MAXLEN-1);
+					if (strlen(*argv+1) > (MAXLEN-1))
+						inp[MAXLEN-1] = '\0';
+					--argc, ++argv;
+					goto startopt;
+				} else {
+					fprintf(stderr,"tgmconv:  invalid input unit\n");
+					exit(1);
+				}
+				break;
+			case 't':
+				if (isalpha(*++argv[0]) || isdigit(*argv[0]) ||
+				*argv[0] == '_') {
+					strncpy(to,*argv,MAXLEN-1);
+					if (strlen(*argv) > (MAXLEN-1))
+						to[MAXLEN-1] = '\0';
+					goto startopt;
+				} else if (*(argv+1) == NULL) {
+					fprintf(stderr,"tgmconv:  no output system\n");
+					exit(1);
+				} else if (isalpha(*(argv+1)[0]) ||
+				isdigit(*(argv+1)[0]) || *(argv+1)[0] == '_') {
+					strncpy(to,*argv+1,MAXLEN-1);
+					if (strlen(*argv+1) > (MAXLEN-1))
+						to[MAXLEN-1] = '\0';
+					--argc, ++argv;
+					goto startopt;
+				} else {
+					fprintf(stderr,"tgmconv:  invalid input unit\n");
+					exit(1);
+				}
+				break;
+			case 'f':
+				if (isalpha(*++argv[0]) || isdigit(*argv[0]) ||
+				*argv[0] == '_') {
 					strncpy(from,*argv,MAXLEN-1);
 					if (strlen(*argv) > (MAXLEN-1))
 						from[MAXLEN-1] = '\0';
 					goto startopt;
 				} else if (*(argv+1) == NULL) {
-					fprintf(stderr,"tgmconv:  no input unit\n");
+					fprintf(stderr,"tgmconv:  no output system\n");
 					exit(1);
 				} else if (isalpha(*(argv+1)[0]) ||
 				isdigit(*(argv+1)[0]) || *(argv+1)[0] == '_') {
@@ -105,7 +151,7 @@ int main(int argc, char *argv[])
 	}
 	if (argc >= 1) {
 		value = doztodec(*argv);
-		value = getanswer(to,from,value);
+		value = getanswer(inp,outp,to,from,value);
 		sprintf(doznum,"%.*f",places,value);
 		doz(doznum,doznum,places,expnot);
 		return 0;

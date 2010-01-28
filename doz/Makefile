@@ -7,14 +7,14 @@
 #
 # Makefile for the decimal to dozenal converter.
 
-doz : main.o dozconv.h dozconv.o doz.o
-	gcc -lm -o doz main.o dozconv.o doz.o
+doz : main.o conv.h conv.o doz.o
+	gcc -lm -o doz main.o conv.o doz.o
 
-main.o : dozconv.h main.c dozconv.o doz.o
+main.o : conv.h main.c conv.o doz.o
 	gcc -c main.c
 
-dozconv.o : dozconv.c dozconv.h
-	gcc -c dozconv.c
+conv.o : conv.c conv.h
+	gcc -c conv.c
 
-doz.o : dozconv.o dozconv.h doz.c
+doz.o : conv.o conv.h doz.c
 	gcc -c doz.c

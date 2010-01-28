@@ -55,5 +55,13 @@ var=`./tgmconv -k3 -iVl -okm/hr 1 | ../dec/dec -k 3`;
 echo "6.131 --- $var";
 var=`./tgmconv -k10 -oft/s -iVl 1 | ../dec/dec -k 10`;
 echo "5.5877085843 --- $var";
-var=`./tgmconv -k8 -o1_Vl -ift/s 1`
+var=`./tgmconv -k8 -o1_Vl -ift/s 1`;
 echo "2;1930041E --- $var";
+var=`./tgmconv -k8 -oSf -im2 1`;
+echo "E;5308E881 --- $var";
+var=`./tgmconv -k8 -om2 -iSf 1 | ../dec/dec -k 10`;
+echo "0.087428384796 --- $var";
+var=`./tgmconv -k8 -oft2 -iSf 1 | ../dec/dec -k 10`;
+echo "0.9410713018 --- $var";
+var=`./tgmconv -k8 -oSf -im2 1`;
+echo "1;09025668 --- $var";

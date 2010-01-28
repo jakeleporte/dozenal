@@ -16,7 +16,7 @@
 #include<limits.h>
 #include<ctype.h>
 #include<float.h>
-#include "dozconv.h"
+#include "conv.h"
 
 int main(int argc, char *argv[])
 {
@@ -37,12 +37,12 @@ int main(int argc, char *argv[])
 				break;
 			case 'k':
 				if (isdigit(*++argv[0])) {
-					places = precision(argv[0]);
+					places = dozprecis(argv[0]);
 				} else if (*(argv+1) == NULL) {
 					fprintf(stderr,"doz:  invalid precision quantity\n");
 					exit(1);
 				} else if (isdigit(*(argv+1)[0])) {
-					places = precision(*(argv+1));
+					places = dozprecis(*(argv+1));
 					--argc, ++argv;
 				} else {
 					fprintf(stderr,"doz:  invalid precision quantity\n");

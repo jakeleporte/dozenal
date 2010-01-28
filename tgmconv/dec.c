@@ -26,7 +26,7 @@ double wholedec(char *s);
 double doztodec(char *s);
 double fracdec(char *s);
 int expkill (char *s, int expspot);
-int errorcheck(char *s);
+int errorclear(char *s);
 int decprecis(char *s);
 
 int dec(char *p, int places, char expnot)
@@ -100,6 +100,35 @@ int expkill(char *s, int expspot)
 	return 0;
 }
 
+int errorclear(char *s)
+{
+	int i;
+	char *p;
+
+	if ((p = strchr(s,'e')) != NULL) {
+		if (strchr(s,';') == NULL) {
+			fprintf(stderr,"dec:  exponential "
+			"notation requires a zenimal point, "
+			"\';\', and at least one trailing "
+			"digit\n");
+			return 0;
+		} else if (p != strrchr(s,'e')) {
+			fprintf(stderr,"dec:  'e' cannot be "
+			"used as a dozenal digit\n");
+			return 0;
+		}
+	}
+	for (i=0; s[i] != '\0'; ++i) {
+		if (!isdozdig(s[i]) && s[i] != 'e' && s[i] != '-') {
+			fprintf(stderr,"dec:  %s contains "
+			"%c, which is not a valid dozenal "
+			"character\n",s,s[i]);
+			return 0;
+		}
+	}
+	return 1;
+}
+
 double doztodec(char *s)
 {
 	int i, j;
@@ -107,6 +136,8 @@ double doztodec(char *s)
 	double decnum = 0.0;
 	char sign = 0;
 
+	if (!errorclear(s))
+		exit(1);
 	if (*s == '-') {
 		sign = 1;
 		s++;

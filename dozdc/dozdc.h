@@ -53,6 +53,3 @@
 #define TANH 31
 #define LDEXP 32
 #define ZENIPI 33
-
-/* determines whether a character is a dozenal digit */
-int isdozdig(char c);

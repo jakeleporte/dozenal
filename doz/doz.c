@@ -18,11 +18,11 @@
 #include<float.h>
 #include<string.h>
 #include<math.h>
-#include "dozconv.h"
+#include "conv.h"
 
 char dozenify(char num);
 int dectodoz(char *doznum, double decnum);
-int precision(char *s);
+int dozprecis(char *s);
 int expnotate(char *s);
 int negexp(char *s, int zenspot);
 int posexp(char *s, int zenspot);
@@ -131,7 +131,7 @@ int negexp(char *s, int zenspot)
 	return 0;
 }
 
-int precision(char *s)
+int dozprecis(char *s)
 {
 	int i;
 

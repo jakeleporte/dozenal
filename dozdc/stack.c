@@ -12,7 +12,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 
-#define INCREMENT 1000			/* maximum depth of val stack */
+#define INCREMENT 100			/* maximum depth of val stack */
 
 static int sp = 0;				/* next free stack position */
 static double val[INCREMENT]; /*	value stack */
