@@ -14,3 +14,5 @@
 /* once we've got the units and the value, converts it,
  * returns the answer as double */
 double getanswer(char *inp, char *outp, char *to, char *from, double value);
+/* deal with compound units */
+double parse(char *s, char *sys);

@@ -41,6 +41,7 @@ void push(double f)
 	else
 		fprintf(stderr,"dozdc: stack full, can't push %g\n", f);
 }
+
 double pop(void)
 {
 	if (sp > 0)
@@ -49,31 +50,10 @@ double pop(void)
 		fprintf(stderr,"dozdc:  no values left on stack\n");
 }
 
-/*void push(double f)
-{
-	if (sp < INCREMENT)
-		val[sp++] = f;
-	else
-		fprintf(stderr,"dozdc:  stack full, can't push decimal value %g\n",f);
-}
-
-double pop(void)
-{
-	if(sp > 0) {
-		return val[--sp];
-	}
-	else {
-		fprintf(stderr,"dozdc: stack empty, can't pop anything\n");
-		return 0.0;
-	}
-}*/
-
 int clean(void)
 {
 	int i;
 
-/*	for (i=sp; i>=0; --i)
-		--stack;*/
 	free(stack);
 	stack = NULL;
 }

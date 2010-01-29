@@ -27,12 +27,22 @@ struct factor {
 } facs[] = {
 	"Tim","tgm", 1.0,
 	"second","metric", 0.1736111111,
+	"minute","metric",0.0028935185,
+	"hour","metric",0.0000482253,
 	"Grafut","tgm", 1.0,
 	"meter","metric", 0.2956829126,
 	"foot","custom", 0.9700882959,
 	"Maz","tgm", 1.0,
 	"gram","metric", 0.0258503556494,
 	"pound","custom", 56.9902828681,
+	"Gee", "tgm", 1.0,
+	"meter/second2","metric",9.8100494007,
+	"foot/second2","custom",32.18520142,
+	"Vlos","tgm",1.0,
+	"meter/second","metric",1.7031335765,
+	"meter/minute","metric",102.1880145900,
+	"meter/hour","metric",6131.2808754000,
+	"foot/second","custom",5.5877085843,
 };
 
 struct metabbs {
@@ -43,6 +53,12 @@ struct metabbs {
 	"meters", "meter",
 	"s", "second",
 	"seconds", "second",
+	"hr", "hour",
+	"min", "minute",
+	"hour", "hour",
+	"hours", "hour",
+	"minute", "minute",
+	"minutes", "minute",
 	"g", "gram",
 	"grams", "gram",
 	"A", "ampere",
@@ -61,6 +77,19 @@ struct tgmabbs {
 	"Gf", "Grafut",
 	"Tm", "Tim",
 	"Mz", "Maz",
+	"G", "Gee",
+	"Vl", "Vlos",
+};
+
+struct custabbs {
+	char *abb;
+	char *full;
+} custabbrev[] = {
+	"ft", "foot",
+	"feet", "foot",
+	"lb", "pound",
+	"pounds", "pound",
+	"lbs", "pound",
 };
 
 /* expand metric abbreviations; cannot alter the string
@@ -171,31 +200,106 @@ double docust(char *s)
 	return 1.0;
 }
 
+/* deal with compound units */
+double parse(char *s, char *sys)
+{
+	double f = 1.0;
+	char presl[MAXLEN] = " ";
+	char postsl[MAXLEN] = " ";
+	int i, j = 0;
+	char part = 0; /* before or after slash? */
+	char preexp = 1;  /* is unit squared?  cubed? */
+	char postexp = 1;  /* is unit squared?  cubed? */
+	size_t last;   /* last char in string */
+	char p[MAXLEN];
+
+	for (i=0; s[i] != '\0'; ++i) {
+		if ((isalpha(s[i]) || isdigit(s[i])) && part == 0)
+			presl[i] = s[i];
+		if (s[i] == '/') {
+			part = 1;
+			presl[i] = '\0';
+		}
+		if ((isalpha(s[i]) || isdigit(s[i])) && part == 1) {
+			postsl[j++] = s[i];
+		}
+	}
+	if (part == 1)
+		postsl[j] = '\0';
+	last = strlen(presl) - 1;
+	if (isdigit(presl[last])) {
+		preexp = atoi(presl+last);
+		presl[last] = '\0';
+	}
+	if (strcmp(sys,"metric") == 0) {
+		f *= dometric(presl);
+		f = pow(f,preexp);
+	} else if (strcmp(sys,"cust") == 0) {
+		f *= docust(presl);
+		f = pow(f,preexp);
+	}
+	if (part == 1) {
+		last = strlen(postsl) - 1;
+		if (isdigit(postsl[last])) {
+			postexp = atoi(postsl+last);
+			postsl[last] = '\0';
+		}
+		if (strcmp(sys,"metric") == 0) {
+			f *= dometric(postsl);
+			f = pow(f,postexp);
+		} else if (strcmp(sys,"cust") == 0) {
+			f *= docust(postsl);
+			f = pow(f,postexp);
+		}
+	}
+	strcpy(s,presl);
+	if (preexp > 1) {
+		sprintf(p,"%i",preexp);
+		strcat(s,p);
+	}
+	if (part == 1) {
+		strcat(s,"/");
+		if (postexp > 1) {
+			sprintf(p,"%i",postexp);
+			strcat(postsl,p);
+		}
+		strcat(s,postsl);
+	}
+	return f; 
+}
+
 /* does the actual unit conversion itself */
 double domain(char *outp, char *inp, char *to, char *from)
 {
 	int i;
 	double f = 1.0;
+	char done = 0;
 
-	if (strcmp(to,"tgm") == 0)
-		f /= dotgm(outp);
-	else if (strcmp(to,"metric") == 0)
-		f /= dometric(outp);
-	else if (strcmp(to,"cust") == 0)
-		f /= docust(outp);
-	if (strcmp(from,"tgm") == 0)
-		f *= dotgm(inp);
-	else if (strcmp(from,"metric") == 0)
-		f *= dometric(inp);
-	else if (strcmp(from,"cust") == 0)
-		f *= docust(inp);
-	for (i=0; i < sizeof(facs) / sizeof(struct factor); ++i) {
-		if (strcmp(outp,facs[i].name) == 0) {
-			f *= facs[i].factor;
-		} else if (strcmp(inp,facs[i].name) == 0) {
-			f *= (1 / facs[i].factor);
+	if (strcmp(from,"tgm") != 0)
+		f *= parse(inp,from);
+	if (strcmp(to,"tgm") != 0)
+		f /= parse(outp,to);
+/*	if (f == 1.0) {*/
+		if (strcmp(to,"tgm") == 0)
+			f /= dotgm(outp);
+/*		else if (strcmp(to,"metric") == 0)
+			f /= dometric(outp);
+		else if (strcmp(to,"cust") == 0)
+			f /= docust(outp);*/
+		if (strcmp(from,"tgm") == 0)
+			f *= dotgm(inp);
+/*		else if (strcmp(from,"metric") == 0)
+			f *= dometric(inp);
+		else if (strcmp(from,"cust") == 0)
+			f *= docust(inp);*/
+		for (i=0; i < sizeof(facs) / sizeof(struct factor); ++i) {
+			if (strcmp(outp,facs[i].name) == 0) {
+				f *= facs[i].factor;
+			} else if (strcmp(inp,facs[i].name) == 0) {
+				f *= (1 / facs[i].factor);
+			}
 		}
-	}
+/*	}*/
 	return f;
 }
 
