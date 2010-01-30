@@ -53,3 +53,4 @@
 #define TANH 31
 #define LDEXP 32
 #define ZENIPI 33
+#define DLG 34

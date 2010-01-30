@@ -33,7 +33,7 @@ struct factor {
 	"meter","metric", 0.2956829126,
 	"foot","custom", 0.9700882959,
 	"Maz","tgm", 1.0,
-	"gram","metric", 0.0258503556494,
+	"gram","metric", 25850.3556494,
 	"pound","custom", 56.9902828681,
 	"Gee", "tgm", 1.0,
 	"meter/second2","metric",9.8100494007,
@@ -43,6 +43,14 @@ struct factor {
 	"meter/minute","metric",102.1880145900,
 	"meter/hour","metric",6131.2808754000,
 	"foot/second","custom",5.5877085843,
+	"Surf","tgm",1.0,
+	"meter2","metric",0.087428384796,
+	"hectare","metric",0.0000087428384796,
+	"foot2","custom",0.9410713018,
+	"Volm","tgm",1.0,
+	"meter3","metric",0.025851079459,
+	"foot3","custom",0.9129222555,
+	"liter","metric",25.8503556494,
 };
 
 struct metabbs {
@@ -68,6 +76,12 @@ struct metabbs {
 	"moles", "mol",
 	"cd", "candela",
 	"candelas", "candela",
+	"ha","hectare",
+	"hectares","hectare",
+	"litre","liter",
+	"liters","liter",
+	"litres","liter",
+	"L","liter",
 };
 
 struct tgmabbs {
@@ -79,6 +93,8 @@ struct tgmabbs {
 	"Mz", "Maz",
 	"G", "Gee",
 	"Vl", "Vlos",
+	"Sf","Surf",
+	"Vm","Volm",
 };
 
 struct custabbs {
@@ -126,18 +142,33 @@ int expandtgmabb(char *s)
 	exit(1);
 }
 
+/* by Lars Wirzenius at stackoverflow.com; public domain */
+char *strrstr(char *s, char *t)
+{
+	if (*t == '\0')
+		return (char *)s;
+	
+	char *result = NULL;
+	for (;;) {
+		char *p = strstr(s,t);
+		if (p == NULL)
+			break;
+		result = p;
+		s = p + 1;
+	}
+	return result;
+}
+
 /* get metric factors */
 double dometric(char *s)
 {
 	int i;
 	double f = 1.0;
 	char *p = s;
-/*	char *mets[] = {"meter", "meters", "m", "second", "seconds", 
-	"s", "grams", "gram", "g",};*/
 
 	for (i=0; i < (sizeof(metabbrev) / sizeof(struct metabbs)); ++i) {
 		if (strstr(s,metabbrev[i].abb) != NULL && 
-		strstr(s,metabbrev[i].abb) != s) {
+		strrstr(s,metabbrev[i].abb) != s) {
 			switch(s[0]) {
 			case 'Y': f = pow(10,24); p++; break;
 			case 'Z': f = pow(10,21); p++; break;

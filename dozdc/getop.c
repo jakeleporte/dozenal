@@ -50,6 +50,7 @@ char *ops[] = {
 	"tanh", /* hyperbolic trig */
 	"ldexp", /* x * 2^n; binary */
 	"z", /* use zeniPis rather than radians */
+	"dlg", /* dublog */
 };
 
 /* refer to ops[] array to determine what operator to use;
@@ -304,6 +305,9 @@ double operate(int operator, int *places, char *print)
 	case LOGB:
 		tmp = pop();
 		push(log10(pop()) / log10(tmp));
+		break;
+	case DLG:
+		push(log10(pop()) / log10(2));
 		break;
 	case LDEXP:
 		tmp = pop();
