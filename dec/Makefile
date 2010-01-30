@@ -18,3 +18,6 @@ conv.o : conv.c conv.h
 
 dec.o : conv.o conv.h dec.c
 	gcc -c dec.c
+
+doc : dec.1
+	rman -fHTML dec.1 > dec_man.html

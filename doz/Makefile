@@ -18,3 +18,6 @@ conv.o : conv.c conv.h
 
 doz.o : conv.o conv.h doz.c
 	gcc -c doz.c
+
+doc : doz.1
+	rman -fHTML doz.1 > doz_man.html

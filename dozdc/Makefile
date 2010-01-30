@@ -31,3 +31,6 @@ vars.o : vars.c vars.h stack.o
 
 stack.o : stack.c stack.h
 	gcc -g -c stack.c
+
+doc : dozdc.1
+	rman -fHTML dozdc.1 > dozdc_man.html
