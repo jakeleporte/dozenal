@@ -38,7 +38,7 @@ struct units {
 struct convs {
 	char *unit; /* the unit */
 	char *base; /* the base unit */
-	double facotr; /* what gets from unit to base */
+	double factor; /* what gets from unit to base */
 } convs[] = {
 	"day","s",86400.0,
 	"hr","s",3600.0,
@@ -161,6 +161,15 @@ double dealunit(char *s, char funct)
 	if (isdigit(s[i])) {
 		exp = atoi(s+i);
 		s[i] = '\0';
+	}
+	for (i=0; i < sizeof(convs) / sizeof(struct convs); ++i) {
+		if (strcmp(s,convs[i].unit) == 0) {
+			strcpy(s,convs[i].base);
+			if (funct == '*')
+				f /= convs[i].factor;
+			else if (funct == '/')
+				f *= convs[i].factor;
+		}
 	}
 	for (i=0; i < sizeof(fundunits) / sizeof(struct units); ++i) {
 		if (strstr(s,fundunits[i].unit) != NULL) {
