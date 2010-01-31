@@ -151,7 +151,7 @@ int main(int argc, char *argv[])
 	}
 	if (argc >= 1) {
 		value = doztodec(*argv);
-		value = getanswer(inp,outp,to,from,value);
+		value = getanswer(outp,inp,value);
 		sprintf(doznum,"%.*f",places,value);
 		doz(doznum,doznum,places,expnot);
 		return 0;

@@ -13,6 +13,8 @@
 
 /* once we've got the units and the value, converts it,
  * returns the answer as double */
-double getanswer(char *inp, char *outp, char *to, char *from, double value);
+double getanswer(char *to, char *from, double value);
 /* deal with compound units */
-double parse(char *s, char *sys);
+double parse(char *s);
+/* by Lars Wirzenius at stackoverflow.com; public domain */
+char *strrstr(char *s, char *t);
