@@ -31,6 +31,16 @@ struct units {
 	"tgm","Tm",1.0,
 	"tgm","Gf",1.0,
 	"cust","ft",0.9700882959,
+	"tgm","Mz",1.0,
+	"metric","g",25850.3556494,
+	"cust","lb",56.9902828681,
+	"tgm","Vl",1.0,
+	"tgm","G",1.0,
+	"tgm","Sf",1.0,
+	"tgm","Vm",1.0,
+	"metric","L",25.8503556494,
+	"cust","gali",5.6864459111,
+	"cust","galc",6.8290818133,
 };
 
 /* turns elaborations on the seven fundamental dimensions
@@ -46,6 +56,16 @@ struct convs {
 	"mi","ft",5280.0,
 	"yd","ft",3.0,
 	"in","ft",0.083333333333,
+	"pti","gali",0.125,
+	"ptc","galc",0.125,
+	"qti","gali",0.25,
+	"qtc","galc",0.25,
+	"fl.oz","galc",0.00781250,
+	"lbs","lb",1.0,
+	"oz","lb", 0.0625,
+	"toni","lb",2240.0,
+	"tonc","lb",2000.0,
+	"cw","lb",112.0,
 };
 
 /* expands composite units of all systems */
@@ -53,8 +73,10 @@ struct expand {
 	char *unit; /* the unit as given */
 	char *full; /* the unit expanded */
 } expanded[] = {
-	"Vl","Gf/Tm",
+/*	"Vl","Gf/Tm",
 	"G","Gf/Tm2",
+	"Sf","Gf2",
+	"Vm","Gf3",*/
 };
 
 /* by Lars Wirzenius at stackoverflow.com; public domain */
