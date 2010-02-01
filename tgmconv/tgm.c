@@ -41,6 +41,25 @@ struct units {
 	"metric","L",25.8503556494,
 	"cust","gali",5.6864459111,
 	"cust","galc",6.8290818133,
+	"tgm","Dz",1.0,
+	"tgm","Vv",1.0,
+	"tgm","Mv",1.0,
+	"tgm","Mg",1.0,
+	"metric","N",253.5932659458,
+	"metric","kgf",25.8593164787,
+	"cust","lbf",57.0100381234,
+	"tgm","Tz",1.0,
+	"tgm","Pm",1.0,
+	"metric","Pa",2900.582763,
+	"cust","inHg",0.85669,
+	"tgm","Wg",1.0,
+	"metric","J",74.9831954874,
+	"cust","btu",0.0711051221,
+	"tgm","Pv",1.0,
+	"metric","W",431.9032060077,
+	"cust","hp",0.5789587212,
+	"tgm","Vsd",1.0,
+	"tgm","Vsn",1.0,
 };
 
 /* turns elaborations on the seven fundamental dimensions
@@ -66,6 +85,11 @@ struct convs {
 	"toni","lb",2240.0,
 	"tonc","lb",2000.0,
 	"cw","lb",112.0,
+	"dyn","N",0.00001,
+	"Atz","Pm",35.0,
+	"atm","Pa",101325.0,
+	"bar","Pa",100000.0,
+	"cal","J",4.1855,
 };
 
 /* expands composite units of all systems */

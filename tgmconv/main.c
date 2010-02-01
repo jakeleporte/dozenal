@@ -40,6 +40,9 @@ int main(int argc, char *argv[])
 			break; /* negative numbers are not optional args */
 		while (c = *++argv[0])
 			switch (c) {
+			case 'e':
+				expnot = 1;
+				break;
 			case 'k':
 				if (isdigit(*++argv[0])) {
 					places = dozprecis(argv[0]);
