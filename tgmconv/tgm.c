@@ -57,9 +57,21 @@ struct units {
 	"cust","btu",0.0711051221,
 	"tgm","Pv",1.0,
 	"metric","W",431.9032060077,
+	"metric","Wh",0.020828665413,
 	"cust","hp",0.5789587212,
 	"tgm","Vsd",1.0,
 	"tgm","Vsn",1.0,
+	"tgm","Fq",1.0,
+	"metric","Hz",5.76,
+	"cust","RPM",345.6,
+	"tgm","rGf",1.0,
+	"metric","rad",1.0,
+	"cust","deg",57.2957795160,
+	"tgm","rVl",1.0,
+	"tgm","rG",1.0,
+	"tgm","RMv",1.0,
+	"tgm","RMg",1.0,
+	"tgm","QMz",1.0,
 };
 
 /* turns elaborations on the seven fundamental dimensions
@@ -97,6 +109,7 @@ struct expand {
 	char *unit; /* the unit as given */
 	char *full; /* the unit expanded */
 } expanded[] = {
+	"rad","m*1/m",
 /*	"Vl","Gf/Tm",
 	"G","Gf/Tm2",
 	"Sf","Gf2",
