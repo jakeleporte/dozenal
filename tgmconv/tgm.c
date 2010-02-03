@@ -99,6 +99,14 @@ struct units {
 	"metric","lm",1.1795967512,
 	"tgm","Ld",1.0,
 	"tgm","Sz",1.0,
+	"tgm","QLd",1.0,
+	"metric","cd",1.1795967512,
+	"tgm","Cg",1.0,
+	"metric","K",0.00069444444444,
+	"tgm","Ck",1.0,
+	"tgm","Csp",1.0,
+	"tgm","Cdu",1.0,
+	"tgm","Tgr",1.0,
 };
 
 /* turns elaborations on the seven fundamental dimensions
