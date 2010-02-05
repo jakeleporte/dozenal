@@ -80,6 +80,7 @@ struct units {
 	"metric","Ohm",1757.55903297,
 	"tgm", "Go",1.0,
 	"metric","Mho",0.0005689709314098,
+	"metric","S",0.0005689709314098,
 	"tgm","Ql",1.0,
 	"metric","C",0.0860628591502,
 	"tgm","Kp",1.0,
@@ -118,6 +119,25 @@ struct units {
 	"tgm","Im",1.0,
 	"tgm","Qz",1.0,
 	"tgm","Dp",1.0,
+	"tgm","Egr",1.0,
+	"tgm","RFm",1.0,
+	"tgm","Mgr",1.0,
+	"tgm","Lq",1.0,
+	"tgm","Kn",1.0,
+	"metric","At",0.4957220687,
+	"tgm","PGf",1.0,
+	"tgm","Lf",1.0,
+	"tgm","Osp",1.0,
+	"tgm","Mlz",1.0,
+	"metric","mol",25850.3556494,
+	"tgm","Slz",1.0,
+	"tgm","Vlz",1.0,
+	"tgm","Mlv",1.0,
+	"tgm","Mlm",1.0,
+	"tgm","Wlz",1.0,
+	"tgm","Eul",1.0,
+	"tgm","Clz",1.0,
+	"tgm","Olz",1.0,
 };
 
 /* turns elaborations on the seven fundamental dimensions
@@ -156,6 +176,8 @@ struct expand {
 	char *full; /* the unit expanded */
 } expanded[] = {
 	"rad","m*1/m",
+	"diopt","1/m",
+	"lx","lm/m2",
 /*	"Vl","Gf/Tm",
 	"G","Gf/Tm2",
 	"Sf","Gf2",
