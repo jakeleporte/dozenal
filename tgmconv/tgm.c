@@ -107,6 +107,17 @@ struct units {
 	"tgm","Csp",1.0,
 	"tgm","Cdu",1.0,
 	"tgm","Tgr",1.0,
+	"tgm","Wsp",1.0,
+	"tgm","Flo",1.0,
+/* FIXME:  Zd goes here, when I figure out how to parse it */
+	"tgm","Vsp",1.0,
+	"tgm","Ag",1.0,
+	"tgm","RQl",1.0,
+	"tgm","Ry",1.0,
+	"tgm","Edu",1.0,
+	"tgm","Im",1.0,
+	"tgm","Qz",1.0,
+	"tgm","Dp",1.0,
 };
 
 /* turns elaborations on the seven fundamental dimensions
