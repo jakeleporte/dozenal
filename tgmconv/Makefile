@@ -1,6 +1,6 @@
 # +AMDG
 
-tgmconv : main.o doz.o dec.o tgm.o conv.h tgmconv.h
+tgmconv : main.o doz.o dec.o tgm.o conv.h tgmconv.h conv.o
 	gcc -g -lm -o tgmconv main.o tgm.o doz.o dec.o conv.o
 
 main.o : main.c tgmconv.h dec.o doz.o conv.h conv.c
