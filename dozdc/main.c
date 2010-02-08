@@ -65,6 +65,16 @@ int main(int argc, char *argv[])
 			case 'z':
 				operate(ZENIPI,&places,&print);
 				break;
+			case 'v':
+				printf("dozdc v1.0\n");
+				printf("Copyright (C) 2010  Donald P. Goodman III\n");
+				printf("License GPLv3+:  GNU GPL version 3 or "
+				"later <http://gnu.org/licenses/gpl.html>\n");
+				printf("This is free software:  you are free "
+				"to chnage and redistribute it.  There is NO "
+				"WARRANTY, to the extent permitted by law.\n");
+				return 0;
+				break;
 			default:
 				fprintf(stderr,"doz:  illegal option \"%c\"\n",c);
 				break;

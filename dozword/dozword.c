@@ -25,6 +25,16 @@ int main(int argc, char *argv[])
 		return 1; 
 	
 	*argv++;
+	if (strcmp(*argv,"-v") == 0) {
+		printf("dozword v1.0\n");
+		printf("Copyright (C) 2010  Donald P. Goodman III\n");
+		printf("License GPLv3+:  GNU GPL version 3 or "
+		"later <http://gnu.org/licenses/gpl.html>\n");
+		printf("This is free software:  you are free "
+		"to chnage and redistribute it.  There is NO "
+		"WARRANTY, to the extent permitted by law.\n");
+		return 0;
+	}
 	printwords(strlen(*argv), *argv);
 	printf("\n");
 
@@ -38,12 +48,10 @@ char error(int argc)
 	if (argc < 2) {
 		printf("Usage:  dozword <dozenal number>\n");
 		return 1;
-	}
-	else if (argc > 2) {
+	} else if (argc > 2) {
 		printf("Too many arguments.  Usage:  dozword <dozenal number>\n");
 		return 1;
-	}
-	else {
+	} else {
 		return 0; }
 }
 

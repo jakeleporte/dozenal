@@ -177,7 +177,7 @@ struct expand {
 } expanded[] = {
 	"rad","m*1/m",
 	"diopt","1/m",
-	"lx","lm/m2",
+	"Bq","1/s",
 /*	"Vl","Gf/Tm",
 	"G","Gf/Tm2",
 	"Sf","Gf2",

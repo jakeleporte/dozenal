@@ -1,0 +1,437 @@
+." +AMDG
+." Process with:
+." groff -man -Tascii tgmconv.1
+.TH tgmconv 1 "January 2010" Linux "User Manuals"
+.SH NAME
+tgmconv \- converter for measurements in the TGM, metric,
+imperial, and customary systems.  Inputs and outputs only in
+dozenal.
+.SH SYNOPSIS
+.B tgmconv [-k
+.I precision
+.B ] [-i 
+.I input unit
+.B ] [-o
+.I output unit
+.B ]
+.B quantity
+.SH DESCRIPTION
+.B tgmconv
+Converts the given quantity from the input unit to the
+output unit.  At present, both input and output units must
+be given manually at the command line.  Works with simple
+units (like "Grafut" and "second") and compound units of
+arbitrary complexity (like "S*m/m2").
+.SH OPTIONS
+.IP "-k precision"
+Print the resulting output with 
+.I precision
+digits of precision.  By default, the output is printed with
+four digits after the zenimal point.  If there is no
+fractional part, no zenimal point or fractional digits will
+be printed, even if this option is specified.  If the
+precision is too high, a message will be printed noting
+this, and the precision will be reduced to the system's
+maximum.
+.IP "-i input unit"
+Specifies what unit tgmconv will be receiving the quantity
+in.
+.IP "-o output unit"
+Specifies the unit that tgmconv should conver the entered
+quantity of the input unit into.
+.IP "quantity"
+Must be the final argument on the command line.  This is the
+number of input units that will be converted to output
+units.  Must be a dozenal number; tgmconv will interpret it
+as such regardless of the user's actual intent.
+.SH UNIT SYNTAX
+Compound units have a fairly tight but intuitive syntax.
+There is no need to specify exponents; any digit that's
+encountered will be treated as a positive exponent.  When
+units are being multiplied, a specific mention of this is
+necessary; a "*" character is probably easiest, though as a
+practical matter any character other than a dozenal
+character (0-9, A, B, T, X, E) or a '-' would work.
+
+As an example, the TGM unit of conductivity is the Eldu.
+The metric unit of conductivity is the Siemen-meter per
+square meter.  To enter the metric unit, use the appropriate
+abbreviations connected with '*' and '/':
+
+.I "S*m/m2"
+
+(Incidentally, "mho", the old term for the Siemen, will also
+work here.)  Many metric units are compound where TGM
+provides a single unit, so learning this idiom is essential
+if tgmconv is to be used at all heavily.  Fortunately, it's
+not a complicated matter.
+.SH PERMISSIBLE UNITS
+Unfortunately, at this point tgmconv's syntax is relatively
+fascistic; it insists on receiving its units in a canonical
+abbreviated format, in addition to the syntax for composite
+units explained above.  Below is a list of the acceptable
+units and their abbreviations for TGM, metric, and
+customary/imperial, plus a brief statement of each unit's
+purpose.
+.SH TGM Units
+.IP "Tim --- Tm"
+The unit of time.
+.IP " Grafut --- Gf"
+The unit of length.
+.IP " Gee --- G"
+The unit of acceleration.
+.IP " Vlos --- Vl"
+The unit of velocity.
+.IP " Surf --- Sf"
+The unit of area.
+.IP " Volm --- Vm"
+The unit of volume.
+.IP " Maz --- Mz"
+The unit of mass.
+.IP " Denz --- Dz"
+The unit of density.
+.IP " Vlov --- Vv"
+The unit of velocity squared.
+.IP " Mav --- Mv"
+The unit of momentum.
+.IP " Mag --- Mg"
+The unit of force.
+.IP " Tenz --- Tz"
+The unit of tension.
+.IP " Prem --- Pm"
+The generic unit of pressure or stress.
+.IP " Atmoz --- Atz"
+The TGM standard atmosphere, a unit of pressure.
+.IP "Werg --- Wg"
+The unit of energy or work.
+.IP "Pov --- Pv"
+The unit of power.
+.IP " Viscod --- Vsd"
+The unit of viscosity, equivalent to Newton-seconds per
+meter squared (N*s/m2).
+.IP " Viskin --- Vsn "
+The unit of viscosity, equivalent to meters squared per
+second (m2/s).
+.IP " Radian --- rad "
+The typical and familiar measure of angles.
+.IP " Pi --- Pi"
+Another measure of angles; one Pi is equal to pi radians
+(180 degrees).
+.IP " Steradian --- Sr"
+The familiar unit of solid angles.
+.IP " radiVlos --- rVl"
+The unit of angular velocity.
+.IP " radiGee --- rG"
+The unit of angular acceleration.
+.IP " radaMav --- RMv"
+The unit of angular momentum.
+.IP " radaMag --- RMg"
+The unit of angular force, or torque.
+.IP " quaraMaz --- QMz"
+The unit of moment of inertia.
+.IP "Freq --- Fq"
+The unit of frequency or revolution; equivalent to hertz or
+RPM.
+.IP " Kur --- Kr"
+The unit of current.
+.IP " Kurn --- Kn "
+The unit of magneto-motive force.
+.IP " Pel --- Pl"
+The unit of electro-motive force.
+.IP " Og --- Og"
+The unit of resistance, reactance, and impedance.
+.IP " Go --- Go"
+The unit of conductance, susceptance, and admittance.
+.IP " Quel --- Ql"
+The unit of quantity or charge.
+.IP " Kap --- Kp "
+The unit of capacity.
+.IP " Mit --- Mt"
+The unit of permittivity.
+.IP " Flum --- Fm "
+The unit of magnetic flux.
+.IP " Flenz --- Fz "
+The unit of magnetic flux density.
+.IP " Gen --- Gn"
+The unit of inductance.
+.IP " Lukt --- Lk"
+The unit of reluctance.
+.IP " Meab --- Mb"
+The unit of permeability.
+.IP " Penz --- Pz"
+The unit of power density, or intensity.
+.IP " QuaraPenz --- QPz"
+The unit of radiant poewr.
+.IP " Lypov --- Lp"
+The unit of light power, or luminous flux.
+.IP " Lyde --- Ld"
+The unit of illumination, luminance, or brightness.
+.IP " Senz --- Sz"
+The unit of light sensitivity.
+.IP " QuaraLyde --- QLd"
+The unit of luminous intensity.
+.IP " Calg --- Cg"
+The unit of heat, comparable to kelvins or degrees both
+centigrade and Fahrenheit.
+.IP " Calkap --- Ck"
+The unit of heat capacity.
+.IP " Calsp --- Csp "
+The unit of specific heat capacity.
+.IP " Caldu --- Cdu "
+The unit of thermal conductivity.
+.IP " Temgra --- Tgr"
+The unit of temperature gradiant.
+.IP " Wesp --- Wsp"
+The unit of specific energy and specific latent heat.
+.IP " Flo --- Fl"
+The unit of flow.
+.IP " Zond --- Zd"
+The unit of loudness.
+.IP " Vosp --- Vsp"
+The unit of specific volume.
+.IP " Ag --- Ag"
+The unit of activity.
+.IP " radaQuel --- RQl"
+The unit of electric dipole moment.
+.IP " Rezy --- Ry"
+The unit of resistivity.
+.IP " Eldu --- Edu"
+The unit of conductivity.
+.IP " Imo --- Im"
+The unit of ionic mobility.
+.IP " Quenz --- Qz"
+The unit of electric flux density.
+.IP " Depoz --- Dp"
+The unit of electrochemical equivalence.
+.IP " Elgra --- Egr"
+The unit of potential gradient.
+.IP " radaFlum --- RFm"
+The unit of magnetic moment.
+.IP " Magra --- Mgr"
+The unit of magnetic field strength or gradient.
+.IP " Lyqua --- Lq"
+The unit of light quantity.
+.IP " Perfut --- PGf"
+The unit of wave number and lens power.
+.IP " Lytef --- Lf"
+The unit of light efficiency.
+.IP " Orosp --- Osp"
+The unit of specific optical rotation.
+.IP " Molz --- Mlz"
+The unit of amount of substance, equivalent to moles.
+.IP " Surfolz --- Slz"
+The unit of molzar extinction or absorption.
+.IP " Volmolz --- Vlz"
+The unit of molzar volume and refraction.
+.IP " Molv --- Mlv"
+The unit of molvity (molarity).
+.IP " Molm --- Mlm"
+The unit of molmity (molality).
+.IP " Wergolz --- Wlz"
+The unit of molzar enthalpy.
+.IP " Eldulz --- Eul"
+The unit of molzar conductivity.
+.IP " Calgolz --- Clz"
+The unit of molzar entropy.
+.IP " Orolz --- Olz"
+The unit of molzar optical rotation.
+.SH Metric Units
+.IP "second --- s"
+The metric unit of time.
+.IP "meter --- m"
+The metric unit of length.
+.IP "gram --- g"
+The metric unit of mass.  This was a bit of a tough
+decision.  The SI standard specifies the 
+.I kilogram
+as the basic unit of mass; however, it comes ready-made with
+a prefix meaning "ten to the third", and a gram is one
+thousandth of a kilgram.  So tgmconv assumes that the gram
+is the basic unit, rather than the kilogram, so that the
+algorithms won't get messed up.  The abbreviation "kg" still
+works fine, anyway.
+.IP "liter --- L"
+The metric unit of volume.  Sort of.  This used to be the
+metric unit of volume, but SI makes the cubic meter that
+unit, which is something substantially larger.  The liter
+is, at least conceptually, the volume of one square 
+.I decimeter
+; technically, it was defined as the volume of one kilogram
+of pure water at four degrees celsius and 760 mm of mercury
+pressure.  However, that definition yielded a liter equal to
+about 1.000028 dm3.  Because for quite a long time that was
+what a liter was, tgmconv converts liters according to this
+old definition.  If you want cubic decimeters, ask for them:
+dm3.
+.IP "Newton --- N"
+The metric unit of force.  The force required to
+acceleration one kg at a rate of one m/s2.
+.IP "Dyne --- dyn"
+An old unit of force, the centimeter-gram-second; equal to
+one ten-thousandth of a Newton.
+.IP "kilgram-force --- kgf"
+Another metric unit of force; the force exerted on one
+kilgram by an acceleration of one metric standard gravity
+(about 9.806 m/s2).  The kgf, then, is equal to 9.806 N.
+.IP "Pascal --- Pa"
+The metric unit of pressure and stress.
+.IP "Metric Standard Atmosphere --- atm"
+The metric standard atmosphere.
+.IP "bar --- bar"
+A metric unit of pressure; typically cited in millibars
+(mbar).
+.IP "Ampere-turn --- At"
+The metric unit of magnetomotive force.
+.IP "Joule --- J"
+The metric unit of energy or work.
+.IP "Calorie --- cal"
+Another unit of energy or work.  There were many types of
+calorie; tgmconv only knows one, the 15 degree calorie.
+.IP "Watt --- W"
+The metric unit of power.
+.IP "Watt-hour --- Wh"
+Another metric unit of energy or work.  Equals 3.6
+megajoules.  Usually listed in kilowatt-hours, kWh.
+.IP "Hertz --- Hz"
+The metric unit of frequency.
+.IP "Ampere --- A"
+The metric unit of electrical current.
+.IP "Volt --- V"
+The metric unit of electromotive force, or "voltage".
+.IP "Ohm --- Ohm"
+The metric unit of resistance.
+.IP "Mho --- Mho"
+.IP "Siemens --- S"
+The metric units of conductance, the reciprocal of
+resistance in ohms.  "Mho" is the old term, "Siemens" is the
+new term; tgmconv accepts both.
+.IP "Coulomb --- C"
+The metric unit of electric charge.
+.IP "Farad --- F"
+The metric unit of capacitance.
+.IP "Weber --- Wb"
+The metric unit of magnetic flux.
+.IP "Tesla --- T"
+The metric unit of magnetic flux density and magnetic
+induction.
+.IP "Henry --- H"
+The metric unit of inductance.
+.IP "lumen --- lm"
+The metric unit of luminous flux.
+.IP "candela --- cd"
+The metric unit of luminous intensity.
+.IP "Kelvin --- K"
+The metric unit of heat.
+.IP "mole --- mol"
+The metric unit of amount of substance.
+.SH Customary/Imperial Units
+This section includes not only customary and imperial units,
+but also others that don't fit into either above category,
+like "days".  Where they differ, the imperial versions are
+suffixed with an "i", the customary with a "c".  Imperial
+versions are used in England and former colonies who gained
+independence after the imperial reform (broadly, everyone
+but America); customary versions are used in the United
+States.
+.IP "foot --- ft"
+The customary/imperial unit of length.
+.IP "inch --- in"
+One zenth of a foot; a measurement of length.
+.IP "yard --- yd"
+Another traditional length measurement; it is equal to three
+feet, a bit shorter than a meter.
+.IP "mile --- mi"
+A traditional unit of length, used in mostly the same
+circumstances that the kilometer is used in metric.  Equal
+to 5,280 feet.
+.IP "pound --- lb"
+The customary/imperial unit of weight and mass.
+.IP "ounce --- oz"
+Another unit of weight and mass; equal to one-sixteenth of a
+pound.  There were several different types of ounce,
+including the troy (one zenth of a troy pound), avoirdupois,
+and fluid.  The fluid ounce is for volume (see below); the
+avoirdupois ounce is the only weight and mass ounce that
+tgmconv knows.  It is typically referred to simply as
+"ounce"; if one needs to distinguish, use "fluid ounce" for
+the volume measure and simply "ounce" for the weight.
+.IP "imperial ton --- toni"
+Another unit of weight and mass, equal to 2,240 lbs.  An
+interesting number, to be sure, because it was based on the
+English (or "long") hundredweight rather than on the pound.
+.IP "customary ton --- tonc"
+An odd name, considering that the imperial ton is actually
+the customary one in this case.  The American ton is based
+on the American, or "short", hundredweight, and thus equals
+2,000 pounds.
+.IP "hundredweight --- cw"
+The English, or "long", hundredweight, equal to 112.0
+pounds.  tgmconv doesn't know the American or "short"
+hundredweight of 100.0 pounds, because it's too easy to
+figure it out without tgmconv's help.
+.IP "imperial gallon --- gali"
+The imperial unit of volume.
+.IP "imperial pint --- pti"
+A bit too large to be convenient for beer, the imperial pint
+is equal to twenty fluid ounces.  An imperial pint of water
+is one pound and a quarter mass. ("A pintful of water's a
+pound and a quarter", which apparently almost rhymes in
+British English.)  It differs from the customary pint since
+the imperial reforms of 1824, in which one of many different
+varieties of gallon was chosen as the standard gallon.  The
+imperial pint is one-eighth of an imperial gallon.  It
+contains twenty fluid ounces.
+.IP "imperial quart --- qti"
+One-fourth of an imperial gallon; twice an imperial pint.
+.IP "customary gallon --- galc"
+The customary unit of volume.
+.IP "customary pint --- ptc"
+The perfect size for a beer (no, I'm not biased; this is an
+obvious objective fact with which no reasonable man could
+possibly disagree), this is one-eighth of the customary
+gallon.  It masses one pound.  "A pint's a pound the world
+around"---except, of course, that it isn't, at least since
+1824.  It contains sixteen fluid ounces.
+.IP "customary quart --- qtc"
+One-fourth of a customary gallon; twice a customary pint.
+.IP "fluid ounce --- fl.oz"
+The same in both the imperial and customary systems, though
+different numbers of it make up imperial and customary
+volumes.  
+.IP "pounds-force --- lbf"
+The imperial/customary unit of force.
+.IP "inches of mercury --- inHg"
+The imperial/customary unit of pressure.
+.IP ""British Thermal Unit --- btu""
+The imperial/customary unit of energy.
+.IP "horsepower --- hp"
+The imperial/customary unit of power.
+.IP "Revolutions Per Minute --- RPM"
+A traditional unit of frequency.
+.IP "degrees --- deg"
+Degrees Fahrenheit; the imperial/customary unit of heat.
+.IP "hour --- hr"
+1,0000 Tims; 3,600 seconds.
+.IP "day --- day"
+20,0000 Tims; 86,400 seconds.
+.IP "minute --- min"
+About 249;7249 Tims; 60.0 seconds.
+.SH BUGS
+None known at this time.
+.SH WORK NEEDED
+The input unit should be able to be specified with the
+quantity; that is, entering "3Tm" as the quantity should
+make it clear to tgmconv that "Tm" is the input unit.
+
+The output unit should be deducible rationally from the
+input unit.  That is, if the user is inputting Tims, it
+should be clear that he wants output in seconds unless he
+states otherwise.
+.SH AUTHOR
+Donald P. Goodman III <dgoodmaniii at gmail dot com>
+.SH "SEE ALSO"
+.BR dec (1),
+.BR dozdc (1),
+.BR tgmconv (1),
+.BR dozdate (1),
+.BR dozword (1)

@@ -17,3 +17,6 @@ dec.o : dec.c conv.h conv.c
 
 conv.o : conv.c conv.h
 	gcc -g -c conv.c
+
+doc : tgmconv.1
+	rman -fHTML tgmconv.1 > tgmconv_man.html

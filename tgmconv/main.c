@@ -43,6 +43,20 @@ int main(int argc, char *argv[])
 			case 'e':
 				expnot = 1;
 				break;
+			case 'v':
+				printf("tgmconv v0.9\n");
+				printf("Copyright (C) 2010  Donald P. Goodman III\n");
+				printf("License GPLv3+:  GNU GPL version 3 or "
+				"later <http://gnu.org/licenses/gpl.html>\n");
+				printf("This is free software:  you are free "
+				"to chnage and redistribute it.  There is NO "
+				"WARRANTY, to the extent permitted by law.\n");
+				return 0;
+				break;
+			case 'h':
+				helpfunc();
+				return 0;
+				break;
 			case 'k':
 				if (isdigit(*++argv[0])) {
 					places = dozprecis(argv[0]);
@@ -103,50 +117,6 @@ int main(int argc, char *argv[])
 					exit(1);
 				}
 				break;
-			case 't':
-				if (isalpha(*++argv[0]) || isdigit(*argv[0]) ||
-				*argv[0] == '_') {
-					strncpy(to,*argv,MAXLEN-1);
-					if (strlen(*argv) > (MAXLEN-1))
-						to[MAXLEN-1] = '\0';
-					goto startopt;
-				} else if (*(argv+1) == NULL) {
-					fprintf(stderr,"tgmconv:  no output system\n");
-					exit(1);
-				} else if (isalpha(*(argv+1)[0]) ||
-				isdigit(*(argv+1)[0]) || *(argv+1)[0] == '_') {
-					strncpy(to,*argv+1,MAXLEN-1);
-					if (strlen(*argv+1) > (MAXLEN-1))
-						to[MAXLEN-1] = '\0';
-					--argc, ++argv;
-					goto startopt;
-				} else {
-					fprintf(stderr,"tgmconv:  invalid input unit\n");
-					exit(1);
-				}
-				break;
-			case 'f':
-				if (isalpha(*++argv[0]) || isdigit(*argv[0]) ||
-				*argv[0] == '_') {
-					strncpy(from,*argv,MAXLEN-1);
-					if (strlen(*argv) > (MAXLEN-1))
-						from[MAXLEN-1] = '\0';
-					goto startopt;
-				} else if (*(argv+1) == NULL) {
-					fprintf(stderr,"tgmconv:  no output system\n");
-					exit(1);
-				} else if (isalpha(*(argv+1)[0]) ||
-				isdigit(*(argv+1)[0]) || *(argv+1)[0] == '_') {
-					strncpy(from,*argv+1,MAXLEN-1);
-					if (strlen(*argv+1) > (MAXLEN-1))
-						from[MAXLEN-1] = '\0';
-					--argc, ++argv;
-					goto startopt;
-				} else {
-					fprintf(stderr,"tgmconv:  invalid input unit\n");
-					exit(1);
-				}
-				break;
 			default:
 				fprintf(stderr,"tgmconv:  illegal option \"%c\"\n",c);
 				break;
@@ -160,5 +130,130 @@ int main(int argc, char *argv[])
 		return 0;
 	}
 /*	while (getword(doznum,MAXLINE) != EOF);*/
+	return 0;
+}
+
+int helpfunc(void)
+{
+	printf("tgmconv, v0.9.\n");
+	printf("Usage:  tgmconv -i input unit -o output unit quantity\n");
+	printf("Acceptable units:\n");
+	printf("TGM:\n");
+	printf("\tTm");
+	printf("\tGf");
+	printf("\tMz");
+	printf("\tVl");
+	printf("\tG\n");
+	printf("\tSf");
+	printf("\tVm");
+	printf("\tDz");
+	printf("\tVv");
+	printf("\tMv\n");
+	printf("\tMg");
+	printf("\tTz");
+	printf("\tPm");
+	printf("\tWg");
+	printf("\tPv\n");
+	printf("\tVsd");
+	printf("\tVsn");
+	printf("\tFq");
+	printf("\trGf");
+	printf("\trVl\n");
+	printf("\trG");
+	printf("\tRMv");
+	printf("\tRMg");
+	printf("\tQMz");
+	printf("\tKr\n");
+	printf("\tPl");
+	printf("\tOg");
+	printf("\tGo");
+	printf("\tQl");
+	printf("\tKp\n");
+	printf("\tMt");
+	printf("\tFm");
+	printf("\tFz");
+	printf("\tGn");
+	printf("\tLk\n");
+	printf("\tMb");
+	printf("\tPz");
+	printf("\tQPz");
+	printf("\tLp");
+	printf("\tLd\n");
+	printf("\tSz");
+	printf("\tQLd");
+	printf("\tCg");
+	printf("\tCk");
+	printf("\tCsp\n");
+	printf("\tCdu");
+	printf("\tTgr");
+	printf("\tWsp");
+	printf("\tFlo");
+	printf("\tVsp\n");
+	printf("\tAg");
+	printf("\tRQl");
+	printf("\tRy");
+	printf("\tEdu");
+	printf("\tIm\n");
+	printf("\tQz");
+	printf("\tDp");
+	printf("\tEgr");
+	printf("\tRFm");
+	printf("\tMgr\n");
+	printf("\tLq");
+	printf("\tKn");
+	printf("\tPGf");
+	printf("\tLf");
+	printf("\tOsp\n");
+	printf("\tMlz");
+	printf("\tSlz");
+	printf("\tVlz");
+	printf("\tMlv");
+	printf("\tMlm\n");
+	printf("\tWlz");
+	printf("\tEul");
+	printf("\tClz");
+	printf("\tOlz\n");
+	printf("Metric:\n");
+	printf("\ts");
+	printf("\tm");
+	printf("\tg");
+	printf("\tL");
+	printf("\tN\n");
+	printf("\tkgf");
+	printf("\tPa");
+	printf("\tJ");
+	printf("\tW");
+	printf("\tWh\n");
+	printf("\tHz");
+	printf("\trad");
+	printf("\tA");
+	printf("\tV");
+	printf("\tOhm\n");
+	printf("\tMho");
+	printf("\tS");
+	printf("\tC");
+	printf("\tF");
+	printf("\tWb\n");
+	printf("\tT");
+	printf("\tH");
+	printf("\tlm");
+	printf("\tcd");
+	printf("\tK\n");
+	printf("\tAt");
+	printf("\tmol\n");
+	printf("Customary/Imperial:\n");
+	printf("\tft");
+	printf("\tlb");
+	printf("\tgali");
+	printf("\tgalc");
+	printf("\tlbf\n");
+	printf("\tinHg");
+	printf("\tbtu");
+	printf("\thp");
+	printf("\tRPM");
+	printf("\tdeg\n");
+	printf("For more information, please see the man page, \n");
+	printf("or go to http://dozenal.sourceforge.net/ and see \n");
+	printf("the documentation.\n");
 	return 0;
 }
