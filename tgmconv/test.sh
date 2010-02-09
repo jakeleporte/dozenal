@@ -438,7 +438,7 @@ echo "4.1769561304 --- $var";
 var=`./tgmconv -k10 -o1_Csp -ikJ/K*kg "1"`;
 echo "2;X5846983 --- $var";
 var=`./tgmconv -k10 -i4_Csp -oJ/K*kg "1" | ../dec/dec -k10`;
-echo "-->0.2014349986 --- $var";
+echo "0.2014349986 --- $var";
 var=`./tgmconv -k10 -o4_Csp -iJ/K*kg "1"`;
 echo "4;E6X54908 --- $var";
 var=`./tgmconv -k10 -iCdu -oMW/m*K "1" | ../dec/dec -k10`;
@@ -671,3 +671,8 @@ var=`./tgmconv -k10 -i6^Olz -orad*m2/mol "1" | ../dec/dec -k10`;
 echo "10.0988845836 --- $var";
 var=`./tgmconv -k10 -o5^Olz -irad*m2/mol "1"`;
 echo "1;23136773 --- $var";
+
+var=`./tgmconv -ek10 -i23_Mz -okg "8;9X865" | ../dec/dec -ek10`;
+echo "-->1.66057e-27 --- $var";
+var=`./tgmconv -k10 -o23_Mz -ikg "1;7014e-21"`;
+echo "8;9X865 --- $var";

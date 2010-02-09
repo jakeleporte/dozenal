@@ -5,22 +5,12 @@
 # for His mercy.
 
 cd doz;
-make;
-make doc;
-make install;
+make uninstall;
 cd ../dec;
-make;
-make doc;
-make install;
+make uninstall;
 cd ../dozdc;
-make;
-make doc;
-make install;
+make uninstall;
 cd ../tgmconv;
-make;
-make doc;
-make install;
-cd ../dozword;
-make;
-make doc;
-make install;
+make uninstall;
+cd ../dozwrod;
+make uninstall;
