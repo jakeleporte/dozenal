@@ -1,3 +1,4 @@
+#!/bin/bash
 # +AMDG
 # This document was begun on 7 February 2010, Sexagesima
 # Sunday, and it is humbly dedicated to the Immaculate Heart
