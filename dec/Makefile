@@ -21,3 +21,15 @@ dec.o : conv.o conv.h dec.c
 
 doc : dec.1
 	rman -fHTML dec.1 > dec_man.html
+
+prefix = /usr/local
+bindir = /usr/local/bin
+mandir = /usr/local/share/man/man1
+
+install : dec dec.1
+	cp ./dec $(bindir)
+	cp ./dec.1 $(mandir)
+
+uninstall :
+	rm $(bindir)/dec
+	rm $(mandir)/dec.1

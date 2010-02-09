@@ -21,3 +21,15 @@ doz.o : conv.o conv.h doz.c
 
 doc : doz.1
 	rman -fHTML doz.1 > doz_man.html
+
+prefix = /usr/local
+bindir = /usr/local/bin
+mandir = /usr/local/share/man/man1
+
+install : doz doz.1
+	cp ./doz $(bindir)
+	cp ./doz.1 $(mandir)
+
+uninstall :
+	rm $(bindir)/doz
+	rm $(mandir)/doz.1

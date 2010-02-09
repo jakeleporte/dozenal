@@ -20,3 +20,15 @@ conv.o : conv.c conv.h
 
 doc : tgmconv.1
 	rman -fHTML tgmconv.1 > tgmconv_man.html
+
+prefix = /usr/local
+bindir = /usr/local/bin
+mandir = /usr/local/share/man/man1
+
+install : tgmconv tgmconv.1
+	cp ./tgmconv $(bindir)
+	cp ./tgmconv.1 $(mandir)
+
+uninstall :
+	rm $(bindir)/tgmconv
+	rm $(mandir)/tgmconv.1
