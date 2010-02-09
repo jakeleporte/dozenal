@@ -13,7 +13,7 @@
 #include <string.h>
 
 char error(int argc);
-char printwords(int numlength, char *number);
+char printwords(char *number);
 char printnumword(char *number, char first);
 char printexp(int currplace);
 
@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
 		"WARRANTY, to the extent permitted by law.\n");
 		return 0;
 	}
-	printwords(strlen(*argv), *argv);
+	printwords(*argv);
 	printf("\n");
 
 	return 0;
@@ -123,13 +123,14 @@ char printexp(int currplace)
 
 /* print the words for the number */
 
-char printwords(int numlength, char *number)
+char printwords(char *number)
 {
-	int maxlength;
+	int maxlength, numlength;
 	int i;
 	char first = 1;
 
-	maxlength = numlength;
+	for (i=0; number[i] != ';' && number[i] != '\0'; ++i);
+	maxlength = numlength = i;
 	for (i=0; i <= maxlength; i++) {
 		printnumword(number+i,first);
 		first = 0;
