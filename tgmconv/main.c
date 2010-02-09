@@ -23,8 +23,8 @@ int main(int argc, char *argv[])
 {
 	char from[MAXLEN];
 	char to[MAXLEN];
-	char inp[MAXLEN];
-	char outp[MAXLEN];
+	char inp[MAXLEN] = " ";
+	char outp[MAXLEN] = " ";
 	char doznum[MAXLINE];
 	int places = 4;
 	char expnot = 0;
@@ -121,6 +121,11 @@ int main(int argc, char *argv[])
 				fprintf(stderr,"tgmconv:  illegal option \"%c\"\n",c);
 				break;
 			}
+	}
+	if (strcmp(inp," ") == 0) {
+		fprintf(stderr,"tgmconv:  input unit must be specified "
+		"on the command line with \"-i\"\n");
+		return 1;
 	}
 	if (argc >= 1) {
 		value = doztodec(*argv);

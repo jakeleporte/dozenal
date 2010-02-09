@@ -358,7 +358,8 @@ double domain(char *to, char *from)
 	double f = 1.0;
 	char done = 0;
 
-	f *= parse(to);
+	if (*to != ' ')
+		f *= parse(to);
 	f /= parse(from);
 	return f;
 }
