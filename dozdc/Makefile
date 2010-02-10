@@ -4,16 +4,16 @@
 # to the Immaculate Heart of Mary for their prayers, and to
 # the Sacred Heart of Jesus for His mercy.
 
-dozdc : main.o conv.h conv.o doz.o dec.o dozdc.h dozdc.o \
+dozdc : main.o conv.h conv.o doz.o dec.o dozdc.h \
 			getop.o stack.o stack.h vars.o vars.h
-	gcc -g -lm -o dozdc main.o conv.o doz.o dec.o dozdc.o \
+	gcc -g -lm -o dozdc main.o conv.o doz.o dec.o \
 	getop.o stack.o stack.h vars.o vars.h
 
-main.o : main.c conv.h conv.o doz.o dec.o dozdc.o dozdc.h \
+main.o : main.c conv.h conv.o doz.o dec.o dozdc.h \
 			conv.h stack.o stack.h vars.o vars.h
 	gcc -g -c main.c
 
-getop.o : getop.c conv.h conv.o doz.o dec.o dozdc.o dozdc.h \
+getop.o : getop.c conv.h conv.o doz.o dec.o dozdc.h \
 			stack.o stack.h vars.o vars.h
 	gcc -g -lm -c getop.c
 
