@@ -13,5 +13,5 @@ cd ../dozdc;
 make uninstall;
 cd ../tgmconv;
 make uninstall;
-cd ../dozwrod;
+cd ../dozword;
 make uninstall;

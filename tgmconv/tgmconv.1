@@ -37,21 +37,38 @@ maximum.
 Specifies what unit tgmconv will be receiving the quantity
 in.
 .IP "-o output unit"
-Specifies the unit that tgmconv should conver the entered
-quantity of the input unit into.
+Specifies the unit that tgmconv should convert the entered
+quantity of the input unit into.  Strictly necessary if the
+output unit is not TGM; not strictly necessary if it is TGM,
+unless you want the unit multiplied or divided by an
+exponent.
 .IP "quantity"
 Must be the final argument on the command line.  This is the
 number of input units that will be converted to output
 units.  Must be a dozenal number; tgmconv will interpret it
 as such regardless of the user's actual intent.
 .SH UNIT SYNTAX
-Compound units have a fairly tight but intuitive syntax.
-There is no need to specify exponents; any digit that's
-encountered will be treated as a positive exponent.  When
-units are being multiplied, a specific mention of this is
-necessary; a "*" character is probably easiest, though as a
-practical matter any character other than a dozenal
-character (0-9, A, B, T, X, E) or a '-' would work.
+TGM units have a simple syntax.  They are entered simply as
+is.  To multiply by an exponent, begin it with the desired
+exponent and a '^':  3^Gf for trinaGrafuts.  To divide it,
+use a '_' instead:  3_Gf for triniGrafuts.
+
+Strictly speaking, tgmconv doesn't handle compound TGM units
+at all, because it doesn't need to; there's a TGM unit for
+that, whatever it is.  Support for compound units will be
+added in later versions; for now, one must look up the
+necessary unit, if one does not know it.  (Of course, if
+it's the output unit, you don't need to specify it at all
+unless you want to.)
+
+For metric and imperial units, compound units have a fairly
+tight but intuitive syntax.  There is no need to specify
+exponents; any digit that's encountered will be treated as a
+positive exponent.  When units are being multiplied, a
+specific mention of this is necessary; a "*" character is
+probably easiest, though as a practical matter any character
+other than a dozenal character (0-9, A, B, T, X, E) or a '-'
+would work.
 
 As an example, the TGM unit of conductivity is the Eldu.
 The metric unit of conductivity is the Siemen-meter per
