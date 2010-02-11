@@ -147,7 +147,6 @@ int getunit(char *s, char *inp)
 
 	while (isdozdig(*(s++)))
 		continue;
-	--s;
 	if (*s == '\0') {
 		fprintf(stderr,"tgmconv:  no input unit specified;\n"
 		"Usage:  tgmconv -i input unit value\n");
@@ -155,7 +154,7 @@ int getunit(char *s, char *inp)
 	}
 	for (i=0; (inp[i] = s[i]) != '\0'; ++i);
 	inp[i] = '\0'; /* FIXME:  add bounds checking */
-	*s = '\0';
+	*(s-1) = '\0';
 	return 0;
 }
 
