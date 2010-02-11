@@ -19,12 +19,13 @@
 
 #define MAXLEN 20
 
+int getunit(char *s, char *inp);
+
 int main(int argc, char *argv[])
 {
-	char from[MAXLEN];
-	char to[MAXLEN];
 	char inp[MAXLEN] = " ";
 	char outp[MAXLEN] = " ";
+	char *fromunit;
 	char doznum[MAXLINE];
 	int places = 4;
 	char expnot = 0;
@@ -122,12 +123,14 @@ int main(int argc, char *argv[])
 				break;
 			}
 	}
-	if (strcmp(inp," ") == 0) {
+/*	if (strcmp(inp," ") == 0) {
 		fprintf(stderr,"tgmconv:  input unit must be specified "
 		"on the command line with \"-i\"\n");
 		return 1;
-	}
+	}*/
 	if (argc >= 1) {
+		if (*inp == ' ')
+			getunit(*argv, inp);
 		value = doztodec(*argv);
 		value = getanswer(outp,inp,value);
 		sprintf(doznum,"%.308f",value);
@@ -135,6 +138,24 @@ int main(int argc, char *argv[])
 		return 0;
 	}
 /*	while (getword(doznum,MAXLINE) != EOF);*/
+	return 0;
+}
+
+int getunit(char *s, char *inp)
+{
+	int i, n = 0;
+
+	while (isdozdig(*(s++)))
+		continue;
+	--s;
+	if (*s == '\0') {
+		fprintf(stderr,"tgmconv:  no input unit specified;\n"
+		"Usage:  tgmconv -i input unit value\n");
+		exit(1);
+	}
+	for (i=0; (inp[i] = s[i]) != '\0'; ++i);
+	inp[i] = '\0'; /* FIXME:  add bounds checking */
+	*s = '\0';
 	return 0;
 }
 
