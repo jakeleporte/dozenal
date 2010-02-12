@@ -239,19 +239,36 @@ the stack and assigned to it; ever after, when the variable name appears
 it pushes that value back onto the stack.  The variable cannot be assigned
 a new value. 
 <p> So, for example, a typical usage scenario might be such: 
-<dl>
-
-<dt>1
-3 / $result ($result == 1/3, or 0;4)</dt>
-<dd></dd>
-
-<dt>8 $result ^ = (prints 8 ^ 0;4, the cube
-root of 8,</dt>
-<dd>which is 2)" 
-<p> They really are that simple. </dd>
-</dl>
-
-<h2><a name='sect8' href='#toc8'>Other Commands</a></h2>
+<p>
+<b>1 3 / $result ($result == 1/3, or 0;4)</b> 
+<p> <b>8 $result ^ = (prints 8 ^ 0;4, the
+cube root of 8,</b> which is 2)" 
+<p> They really are that simple. 
+<h2><a name='sect8' href='#toc8'>Comments</a></h2>
+Comments
+are available, and are useful in particularly long or complex files that
+will be handed to dozdc for computation.  Because dozdc works by words,
+not be lines, comments are word-based.  Fortunately, the words can be as
+long as one wants.  It&rsquo;s important, however, to make sure that the comments
+contain no spaces, tabs, or newlines, or dozdc will misinterpret the text
+after the first one such as a command or number it needs to deal with. 
+<p>
+Comments are all proceeded with the &rsquo;#&rsquo; character, and include all characters
+following it in the same word.  So, in our above variable example, we might
+do the following: 
+<p> <b>1 3 / $result</b> 
+<p> <b>#_gives_us_exponent_for_cube_roots</b> 
+<p> <b>8
+$result ^ = </b> 
+<p> This will accomplish the same thing, but make it clear what
+"$result" is doing explicitly.  (Of course, one could just name the variable
+"$cuberoot" or something similar, but we&rsquo;re doing examples here.) 
+<p> One should
+be aware that blank lines in the input files will mess up the results,
+because of the way dozdc deals with words.  However, inserting a comment
+(a line consisting solely of &rsquo;#&rsquo;) rather than a blank line will preserve
+a correct result while still allowing the helpful whitespace. 
+<h2><a name='sect9' href='#toc9'>Other Commands</a></h2>
 
 <dl>
 
@@ -260,12 +277,12 @@ root of 8,</dt>
 the program.  &rsquo;Nuff said. </dd>
 </dl>
 
-<h2><a name='sect9' href='#toc9'>Bugs</a></h2>
+<h2><a name='sect10' href='#toc10'>Bugs</a></h2>
 None known at this time. 
-<h2><a name='sect10' href='#toc10'>Author</a></h2>
+<h2><a name='sect11' href='#toc11'>Author</a></h2>
 Donald P. Goodman
 III &lt;dgoodmaniii at gmail dot com&gt; 
-<h2><a name='sect11' href='#toc11'>See Also</a></h2>
+<h2><a name='sect12' href='#toc12'>See Also</a></h2>
 <a href='dec.1'><b>dec</b>(1)</a>
 , <a href='dozdc.1'><b>dozdc</b>(1)</a>
 , <a href='tgmconv.1'><b>tgmconv</b>(1)</a>
@@ -285,10 +302,11 @@ III &lt;dgoodmaniii at gmail dot com&gt;
 <li><a name='toc5' href='#sect5'>Operators</a></li>
 <li><a name='toc6' href='#sect6'>Constants</a></li>
 <li><a name='toc7' href='#sect7'>Variables</a></li>
-<li><a name='toc8' href='#sect8'>Other Commands</a></li>
-<li><a name='toc9' href='#sect9'>Bugs</a></li>
-<li><a name='toc10' href='#sect10'>Author</a></li>
-<li><a name='toc11' href='#sect11'>See Also</a></li>
+<li><a name='toc8' href='#sect8'>Comments</a></li>
+<li><a name='toc9' href='#sect9'>Other Commands</a></li>
+<li><a name='toc10' href='#sect10'>Bugs</a></li>
+<li><a name='toc11' href='#sect11'>Author</a></li>
+<li><a name='toc12' href='#sect12'>See Also</a></li>
 </ul>
 </body>
 </html>

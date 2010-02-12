@@ -53,7 +53,7 @@ int isdozdig(char c)
 	case '0': case '1': case '2': case '3': case '4': case
 	'5': case '6': case '7': case '8': case '9': case 'A':
 	case 'a': case 'B': case 'b': case 'X': case 'x': case
-	'E': case 'e': case 'T': case 't': case ';':
+	'E': case 'e': case 'T': case 't': case ';': case '-':
 		return 1;
 		break;
 	default:
