@@ -123,11 +123,6 @@ int main(int argc, char *argv[])
 				break;
 			}
 	}
-/*	if (strcmp(inp," ") == 0) {
-		fprintf(stderr,"tgmconv:  input unit must be specified "
-		"on the command line with \"-i\"\n");
-		return 1;
-	}*/
 	if (argc >= 1) {
 		if (*inp == ' ')
 			getunit(*argv, inp);

@@ -62,6 +62,8 @@ int getop(char *s)
 	for (i=0; i < (sizeof(ops)/sizeof(char *)); ++i)
 		if (!strcmp(s,ops[i]))
 			return i;
+	if (s[0] == '#')
+		return -3;
 	if (s[0] == '$') {
 		dealvar(s);
 		return -2;

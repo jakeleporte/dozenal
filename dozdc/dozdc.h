@@ -18,6 +18,7 @@
 #define OP 1
 
 /* define constants for the various operators */
+#define COMM -3 /* special; indicates a comment */
 #define VAR -2 /* special; to indicate a variable */
 #define ADD 0
 #define SUBTRACT 1

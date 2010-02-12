@@ -216,11 +216,43 @@ back onto the stack.  The variable cannot be assigned a new
 value.
 
 So, for example, a typical usage scenario might be such:
-.IP "1 3 / $result ($result == 1/3, or 0;4)"
-.IP "8 $result ^ = (prints 8 ^ 0;4, the cube root of 8,
+
+.B "1 3 / $result ($result == 1/3, or 0;4)"
+
+.B "8 $result ^ = (prints 8 ^ 0;4, the cube root of 8,
 which is 2)"
 
 They really are that simple.
+.SH COMMENTS
+Comments are available, and are useful in particularly long
+or complex files that will be handed to dozdc for
+computation.  Because dozdc works by words, not be lines,
+comments are word-based.  Fortunately, the words can be as
+long as one wants.  It's important, however, to make sure
+that the comments contain no spaces, tabs, or newlines, or
+dozdc will misinterpret the text after the first one such as
+a command or number it needs to deal with.
+
+Comments are all proceeded with the '#' character, and
+include all characters following it in the same word.  So,
+in our above variable example, we might do the following:
+
+.B "1 3 / $result
+
+.B #_gives_us_exponent_for_cube_roots
+
+.B "8 $result ^ = 
+
+This will accomplish the same thing, but make it clear what
+"$result" is doing explicitly.  (Of course, one could just
+name the variable "$cuberoot" or something similar, but
+we're doing examples here.)
+
+One should be aware that blank lines in the input files will
+mess up the results, because of the way dozdc deals with
+words.  However, inserting a comment (a line consisting
+solely of '#') rather than a blank line will preserve a
+correct result while still allowing the helpful whitespace.
 .SH OTHER COMMANDS
 .IP quit
 Quits the program.  'Nuff said.
