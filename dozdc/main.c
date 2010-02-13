@@ -17,6 +17,7 @@
 #include "conv.h"
 #include "dozdc.h"
 #include "stack.h"
+#include<float.h>
 
 int runcalc(int places, char expnot);
 double operate(int operator, int *places, char *print);
@@ -66,7 +67,7 @@ int main(int argc, char *argv[])
 				operate(ZENIPI,&places,&print);
 				break;
 			case 'v':
-				printf("dozdc v1.1\n");
+				printf("dozdc v1.2\n");
 				printf("Copyright (C) 2010  Donald P. Goodman III\n");
 				printf("License GPLv3+:  GNU GPL version 3 or "
 				"later <http://gnu.org/licenses/gpl.html>\n");
@@ -87,7 +88,7 @@ int main(int argc, char *argv[])
 		s[strlen(s)] = ' ';
 		while ((type = commandops(s,word)) != EOF)
 			answer = commandcalc(word, type, places, expnot);
-		sprintf(word,"%.*f",places,answer);
+		sprintf(word,"%.*f",DBL_MAX_10_EXP,answer);
 		doz(word,word,places,expnot);
 		clean();
 		return 0;
@@ -136,7 +137,7 @@ int runcalc(int places, char expnot)
 				answer = operate(operator,&places,&print);
 		}
 		if (print == PRINT) {
-			sprintf(s,"%.*f",places,answer);
+			sprintf(s,"%.*f",DBL_MAX_10_EXP,answer);
 			doz(s,s,places,expnot);
 			print = NOTPRINT;
 		}

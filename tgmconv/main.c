@@ -14,6 +14,7 @@
 #include<stdio.h>
 #include<string.h>
 #include<stdlib.h>
+#include<float.h>
 #include "tgmconv.h"
 #include "conv.h"
 
@@ -128,7 +129,7 @@ int main(int argc, char *argv[])
 			getunit(*argv, inp);
 		value = doztodec(*argv);
 		value = getanswer(outp,inp,value);
-		sprintf(doznum,"%.308f",value);
+		sprintf(doznum,"%.*f",DBL_MAX_10_EXP,value);
 		doz(doznum,doznum,places,expnot);
 		return 0;
 	}
