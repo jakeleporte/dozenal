@@ -72,10 +72,16 @@ int expnotate(char *s)
 
 	if (*s == '-')
 		zenspot = 2;
-	if (*(s+zenspot-1) == '0' && *(s+zenspot) == ';')
+	if (*(s+zenspot-1) == '0' && *(s+zenspot) == ';') {
+		if (zenspot == 2) {
+			memmove(s+1,s,strlen(s));
+			*s = '-';
+			++s;
+		}
 		negexp(s, zenspot);
-	else
+	} else {
 		posexp(s, zenspot);
+	}
 	return 0;
 }
 
