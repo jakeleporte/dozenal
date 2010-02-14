@@ -274,10 +274,10 @@ double operate(int operator, int *places, char *print)
 		push(log10(pop()) / log10(12));
 		break;
 	case FACTORIAL:
-		longtmp = (long)pop();
-		for (i=longtmp-1; i > 0; --i)
-			longtmp *= i;
-		push(longtmp);
+		tmp = floor(pop());
+		for (i=tmp-1.0; i > 1.0; --i)
+			tmp *= i;
+		push(tmp);
 		break;
 	case EULER:
 		push(exp(1.0));
