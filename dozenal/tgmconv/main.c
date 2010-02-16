@@ -26,13 +26,13 @@ int main(int argc, char *argv[])
 {
 	char inp[MAXLEN] = " ";
 	char outp[MAXLEN] = " ";
-	char *fromunit;
 	char doznum[MAXLINE];
 	int places = 4;
 	char expnot = 0;
 	double value = 0.001928;
 	int i = 0;
 	char c;
+	char nounit = 0;
 
 /* I know, bletcherous goto; but I need it to break out of
  * the loop/loop/switch when I hit an argument */
@@ -133,7 +133,16 @@ int main(int argc, char *argv[])
 		doz(doznum,doznum,places,expnot);
 		return 0;
 	}
-/*	while (getword(doznum,MAXLINE) != EOF);*/
+	while (getword(doznum,MAXLINE) != EOF) {
+		if (*inp == ' ' || nounit == 1) {
+			getunit(doznum, inp);
+			nounit = 1;
+		}
+		value = doztodec(doznum);
+		value = getanswer(outp,inp,value);
+		sprintf(doznum,"%.*f",DBL_MAX_10_EXP,value);
+		doz(doznum,doznum,places,expnot);
+	}
 	return 0;
 }
 

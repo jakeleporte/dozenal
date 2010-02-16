@@ -110,7 +110,7 @@ double commandcalc(char *word, int type, int places, char expnot)
 	} else if (type == OP) {
 		operator = getop(word);
 		if (operator == -1)
-			fprintf(stderr,"dozdc:  unknown operator %s\n",s);
+			fprintf(stderr,"dozdc:  unknown operator %s\n",word);
 		else
 			answer = operate(operator,&places,&print);
 	}
