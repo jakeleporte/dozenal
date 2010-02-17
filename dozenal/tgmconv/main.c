@@ -157,8 +157,8 @@ int getunit(char *s, char *inp)
 		"Usage:  tgmconv -i input unit value\n");
 		exit(1);
 	}
-	for (i=0; (inp[i] = s[i]) != '\0'; ++i);
-	inp[i] = '\0'; /* FIXME:  add bounds checking */
+	for (i=0; ((inp[i] = s[i]) != '\0') && i < MAXLEN; ++i);
+	inp[i] = '\0';
 	*(s-1) = '\0';
 	return 0;
 }

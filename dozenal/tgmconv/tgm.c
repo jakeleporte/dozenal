@@ -273,13 +273,15 @@ double docust(char *s)
 	return f;
 }
 
-/* handles each unit given to it by parse() */
+/* handles each unit given to it by parse(), getting the
+ * appropriate factor and handing it back to parse() */
 double dealunit(char *s, char funct)
 {
 	double f = 1.0;
 	double interf = 1.0;
 	int i = 0;
 	int exp = 1; /* possible exponent on unit */
+	char found = 0; /* if the unit is found; default no */
 
 	while (!isalpha(s[i]))
 		++i;
@@ -318,12 +320,19 @@ double dealunit(char *s, char funct)
 				f *= fundunits[i].factor;
 			else if (funct == '/')
 				f *= (1 / fundunits[i].factor);
+			found = 1;
 		}
+	}
+	if (found == 0) {
+		fprintf(stderr,"tgmconv:  couldn't find unit conversion "
+		"factor for unit %s\n",s);
+		exit(1);
 	}
 	return pow(f,exp);
 }
 
-/* deal with compound units */
+/* deal with compound units, splitting them into parts and
+ * handing the base unit to dealunit() */
 double parse(char *s)
 {
 	double f = 1.0;
