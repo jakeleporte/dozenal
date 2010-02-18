@@ -26,7 +26,7 @@ int main(int argc, char *argv[])
 {
 	char inp[MAXLEN] = " ";
 	char outp[MAXLEN] = " ";
-	char doznum[MAXLINE];
+	char doznum[MAXLINE] = "NUL";
 	int places = 4;
 	char expnot = 0;
 	double value = 0.001928;
@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
 				expnot = 1;
 				break;
 			case 'v':
-				printf("tgmconv v0.9\n");
+				printf("tgmconv v1.0\n");
 				printf("Copyright (C) 2010  Donald P. Goodman III\n");
 				printf("License GPLv3+:  GNU GPL version 3 or "
 				"later <http://gnu.org/licenses/gpl.html>\n");
@@ -165,7 +165,7 @@ int getunit(char *s, char *inp)
 
 int helpfunc(void)
 {
-	printf("tgmconv, v0.9.\n");
+	printf("tgmconv, v1.0.\n");
 	printf("Usage:  tgmconv -i input unit -o output unit quantity\n");
 	printf("Acceptable units:\n");
 	printf("TGM:\n");
@@ -273,14 +273,25 @@ int helpfunc(void)
 	printf("\tmol\n");
 	printf("Customary/Imperial:\n");
 	printf("\tft");
+	printf("\tyd");
 	printf("\tlb");
+	printf("\toz");
+	printf("\ttoni\n");
+	printf("\ttonc");
+	printf("\tcw");
+	printf("\tst");
+	printf("\tozt");
+	printf("\tlbt\n");
 	printf("\tgali");
 	printf("\tgalc");
-	printf("\tlbf\n");
+	printf("\tpti");
+	printf("\tptc");
+	printf("\tfl.oz\n");
+	printf("\tlbf");
 	printf("\tinHg");
 	printf("\tbtu");
 	printf("\thp");
-	printf("\tRPM");
+	printf("\tRPM\n");
 	printf("\tdeg\n");
 	printf("For more information, please see the man page, \n");
 	printf("or go to http://dozenal.sourceforge.net/ and see \n");

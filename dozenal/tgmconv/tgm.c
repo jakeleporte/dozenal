@@ -31,6 +31,7 @@ struct units {
 	"tgm","Tm",1.0,
 	"tgm","Gf",1.0,
 	"cust","ft",0.9700882959,
+	"cust","yd",2.9102648877,
 	"tgm","Mz",1.0,
 	"metric","g",25850.3556494,
 	"cust","lb",56.9902828681,
@@ -162,7 +163,10 @@ struct convs {
 	"oz","lb", 0.0625,
 	"toni","lb",2240.0,
 	"tonc","lb",2000.0,
+	"ozt","lb",0.0685714285,  /* troy ounce */
+	"lbt","lb",0.8228571427,  /* troy pound */
 	"cw","lb",112.0,
+	"st","lb",14.0,
 	"dyn","N",0.00001,
 	"Atz","Pm",35.0,
 	"atm","Pa",101325.0,
@@ -279,15 +283,16 @@ double dealunit(char *s, char funct)
 {
 	double f = 1.0;
 	double interf = 1.0;
-	int i = 0;
+	int i = 0; int j = 0;
 	int exp = 1; /* possible exponent on unit */
 	char found = 0; /* if the unit is found; default no */
+	char expon[MAXEXP] = " ";
 
 	while (!isalpha(s[i]))
 		++i;
 	while (isalpha(s[i]))
 		++i;
-	if (isdigit(s[i])) {
+	if (isdigit(s[i]) || s[i] == '-') {
 		exp = atoi(s+i);
 		s[i] = '\0';
 	}
