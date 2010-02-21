@@ -32,12 +32,14 @@ struct units {
 	"tgm","Tm",1.0,
 	"tgm","Gf",1.0,
 	"cust","ft",0.9700882959,
-	"cust","yd",2.9102648877,
-	"cust","fath",5.8205297754,
+	"cust","yd",0.3233627653,
+	"cust","fath",0.1616813826,
 	"metric","ha",0.000008742838,
 	"cust","acre",0.000021604024,
 	"tgm","Mz",1.0,
 	"metric","g",25850.3556494,
+	"metric","u",15567450715161917850347442231.0, /* atomic mass unit */
+	"metric","Da",15567450715161917850347442231.0, /* Daltons; same */
 	"metric","t",0.0258503556494,
 	"cust","lb",56.9902828681,
 	"tgm","Vl",1.0,
@@ -60,6 +62,8 @@ struct units {
 	"cust","inHg",0.85669,
 	"tgm","Wg",1.0,
 	"metric","J",74.9831954874,
+	"metric","eV",468008338006523247647.0,
+	"metric","erg",749831954.0,/* 74983195.0,*/
 	"cust","btu",0.0711051221,
 	"tgm","Pv",1.0,
 	"metric","W",431.9032060077,
@@ -154,13 +158,16 @@ struct convs {
 	double factor; /* what gets from unit to base */
 } convs[] = {
 	"day","s",86400.0,
+	"wk","s",604800.0,
 	"hr","s",3600.0,
 	"yr","s",31536000.0,
 	"yrlp","s",31622400.0,
 	"min","s",60.0,
 	"mi","ft",5280.0,
-	"yd","ft",3.0,
+	"nmi","m",1852.0,
 	"in","ft",0.083333333333,
+	"rod","ft",16.5,
+	"furl","ft",660.0,
 	"pti","gali",0.125,
 	"ptc","galc",0.125,
 	"cpi","gali",0.0625,
@@ -171,7 +178,8 @@ struct convs {
 	"tspc","galc",0.001302083333,
 	"qti","gali",0.25,
 	"qtc","galc",0.25,
-	"fl.oz","galc",0.00781250,
+	"flozc","galc",0.00781250,
+	"flozi","gali",0.00625,
 	"lbs","lb",1.0,
 	"oz","lb", 0.0625,
 	"toni","lb",2240.0,
@@ -185,6 +193,10 @@ struct convs {
 	"atm","Pa",101325.0,
 	"bar","Pa",100000.0,
 	"cal","J",4.1855,
+	"au","m",149597870691.0,
+	"ly","m",9460528400000000.0,
+	"mil","ft",0.0000833333333333,
+	"pc","m",30856802500000000.0,
 };
 
 /* expands composite units of all systems */
@@ -192,9 +204,10 @@ struct expand {
 	char *unit; /* the unit as given */
 	char *full; /* the unit expanded */
 } expanded[] = {
-	"rad","m*1/m",
-	"Bq","1/s",
+	"Bq","s-1",
 	"diopt","m-1",
+	"kn","nmi/hr", /* knot */
+	"slug","lbf*s2/ft", /* unit of mass */
 /*	"Vl","Gf/Tm",
 	"G","Gf/Tm2",
 	"Sf","Gf2",
