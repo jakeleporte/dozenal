@@ -28,12 +28,17 @@ struct units {
 } fundunits[] = {
 	"metric","s",0.1736111111,
 	"metric","m",0.2956829126,
+	"metric","ang",0.000000000029,  /* angstrom */
 	"tgm","Tm",1.0,
 	"tgm","Gf",1.0,
 	"cust","ft",0.9700882959,
 	"cust","yd",2.9102648877,
+	"cust","fath",5.8205297754,
+	"metric","ha",0.000008742838,
+	"cust","acre",0.000021604024,
 	"tgm","Mz",1.0,
 	"metric","g",25850.3556494,
+	"metric","t",0.0258503556494,
 	"cust","lb",56.9902828681,
 	"tgm","Vl",1.0,
 	"tgm","G",1.0,
@@ -150,12 +155,20 @@ struct convs {
 } convs[] = {
 	"day","s",86400.0,
 	"hr","s",3600.0,
+	"yr","s",31536000.0,
+	"yrlp","s",31622400.0,
 	"min","s",60.0,
 	"mi","ft",5280.0,
 	"yd","ft",3.0,
 	"in","ft",0.083333333333,
 	"pti","gali",0.125,
 	"ptc","galc",0.125,
+	"cpi","gali",0.0625,
+	"cpc","galc",0.0625,
+	"tbsi","gali",0.00390625,
+	"tbsc","galc",0.00390625,
+	"tspi","gali",0.001302083333,
+	"tspc","galc",0.001302083333,
 	"qti","gali",0.25,
 	"qtc","galc",0.25,
 	"fl.oz","galc",0.00781250,
@@ -180,8 +193,8 @@ struct expand {
 	char *full; /* the unit expanded */
 } expanded[] = {
 	"rad","m*1/m",
-	"diopt","1/m",
 	"Bq","1/s",
+	"diopt","m-1",
 /*	"Vl","Gf/Tm",
 	"G","Gf/Tm2",
 	"Sf","Gf2",
@@ -330,7 +343,7 @@ double dealunit(char *s, char funct)
 	}
 	if (found == 0) {
 		fprintf(stderr,"tgmconv:  couldn't find unit conversion "
-		"factor for unit %s\n",s);
+		"factor for unit\n");
 		exit(1);
 	}
 	return pow(f,exp);

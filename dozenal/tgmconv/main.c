@@ -292,7 +292,12 @@ int helpfunc(void)
 	printf("\tbtu");
 	printf("\thp");
 	printf("\tRPM\n");
-	printf("\tdeg\n");
+	printf("\tdeg");
+	printf("\tmin");
+	printf("\thr");
+	printf("\tday");
+	printf("\tyr\n");
+	printf("\tyrlp\n");
 	printf("For more information, please see the man page, \n");
 	printf("or go to http://dozenal.sourceforge.net/ and see \n");
 	printf("the documentation.\n");
