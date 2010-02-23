@@ -250,7 +250,12 @@ double dometric(char *s)
 	case 'P': f = pow(10,15); p++; break;
 	case 'T': f = pow(10,12); p++; break;
 	case 'G': f = pow(10,9); p++; break;
-	case 'M': f = pow(10,6); p++; break;
+	case 'M': 
+		if (s[1] == 'e') {
+			f = pow(10,6);
+			p += 2;
+		}
+		break;
 	case 'k': f = pow(10,3); p++; break;
 	case 'h': f = pow(10,2); p++; break;
 	case 'd':
