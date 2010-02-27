@@ -190,11 +190,8 @@ int dectodoz(char *doznum, double decnum)
 	*(doznum+i) = '\0';
 	reverse(doznum);
 	if (decnum > 0) {
-		if ((decnum - round(decnum)) >= 0 && decnum > DBL_EPSILON)
-			if (decnum > 0)
-				decnum -= DBL_MIN;
-			else
-				decnum += DBL_MIN;
+		if ((decnum - round(decnum)) >= 0)
+			decnum -= DBL_EPSILON;
 		*(doznum+(i++)) = ';';
 		for (i=i; i <= DBL_MAX_10_EXP; ++i) {
 			*(doznum+i) = dozenify((int)(decnum * 12));
