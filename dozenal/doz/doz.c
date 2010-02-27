@@ -190,7 +190,7 @@ int dectodoz(char *doznum, double decnum)
 	*(doznum+i) = '\0';
 	reverse(doznum);
 	if (decnum > 0) {
-		if ((decnum - round(decnum)) >= 0)
+		if ((decnum - round(decnum)) >= 0 && (round(decnum) > DBL_MIN))
 			decnum -= DBL_EPSILON;
 		*(doznum+(i++)) = ';';
 		for (i=i; i <= DBL_MAX_10_EXP; ++i) {
