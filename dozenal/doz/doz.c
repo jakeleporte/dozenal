@@ -1,5 +1,3 @@
-<<<<<<< HEAD:dozenal/doz/doz.c
-=======
 /* +AMDG */
 /* This program was begun on 2 January 2009, the ninth day
  * of Christmas, and it is humbly dedicated to the
