@@ -36,14 +36,14 @@ int doz(char *s, char *t, int places, int expnot)
 	size_t length;
 
 	decnum = atof(t);
-	if (decnum >= (DBL_MAX)) {
+	if (decnum > (DBL_MAX)) {
 		fprintf(stderr,"doz:  requested value too high; "
 		"reducing to highest possible value, %f\n",DBL_MAX);
-		decnum = DBL_MAX;
-	} else if (decnum <= -DBL_MAX) {
+		decnum = DBL_MAX-1;
+	} else if (decnum < -DBL_MAX) {
 		fprintf(stderr,"doz:  requested value too low; "
 		"increasing to lowest possible value, %f\n",-DBL_MAX);
-		decnum = DBL_MAX * -1;
+		decnum = -DBL_MAX+1;
 	}
 	dectodoz(s, decnum);
 	if (expnot == 1)
@@ -68,72 +68,69 @@ int doz(char *s, char *t, int places, int expnot)
 
 int expnotate(char *s)
 {
-	int i;
 	int zenspot = 1; /* ensures new zenimal point in right place */
 
 	if (*s == '-')
 		zenspot = 2;
-	if (*(s+zenspot-1) == '0' && *(s+zenspot) == ';') {
-		if (zenspot == 2) {
-			memmove(s+1,s,strlen(s));
-			*s = '-';
-			++s;
-		}
-		negexp(s, zenspot);
-	} else {
-		posexp(s, zenspot);
-	}
+	if (s[zenspot] == ';')
+		negexp(s,zenspot);
+	else
+		posexp(s,zenspot);
 	return 0;
 }
 
 int posexp(char *s, int zenspot)
 {
-	int i;
-	char origspot = 0; /* where zenimal is originally */
+	int i=0;
 	char zensuf[5]; /* to cat onto the string */
+	char *orig; /* pointer to original zenimal spot */
 
-	for (i=0; *(s+i) != ';' && *(s+i) != '\0'; ++i);
-	origspot = i;
-	if (origspot == (strlen(s))) {
-		*(s+origspot) = ';';
-		*(s+origspot+1) = '0';
-		*(s+origspot+2) = '\0';
+	orig = strchr(s,';');
+	if (orig == NULL) {
+		i = strlen(s) - zenspot;
+		s[strlen(s)+1] = '\0';
+		memmove(s+zenspot+1,s+zenspot,strlen(s+zenspot));
+		*(s+zenspot) = ';';
+	} else {
+		i = orig - s - zenspot;
+		s[strlen(s)+1] = '\0';
+		memmove(orig,orig+1,strlen(orig+1));
+		s[strlen(s)+1] = '\0';
+		memmove(s+zenspot+1,s+zenspot,strlen(s+zenspot));
+		*(s+zenspot) = ';';
 	}
-	for (i=origspot; *(s+i) != '\0'; ++i)
-		*(s+i) = *(s+i+1);
-	for (i=strlen(s); i >= zenspot; --i)
-		*(s+i) = *(s+i-1);
-	*(s+zenspot) = ';';
-	*(s+strlen(s)+1) = '\0';
-	*(s+strlen(s)) = 'e';
-	dectodoz(zensuf, origspot - zenspot);
+	strcat(s,"e");
+	dectodoz(zensuf,i);
 	strcat(s,zensuf);
 	return 0;
 }
 
 int negexp(char *s, int zenspot)
 {
-	int i, j = 0;
+	int i = 0;
 	int origspot = 0; /* where zenimal is originally */
 	char zensuf[5]; /* to cat onto the string */
+	char *orig; /* pointer to original zenimal point */
 
-	for (i=0; *(s+zenspot+1+i) == '0' && *(s+zenspot+1+i) != '\0'; ++i);
-	if (*(s+zenspot+1+i) == '\0') {
-		for (j=zenspot+1+i; j<(zenspot+1+i+10); ++j)
-			s[j] = '0';
-		s[j] = '\0';
+	orig = strchr(s,';'); /* can't be null, or would be posexp */
+	origspot = orig - s + 1;
+	if (s[zenspot-1] == '0') {
+		memmove(s+zenspot+1,s+zenspot,strlen(s+zenspot+1));
+		for (i=0;s[i]=='0'||s[i]==';'||s[i]=='-';++i); /* first non-zero */
+		if (*s == '-')
+			memmove(s+1,s+i,strlen(s+i));
+		else
+			memmove(s,s+i,strlen(s+i));
+		memmove(s+zenspot,s+zenspot-1,strlen(s+zenspot));
+		*(s+zenspot) = ';';
+	} else if (s[zenspot] == ';') {
+		origspot = 0;
+		i = 0;
+	} else { /* FFF */
+		for (i=0;s[i]=='0'||s[i]==';'||s[i]=='-';++i); /* first non-zero */
 	}
-	origspot = i = i + zenspot + 1;
-	j = 0;
-	*(s+(j++)) = *(s+(i++));
-	*(s+(j++)) = ';';
-	for (j=j,i=i; *(s+i) != '\0'; ++j,++i)
-		*(s+j) = *(s+i);
-	if (s[j] == ';')
-		s[j++] = '0';
-	*(s+(j++)) = 'e';
-	*(s+j) = '\0';
-	dectodoz(zensuf,zenspot - origspot);
+	strcat(s,"e");
+	dectodoz(zensuf,origspot-i);
 	strcat(s,zensuf);
 	return 0;
 }
@@ -190,8 +187,6 @@ int dectodoz(char *doznum, double decnum)
 	*(doznum+i) = '\0';
 	reverse(doznum);
 	if (decnum > 0) {
-		if ((decnum - round(decnum)) >= DBL_MIN)
-			decnum += DBL_EPSILON;
 		*(doznum+(i++)) = ';';
 		for (i=i; i <= DBL_MAX_10_EXP; ++i) {
 			*(doznum+i) = dozenify((int)(decnum * 12));
