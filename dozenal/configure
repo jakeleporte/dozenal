@@ -14,7 +14,7 @@ then
 	sed s/-lm\ /-lm\ -march=pentium4\ -msse\ -mfpmath=sse\ / < \
 	./tgmconv/Makefile.old > ./tgmconv/Makefile;
 else
-	mv ./doz/Makefile.old Makefile;
-	mv ./dozdc/Makefile.old Makefile;
-	mv ./tgmconv/Makefile.old Makefile;
+	mv ./doz/Makefile.old ./doz/Makefile;
+	mv ./dozdc/Makefile.old ./dozdc/Makefile;
+	mv ./tgmconv/Makefile.old ./tgmconv/Makefile;
 fi

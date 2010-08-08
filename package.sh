@@ -7,6 +7,6 @@
 
 tar -cvvf dozenal_v2.0_src.tar ./dozenal/dec ./dozenal/doz \
 ./dozenal/dozdc ./dozenal/tgmconv ./dozenal/dozword \
-./dozenal/install.sh ./dozenal/uninstall.sh;
+./dozenal/install.sh ./dozenal/uninstall.sh ./dozenal/configure;
 tar -f dozenal_v2.0_src.tar --wildcards --verbose --delete *.o ./dozenal/dozdc/dozdc ./dozenal/doz/doz ./dozenal/dec/dec ./dozenal/tgmconv/tgmconv ./dozenal/dozword/dozword;
 gzip dozenal_v2.0_src.tar;
