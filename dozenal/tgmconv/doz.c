@@ -189,8 +189,8 @@ int dectodoz(char *doznum, double decnum)
 	if (decnum > 0) {
 		*(doznum+(i++)) = ';';
 		for (i=i; i <= DBL_MAX_10_EXP; ++i) {
-			*(doznum+i) = dozenify((int)(decnum * 12));
 			decnum = modf(decnum*12,&partholder);
+			*(doznum+i) = dozenify(partholder);
 		}
 		*(doznum+i) = '\0';
 	}
