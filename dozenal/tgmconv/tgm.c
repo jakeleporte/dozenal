@@ -26,7 +26,7 @@ struct units {
 	char *unit; /* the unit, in short form */
 	double factor; /* the conversion factor to TGM */
 } fundunits[] = {
-	"metric","s",0.1736111111,
+	"metric","s",0.173611111111111,
 	"metric","m",0.2956829126,
 	"metric","ang",0.000000000029,  /* angstrom */
 	"tgm","Tm",1.0,
@@ -161,11 +161,11 @@ struct convs {
 	char *base; /* the base unit */
 	double factor; /* what gets from unit to base */
 } convs[] = {
-	"day","s",86400.0,
-	"wk","s",604800.0,
-	"hr","s",3600.0,
-	"yr","s",31536000.0,
-	"yrlp","s",31622400.0,
+	"day","Tm",497664.00000,
+	"wk","Tm",3483648.0,
+	"hr","Tm",20736.0,
+	"yr","Tm",181647360.0,
+	"yrlp","Tm",182145024.0,
 	"min","s",60.0,
 	"mi","ft",5280.0,
 	"nmi","m",1852.0,
