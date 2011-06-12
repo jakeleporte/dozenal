@@ -29,6 +29,8 @@ struct units {
 	"metric","s",0.173611111111111,
 	"metric","m",0.2956829126,
 	"metric","ang",0.000000000029,  /* angstrom */
+	"metric","au",0.00000000000197651818, /* astronomical units */
+	"metric","pc",0.0000000000000000095824223, /* parsecs */
 	"tgm","Tm",1.0,
 	"tgm","Gf",1.0,
 	"cust","ft",0.9700882959,
@@ -97,6 +99,7 @@ struct units {
 	"metric","S",0.0005689709314098,
 	"tgm","Ql",1.0,
 	"metric","C",0.0860628591502,
+	"metric","faraday",0.000000891978607,
 	"tgm","Kp",1.0,
 	"metric","F",0.0000987796755920,
 	"tgm","Mt",1.0,
@@ -193,11 +196,8 @@ struct convs {
 	"cw","lb",112.0,
 	"st","lb",14.0,
 	"dyn","N",0.00001,
-/*	"Atz","Pm",35.0,*/
-	"au","m",149597870691.0,
 	"ly","m",9460528400000000.0,
 	"mil","ft",0.0000833333333333,
-	"pc","m",30856802500000000.0,
 };
 
 /* expands composite units of all systems */
