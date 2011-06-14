@@ -199,5 +199,29 @@ echo "Pm to lbf/in2:"
 echo "0.4206939918 = `tgmconv -k10 -iPm -olbf/in2 1 | dec -k10`";
 echo "Pm to mmHg:"
 echo "21.76 = `./tgmconv -k2 -iPm -ommHg 1 | dec -k2`";
+echo "Pm to inHg:"
+echo "0.85669 = `./tgmconv -k5 -iPm -oinHg 1 | dec -k5`";
+echo "4^Pm to N/m2:"
+echo "60.1464841756e6 = `./tgmconv -k10 -i4^Pm -oN/m2 1 | dec -ek10`";
+echo "60.1464841756e6 = `./tgmconv -k10 -i4^Mg/Sf -oN/m2 1 | dec -ek10`";
+echo "4^Pm to ton/in2:"
+echo "3.8944243812 = `./tgmconv -k10 -i4^Pm -otoni/in2 1 | dec -k10`";
+echo "Atz to N/m2:"
+echo "1.015204e5 = `./tgmconv -k6 -iAtz -oN/m2 1 | dec -ek6`";
+echo "N/m2 to 4_Pm:"
+echo "7;19539173 = `./tgmconv -k8 -iN/m2 -o4_Pm 1`";
+echo "7;19539173 = `./tgmconv -k8 -iN/m2 -o4_Mg/Sf 1`";
+echo "lbf/in2 to Pm:"
+echo "2;4635E97X = `./tgmconv -k8 -ilbf/in2 -oPm 1`";
+echo "mmHg to 2_Pm:"
+echo "6;75 = `./tgmconv -k4 -immHg -o2_Pm 1`";
+echo "inHg to Pm:"
+echo "1;2011 = `./tgmconv -k5 -iinHg -oPm 1`";
+echo "MeN/m2 to 2^Pm:"
+echo "2;4891242X = `./tgmconv -k8 -iMeN/m2 -o2^Pm 1`";
+echo "toni/in2 to 3^Pm:"
+echo "3;0E8650E6 = `./tgmconv -k8 -itoni/in2 -o3^Pm 1`";
+echo "atm to Atz:"
+echo "0;EE88 = `./tgmconv -k8 -iatm -oAtz 1`";
 
 exit;

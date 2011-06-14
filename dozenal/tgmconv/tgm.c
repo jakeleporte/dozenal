@@ -191,8 +191,8 @@ struct convs {
 	"flozi","gali",0.00625,
 	"lbs","lb",1.0,
 	"oz","lb", 0.0625,
-	"toni","lb",2240.0,
-	"tonc","lb",2000.0,
+	"toni","lbf",2240.0,
+	"tonc","lbf",2000.0,
 	"ozt","lb",0.0685714285,  /* troy ounce */
 	"lbt","lb",0.8228571427,  /* troy pound */
 	"cw","lb",112.0,
