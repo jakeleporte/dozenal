@@ -223,5 +223,258 @@ echo "toni/in2 to 3^Pm:"
 echo "3;0E8650E6 = `./tgmconv -k8 -itoni/in2 -o3^Pm 1`";
 echo "atm to Atz:"
 echo "0;EE88 = `./tgmconv -k8 -iatm -oAtz 1`";
-
+echo "Wg to J:"
+echo "74.9831954874 = `./tgmconv -k10 -iWg -oJ 1 | dec -k10`";
+echo "74.9831954874 = `./tgmconv -k10 -iMg/Gf -oJ 1 | dec -k10`";
+echo "Wg to ft-lbf:"
+echo "55.3047707318 = `./tgmconv -k10 -iWg -oft*lbf 1 | dec -k10`";
+echo "55.3047707318 = `./tgmconv -k10 -iMg/Gf -oft*lbf 1 | dec -k10`";
+echo "Wg to cal(15):"
+echo "17.9149911570 = `./tgmconv -k10 -iWg -ocal 1 | dec -k10`";
+echo "Wg to btu:"
+echo "0.0711051221 = `./tgmconv -k10 -iWg -obtu 1 | dec -k10`";
+echo "5^Wg to kW*hr:"
+echo "5.1828384721 = `./tgmconv -k10 -i5^Wg -okW*hr 1 | dec -k10`";
+echo "ePl to J:"
+echo "1.3959244694e-16 = `./tgmconv -ek10 -iePl -oJ 1 | dec -ek10`";
+echo "J to 2_Wg:"
+echo "1;E0660616 = `./tgmconv -k8 -iJ -o2_Wg 1`";
+echo "ft*lbf to 2_Wg:"
+echo "2;72E352X2 = `./tgmconv -k8 -ift*lbf -o2_Wg 1`";
+echo "cal to 2_Wg:"
+echo "8;05571XXX = `./tgmconv -k8 -ical -o2_Wg 1`";
+echo "btu to Wg:"
+echo "12;0920688X = `./tgmconv -k8 -ibtu -oWg 1`";
+echo "kW*hr to 4^Wg:"
+echo "2;394X9107 = `./tgmconv -k8 -ikW*hr -o4^Wg 1`";
+echo "fJ to ePl:"
+echo "7;1E6X8767 = `./tgmconv -k8 -ifJ -oePl 1`";
+echo "Pv to J/s (W):"
+echo "431.9032060077 = `./tgmconv -k10 -oJ/s -iPv 1 | dec -k10`";
+echo "431.9032060077 = `./tgmconv -k10 -oJ/s -iWg/Tm 1 | dec -k10`";
+echo "Pv to ft*lbf/s:"
+echo "318.5554794154 = `./tgmconv -k10 -oft*lbf/s -iPv 1 | dec -k10`";
+echo "318.5554794154 = `./tgmconv -k10 -oft*lbf/s -iWg/Tm 1 | dec -k10`";
+echo "Pv to hp:"
+echo "0.5789587212 = `./tgmconv -k10 -ohp -iPv 1 | dec -k10`";
+echo "0.5789587212 = `./tgmconv -k10 -ohp -iWg/Tm 1 | dec -k10`";
+echo "W to 3_Pv:"
+echo "4;00167091 = `./tgmconv -k8 -o3_Pv -iW 1`";
+echo "4;00167091 = `./tgmconv -k8 -o3_Wg/Tm -iW 1`";
+echo "ft*lbf/s to 3_Pv:"
+echo "5;51161XX3 = `./tgmconv -k8 -o3_Pv -ift*lbf/s 1`";
+echo "5;51161XX3 = `./tgmconv -k8 -o3_Wg/Tm -ift*lbf/s 1`";
+echo "hp to Pv:"
+echo "1;88880371 = `./tgmconv -k8 -oPv -ihp 1`";
+echo "Vsd to N*s/m2:"
+echo "503.5733963715 = `./tgmconv -k10 -oN*s/m2 -iVsd 1 | dec -k10`";
+echo "503.5733963715 = `./tgmconv -k10 -oN*s/m2 -iMg*Tm/Sf 1 | dec -k10`";
+echo "Vsn to m2/s:"
+echo "0.50358749643 = `./tgmconv -k11 -om2/s -iVsn 1 | dec -k11`";
+echo "0.50358749643 = `./tgmconv -k11 -om2/s -iSf/Tm 1 | dec -k11`";
+echo "N*s/m2 to 3_Vsd:"
+echo "3;52171036 = `./tgmconv -k8 -o3_Vsd -iN*s/m2 1`";
+echo "3;52171036 = `./tgmconv -k8 -o3_Mg*Tm/Sf -iN*s/m2 1`";
+echo "m2/s to Vsn:"
+echo "1;E9E46851 = `./tgmconv -k8 -oVsn -im2/s 1`";
+echo "1;E9E46851 = `./tgmconv -k8 -oSf/Tm -im2/s 1`";
+echo "rGf (rad) to deg:"
+echo "57.2957795131 = `./tgmconv -k10 -irGf -odeg 1 | dec -k10`";
+echo "57.2957795131 = `./tgmconv -k10 -irad -odeg 1 | dec -k10`";
+echo "deg to 2_rGf (2_rad):"
+echo "2;61XE303X = `./tgmconv -k8 -ideg -o2_rGf 1`";
+echo "0;0261XE303X = `./tgmconv -k10 -ideg -orad 1`";
+echo "rVl to rad/s:"
+echo "5.76 = `./tgmconv -irVl -orad/s 1 | dec`";
+echo "5.76 = `./tgmconv -irGf/Tm -orad/s 1 | dec`";
+echo "rad/s to 1_rVl:"
+echo "2;1 = `./tgmconv -irad/s -orVl 1`";
+echo "2;1 = `./tgmconv -irad/s -orGf/Tm 1`";
+echo "rG to rad/s2:"
+echo "33.1776 = `./tgmconv -irG -orad/s2 1 | dec`";
+echo "33.1776 = `./tgmconv -irGf/Tm2 -orad/s2 1 | dec`";
+echo "rad/s2 to 2_rG:"
+echo "4;41 = `./tgmconv -irad/s2 -o2_rG 1`";
+echo "4;41 = `./tgmconv -irad/s2 -o2_rGf/Tm2 1`";
+echo "Fq to Hz:"
+echo "5.76 = `./tgmconv -iFq -oHz 1 | dec`";
+echo "Fq to RPM:"
+echo "345.6 = `./tgmconv -iFq -oRPM 1 | dec`";
+echo "3^Fq to kHz:"
+echo "9.95328 = `./tgmconv -k5 -i3^Fq -okHz 1 | dec -k5`";
+echo "Hz to 1_Fq:"
+echo "2;1 = `./tgmconv -iHz -o1_Fq 1`";
+echo "RPM to 3_Fq:"
+echo "5 = `./tgmconv -iRPM -o3_Fq 1`";
+echo "X kHz to 3^Fq:"
+echo "1;00814 = `./tgmconv -k5 -ikHz -o3^Fq X`";
+echo "RMv to kg*m2/s:"
+echo "13.0179158832 = `./tgmconv -k10 -iRMv -okg*m2/s 1 | dec -k10`";
+echo "13.0179158832 = `./tgmconv -k10 -iMv*rGf -okg*m2/s 1 | dec -k10`";
+echo "kg*m2/s to 2_RMv:"
+echo "E;08X6E6E6 = `./tgmconv -k8 -ikg*m2/s -o2_RMv 1`";
+echo "RMg to N*m:"
+echo "74.9831954874 = `./tgmconv -k10 -iRMg -oN*m 1 | dec -k10`";
+echo "74.9831954874 = `./tgmconv -k10 -iMg*rGf -oN*m 1 | dec -k10`";
+echo "N*m to 2_RMg:"
+echo "1;E0660616 = `./tgmconv -k8 -iN*m -o2_RMg 1`";
+echo "1;E0660616 = `./tgmconv -k8 -iN*m -o2_Mg*rGf 1`";
+echo "QMz to kg*m2:"
+echo "2.2600548408 = `./tgmconv -k10 -iQMz -okg*m2 1 | dec -k10`";
+echo "2.2600548408 = `./tgmconv -k10 -iRMg/rG -okg*m2 1 | dec -k10`";
+echo "kg*m2 to 1_QMz:"
+echo "5;386EE970 = `./tgmconv -k8 -ikg*m2 -o1_QMz 1`";
+echo "5;386EE970 = `./tgmconv -k8 -ikg*m2 -o1_RMg/rG 1`";
+echo "Kr to amp:"
+echo "0.4957220687 = `./tgmconv -k10 -iKr -oA 1 | dec -k10`";
+echo "5_Kr to uA:"
+echo "1.9921958137 = `./tgmconv -k10 -i5_Kr -ouA 1 | dec -k10`";
+echo "4^Kr to kA:"
+echo "10.2792928167 = `./tgmconv -k10 -i4^Kr -okA 1 | dec -k10`";
+echo "A to Kr:"
+echo "2;0259X834 = `./tgmconv -k8 -iA -oKr 1`";
+echo "uA to 6_Kr:"
+echo "6;03474748 = `./tgmconv -k8 -iuA -o6_Kr 1`";
+echo "kA to 3^Kr:"
+echo "1;2013142X = `./tgmconv -k8 -ikA -o3^Kr 1`";
+echo "Kn to At:"
+echo "0.4957220687 = `./tgmconv -k10 -oAt -iKn 1 | dec -k10`";
+echo "At to Kn:"
+echo "2;0259X834 = `./tgmconv -k8 -iAt -oKn 1`";
+echo "Pl to V:"
+echo "871.2607996978 = `./tgmconv -k10 -iPl -oV 1 | dec -k10`";
+echo "1^Pl to kV:"
+echo "10.4551295964 = `./tgmconv -k10 -i1^Pl -okV 1 | dec -k10`";
+echo "2^Pl to kV:"
+echo "125.4615551565 = `./tgmconv -k10 -i2^Pl -okV 1 | dec -k10`";
+echo "1_Pl to V:"
+echo "72.6050666415 = `./tgmconv -k10 -i1_Pl -oV 1 | dec -k10`";
+echo "2_Pl to V:"
+echo "6.0504222201 = `./tgmconv -k10 -i2_Pl -oV 1 | dec -k10`";
+echo "3_Pl to V:"
+echo "0.5042018517 = `./tgmconv -k10 -i3_Pl -oV 1 | dec -k10`";
+echo "6_Pl to mV:"
+echo "0.2917834790 = `./tgmconv -k10 -i6_Pl -omV 1 | dec -k10`";
+echo "8_Pl to uV:"
+echo "2.0262741596 = `./tgmconv -k10 -i8_Pl -ouV 1 | dec -k10`";
+echo "Og to Ohm:"
+echo "1757.55903297 = `./tgmconv -k8 -iOg -oOhm 1 | dec -k8`";
+echo "1757.55903297 = `./tgmconv -k8 -iPl/Kr -oOhm 1 | dec -k8`";
+echo "3^Og to MeOhm:"
+echo "3.0370620090 = `./tgmconv -k10 -i3^Og -oMeOhm 1 | dec -k10`";
+echo "3.0370620090 = `./tgmconv -k10 -i3^Pl/Kr -oMeOhm 1 | dec -k10`";
+echo "3_Og to Ohm:"
+echo "1.0171059219 = `./tgmconv -k10 -i3_Og -oOhm 1 | dec -k10`";
+echo "kOhm to 1_Og:"
+echo "6;9E222121 = `./tgmconv -k8 -ikOhm -o1_Og 1`";
+echo "6;9E222121 = `./tgmconv -k8 -ikOhm -o1_Pl/Kr 1`";
+echo "MeOhm to 2^Og:"
+echo "3;E4E7992X = `./tgmconv -k8 -iMeOhm -o2^Og 1`";
+echo "Ohm to 3_Og:"
+echo "0;E96E3105 = `./tgmconv -k8 -iOhm -o3_Og 1`";
+echo "Go to uMho:"
+echo "568.9709314098 = `./tgmconv -k10 -iGo -ouMho 1 | dec -k10`";
+echo "568.9709314098 = `./tgmconv -k10 -iKr/Pl -ouS 1 | dec -k10`";
+echo "3^Go to Mho:"
+echo "0.9831817695 = `./tgmconv -k10 -i3^Go -oMho 1 | dec -k10`";
+echo "0.9831817695 = `./tgmconv -k10 -i3^Kr/Pl -oS 1 | dec -k10`";
+echo "mMho to Go:"
+echo "1;91108E1X = `./tgmconv -k8 -imMho -oGo 1`";
+echo "1;91108E1X = `./tgmconv -k8 -imS -oKr/Pl 1`";
+echo "Mho to 3^Go:"
+echo "1;02568601 = `./tgmconv -k8 -iMho -o3^Go 1`";
+echo "1;02568601 = `./tgmconv -k8 -iS -o3^Kr/Pl 1`";
+echo "Quel to mC:"
+echo "86.0628591502 = `./tgmconv -k10 -iQl -omC 1 | dec -k10`";
+echo "86.0628591502 = `./tgmconv -k10 -iKr*Tm -omC 1 | dec -k10`";
+echo "1^Ql to C:"
+echo "1.0327543098 = `./tgmconv -k10 -i1^Ql -oC 1 | dec -k10`";
+echo "1.0327543098 = `./tgmconv -k10 -i1^Kr*Tm -oC 1 | dec -k10`";
+echo "mC to 2_Ql:"
+echo "1;80E34748 = `./tgmconv -k8 -imC -o2_Ql 1`";
+echo "1;80E34748 = `./tgmconv -k8 -imC -o2_Kr*Tm 1`";
+echo "C to 1^Ql:"
+echo "0;E7524207 = `./tgmconv -k8 -iC -o1^Ql 1`";
+echo "0;E7524207 = `./tgmconv -k8 -iC -o1^Kr*Tm 1`";
+echo "Kp to uF:"
+echo "98.7796755920 = `./tgmconv -k10 -iKp -ouF 1 | dec -k10`";
+echo "98.7796755920 = `./tgmconv -k10 -iQl/Pl -ouF 1 | dec -k10`";
+echo "1_Kp to uF:"
+echo "8.2316396327 = `./tgmconv -k10 -i1_Kp -ouF 1 | dec -k10`";
+echo "8.2316396327 = `./tgmconv -k10 -i1_Ql/Pl -ouF 1 | dec -k10`";
+echo "5_Kp to nF:"
+echo "0.3969733619 = `./tgmconv -k10 -i5_Kp -onF 1 | dec -k10`";
+echo "0.3969733619 = `./tgmconv -k10 -i5_Ql/Pl -onF 1 | dec -k10`";
+echo "8_Kp to pF:"
+echo "0.2297299548 = `./tgmconv -k10 -i8_Kp -opF 1 | dec -k10`";
+echo "0.2297299548 = `./tgmconv -k10 -i8_Ql/Pl -opF 1 | dec -k10`";
+echo "F to 3^Kp:"
+echo "5;X3765921 = `./tgmconv -k8 -iF -o3^Kp 1`";
+echo "5;X3765921 = `./tgmconv -k8 -iF -o3^Ql/Pl 1`";
+echo "uF to 2_Kp:"
+echo "1;55E088XE = `./tgmconv -k8 -iuF -o2_Kp 1`";
+echo "1;55E088XE = `./tgmconv -k8 -iuF -o2_Ql/Pl 1`";
+echo "nF to 5_Kp:"
+echo "2;628E2XEX = `./tgmconv -k8 -inF -o5_Kp 1`";
+echo "2;628E2XEX = `./tgmconv -k8 -inF -o5_Ql/Pl 1`";
+echo "pF to 8_Kp:"
+echo "4;429X5EE8 = `./tgmconv -k8 -ipF -o8_Kp 1`";
+echo "4;429X5EE8 = `./tgmconv -k8 -ipF -o8_Ql/Pl 1`";
+echo "Mt to uF/m:"
+echo "334.0729930165 = `./tgmconv -k10 -iMt -ouF/m 1 | dec -k10`";
+echo "334.0729930165 = `./tgmconv -k10 -iMb*Vv-1 -ouF/m 1 | dec -k10`";
+echo "uF/m to 3_Mt:"
+echo "5;20X15093 = `./tgmconv -k8 -o3_Mt -iuF/m 1`";
+echo "5;20X15093 = `./tgmconv -k8 -o3_Mb*Vv-1 -iuF/m 1`";
+echo "Fm to Wb:"
+echo "151.2605555031 = `./tgmconv -k10 -iFm -oWb 1 | dec -k10`";
+echo "151.2605555031 = `./tgmconv -k10 -iMb*Kr*Gf -oWb 1 | dec -k10`";
+echo "6_Fm to uWb:"
+echo "50.6568539895 = `./tgmconv -k10 -i6_Fm -ouWb 1 | dec -k10`";
+echo "50.6568539895 = `./tgmconv -k10 -i6_Mb*Kr*Gf -ouWb 1 | dec -k10`";
+echo "Wb to 2_Fm:"
+echo "0;E5107E98 = `./tgmconv -k8 -iWb -o2_Fm 1`";
+echo "0;E5107E98 = `./tgmconv -k8 -iWb -o2_Mb*Kr*Gf 1`";
+echo "100 uWb to 6_Fm:"
+echo "1;E8322E0E = `./tgmconv -k8 -iuWb -o6_Fm 84`";
+echo "1;E8322E0E = `./tgmconv -k8 -iuWb -o6_Mb*Kr*Gf 84`";
+echo "Fz to T:"
+echo "1730.1080862416 = `./tgmconv -k10 -iFz -oT 1 | dec -k10`";
+echo "1730.1080862416 = `./tgmconv -k10 -iFm/Sf -oT 1 | dec -k10`";
+echo "3_Fz to T:"
+echo "1.0012199573 = `./tgmconv -k10 -i3_Fz -oT 1 | dec -k10`";
+echo "1.0012199573 = `./tgmconv -k10 -i3_Fm/Sf -oT 1 | dec -k10`";
+echo "8_Fz to uT:"
+echo "4.0236784550 = `./tgmconv -k10 -i8_Fz -ouT 1 | dec -k10`";
+echo "4.0236784550 = `./tgmconv -k10 -i8_Fm/Sf -ouT 1 | dec -k10`";
+echo "T to 3_Fz:"
+echo "0;EE9X8980 = `./tgmconv -k8 -iT -o3_Fz 1`";
+echo "0;EE9X8980 = `./tgmconv -k8 -iWb/m2 -o3_Fm/Gf2 1`";
+echo "mT to 6_Fz:"
+echo "1;88641939 = `./tgmconv -k8 -imT -o6_Fz 1`";
+echo "uT to 9_Fz:";
+echo "2;E955E053 = `./tgmconv -k8 -iuT -o9_Fz 1`";
+echo "2;E955E053 = `./tgmconv -k8 -iuT -o9_Fm/Sf 1`";
+echo "Gn to H:"
+echo "305.1317765583 = `./tgmconv -k10 -iGn -oH 1 | dec -k10`";
+echo "305.1317765583 = `./tgmconv -k10 -iMb*Gf -oH 1 | dec -k10`";
+echo "6_Gn to mH:"
+echo "0.1021880146 = `./tgmconv -k10 -i6_Gn -omH 1 | dec -k10`";
+echo "0.1021880146 = `./tgmconv -k10 -i6_Mb*Gf -omH 1 | dec -k10`";
+echo "H to 3_Gn:"
+echo "5;7E5X7271 = `./tgmconv -k8 -iH -o3_Gn 1`";
+echo "5;7E5X7271 = `./tgmconv -k8 -iH -o3_Mb*Gf 1`";
+echo "mH to 6_Gn:"
+echo "9;95200E47 = `./tgmconv -k8 -imH -o6_Gn 1`";
+echo "9;95200E47 = `./tgmconv -k8 -imH -o6_Mb*Gf 1`";
+echo "Lk to At/Wb:"
+echo "0.0032772725649 = `./tgmconv -k13 -iLk -oAt/Wb 1 | dec -k13`";
+echo "0.0032772725649 = `./tgmconv -k13 -iKn/Fm -oAt/Wb 1 | dec -k13`";
+echo "At/Wb to 2^Lk:"
+echo "2;1516E863 = `./tgmconv -k8 -iAt/Wb -o2^Lk 1`";
+echo "2;1516E863 = `./tgmconv -k8 -iAt/Wb -o2^Kn/Fm 1`";
+echo "Mb to H/m:"
+echo "1031.9560704 = `./tgmconv -k7 -iMb -oH/m 1 | dec -k7`";
+echo "H/m to 3_Mb:"
+echo "1;811628 = `./tgmconv -k8 -iH/m -o3_Mb 1`";
 exit;
