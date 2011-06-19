@@ -41,10 +41,14 @@ int main(int argc, char *argv[])
 				} else if (*(argv+1) == NULL) {
 					fprintf(stderr,"doz:  invalid precision quantity\n");
 					exit(1);
-				} else if (isdigit(*(argv+1)[0])) {
+				} else if (isdozdig(*(argv+1)[0])) {
 					places = dozprecis(*(argv+1));
 					--argc, ++argv;
 				} else {
+					fprintf(stderr,"doz:  invalid precision quantity\n");
+					exit(1);
+				}
+				if (places < 0) {
 					fprintf(stderr,"doz:  invalid precision quantity\n");
 					exit(1);
 				}
