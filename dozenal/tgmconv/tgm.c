@@ -96,9 +96,9 @@ struct units {
 	"tgm","Pl",1.0,
 	"metric","V",871.2607996978,
 	"tgm","Og",1.0,
-	"metric","Ohm",1757.55903297,
+	"metric","ohm",1757.55903297,
 	"tgm", "Go",1.0,
-	"metric","Mho",0.0005689709314098,
+	"metric","mho",0.0005689709314098,
 	"metric","S",0.0005689709314098,
 	"tgm","Ql",1.0,
 	"metric","C",0.0860628591502,
@@ -129,8 +129,8 @@ struct units {
 	"tgm","Cdu",1.0,
 	"tgm","Tgr",1.0,
 	"tgm","Wsp",1.0,
-	"tgm","Flo",1.0,
-/* FIXME:  Zd goes here, when I figure out how to parse it */
+	"tgm","Fl",1.0,
+/* FIXME:  here's the Zd, when I figure out how to parse it */
 	"tgm","Vsp",1.0,
 	"tgm","Ag",1.0,
 	"tgm","RQl",1.0,

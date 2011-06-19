@@ -60,7 +60,7 @@ int main(int argc, char *argv[])
 				return 0;
 				break;
 			case 'k':
-				if (isdigit(*++argv[0])) {
+				if (isdozdig(*++argv[0])) {
 					places = dozprecis(argv[0]);
 					goto startopt;
 				} else if (*(argv+1) == NULL) {
@@ -267,8 +267,8 @@ int helpfunc(void)
 	printf("\trad");
 	printf("\tA");
 	printf("\tV");
-	printf("\tOhm");
-	printf("\tMho\n");
+	printf("\tohm");
+	printf("\tmho\n");
 	printf("\tS");
 	printf("\tC");
 	printf("\tF");

@@ -138,18 +138,20 @@ int negexp(char *s, int zenspot)
 int dozprecis(char *s)
 {
 	int i;
+	int precis;
 
 	if (s == NULL)
 		return -1;
 	for (i=0; i <= strlen(s) - 1; ++i)
-		if (!isdigit(*(s+i)))
+		if (!isdozdig(*(s+i)))
 			return -1;
-	if (atoi(s) > DBL_MAX_10_EXP) {
+	precis = (int)doztodec(s);
+	if (precis > DBL_MAX_10_EXP) {
 		fprintf(stderr,"doz:  requested precision too high; "
 			"truncating to maximum %d\n",DBL_MAX_10_EXP);
 		return DBL_MAX_10_EXP;
 	}
-	return atoi(s);
+	return precis;
 }
 
 char dozenify(char num)

@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
 			case '.':
 				break;
 			case 'k':
-				if (isdigit(*++argv[0])) {
+				if (isdozdig(*++argv[0])) {
 					places = dozprecis(argv[0]);
 				} else if (*(argv+1) == NULL) {
 					fprintf(stderr,"doz:  invalid precision quantity\n");
