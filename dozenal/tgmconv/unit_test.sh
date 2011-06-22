@@ -288,8 +288,8 @@ echo "rVl to rad/s:"
 echo "5.76 = `./tgmconv -irVl -orad/s 1 | dec`";
 echo "5.76 = `./tgmconv -irGf/Tm -orad/s 1 | dec`";
 echo "rad/s to 1_rVl:"
-echo "2;1 = `./tgmconv -irad/s -orVl 1`";
-echo "2;1 = `./tgmconv -irad/s -orGf/Tm 1`";
+echo "2;1 = `./tgmconv -irad/s -o1_rVl 1`";
+echo "2;1 = `./tgmconv -irad/s -o1_rGf/Tm 1`";
 echo "rG to rad/s2:"
 echo "33.1776 = `./tgmconv -irG -orad/s2 1 | dec`";
 echo "33.1776 = `./tgmconv -irGf/Tm2 -orad/s2 1 | dec`";
@@ -578,7 +578,7 @@ echo "2;488E980X = `./tgmconv -k8 -ikJ/kg -o2^Wsp 1`";
 echo "2;488E980X = `./tgmconv -k8 -ikJ/kg -o2^Wg/Mz 1`";
 echo "kJ/g to 5^Wsp:"
 echo "1;476107X1 = `./tgmconv -k8 -ikJ/g -o5^Wsp 1`";
-echo "1;476107X1 = `./tgmconv -k8 -ikJ/g -o6^Wg/Mz 1`";
+echo "1;476107X1 = `./tgmconv -k8 -ikJ/g -o5^Wg/Mz 1`";
 echo "Fl to m3/s:"
 echo "0.1489022177 = `./tgmconv -kX -iFl -om3/s 1 | dec -k10`";
 echo "0.1489022177 = `./tgmconv -kX -iVm/Tm -om3/s 1 | dec -k10`";
