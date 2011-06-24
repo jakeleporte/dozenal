@@ -866,5 +866,9 @@ echo "3.7e10 = `./tgmconv -ek8 -iCi -os-1 1 | dec -ek8`";
 echo "37 = `./tgmconv -iCi -oGBq 1 | dec`";
 echo "3.7 = `./tgmconv -imCi -oGBq 84 | dec`";
 echo "2.7e-11 = `./tgmconv -e -iBq -oCi 1 | dec -e`";
+echo "1;2E330765e9 = `./tgmconv -ek8 -iCi -oTm-1 1`";
+echo "1;2E330765e9 = `doz 3.7e10 | ./tgmconv -iBq -oTm-1 -ek8`";
+echo "1 = `./tgmconv -iTm-1 -oCi \"1;2E330765e9\"`";
+echo "3.7e10 = `./tgmconv -ek8 -iTm-1 -oBq \"1;2E330765e9\" | dec -ek8`";
 
 exit;
