@@ -27,6 +27,8 @@ struct units {
 	double factor; /* the conversion factor to TGM */
 } fundunits[] = {
 	"metric","s",0.173611111111111,
+	"metric","Bq",5.76,
+	"metric","Ci",0.00000000015567567567567567567567567567,
 	"metric","m",0.2956829126,
 	"metric","ang",0.000000000029,  /* angstrom */
 	"metric","au",0.00000000000197651818, /* astronomical units */
@@ -213,14 +215,9 @@ struct expand {
 	char *unit; /* the unit as given */
 	char *full; /* the unit expanded */
 } expanded[] = {
-	"Bq","s-1",
 	"diopt","m-1",
 	"kn","nmi/hr", /* knot */
 	"slug","lbf*s2/ft", /* unit of mass */
-/*	"Vl","Gf/Tm",
-	"G","Gf/Tm2",
-	"Sf","Gf2",
-	"Vm","Gf3",*/
 };
 
 /* by Lars Wirzenius at stackoverflow.com; public domain */

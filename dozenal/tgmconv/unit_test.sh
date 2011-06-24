@@ -861,5 +861,10 @@ echo "3;66E13886 = `./tgmconv -k8 -irad*mm2/mol -o1_rGf*Vlz/Gf 1`";
 echo "rad*m2/mol to 5^Olz:"
 echo "1;23136773 = `./tgmconv -k8 -irad*m2/mol -o5^Olz 1`";
 echo "1;23136773 = `./tgmconv -k8 -irad*m2/mol -o5^rGf*Vlz/Gf 1`";
+echo "Bq and Ci:"
+echo "3.7e10 = `./tgmconv -ek8 -iCi -os-1 1 | dec -ek8`";
+echo "37 = `./tgmconv -iCi -oGBq 1 | dec`";
+echo "3.7 = `./tgmconv -imCi -oGBq 84 | dec`";
+echo "2.7e-11 = `./tgmconv -e -iBq -oCi 1 | dec -e`";
 
 exit;
