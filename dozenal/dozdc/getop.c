@@ -257,18 +257,24 @@ double operate(int operator, int *places, char *print)
 			push(sinh( M_PI * (pop() / 180.0) ) );
 		else if (angletype == 0)
 			push(sinh(pop()));
+		else if (angletype == 2)
+			push(sinh(pop() * M_PI));
 		break;
 	case COSH:
 		if (angletype == 1)
 			push(cosh( M_PI * (pop() / 180.0) ) );
 		else if (angletype == 0)
 			push(cosh(pop()));
+		else if (angletype == 2)
+			push(cosh(pop() * M_PI));
 		break;
 	case TANH:
 		if (angletype == 1)
 			push(tanh( M_PI * (pop() / 180.0) ) );
 		else if (angletype == 0)
 			push(tanh(pop()));
+		else if (angletype == 2)
+			push(tanh(pop() * M_PI));
 		break;
 	case LOG:
 		push(log10(pop()) / log10(12));
