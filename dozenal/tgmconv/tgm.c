@@ -253,9 +253,24 @@ double dometric(char *s)
 	switch(s[0]) {
 	case 'Y': f = pow(10,24); p++; break;
 	case 'Z': f = pow(10,21); p++; break;
-	case 'E': f = pow(10,18); p++; break;
-	case 'P': f = pow(10,15); p++; break;
-	case 'T': f = pow(10,12); p++; break;
+	case 'E':
+		if (s[1] == 'x') {
+			f = pow(10,18);
+			p += 2;
+		}
+		break;
+	case 'P':
+		if (s[1] == 'e') {
+			f = pow(10,15);
+			p += 2;
+		}
+		break;
+	case 'T':
+		if (s[1] == 'e') {
+			f = pow(10,12);
+			p += 2;
+		}
+		break;
 	case 'G': f = pow(10,9); p++; break;
 	case 'M': 
 		if (s[1] == 'e') {
