@@ -136,6 +136,8 @@ struct units {
 	"tgm","Wsp",1.0,
 	"tgm","Fl",1.0,
 /* FIXME:  here's the Zd, when I figure out how to parse it */
+	"tgm","DZd",1.0,
+	"metric","B",0.3, /* the sound decibels */
 	"tgm","Vsp",1.0,
 	"tgm","Ag",1.0,
 	"tgm","RQl",1.0,
