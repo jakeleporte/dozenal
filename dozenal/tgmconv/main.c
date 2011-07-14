@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
 				expnot = 1;
 				break;
 			case 'v':
-				printf("tgmconv v2.5\n");
+				printf("tgmconv v2.6\n");
 				printf("Copyright (C) 2010  Donald P. Goodman III\n");
 				printf("License GPLv3+:  GNU GPL version 3 or "
 				"later <http://gnu.org/licenses/gpl.html>\n");
@@ -171,7 +171,7 @@ int getunit(char *s, char *inp)
 
 int helpfunc(void)
 {
-	printf("tgmconv, v2.5.\n");
+	printf("tgmconv, v2.6.\n");
 	printf("Usage:  tgmconv -i input unit -o output unit quantity\n");
 	printf("Acceptable units:\n");
 	printf("TGM:\n");

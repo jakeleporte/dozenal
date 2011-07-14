@@ -870,5 +870,30 @@ echo "1;2E330765e9 = `./tgmconv -ek8 -iCi -oTm-1 1`";
 echo "1;2E330765e9 = `doz 3.7e10 | ./tgmconv -iBq -oTm-1 -ek8`";
 echo "1 = `./tgmconv -iTm-1 -oCi \"1;2E330765e9\"`";
 echo "3.7e10 = `./tgmconv -ek8 -iTm-1 -oBq \"1;2E330765e9\" | dec -ek8`";
+echo "Tmb to 2_Vm:"
+echo "3 = `./tgmconv -iTmb -o2_Vm 1`";
+echo "Tmb to pti:"
+echo "0.94774 = `./tgmconv -iTmb -opti -k5 1 | dec -k5`";
+echo "Tmb to ptc:"
+echo "1.13818 = `./tgmconv -iTmb -optc -k5 1 | dec -k5`";
+echo "Tmb to L:"
+echo "0.538549 = `./tgmconv -iTmb -oL -k6 1 | dec -k6`";
+echo "Qrt to 2_Vm:"
+echo "6 = `./tgmconv -iQrt -o2_Vm 1`";
+echo "Qrt to pti:"
+echo "1.89548 = `./tgmconv -iQrt -opti -k5 1 | dec -k5`";
+echo "Qrt to ptc:"
+echo "2.27636 = `./tgmconv -iQrt -optc -k5 1 | dec -k5`";
+echo "Qrt to L:"
+echo "1.077098 = `./tgmconv -iQrt -oL -k6 1 | dec -k6`";
+echo "Glv to 1_Vm:"
+echo "2 = `./tgmconv -iGlv -o1_Vm 1`";
+echo "Glv to pti:"
+echo "7.58192 = `./tgmconv -iGlv -opti -k5 1 | dec -k5`";
+echo "Glv to ptc:"
+echo "9.10544 = `./tgmconv -iGlv -optc -k5 1 | dec -k5`";
+echo "Glv to L:"
+echo "4.308392 = `./tgmconv -iGlv -oL -k6 1 | dec -k6`";
+
 
 exit;

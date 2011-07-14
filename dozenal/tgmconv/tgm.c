@@ -165,6 +165,10 @@ struct units {
 	"tgm","Eul",1.0,
 	"tgm","Clz",1.0,
 	"tgm","Olz",1.0,
+	"tgm","Tmb",48.0,
+	"tgm","Qrt",24.0,
+	"tgm","Glv",6.0,
+	"tgm","Avz",0.00004470314763946209,
 };
 
 /* turns elaborations on the seven fundamental dimensions
