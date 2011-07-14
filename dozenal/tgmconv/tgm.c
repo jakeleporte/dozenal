@@ -108,6 +108,7 @@ struct units {
 	"tgm","Ql",1.0,
 	"metric","C",0.0860628591502,
 	"metric","faraday",0.000000891978639160366093556610,
+	"tgm","Me",0.00000000003450546975,
 	"tgm","Kp",1.0,
 	"metric","F",0.0000987796755920,
 	"tgm","Mt",1.0,
@@ -169,6 +170,7 @@ struct units {
 	"tgm","Qrt",24.0,
 	"tgm","Glv",6.0,
 	"tgm","Avz",0.00004470314763946209,
+	"tgm","Oum",864.0,
 };
 
 /* turns elaborations on the seven fundamental dimensions

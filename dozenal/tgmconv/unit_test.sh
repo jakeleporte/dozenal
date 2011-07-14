@@ -894,6 +894,42 @@ echo "Glv to ptc:"
 echo "9.10544 = `./tgmconv -iGlv -optc -k5 1 | dec -k5`";
 echo "Glv to L:"
 echo "4.308392 = `./tgmconv -iGlv -oL -k6 1 | dec -k6`";
-
+echo "Oum to 3_Mz:"
+echo "2 = `./tgmconv -iOum  -o3_Mz 1`";
+echo "28 = `./tgmconv -iOum -o3_Mz 14`";
+echo "Oum to 2_Mz:"
+echo "6 = `./tgmconv -iOum -o2_Mz 30`";
+echo "Oum to 1_Mz:"
+echo "3 = `./tgmconv -iOum -o1_Mz 160`";
+echo "Oum to Mz:"
+echo "2 = `./tgmconv -iOum -oMz 1000`";
+echo "Oum to oz:"
+echo "1.0553756 = `./tgmconv -iOum -ooz -k7 1 | dec -k7`";
+echo "Oum to lb:"
+echo "1.0553756 = `./tgmconv -iOum -olb -k7 14 | dec -k7`";
+echo "Oum to kg:"
+echo "1.077098 = `./tgmconv -iOum -okg -k6 30 | dec -k6`";
+echo "Oum to st:"
+echo "1.01768 = `./tgmconv -iOum -ost -k5 160 | dec -k5`";
+echo "Oum to cwt:"
+echo "1.01768 = `./tgmconv -iOum -ocw -k5 1000 | dec -k5`";
+echo "ePl to 25_Wg:"
+echo "4;169150 = `./tgmconv -iePl -o15_Wg -k6 1`";
+echo "ePl to eV:"
+echo "871.2608 = `./tgmconv -iePl -oeV 1 | dec`";
+echo "ePl to J:"
+echo "1.3959244694e-16 = `./tgmconv -iePl -oJ -ekX 1 | dec -ek10`";
+echo "3^ePl to MeeV:"
+echo "1.505538662 = `./tgmconv -i3^ePl -oMeeV -kX 1 | dec -k10`";
+echo "3^ePl to J:"
+echo "2.4121574831e-13 = `./tgmconv -i3^ePl -oJ -ekX 1 | dec -ek10`";
+echo "MeeV to 2^ePl:"
+echo "7;E79187E2 = `./tgmconv -iMeeV -o2^ePl -k8 1`";
+echo "Me to faraday:"
+echo "25850.36 = `./tgmconv -iMe -ofaraday -k8 1 | dec -k8`";
+echo "Me to 9^Ql:"
+echo "5;749690 = `./tgmconv -iMe -o9^Ql -k8 1`";
+echo "Me to C:"
+echo "2.493358e09 = `./tgmconv -iMe -oC -ek8 1 | dec -ek8`";
 
 exit;
