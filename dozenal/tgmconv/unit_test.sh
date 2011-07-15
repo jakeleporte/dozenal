@@ -931,5 +931,8 @@ echo "Me to 9^Ql:"
 echo "5;749690 = `./tgmconv -iMe -o9^Ql -k8 1`";
 echo "Me to C:"
 echo "2.493358e09 = `./tgmconv -iMe -oC -ek8 1 | dec -ek8`";
+echo "dC to Do:"
+echo "150 = `doz 20.4 | ./tgmconv -idC -oDo `";
+
 
 exit;

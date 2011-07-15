@@ -267,8 +267,13 @@ The unit of light sensitivity.
 .IP " QuaraLyde --- QLd"
 The unit of luminous intensity.
 .IP " Calg --- Cg"
-The unit of heat, comparable to kelvins or degrees both
-centigrade and Fahrenheit.
+The unit of heat, comparable to kelvins.  tgmconv will match
+these up with Kelvins, as they have the same base (absolute
+zero).
+.IP " Decigree --- Do"
+Another unit of heat, this one comparable to degrees
+Celsius.  Based on the freezing point of water, like degrees
+Celsius.
 .IP " Calkap --- Ck"
 The unit of heat capacity.
 .IP " Calsp --- Csp "
@@ -486,7 +491,11 @@ The metric unit of luminous flux.
 .IP "candela --- cd"
 The metric unit of luminous intensity.
 .IP "Kelvin --- K"
-The metric unit of heat.
+The metric unit of heat, based on absolute zero.  Convert to
+Calg.
+.IP "Degrees Celsius --- dC"
+Another unit of heat; based on the freezing point of water.
+Convert to decigrees.
 .IP "mole --- mol"
 The metric unit of amount of substance.
 .IP "bel --- B"
