@@ -130,7 +130,7 @@ struct units {
 	"metric","cd",1.1795967512,
 	"tgm","Cg",1.0,
 	"tgm","Do",1.0,
-	"metric","degC",0.1,
+	"metric","degC",0.10,
 	"metric","K",0.00069444444444,
 	"tgm","Ck",1.0,
 	"tgm","Csp",1.0,
