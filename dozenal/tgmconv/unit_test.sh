@@ -935,7 +935,8 @@ echo -e "degC to Do:"
 echo -e "150 \n`doz 20.4 | ./tgmconv -idegC -oDo `";
 echo -e "269 \n`doz 36.9 | ./tgmconv -idegC -oDo`";
 echo -e "6E4;6 \n`doz 100.05 | ./tgmconv -idegC -oDo`";
-echo -e "Do to degc:"
+echo -e "6E4 \n`doz 100 | ./tgmconv -idegC -oDo`";
+echo -e "Do to degC:"
 echo -e "100 \n`./tgmconv -iDo -odegC \"6E4;6\" | dec`";
 echo -e "dK to 2^Cg:"
 echo -e "2731.5 \n`./tgmconv -i2^Cg -odK \"16E7;6\" | dec`";
