@@ -26,7 +26,7 @@ int main(int argc, char *argv[])
 	
 	*argv++;
 	if (strcmp(*argv,"-v") == 0) {
-		printf("dozword v2.7\n");
+		printf("dozword v2.8\n");
 		printf("Copyright (C) 2010  Donald P. Goodman III\n");
 		printf("License GPLv3+:  GNU GPL version 3 or "
 		"later <http://gnu.org/licenses/gpl.html>\n");
