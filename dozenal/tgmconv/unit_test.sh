@@ -88,7 +88,7 @@ echo -e "9;E076EX30 \n`./tgmconv -k8 -o6^Sf -imi2 1`";
 echo -e "mm2 to 5^Sf:"
 echo -e "2;X1X127X9 \n`./tgmconv -k8 -o5_Sf -imm2 1`";
 echo -e "Vm to m3:"
-echo -e "2.5851079459e-2 \n`./tgmconv -kX -iVm -om3 1 | dec -ek10`";
+echo -e "2.5851079459e-2 \n`./tgmconv -k10 -iVm -om3 1 | dec -ek12`";
 echo -e "Vm to L:"
 echo -e "25.8503556494 \n`./tgmconv -kX -iVm -oL 1 | dec -k10`";
 echo -e "Vm to ft3:"
