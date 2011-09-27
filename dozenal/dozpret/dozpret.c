@@ -66,7 +66,7 @@ int main(int argc, char *argv[])
 
 int dozpret(char *number,char *spacer,char *zenpoint)
 {
-	int i, j, k, len;
+	int i, j, k, len, both = 0;
 	char *zenspot; /* position of zenimal point */
 	int count=1; /* number of spaces added so far */
 	size_t sepnum; /* number of characters in separator */
@@ -75,15 +75,25 @@ int dozpret(char *number,char *spacer,char *zenpoint)
 	len = strlen(number);
 	sepnum = strlen(spacer)-1;
 	zennum = strlen(zenpoint)-1;
-	for (i=0; number[i] != ';'; ++i);
+	for (i=0; number[i] != ';' && i < len; ++i);
+	printf("len:  %d, i:  %d\n");
 	memmove(number+i+zennum,number+i,len+1);
 	memcpy(number+i,zenpoint,zennum+1);
+	i=i+zennum;
 	for (j=i,k=0; j>0; --j,++k) {
 		if ((k % 4 == 0) && (k != 0)) {
 			memmove(number+j+sepnum+1,number+j,len-j+1);
 			memcpy(number+j,spacer,sepnum+1);
 			len = strlen(number);
+			i=i+sepnum+1;
 		}
 	}
+		for (j=i,k=0; number[j] != '\0'; ++j,++k) {
+			if ((k % 5 == 0) && (k != 0)) {
+				memmove(number+j+sepnum+1,number+j,len-j+1);
+				memcpy(number+j,spacer,sepnum+1);
+				len = strlen(number);
+			}
+		}
 	printf("%s\n",number);
 }
