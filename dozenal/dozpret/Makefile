@@ -4,8 +4,14 @@
 # of Mary for her prayers, and to the Sacred Heart of Jesus
 # for His mercy.
 
-dozpret : dozpret.c
-	gcc -o dozpret dozpret.c
+dozpret : dozpret.o conv.h conv.o
+	gcc -o dozpret dozpret.o conv.o
+
+dozpret.o : dozpret.c conv.h conv.o
+	gcc -c dozpret.c conv.h conv.c
+
+conv.o : conv.c conv.h
+	gcc -c conv.c conv.h
 
 doc : dozpret.1
 	rman -fHTML dozpret.1 > dozpret_man.html

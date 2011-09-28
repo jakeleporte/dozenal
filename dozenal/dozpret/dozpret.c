@@ -13,6 +13,9 @@
 
 #include<stdio.h>
 #include<string.h>
+#include "conv.h"
+
+#define MAXLINE 1000
 
 int main(int argc, char *argv[])
 {
@@ -21,6 +24,7 @@ int main(int argc, char *argv[])
 	char c;
 	char *spacer = " ";
 	char *zenpoint = "\'";
+	char number[MAXLINE];
 
 	while (--argc > 0 && (*++argv)[0] == '-') {
 		if (isdigit(argv[0][1]) || argv[0][1] == '.')
@@ -39,6 +43,24 @@ int main(int argc, char *argv[])
 				break;
 			case 'h': /* Hammond */
 				zenpoint = "\'";
+				break;
+			case 's':
+				if (*++argv[0] != '\0') {
+					spacer = argv[0];
+					for (i=0; i<strlen(argv[0]); ++i)
+						++argv[0];
+				} else if ((argv+1)[0] == NULL) {
+					fprintf(stderr,"dozpret:  invalid spacer character\n");
+					return 1;
+				} else if (*argv[0] == '\0' && argv[1][0] != '-') {
+					spacer = argv[1];
+					for (i=0; i<strlen(argv[0])+1; ++i)
+						++argv[1];
+					++argv;--argc;
+				} else {
+					fprintf(stderr,"dozpret:  invalid spacer character\n");
+					return 1;
+				}
 				break;
 			case 'v':
 				printf("dozpret v3.1\n");
@@ -59,8 +81,8 @@ int main(int argc, char *argv[])
 		dozpret(*argv,spacer,zenpoint);
 		return 0;
 	}
-/*	while (getword(doznum,MAXLINE) != EOF)
-		doz(doznum,doznum,places,expnot);*/
+	while (getword(number,MAXLINE) != EOF)
+		dozpret(number,spacer,zenpoint);
 	return 0;
 }
 
@@ -72,28 +94,62 @@ int dozpret(char *number,char *spacer,char *zenpoint)
 	size_t sepnum; /* number of characters in separator */
 	size_t zennum; /* number of characters in zenimal point */
 
+	if (strchr(number,';') == NULL)
+		both = 1;
 	len = strlen(number);
 	sepnum = strlen(spacer)-1;
 	zennum = strlen(zenpoint)-1;
 	for (i=0; number[i] != ';' && i < len; ++i);
-	printf("len:  %d, i:  %d\n");
-	memmove(number+i+zennum,number+i,len+1);
-	memcpy(number+i,zenpoint,zennum+1);
-	i=i+zennum;
+	i = pretwhole(number, spacer, zenpoint);
+	len = strlen(number);
+	if (both == 1) {
+		number[len+1] = '\0';
+		printf("%s\n",number);
+		return 0;
+	}
+	pretfrac(number, spacer, i+1);
+	printf("%s\n",number);
+}
+
+int pretwhole(char *number, char *spacer, char *zenpoint)
+{
+	int i, j, k, len;
+	size_t sepnum, zennum;
+
+	len = strlen(number);
+	sepnum = strlen(spacer);
+	zennum = strlen(zenpoint);
+	for (i=0; number[i] != ';' && i < len; ++i);
+	if (i != len) {
+		memmove(number+i+zennum-1,number+i,len+1);
+		memcpy(number+i,zenpoint,zennum);
+	}
+	i=i+zennum-1;
 	for (j=i,k=0; j>0; --j,++k) {
 		if ((k % 4 == 0) && (k != 0)) {
-			memmove(number+j+sepnum+1,number+j,len-j+1);
-			memcpy(number+j,spacer,sepnum+1);
+			memmove(number+j+sepnum,number+j,len-j+1);
+			memcpy(number+j,spacer,sepnum);
 			len = strlen(number);
-			i=i+sepnum+1;
+			i=i+sepnum;
 		}
 	}
-		for (j=i,k=0; number[j] != '\0'; ++j,++k) {
-			if ((k % 5 == 0) && (k != 0)) {
-				memmove(number+j+sepnum+1,number+j,len-j+1);
-				memcpy(number+j,spacer,sepnum+1);
-				len = strlen(number);
-			}
+	return i;
+}
+
+int pretfrac(char *number, char *spacer, int start)
+{
+	int j, k, len;
+	size_t sepnum;
+	
+	len = strlen(number);
+	sepnum = strlen(spacer);
+	for (j=start,k=0; number[j] != '\0'; ++j,++k) {
+		if ((k % 4 == 0) && (k != 0)) {
+			memmove(number+j+sepnum,number+j,len-j+1);
+			memcpy(number+j,spacer,sepnum);
+			len = strlen(number);
+			j+=sepnum;
 		}
-	printf("%s\n",number);
+	}
+	return 0;
 }
