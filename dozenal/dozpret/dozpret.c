@@ -44,18 +44,44 @@ int main(int argc, char *argv[])
 			case 'h': /* Hammond */
 				zenpoint = "\'";
 				break;
+			case 'p':
+				if (*++argv[0] != '\0') {
+					zenpoint = argv[0];
+					if (strlen(zenpoint) > 1) {
+						for (i=0; i<strlen(argv[0]); ++i)
+							++argv[0];
+					}
+				} else if ((argv+1)[0] == NULL) {
+					fprintf(stderr,"dozpret:  invalid zenpoint character\n");
+					return 1;
+				} else if (*argv[0] == '\0' && argv[1][0] != '-') {
+					zenpoint = argv[1];
+					if (strlen(zenpoint) > 1) {
+						for (i=0; i<strlen(argv[0])+1; ++i)
+							++argv[1];
+					}
+					++argv;--argc;
+				} else {
+					fprintf(stderr,"dozpret:  invalid zenpoint character\n");
+					return 1;
+				}
+				break;
 			case 's':
 				if (*++argv[0] != '\0') {
 					spacer = argv[0];
-					for (i=0; i<strlen(argv[0]); ++i)
-						++argv[0];
+					if (strlen(spacer) > 1) {
+						for (i=0; i<strlen(argv[0]); ++i)
+							++argv[0];
+					}
 				} else if ((argv+1)[0] == NULL) {
 					fprintf(stderr,"dozpret:  invalid spacer character\n");
 					return 1;
 				} else if (*argv[0] == '\0' && argv[1][0] != '-') {
 					spacer = argv[1];
-					for (i=0; i<strlen(argv[0])+1; ++i)
-						++argv[1];
+					if (strlen(spacer) > 1) {
+						for (i=0; i<strlen(argv[0])+1; ++i)
+							++argv[1];
+					}
 					++argv;--argc;
 				} else {
 					fprintf(stderr,"dozpret:  invalid spacer character\n");
@@ -78,6 +104,8 @@ int main(int argc, char *argv[])
 			}
 	}
 	if (argc >= 1) {
+		if (strlen(*argv) >=MAXLINE)
+			*argv[MAXLINE] = '\0';
 		dozpret(*argv,spacer,zenpoint);
 		return 0;
 	}
@@ -89,66 +117,45 @@ int main(int argc, char *argv[])
 int dozpret(char *number,char *spacer,char *zenpoint)
 {
 	int i, j, k, len, both = 0;
-	char *zenspot; /* position of zenimal point */
-	int count=1; /* number of spaces added so far */
+	char fracpart[MAXLINE]; /* fractional part of number */
 	size_t sepnum; /* number of characters in separator */
 	size_t zennum; /* number of characters in zenimal point */
 
 	if (strchr(number,';') == NULL)
 		both = 1;
 	len = strlen(number);
-	sepnum = strlen(spacer)-1;
-	zennum = strlen(zenpoint)-1;
 	for (i=0; number[i] != ';' && i < len; ++i);
-	i = pretwhole(number, spacer, zenpoint);
-	len = strlen(number);
+	strcpy(fracpart,number+i+1);
+	number[i] = '\0';
+	prettify(number,spacer);
+	printf("%s",number);
 	if (both == 1) {
-		number[len+1] = '\0';
-		printf("%s\n",number);
+		printf("\n");
 		return 0;
 	}
-	pretfrac(number, spacer, i+1);
-	printf("%s\n",number);
+	printf("%s",zenpoint);
+	reverse(fracpart);
+	reverse(spacer);
+	prettify(fracpart,spacer);
+	reverse(fracpart);
+	printf("%s",fracpart);
+	printf("\n");
+	return 0;
 }
 
-int pretwhole(char *number, char *spacer, char *zenpoint)
+int prettify(char *number, char *spacer)
 {
 	int i, j, k, len;
-	size_t sepnum, zennum;
+	size_t sepnum;
 
-	len = strlen(number);
+	len = i = strlen(number);
 	sepnum = strlen(spacer);
-	zennum = strlen(zenpoint);
-	for (i=0; number[i] != ';' && i < len; ++i);
-	if (i != len) {
-		memmove(number+i+zennum-1,number+i,len+1);
-		memcpy(number+i,zenpoint,zennum);
-	}
-	i=i+zennum-1;
 	for (j=i,k=0; j>0; --j,++k) {
 		if ((k % 4 == 0) && (k != 0)) {
 			memmove(number+j+sepnum,number+j,len-j+1);
 			memcpy(number+j,spacer,sepnum);
 			len = strlen(number);
 			i=i+sepnum;
-		}
-	}
-	return i;
-}
-
-int pretfrac(char *number, char *spacer, int start)
-{
-	int j, k, len;
-	size_t sepnum;
-	
-	len = strlen(number);
-	sepnum = strlen(spacer);
-	for (j=start,k=0; number[j] != '\0'; ++j,++k) {
-		if ((k % 4 == 0) && (k != 0)) {
-			memmove(number+j+sepnum,number+j,len-j+1);
-			memcpy(number+j,spacer,sepnum);
-			len = strlen(number);
-			j+=sepnum;
 		}
 	}
 	return 0;
