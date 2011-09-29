@@ -39,7 +39,7 @@ int main(int argc, char *argv[])
 				expnot = 1;
 				break;
 			case 'l':
-				spacer = "\\,";
+					spacer = "\\";
 				break;
 			case 'h': /* Hammond */
 				zenpoint = "\'";
@@ -138,6 +138,7 @@ int dozpret(char *number,char *spacer,char *zenpoint)
 	reverse(spacer);
 	prettify(fracpart,spacer);
 	reverse(fracpart);
+	reverse(spacer);
 	printf("%s",fracpart);
 	printf("\n");
 	return 0;
