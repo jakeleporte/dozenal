@@ -13,14 +13,16 @@
 
 #include<stdio.h>
 #include<string.h>
+#include<stdlib.h>
 #include "conv.h"
 
 #define MAXLINE 1000
+#define MAXLEN 50
 
 int main(int argc, char *argv[])
 {
 	int i;
-	char expnot = 0;
+	char expnot = 0, needfreesp = 0, needfreept = 0;
 	char c;
 	char *spacer = " ";
 	char *zenpoint = "\'";
@@ -39,52 +41,48 @@ int main(int argc, char *argv[])
 				expnot = 1;
 				break;
 			case 'l':
-					spacer = "\\";
-				break;
-			case 'h': /* Hammond */
-				zenpoint = "\'";
-				break;
-			case 'p':
-				if (*++argv[0] != '\0') {
-					zenpoint = argv[0];
-					if (strlen(zenpoint) > 1) {
-						for (i=0; i<strlen(argv[0]); ++i)
-							++argv[0];
-					}
-				} else if ((argv+1)[0] == NULL) {
-					fprintf(stderr,"dozpret:  invalid zenpoint character\n");
-					return 1;
-				} else if (*argv[0] == '\0' && argv[1][0] != '-') {
-					zenpoint = argv[1];
-					if (strlen(zenpoint) > 1) {
-						for (i=0; i<strlen(argv[0])+1; ++i)
-							++argv[1];
-					}
-					++argv;--argc;
-				} else {
-					fprintf(stderr,"dozpret:  invalid zenpoint character\n");
+				if ((spacer = malloc(sizeof(char)*4)) == NULL) {
+					fprintf(stderr,"dozpret:  insufficient memory\n");
 					return 1;
 				}
+				*spacer = '\\'; *(spacer+1) = ','; *(spacer+2) = '\0';
+				needfreesp = 1;
 				break;
+			case 'h': /* Hammond */
+				if ((zenpoint = malloc(sizeof(char)*2)) == NULL) {
+					fprintf(stderr,"dozpret:  insufficient memory\n");
+					return 1;
+				}
+				*zenpoint = '\''; *(zenpoint+1) = '\0';
+				needfreept = 1;
+				break;
+/*			case 'p':
+				if (*++argv[0] != '\0') {
+					zenpoint = argv[0];
+					argv[0] = argv[1];
+				} else if (*(argv+1) == NULL) {
+					fprintf(stderr,"dozpret:  invalid zenpoint character\n");
+					return 1;
+				} else if (*(argv+1)[0] != '-') {
+					zenpoint = *(argv+1);
+					--argc; ++argv;
+					argv[0] = argv[1];
+				} else {
+					fprintf(stderr,"dozpret:  invalid zenpoint characters(s)\n");
+					return 1;
+				}
+				break;*/
 			case 's':
 				if (*++argv[0] != '\0') {
 					spacer = argv[0];
-					if (strlen(spacer) > 1) {
-						for (i=0; i<strlen(argv[0]); ++i)
-							++argv[0];
-					}
-				} else if ((argv+1)[0] == NULL) {
+				} else if (*(argv+1) == NULL) {
 					fprintf(stderr,"dozpret:  invalid spacer character\n");
 					return 1;
-				} else if (*argv[0] == '\0' && argv[1][0] != '-') {
-					spacer = argv[1];
-					if (strlen(spacer) > 1) {
-						for (i=0; i<strlen(argv[0])+1; ++i)
-							++argv[1];
-					}
-					++argv;--argc;
+				} else if (*(argv+1)[0] != '-') {
+					spacer = *(argv+1);
+					--argc; ++argv;
 				} else {
-					fprintf(stderr,"dozpret:  invalid spacer character\n");
+					fprintf(stderr,"dozpret:  invalid spacer characters(s)\n");
 					return 1;
 				}
 				break;
@@ -107,10 +105,14 @@ int main(int argc, char *argv[])
 		if (strlen(*argv) >=MAXLINE)
 			*argv[MAXLINE] = '\0';
 		dozpret(*argv,spacer,zenpoint);
-		return 0;
+	} else {
+		while (getword(number,MAXLINE) != EOF)
+			dozpret(number,spacer,zenpoint);
 	}
-	while (getword(number,MAXLINE) != EOF)
-		dozpret(number,spacer,zenpoint);
+	if (needfreesp == 1)
+		free(spacer);
+	if (needfreept == 1)
+		free(zenpoint);
 	return 0;
 }
 
@@ -118,15 +120,15 @@ int dozpret(char *number,char *spacer,char *zenpoint)
 {
 	int i, j, k, len, both = 0;
 	char fracpart[MAXLINE]; /* fractional part of number */
-	size_t sepnum; /* number of characters in separator */
-	size_t zennum; /* number of characters in zenimal point */
 
 	if (strchr(number,';') == NULL)
 		both = 1;
 	len = strlen(number);
 	for (i=0; number[i] != ';' && i < len; ++i);
-	strcpy(fracpart,number+i+1);
-	number[i] = '\0';
+	if (both == 0) {
+		strcpy(fracpart,number+i+1);
+		number[i] = '\0';
+	}
 	prettify(number,spacer);
 	printf("%s",number);
 	if (both == 1) {
