@@ -14,6 +14,7 @@
 #include<stdio.h>
 #include<string.h>
 #include<stdlib.h>
+#include<ctype.h>
 #include "conv.h"
 
 #define MAXLINE 1000
@@ -26,8 +27,10 @@ int main(int argc, char *argv[])
 	char c;
 	char *spacer = " ";
 	char *zenpoint = "\'";
+	int spaces = 4;
 	char number[MAXLINE];
 
+	restart:
 	while (--argc > 0 && (*++argv)[0] == '-') {
 		if (isdigit(argv[0][1]) || argv[0][1] == '.')
 			break; /* negative numbers are not optional args */
@@ -56,33 +59,57 @@ int main(int argc, char *argv[])
 				*zenpoint = '\''; *(zenpoint+1) = '\0';
 				needfreept = 1;
 				break;
-/*			case 'p':
+			case 'p':
 				if (*++argv[0] != '\0') {
 					zenpoint = argv[0];
-					argv[0] = argv[1];
+					goto restart;
 				} else if (*(argv+1) == NULL) {
 					fprintf(stderr,"dozpret:  invalid zenpoint character\n");
 					return 1;
 				} else if (*(argv+1)[0] != '-') {
 					zenpoint = *(argv+1);
 					--argc; ++argv;
-					argv[0] = argv[1];
+					goto restart;
 				} else {
 					fprintf(stderr,"dozpret:  invalid zenpoint characters(s)\n");
 					return 1;
 				}
-				break;*/
+				break;
 			case 's':
 				if (*++argv[0] != '\0') {
 					spacer = argv[0];
+					goto restart;
 				} else if (*(argv+1) == NULL) {
 					fprintf(stderr,"dozpret:  invalid spacer character\n");
 					return 1;
 				} else if (*(argv+1)[0] != '-') {
 					spacer = *(argv+1);
 					--argc; ++argv;
+					goto restart;
 				} else {
 					fprintf(stderr,"dozpret:  invalid spacer characters(s)\n");
+					return 1;
+				}
+				break;
+			case 'n':
+				if (*++argv[0] != '\0') {
+					if (isdigit(*argv[0]))
+						spaces = atoi(argv[0]);
+					else
+						fprintf(stderr,"dozpret:  invalid quantity\n");
+					goto restart;
+				} else if (*(argv+1) == NULL) {
+					fprintf(stderr,"dozpret:  invalid quantity\n");
+					return 1;
+				} else if (*(argv+1)[0] != '-') {
+					if (isdigit(*argv[0]))
+						spaces = atoi(*(argv+1));
+					else
+						fprintf(stderr,"dozpret:  invalid quantity\n");
+					--argc; ++argv;
+					goto restart;
+				} else {
+					fprintf(stderr,"dozpret:  invalid quantity\n");
 					return 1;
 				}
 				break;
@@ -104,10 +131,10 @@ int main(int argc, char *argv[])
 	if (argc >= 1) {
 		if (strlen(*argv) >=MAXLINE)
 			*argv[MAXLINE] = '\0';
-		dozpret(*argv,spacer,zenpoint);
+		dozpret(*argv,spacer,zenpoint,spaces);
 	} else {
 		while (getword(number,MAXLINE) != EOF)
-			dozpret(number,spacer,zenpoint);
+			dozpret(number,spacer,zenpoint,spaces);
 	}
 	if (needfreesp == 1)
 		free(spacer);
@@ -116,20 +143,22 @@ int main(int argc, char *argv[])
 	return 0;
 }
 
-int dozpret(char *number,char *spacer,char *zenpoint)
+int dozpret(char *number,char *spacer,char *zenpoint, int spaces)
 {
 	int i, j, k, len, both = 0;
 	char fracpart[MAXLINE]; /* fractional part of number */
 
 	if (strchr(number,';') == NULL)
 		both = 1;
+	if (*number == '-')
+		printf("%c",*(number++));
 	len = strlen(number);
 	for (i=0; number[i] != ';' && i < len; ++i);
 	if (both == 0) {
 		strcpy(fracpart,number+i+1);
 		number[i] = '\0';
 	}
-	prettify(number,spacer);
+	prettify(number,spacer,spaces);
 	printf("%s",number);
 	if (both == 1) {
 		printf("\n");
@@ -138,7 +167,7 @@ int dozpret(char *number,char *spacer,char *zenpoint)
 	printf("%s",zenpoint);
 	reverse(fracpart);
 	reverse(spacer);
-	prettify(fracpart,spacer);
+	prettify(fracpart,spacer,spaces);
 	reverse(fracpart);
 	reverse(spacer);
 	printf("%s",fracpart);
@@ -146,7 +175,7 @@ int dozpret(char *number,char *spacer,char *zenpoint)
 	return 0;
 }
 
-int prettify(char *number, char *spacer)
+int prettify(char *number, char *spacer, int spaces)
 {
 	int i, j, k, len;
 	size_t sepnum;
@@ -154,7 +183,7 @@ int prettify(char *number, char *spacer)
 	len = i = strlen(number);
 	sepnum = strlen(spacer);
 	for (j=i,k=0; j>0; --j,++k) {
-		if ((k % 4 == 0) && (k != 0)) {
+		if ((k % spaces == 0) && (k != 0)) {
 			memmove(number+j+sepnum,number+j,len-j+1);
 			memcpy(number+j,spacer,sepnum);
 			len = strlen(number);
