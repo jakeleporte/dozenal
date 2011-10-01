@@ -60,6 +60,10 @@ int main(int argc, char *argv[])
 				needfreept = 1;
 				break;
 			case 'p':
+				if (needfreept == 1) {
+					free(zenpoint);
+					needfreept = 0;
+				}
 				if (*++argv[0] != '\0') {
 					zenpoint = argv[0];
 					goto restart;
@@ -76,6 +80,10 @@ int main(int argc, char *argv[])
 				}
 				break;
 			case 's':
+				if (needfreesp == 1) {
+					free(spacer);
+					needfreesp = 0;
+				}
 				if (*++argv[0] != '\0') {
 					spacer = argv[0];
 					goto restart;
