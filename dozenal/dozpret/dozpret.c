@@ -23,10 +23,13 @@
 int main(int argc, char *argv[])
 {
 	int i;
-	char expnot = 0, needfreesp = 0, needfreept = 0;
+	char transdec = 0, needfreesp = 0, needfreept = 0;
+	char needfreeten = 0, needfreeelv = 0;
 	char c;
 	char *spacer = " ";
 	char *zenpoint = "\'";
+	char *ten = "X";
+	char *elv = "E";
 	int spaces = 4;
 	char number[MAXLINE];
 
@@ -40,8 +43,8 @@ int main(int argc, char *argv[])
 			case '6': case '7': case '8': case '9': case '0':
 			case ';': case 'X': case 'E':
 				break;
-			case 'e':
-				expnot = 1;
+			case 'f':
+				transdec = 1;
 				break;
 			case 'l':
 				if ((spacer = malloc(sizeof(char)*4)) == NULL) {
@@ -49,7 +52,14 @@ int main(int argc, char *argv[])
 					return 1;
 				}
 				*spacer = '\\'; *(spacer+1) = ','; *(spacer+2) = '\0';
+				if ((ten = malloc(sizeof(char)*4)) == NULL) {
+					fprintf(stderr,"dozpret:  insufficient memory\n");
+					return 1;
+				}
+				*ten = '\\'; *(ten+1) = 'x'; *(ten+2) = '\0';
 				needfreesp = 1;
+				needfreeten = 1;
+				transdec = 1;
 				break;
 			case 'h': /* Hammond */
 				if ((zenpoint = malloc(sizeof(char)*2)) == NULL) {
@@ -99,6 +109,46 @@ int main(int argc, char *argv[])
 					return 1;
 				}
 				break;
+			case 't':
+				if (needfreeten == 1) {
+					free(ten);
+					needfreeten = 0;
+				}
+				if (*++argv[0] != '\0') {
+					ten = argv[0];
+					goto restart;
+				} else if (*(argv+1) == NULL) {
+					fprintf(stderr,"dozpret:  invalid ten character\n");
+					return 1;
+				} else if (*(argv+1)[0] != '-') {
+					ten = *(argv+1);
+					--argc; ++argv;
+					goto restart;
+				} else {
+					fprintf(stderr,"dozpret:  invalid ten characters(s)\n");
+					return 1;
+				}
+				break;
+			case 'e':
+				if (needfreeelv == 1) {
+					free(elv);
+					needfreeelv = 0;
+				}
+				if (*++argv[0] != '\0') {
+					elv = argv[0];
+					goto restart;
+				} else if (*(argv+1) == NULL) {
+					fprintf(stderr,"dozpret:  invalid elv character\n");
+					return 1;
+				} else if (*(argv+1)[0] != '-') {
+					elv = *(argv+1);
+					--argc; ++argv;
+					goto restart;
+				} else {
+					fprintf(stderr,"dozpret:  invalid elv characters(s)\n");
+					return 1;
+				}
+				break;
 			case 'n':
 				if (*++argv[0] != '\0') {
 					if (isdigit(*argv[0]))
@@ -140,14 +190,21 @@ int main(int argc, char *argv[])
 		if (strlen(*argv) >=MAXLINE)
 			*argv[MAXLINE] = '\0';
 		dozpret(*argv,spacer,zenpoint,spaces);
+		if (transdec == 1)
+			fixtrans(number,ten,elv);
 	} else {
-		while (getword(number,MAXLINE) != EOF)
+		while (getword(number,MAXLINE) != EOF) {
 			dozpret(number,spacer,zenpoint,spaces);
+			if (transdec == 1)
+				fixtrans(number,ten,elv);
+		}
 	}
 	if (needfreesp == 1)
 		free(spacer);
 	if (needfreept == 1)
 		free(zenpoint);
+	if (needfreeten == 1)
+		free(ten);
 	return 0;
 }
 
@@ -196,6 +253,29 @@ int prettify(char *number, char *spacer, int spaces)
 			memcpy(number+j,spacer,sepnum);
 			len = strlen(number);
 			i=i+sepnum;
+		}
+	}
+	return 0;
+}
+
+int fixtrans(char *number, char *ten, char *elv)
+{
+	int i, j, k, len;
+	size_t lenstr;
+	char *digit;
+	char trans;
+
+	len = strlen(number);
+	for (i=0; i<=1; i++) {
+		lenstr = (i == 0) ? strlen(ten) : strlen(elv);
+		digit = (i == 0) ? ten : elv;
+		trans = (i == 0) ? 'X' : 'E';
+		for (j=0; j<len; ++j) {
+			if (number[j] == trans) {
+				memmove(number+j+lenstr,number+j,len-j+1);
+				memcpy(number+j,digit,lenstr);
+				len = strlen(number);
+			}
 		}
 	}
 	return 0;
