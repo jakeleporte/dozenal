@@ -57,8 +57,14 @@ int main(int argc, char *argv[])
 					return 1;
 				}
 				*ten = '\\'; *(ten+1) = 'x'; *(ten+2) = '\0';
+				if ((elv = malloc(sizeof(char)*4)) == NULL) {
+					fprintf(stderr,"dozpret:  insufficient memory\n");
+					return 1;
+				}
+				*elv = '\\'; *(elv+1) = 'e'; *(elv+2) = '\0';
 				needfreesp = 1;
 				needfreeten = 1;
+				needfreeelv = 1;
 				transdec = 1;
 				break;
 			case 'h': /* Hammond */
@@ -114,6 +120,7 @@ int main(int argc, char *argv[])
 					free(ten);
 					needfreeten = 0;
 				}
+				transdec = 1;
 				if (*++argv[0] != '\0') {
 					ten = argv[0];
 					goto restart;
@@ -134,6 +141,7 @@ int main(int argc, char *argv[])
 					free(elv);
 					needfreeelv = 0;
 				}
+				transdec = 1;
 				if (*++argv[0] != '\0') {
 					elv = argv[0];
 					goto restart;
@@ -191,12 +199,14 @@ int main(int argc, char *argv[])
 			*argv[MAXLINE] = '\0';
 		dozpret(*argv,spacer,zenpoint,spaces);
 		if (transdec == 1)
-			fixtrans(number,ten,elv);
+			fixtrans(*argv,ten,elv);
+		printf("%s\n",*argv);
 	} else {
 		while (getword(number,MAXLINE) != EOF) {
 			dozpret(number,spacer,zenpoint,spaces);
 			if (transdec == 1)
 				fixtrans(number,ten,elv);
+			printf("%s\n",number);
 		}
 	}
 	if (needfreesp == 1)
@@ -205,6 +215,8 @@ int main(int argc, char *argv[])
 		free(zenpoint);
 	if (needfreeten == 1)
 		free(ten);
+	if (needfreeelv == 1)
+		free(elv);
 	return 0;
 }
 
@@ -216,7 +228,7 @@ int dozpret(char *number,char *spacer,char *zenpoint, int spaces)
 	if (strchr(number,';') == NULL)
 		both = 1;
 	if (*number == '-')
-		printf("%c",*(number++));
+		++number;
 	len = strlen(number);
 	for (i=0; number[i] != ';' && i < len; ++i);
 	if (both == 0) {
@@ -224,19 +236,23 @@ int dozpret(char *number,char *spacer,char *zenpoint, int spaces)
 		number[i] = '\0';
 	}
 	prettify(number,spacer,spaces);
-	printf("%s",number);
-	if (both == 1) {
-		printf("\n");
+	if (both == 1)
 		return 0;
-	}
-	printf("%s",zenpoint);
-	reverse(fracpart);
-	reverse(spacer);
+	reverse(fracpart); reverse(spacer);
 	prettify(fracpart,spacer,spaces);
-	reverse(fracpart);
-	reverse(spacer);
-	printf("%s",fracpart);
-	printf("\n");
+	reverse(fracpart); reverse(spacer);
+	if (strlen(number) + strlen(zenpoint) < MAXLINE) {
+		strcat(number,zenpoint);
+	} else {
+		fprintf(stderr,"dozpret:  insufficient memory\n");
+		return 1;
+	}
+	if (strlen(number) + strlen(fracpart) < MAXLINE) {
+		strcat(number,fracpart);
+	} else {
+		fprintf(stderr,"dozpret:  insufficient memory\n");
+		return 1;
+	}
 	return 0;
 }
 
@@ -260,8 +276,8 @@ int prettify(char *number, char *spacer, int spaces)
 
 int fixtrans(char *number, char *ten, char *elv)
 {
-	int i, j, k, len;
-	size_t lenstr;
+	int i, j, k;
+	size_t lenstr,len,chunk;
 	char *digit;
 	char trans;
 
@@ -270,11 +286,11 @@ int fixtrans(char *number, char *ten, char *elv)
 		lenstr = (i == 0) ? strlen(ten) : strlen(elv);
 		digit = (i == 0) ? ten : elv;
 		trans = (i == 0) ? 'X' : 'E';
-		for (j=0; j<len; ++j) {
+		for (j=0; number[j] != '\0'; ++j) {
 			if (number[j] == trans) {
-				memmove(number+j+lenstr,number+j,len-j+1);
+				chunk = strlen(number+j)+1;
+				memmove(number+j+lenstr-1,number+j,chunk);
 				memcpy(number+j,digit,lenstr);
-				len = strlen(number);
 			}
 		}
 	}
