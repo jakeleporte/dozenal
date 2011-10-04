@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
 	char needfreeten = 0, needfreeelv = 0;
 	char c;
 	char *spacer = " ";
-	char *zenpoint = "\'";
+	char *zenpoint = ";";
 	char *ten = "X";
 	char *elv = "E";
 	int spaces = 4;
@@ -74,6 +74,15 @@ int main(int argc, char *argv[])
 				}
 				*zenpoint = '\''; *(zenpoint+1) = '\0';
 				needfreept = 1;
+				break;
+			case 'a':
+				if ((spacer = malloc(sizeof(char)*2)) == NULL) {
+					fprintf(stderr,"dozpret:  insufficient memory\n");
+					return 1;
+				}
+				*spacer = ','; *(spacer+1) = '\0';
+				needfreesp = 1;
+				spaces = 3;
 				break;
 			case 'p':
 				if (needfreept == 1) {
