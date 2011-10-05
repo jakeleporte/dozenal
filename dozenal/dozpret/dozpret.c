@@ -189,12 +189,12 @@ int main(int argc, char *argv[])
 				}
 				break;
 			case 'v':
-				printf("dozpret v3.1\n");
+				printf("dozpret v1.0\n");
 				printf("Copyright (C) 2011  Donald P. Goodman III\n");
 				printf("License GPLv3+:  GNU GPL version 3 or "
 				"later <http://gnu.org/licenses/gpl.html>\n");
 				printf("This is free software:  you are free "
-				"to chnage and redistribute it.  There is NO "
+				"to change and redistribute it.  There is NO "
 				"WARRANTY, to the extent permitted by law.\n");
 				return 0;
 				break;
