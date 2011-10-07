@@ -105,16 +105,30 @@ int insert(char *number, char *theans, char *tok)
 	return 0;
 }
 
-int sectotim(int sec)
+int sectotim(char *s, struct tm *thetime)
 {
-	return (int) sec * 5.76;
+	int tim;
+	char tmp[SIZE];
+	char tmp2[SIZE];
+	int minutes;
+	int seconds;
+
+	strftime(tmp,SIZE,"%S",thetime);
+	strftime(tmp2,SIZE,"%M",thetime);
+	minutes = atoi(tmp2) * 60;
+	seconds = atoi(tmp);
+	tim = (minutes + seconds) * 5.76;
+	dectodoz(s,(double)tim);
+	return 0;
 }
 
 int tgmify(char *s, struct tm *thetime)
 {
 	int i,j;
 	char tmp[SIZE];
+	char tmp2[SIZE];
 	int num;
+	int num2;
 	size_t len;
 
 	len = strlen(s);
@@ -123,9 +137,7 @@ int tgmify(char *s, struct tm *thetime)
 			for (j=i; !isalpha(s[j]) && (j-i) <= 4; ++j);
 			switch (s[j]) {
 			case 't':
-				strftime(tmp,SIZE,"%S",thetime);
-				num = sectotim(atoi(tmp));
-				dectodoz(tmp,(double)num);
+				sectotim(tmp,thetime);
 				tgminsert(s,tmp,j-i);
 				break;
 			default:
