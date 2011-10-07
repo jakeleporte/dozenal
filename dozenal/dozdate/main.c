@@ -127,8 +127,6 @@ int tgmify(char *s, struct tm *thetime)
 	int i,j;
 	char tmp[SIZE];
 	char tmp2[SIZE];
-	int num;
-	int num2;
 	size_t len;
 
 	len = strlen(s);
@@ -138,6 +136,19 @@ int tgmify(char *s, struct tm *thetime)
 			switch (s[j]) {
 			case 't':
 				sectotim(tmp,thetime);
+				tgminsert(s,tmp,j-i);
+				break;
+			case 'H':
+				strftime(tmp,SIZE,"%H",thetime);
+				dectodoz(tmp,(double)atoi(tmp));
+				tgminsert(s,tmp,j-i);
+				break;
+			case 'T':
+				strftime(tmp,SIZE,"%H",thetime);
+				dectodoz(tmp,(double)atoi(tmp));
+				sectotim(tmp2,thetime);
+				strcat(tmp,";");
+				strcat(tmp,tmp2);
 				tgminsert(s,tmp,j-i);
 				break;
 			default:
