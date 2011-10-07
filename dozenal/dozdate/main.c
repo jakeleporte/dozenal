@@ -54,15 +54,17 @@ int main(int argc, char *argv[])
 
 	strftime(buffer,SIZE,format,thetime);
 	printf("%s\n",buffer);
-	tokenize(buffer,format);
+	tokenize(buffer);
+	printf("%s\n",buffer);
+	tgmify(buffer,thetime);
 	printf("%s\n",buffer);
 }
 
-int tokenize(char *s,char *format)
+int tokenize(char *s)
 {
 	char *tok = NULL;
 	int i; int j = 0;
-	char *tokchars = " ,.:;\t\n\'\"!@#$%^&*()%";
+	char *tokchars = " ,.:;\t\n\'\"!#$%^&*()%";
 	char number[MAXNUM];
 	char num[MAXNUM];
 
@@ -100,5 +102,52 @@ int insert(char *number, char *theans, char *tok)
 		len2 = strlen(number);
 	}
 	memcpy(spot,number,len2);
+	return 0;
+}
+
+int sectotim(int sec)
+{
+	return (int) sec * 5.76;
+}
+
+int tgmify(char *s, struct tm *thetime)
+{
+	int i,j;
+	char tmp[SIZE];
+	int num;
+	size_t len;
+
+	len = strlen(s);
+	for (i=0; s[i] != '\0'; ++i) {
+		if (s[i] == '@') {
+			for (j=i; !isalpha(s[j]) && (j-i) <= 4; ++j);
+			switch (s[j]) {
+			case 't':
+				strftime(tmp,SIZE,"%S",thetime);
+				num = sectotim(atoi(tmp));
+				dectodoz(tmp,(double)num);
+				tgminsert(s,tmp,j-i);
+				break;
+			default:
+				fprintf(stderr,"dozdate:  no valid TGM "
+				"conversion unit found\n");
+				exit(1);
+				break;
+			}
+		}
+	}
+	return 0;
+}
+
+int tgminsert(char *full, char *insert, int inspoint)
+{
+	size_t len, lenfull;
+	int i, j;
+
+	len = strlen(insert);
+	lenfull = strlen(full);
+	for (i=0; full[i] != '@'; ++i);
+	memmove(full+i+len-inspoint,full+i+1,lenfull+1);
+	memcpy(full+i,insert,len);
 	return 0;
 }

@@ -69,10 +69,20 @@ Format the number according to normal American (decimal)
 conventions.  This translates to a Humphrey point, with
 units of three digits separated by commas.  Translates to
 "-n3 -s,".
+.IP -b
+Format the number according to standard British dozenal
+practice (insofar as there is such a standard).  This
+translates to a Hammond point and a 'T' for digit-ten; it is
+equivalent to "-p"'" -tT".
 .IP -h
 Format according to the Hammond standard; this is simply the
 use of a single quotation mark for the radix point, and
 translates to "-p"'"".
+.IP -x
+Cancels the spacing entirely, but still does substitution
+for the transdecimal digits.  This allows it to use the
+output of programs like dozdate in its input without
+screwing up their formatting.
 .IP -v
 Print version and copyright information, then quit.
 .SH BUGS

@@ -23,6 +23,7 @@
 int main(int argc, char *argv[])
 {
 	int i;
+	int xflag = 0;
 	char transdec = 0, needfreesp = 0, needfreept = 0;
 	char needfreeten = 0, needfreeelv = 0;
 	char c;
@@ -45,6 +46,9 @@ int main(int argc, char *argv[])
 				break;
 			case 'f':
 				transdec = 1;
+				break;
+			case 'x':
+				xflag = 1;
 				break;
 			case 'l':
 				if ((spacer = malloc(sizeof(char)*4)) == NULL) {
@@ -83,6 +87,21 @@ int main(int argc, char *argv[])
 				*spacer = ','; *(spacer+1) = '\0';
 				needfreesp = 1;
 				spaces = 3;
+				break;
+			case 'b':
+				if ((ten = malloc(sizeof(char)*4)) == NULL) {
+					fprintf(stderr,"dozpret:  insufficient memory\n");
+					return 1;
+				}
+				*ten = 'T'; *(ten+1) = '\0';
+				transdec = 1;
+				needfreeten = 1;
+				if ((zenpoint = malloc(sizeof(char)*2)) == NULL) {
+					fprintf(stderr,"dozpret:  insufficient memory\n");
+					return 1;
+				}
+				*zenpoint = '\''; *(zenpoint+1) = '\0';
+				needfreept = 1;
 				break;
 			case 'p':
 				if (needfreept == 1) {
@@ -206,13 +225,13 @@ int main(int argc, char *argv[])
 	if (argc >= 1) {
 		if (strlen(*argv) >=MAXLINE)
 			*argv[MAXLINE] = '\0';
-		dozpret(*argv,spacer,zenpoint,spaces);
+		dozpret(*argv,spacer,zenpoint,spaces,xflag);
 		if (transdec == 1)
 			fixtrans(*argv,ten,elv);
 		printf("%s\n",*argv);
 	} else {
 		while (getword(number,MAXLINE) != EOF) {
-			dozpret(number,spacer,zenpoint,spaces);
+			dozpret(number,spacer,zenpoint,spaces,xflag);
 			if (transdec == 1)
 				fixtrans(number,ten,elv);
 			printf("%s\n",number);
@@ -229,7 +248,7 @@ int main(int argc, char *argv[])
 	return 0;
 }
 
-int dozpret(char *number,char *spacer,char *zenpoint, int spaces)
+int dozpret(char *number,char *spacer,char *zenpoint, int spaces, int xflag)
 {
 	int i, j, k, len, both = 0;
 	char fracpart[MAXLINE]; /* fractional part of number */
@@ -244,11 +263,13 @@ int dozpret(char *number,char *spacer,char *zenpoint, int spaces)
 		strcpy(fracpart,number+i+1);
 		number[i] = '\0';
 	}
-	prettify(number,spacer,spaces);
+	if (xflag == 0)
+		prettify(number,spacer,spaces);
 	if (both == 1)
 		return 0;
 	reverse(fracpart); reverse(spacer);
-	prettify(fracpart,spacer,spaces);
+	if (xflag == 0)
+		prettify(fracpart,spacer,spaces);
 	reverse(fracpart); reverse(spacer);
 	if (strlen(number) + strlen(zenpoint) < MAXLINE) {
 		strcat(number,zenpoint);
