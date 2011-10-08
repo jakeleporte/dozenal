@@ -141,7 +141,9 @@ int tgmify(char *s, struct tm *thetime)
 	len = strlen(s);
 	for (i=0; s[i] != '\0'; ++i) {
 		if (s[i] == '@') {
-			for (j=i; !isalpha(s[j]) && (j-i) <= 4; ++j) {
+/*			for (j=i; !isalpha(s[j]) && (j-i) <= 4; ++j) {*/
+			for (j=i; (isdigit(s[j]) || ispunct(s[j]) || s[j] ==
+			'X' || s[j] == 'E') && (j-i) <= 4; ++j) {
 				if (isdigit(s[j]) || s[j] == 'X' || s[j] == 'E') {
 					for (j=j,k=0; isdigit(s[j]) || s[j] == 'X' ||
 					s[j] == 'E'; ++j,++k)
