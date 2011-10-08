@@ -5,6 +5,7 @@
 #include<stdlib.h>
 #include<time.h>
 #include<string.h>
+#include "conv.h"
 
 #define SIZE 256
 #define MAXNUM 1000
@@ -53,6 +54,10 @@ int main(int argc, char *argv[])
 			break;
 		}
 	}
+	if (argv[optind] != NULL)
+		format = argv[optind];
+	else
+		format = "@c";
 
 	strftime(buffer,SIZE,format,thetime);
 	printf("%s\n",buffer);
@@ -126,7 +131,7 @@ int sectotim(char *s, struct tm *thetime)
 
 int tgmify(char *s, struct tm *thetime)
 {
-	int i,j;
+	int i,j,k;
 	char tmp[SIZE];
 	char tmp2[SIZE];
 	size_t len;
@@ -137,10 +142,16 @@ int tgmify(char *s, struct tm *thetime)
 	for (i=0; s[i] != '\0'; ++i) {
 		if (s[i] == '@') {
 			for (j=i; !isalpha(s[j]) && (j-i) <= 4; ++j) {
-				if (isdigit(s[j]))
-					numpad = atoi(s+j);
-				else if ((ispunct(s[j]) || s[j] == '0') && s[j] != '@')
+				if (isdigit(s[j]) || s[j] == 'X' || s[j] == 'E') {
+					for (j=j,k=0; isdigit(s[j]) || s[j] == 'X' ||
+					s[j] == 'E'; ++j,++k)
+						tmp[k] = s[j];
+					tmp[k] = '\0';
+					numpad = (int)doztodec(tmp);
+					--j;
+				} else if ((ispunct(s[j]) || s[j] == '0') && s[j] != '@') {
 					charpad = s[j];
+				}
 			}
 			switch (s[j]) {
 			case 'c':
@@ -175,6 +186,11 @@ int tgmify(char *s, struct tm *thetime)
 				break;
 			case 't':
 				sectotim(tmp,thetime);
+				len = strlen(tmp);
+				if (numpad == 0) {
+					numpad = 4;
+					charpad = '0';
+				}
 				padding(tmp,numpad,charpad);
 				tgminsert(s,tmp,j-i);
 				break;
@@ -191,13 +207,18 @@ int tgmify(char *s, struct tm *thetime)
 				tgminsert(s,tmp,j-i);
 				break;
 			case 'T':
-				strftime(tmp,SIZE,"%H",thetime);
+/*				strftime(tmp,SIZE,"%H",thetime);
 				tokenize(tmp);
 				sectotim(tmp2,thetime);
 				strcat(tmp,";");
 				strcat(tmp,tmp2);
+				padding(tmp,numpad,charpad);*/
+				strftime(tmp,SIZE,"%H",thetime);
+				tokenize(tmp);
 				padding(tmp,numpad,charpad);
+				strcat(tmp,";@t");
 				tgminsert(s,tmp,j-i);
+/*				tgminsert(s,tmp,j-i);*/
 				break;
 			default:
 				fprintf(stderr,"dozdate:  no valid TGM "
@@ -214,11 +235,18 @@ int tgmify(char *s, struct tm *thetime)
 
 int padding(char *s, int numpad, char charpad)
 {
-	int i;
+	int i,j;
+	size_t len;
 
-	memmove(s+numpad,s,numpad+1);
-	for(i=0; i < numpad; ++i)
-		s[i] = charpad;
+	if (numpad == 0)
+		return 0;
+	len = strlen(s);
+	j = numpad - len;
+	if (j > 0) {
+		memmove(s+j,s,len+1);
+		for (i=0; i<j; ++i)
+			s[i] = charpad;
+	}
 	return 0;
 }
 
