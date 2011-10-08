@@ -9,6 +9,8 @@
 #define SIZE 256
 #define MAXNUM 1000
 
+int padding(char *s, int numpad, char charpad);
+
 int main(int argc, char *argv[])
 {
 	char c;
@@ -128,27 +130,73 @@ int tgmify(char *s, struct tm *thetime)
 	char tmp[SIZE];
 	char tmp2[SIZE];
 	size_t len;
+	int numpad = 0;
+	char charpad = ' ';
 
 	len = strlen(s);
 	for (i=0; s[i] != '\0'; ++i) {
 		if (s[i] == '@') {
-			for (j=i; !isalpha(s[j]) && (j-i) <= 4; ++j);
+			for (j=i; !isalpha(s[j]) && (j-i) <= 4; ++j) {
+				if (isdigit(s[j]))
+					numpad = atoi(s+j);
+				else if ((ispunct(s[j]) || s[j] == '0') && s[j] != '@')
+					charpad = s[j];
+			}
 			switch (s[j]) {
+			case 'c':
+				strftime(tmp,SIZE,"%a %d %b %Y ",thetime);
+				tokenize(tmp);
+				strftime(tmp2,SIZE,"%H",thetime);
+				tokenize(tmp2);
+				strcat(tmp,tmp2);
+				strcat(tmp,";");
+				sectotim(tmp2,thetime);
+				strcat(tmp,tmp2);
+				strftime(tmp2,SIZE," %Z",thetime);
+				strcat(tmp,tmp2);
+				padding(tmp,numpad,charpad);
+				tgminsert(s,tmp,j-i);
+				break;
+			case 'C':
+				strftime(tmp,SIZE,"%Y",thetime);
+				tokenize(tmp);
+				tmp[2] = '\0';
+				padding(tmp,numpad,charpad);
+				tgminsert(s,tmp,j-i);
+				break;
+			case 'y':
+				strftime(tmp,SIZE,"%Y",thetime);
+				tokenize(tmp);
+				reverse(tmp);
+				tmp[2] = '\0';
+				reverse(tmp);
+				padding(tmp,numpad,charpad);
+				tgminsert(s,tmp,j-i);
+				break;
 			case 't':
 				sectotim(tmp,thetime);
+				padding(tmp,numpad,charpad);
 				tgminsert(s,tmp,j-i);
 				break;
 			case 'H':
 				strftime(tmp,SIZE,"%H",thetime);
+				tokenize(tmp);
+				padding(tmp,numpad,charpad);
+				tgminsert(s,tmp,j-i);
+				break;
+			case 'k':
+				strftime(tmp,SIZE,"%H",thetime);
 				dectodoz(tmp,(double)atoi(tmp));
+				padding(tmp,numpad,charpad);
 				tgminsert(s,tmp,j-i);
 				break;
 			case 'T':
 				strftime(tmp,SIZE,"%H",thetime);
-				dectodoz(tmp,(double)atoi(tmp));
+				tokenize(tmp);
 				sectotim(tmp2,thetime);
 				strcat(tmp,";");
 				strcat(tmp,tmp2);
+				padding(tmp,numpad,charpad);
 				tgminsert(s,tmp,j-i);
 				break;
 			default:
@@ -157,8 +205,20 @@ int tgmify(char *s, struct tm *thetime)
 				exit(1);
 				break;
 			}
+			numpad = 0;
+			charpad = ' ';
 		}
 	}
+	return 0;
+}
+
+int padding(char *s, int numpad, char charpad)
+{
+	int i;
+
+	memmove(s+numpad,s,numpad+1);
+	for(i=0; i < numpad; ++i)
+		s[i] = charpad;
 	return 0;
 }
 
