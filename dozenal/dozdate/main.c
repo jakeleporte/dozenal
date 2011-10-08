@@ -161,10 +161,12 @@ int tgmify(char *s, struct tm *thetime)
 				tokenize(tmp);
 				strftime(tmp2,SIZE,"%H",thetime);
 				tokenize(tmp2);
+				padding(tmp2,numpad,charpad);
 				strcat(tmp,tmp2);
-				strcat(tmp,";");
+/*				strcat(tmp,";");
 				sectotim(tmp2,thetime);
-				strcat(tmp,tmp2);
+				strcat(tmp,tmp2);*/
+				strcat(tmp,";@t");
 				strftime(tmp2,SIZE," %Z",thetime);
 				strcat(tmp,tmp2);
 				padding(tmp,numpad,charpad);
@@ -209,18 +211,11 @@ int tgmify(char *s, struct tm *thetime)
 				tgminsert(s,tmp,j-i);
 				break;
 			case 'T':
-/*				strftime(tmp,SIZE,"%H",thetime);
-				tokenize(tmp);
-				sectotim(tmp2,thetime);
-				strcat(tmp,";");
-				strcat(tmp,tmp2);
-				padding(tmp,numpad,charpad);*/
 				strftime(tmp,SIZE,"%H",thetime);
 				tokenize(tmp);
 				padding(tmp,numpad,charpad);
 				strcat(tmp,";@t");
 				tgminsert(s,tmp,j-i);
-/*				tgminsert(s,tmp,j-i);*/
 				break;
 			default:
 				fprintf(stderr,"dozdate:  no valid TGM "
