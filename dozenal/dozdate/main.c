@@ -6,6 +6,7 @@
 #include<time.h>
 #include<string.h>
 #include "conv.h"
+#include "process_date.h"
 
 #define SIZE 256
 #define MAXNUM 1000
@@ -16,7 +17,7 @@ int main(int argc, char *argv[])
 {
 	char c;
 	int opterr = 0;
-	char *date; char *format;
+	char *date = NULL; char *format = NULL;
 	char seps[SIZE][SIZE];
 	char buffer[SIZE];
 	char finans[MAXNUM] = "";
@@ -33,6 +34,7 @@ int main(int argc, char *argv[])
 			break;
 		case 'd':
 			date = optarg;
+			process_date(date,thetime);
 			break;
 		case 'f':
 			format = optarg;
@@ -59,12 +61,48 @@ int main(int argc, char *argv[])
 	else
 		format = "@c";
 
-	strftime(buffer,SIZE,format,thetime);
-	printf("%s\n",buffer);
-	tokenize(buffer);
-	printf("%s\n",buffer);
-	tgmify(buffer,thetime);
-	printf("%s\n",buffer);
+/*	strftime(buffer,SIZE,format,thetime);*/
+	printf("%s\n",format);
+	tgmify(format,thetime);
+	breakup(format,thetime);
+	printf("%s\n",format);
+	return 0;
+}
+
+int breakup(char *s, struct tm *thetime)
+{
+	int i, j, k;
+	char tmp[SIZE];
+	char tmp2[SIZE];
+
+	for (i=0; s[i] != '\0'; ++i) {
+		if (s[i] == '%') {
+			k = i;
+			for (j=0; !isalpha(s[i]); ++j, ++i)
+				tmp[j] = s[i];
+			tmp[j++] = s[i];
+			tmp[j] = '\0';
+			strftime(tmp2,SIZE,tmp,thetime);
+			tokenize(tmp2);
+			printf("HERE:  %s\n",tmp2);
+			dateinsert(s,tmp2,j-1);
+		}
+	}
+	return 0;
+}
+
+dateinsert(char *s, char *t, int pos)
+{
+	int i;
+	size_t len, len2;
+
+	len = strlen(t);
+	len2 = strlen(s);
+	for (i=0; s[i] != '%'; ++i);
+	memmove(s+i+len-pos,s+i+1,len2-i);
+	memcpy(s+i,t,len);
+
+	return 0;
 }
 
 int tokenize(char *s)
@@ -84,14 +122,14 @@ int tokenize(char *s)
 		for (i=0; number[i] == '0'; ++i);
 		if (isdigit(number[i]))
 			dectodoz(number+i,(double) atoi(number));
-		insert(number,s,tok);
+		convert(number,s,tok);
 		number[0] = '\0';
 		tok = strtok(NULL,tokchars);
 	}
 	return 0;
 }
 
-int insert(char *number, char *theans, char *tok)
+int convert(char *number, char *theans, char *tok)
 {
 	int i,j;
 	size_t len1, len2;
@@ -163,9 +201,6 @@ int tgmify(char *s, struct tm *thetime)
 				tokenize(tmp2);
 				padding(tmp2,numpad,charpad);
 				strcat(tmp,tmp2);
-/*				strcat(tmp,";");
-				sectotim(tmp2,thetime);
-				strcat(tmp,tmp2);*/
 				strcat(tmp,";@t");
 				strftime(tmp2,SIZE," %Z",thetime);
 				strcat(tmp,tmp2);

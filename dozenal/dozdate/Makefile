@@ -8,10 +8,13 @@
 # Makefile for the decimal to dozenal converter.
 
 dozdate: main.o conv.h conv.o doz.o dec.o
-	gcc -g -lm -o dozdate main.o conv.o doz.o dec.o
+	gcc -g -lm -o dozdate main.o conv.o doz.o dec.o process_date.o
 
-main.o : conv.h main.c conv.o doz.o
+main.o : conv.h main.c conv.o doz.o process_date.o process_date.h
 	gcc -g -lm -c main.c
+
+process_date.o : process_date.c conv.o process_date.h
+	gcc -g -lm -c process_date.c conv.o
 
 doz.o : conv.o conv.h doz.c
 	gcc -g -std=c99 -lm -c doz.c
