@@ -84,7 +84,6 @@ int breakup(char *s, struct tm *thetime)
 			tmp[j] = '\0';
 			strftime(tmp2,SIZE,tmp,thetime);
 			tokenize(tmp2);
-			printf("HERE:  %s\n",tmp2);
 			dateinsert(s,tmp2,j-1);
 		}
 	}
