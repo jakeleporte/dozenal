@@ -60,8 +60,8 @@ int process_date(char *s,struct tm *thetime)
 }
 
 /* parses string for weekdays and related modifiers; if
- * weekday on its own, assume "this coming"; FIXME:  make it
- * work for "last", as well */
+ * weekday on its own, assume "this coming"; if "last", then
+ * the week prior; FIXME:  make it work for "next", as well */
 int parse_for_weekday(char *s, struct tm *thetime)
 {
 	int tmp, tmp2, i;
