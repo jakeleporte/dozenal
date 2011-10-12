@@ -61,7 +61,6 @@ int main(int argc, char *argv[])
 	else
 		format = "@c";
 
-/*	strftime(buffer,SIZE,format,thetime);*/
 	printf("%s\n",format);
 	tgmify(format,thetime);
 	breakup(format,thetime);
@@ -69,6 +68,8 @@ int main(int argc, char *argv[])
 	return 0;
 }
 
+/* after TGM units have been handled, takes out the regular
+ * date units and handles them one by one */
 int breakup(char *s, struct tm *thetime)
 {
 	int i, j, k;
@@ -90,6 +91,8 @@ int breakup(char *s, struct tm *thetime)
 	return 0;
 }
 
+/* inserts the normal date conversion (%alpha) into the
+ * final string */
 dateinsert(char *s, char *t, int pos)
 {
 	int i;
@@ -104,11 +107,13 @@ dateinsert(char *s, char *t, int pos)
 	return 0;
 }
 
+/* tokenizes and converts the results of %alpha commands and
+ * sends them back to caller */
 int tokenize(char *s)
 {
 	char *tok = NULL;
 	int i; int j = 0;
-	char *tokchars = " ,.:;\t\n\'\"!#$%^&*()%";
+	char *tokchars = " ,.:;\t\n\'\"/!#$%^&*()%";
 	char number[MAXNUM];
 	char num[MAXNUM];
 
@@ -128,6 +133,8 @@ int tokenize(char *s)
 	return 0;
 }
 
+/* does the actual converting of each token processed by
+ * tokenize() */
 int convert(char *number, char *theans, char *tok)
 {
 	int i,j;
@@ -142,13 +149,14 @@ int convert(char *number, char *theans, char *tok)
 	if (len1 > len2) {
 		memmove(number+(len1-len2),number,len2+1);
 		for(i=0; i<(len1-len2); ++i)
-			number[i] = '0';
+			number[i] = '0'; /* FIXME:  Sometimes should be space */
 		len2 = strlen(number);
 	}
 	memcpy(spot,number,len2);
 	return 0;
 }
 
+/* converts seconds to Tims */
 int sectotim(char *s, struct tm *thetime)
 {
 	int tim;
@@ -166,6 +174,9 @@ int sectotim(char *s, struct tm *thetime)
 	return 0;
 }
 
+/* handles the TGM conversion characters (@alpha); converts
+ * them to TGM; calls tgminsert to stick them into the
+ * string */
 int tgmify(char *s, struct tm *thetime)
 {
 	int i,j,k;
@@ -193,7 +204,7 @@ int tgmify(char *s, struct tm *thetime)
 				}
 			}
 			switch (s[j]) {
-			case 'c':
+			case 'c': /* time:  day mon year hours Tims */
 				strftime(tmp,SIZE,"%a %d %b %Y ",thetime);
 				tokenize(tmp);
 				strftime(tmp2,SIZE,"%H",thetime);
@@ -206,14 +217,14 @@ int tgmify(char *s, struct tm *thetime)
 				padding(tmp,numpad,charpad);
 				tgminsert(s,tmp,j-i);
 				break;
-			case 'C':
+			case 'C': /* zentury without year */
 				strftime(tmp,SIZE,"%Y",thetime);
 				tokenize(tmp);
 				tmp[2] = '\0';
 				padding(tmp,numpad,charpad);
 				tgminsert(s,tmp,j-i);
 				break;
-			case 'y':
+			case 'y': /* year without zentury */
 				strftime(tmp,SIZE,"%Y",thetime);
 				tokenize(tmp);
 				reverse(tmp);
@@ -222,7 +233,7 @@ int tgmify(char *s, struct tm *thetime)
 				padding(tmp,numpad,charpad);
 				tgminsert(s,tmp,j-i);
 				break;
-			case 't':
+			case 't': /* number of Tims since last hour */
 				sectotim(tmp,thetime);
 				len = strlen(tmp);
 				if (numpad == 0) {
@@ -232,23 +243,41 @@ int tgmify(char *s, struct tm *thetime)
 				padding(tmp,numpad,charpad);
 				tgminsert(s,tmp,j-i);
 				break;
-			case 'H':
+			case 'm': /* number of quaduaTims, to two places */
+				sectotim(tmp,thetime);
+				tmp[2] = '\0';
+				len = strlen(tmp);
+				if (numpad == 0) {
+					numpad = 2;
+					charpad = '0';
+				}
+				padding(tmp,numpad,charpad);
+				tgminsert(s,tmp,j-i);
+				break;
+			case 'H': /* hours; 00--20 */
 				strftime(tmp,SIZE,"%H",thetime);
 				tokenize(tmp);
 				padding(tmp,numpad,charpad);
 				tgminsert(s,tmp,j-i);
 				break;
-			case 'k':
+			case 'k': /* hours:  1-20 */
 				strftime(tmp,SIZE,"%H",thetime);
 				dectodoz(tmp,(double)atoi(tmp));
 				padding(tmp,numpad,charpad);
 				tgminsert(s,tmp,j-i);
 				break;
-			case 'T':
+			case 'T': /* time:  hours;Tims  "long time" */
 				strftime(tmp,SIZE,"%H",thetime);
 				tokenize(tmp);
 				padding(tmp,numpad,charpad);
 				strcat(tmp,";@t");
+				tgminsert(s,tmp,j-i);
+				break;
+			case 's': /* "short time":  hours;Tims to 2 place */
+				strftime(tmp,SIZE,"%H",thetime);
+				tokenize(tmp);
+				padding(tmp,numpad,charpad);
+				strcat(tmp,";@m");
 				tgminsert(s,tmp,j-i);
 				break;
 			default:
@@ -264,6 +293,9 @@ int tgmify(char *s, struct tm *thetime)
 	return 0;
 }
 
+/* processes the padding for the units; takes the string
+ * containing the result, the total number of characters,
+ * and the character with which the string should be padded */
 int padding(char *s, int numpad, char charpad)
 {
 	int i,j;
@@ -281,6 +313,7 @@ int padding(char *s, int numpad, char charpad)
 	return 0;
 }
 
+/* inserts the TGM results into the string */
 int tgminsert(char *full, char *insert, int inspoint)
 {
 	size_t len, lenfull;
