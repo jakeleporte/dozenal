@@ -14,6 +14,9 @@
 #include<stdlib.h>
 #include<string.h>
 #include<math.h>
+#include "conv.h"
+
+#define SIZE 256
 
 /* global array of structs for days of week */
 struct nameday {
@@ -47,27 +50,100 @@ struct monthdays {
 	"December", "Dec", 11,
 };
 
+char *parse_for_month(char *s, struct tm *thetime);
+
 /* governing function, calls others */
 int process_date(char *s,struct tm *thetime)
 {
 	int i;
+	char *monpointer;
 
 	printdate(thetime);
 	parse_for_weekday(s,thetime);
 	printdate(thetime);
-	printf("%d\n",dayofweek(20,00,1,1));
+	monpointer = parse_for_month(s,thetime);
+	if (monpointer != NULL)
+		parse_for_date(s,monpointer,thetime);
+	printf("HERE:  %s; %d\n",monpointer,thetime->tm_mon);
+/*	printf("%d\n",dayofweek(20,00,1,1));*/
 	exit(0);
+}
+
+/* tries to parse date from position of month; scans backward 
+ * for date, then forward; if not found, make date 1 */
+int parse_for_date(char *s, char *monthpoint, struct tm *thetime)
+{
+	char *pt;
+	char daynum[SIZE] = "NULL";
+	int i = 0;
+	int date;
+
+	pt = monthpoint;
+	if (monthpoint == NULL) {
+	}
+	while (pt >= s) {
+		if (isdigit(*pt) || (*pt == 'X') || (*pt == 'E'))
+			daynum[i++] = *pt;
+		--pt;
+	}
+	daynum[i] = '\0';
+	if (daynum[0] != '\0') {
+		reverse(daynum);
+		date = doztodec(daynum);
+	} else {
+		date = 1;
+	}
+	printf("DAYNUM:  %d\n",date);
+	thetime->tm_mday = date;
+	return 0;
+}
+
+/* parses date string for months, short, long, or alpha;
+ * returns a pointer to beginning of string if present, NULL
+ * if not; instills in struct thetime; if absent, use 0 */
+char *parse_for_month(char *s, struct tm *thetime)
+{
+	int i, j, flag;
+	char *monthpoint = NULL;
+	char monthnum[SIZE];
+
+	flag = j = 0;
+	for (i=0; i <= 11; ++i) {
+		if ((monthpoint = strstr(s,months[i].longname)) || 
+		(monthpoint = strstr(s,months[i].shortname))) {
+			thetime->tm_mon = months[i].num;
+			break;
+		}
+	}
+	if (monthpoint != NULL) {
+		thetime->tm_mon = i;
+		return monthpoint;
+	}
+	for (i=0; s[i] != '\0'; ++i) {
+		if (s[i] == '-') {
+			if (flag == 0)
+				monthpoint = &s[i+1];
+			flag = (flag == 0) ? 1 : 0;
+		}
+		if (flag == 1 && (isdigit(s[i]) || s[i]=='X' || s[i]=='E'))
+			monthnum[j++] = s[i];
+	}
+	monthnum[j] == '\0';
+	if (monthpoint != NULL) {
+		thetime->tm_mon = (int)doztodec(monthnum) - 1;
+		return monthpoint;
+	}
 }
 
 /* parses string for weekdays and related modifiers; if
  * weekday on its own, assume "this coming"; if "last", then
- * the week prior; FIXME:  make it work for "next", as well */
+ * the week prior */
 int parse_for_weekday(char *s, struct tm *thetime)
 {
 	int tmp, tmp2, i;
 	int dayyear, maxdays;
-	char *daypoint; /* point at weekday in s */
-	char *lastpoint; /* if "last" is in string */
+	char *daypoint = NULL; /* point at weekday in s */
+	char *lastpoint; /* if "last" or "next" is in string */
 
 	tmp = thetime->tm_wday;	 /* tmp:  current weekday num */
 	for (i=0; i <= 6; ++i) {
@@ -77,6 +153,8 @@ int parse_for_weekday(char *s, struct tm *thetime)
 			break;
 		}
 	}
+	if (daypoint == NULL)
+		return 0;
 	thetime->tm_wday = tmp2; /* new weekday into struct */
 	if ((lastpoint = strstr(s,"last")) && (lastpoint <
 	daypoint) && (lastpoint != NULL)) {
@@ -89,7 +167,10 @@ int parse_for_weekday(char *s, struct tm *thetime)
 		if (tmp2 > tmp)
 			dayyear = abs(tmp - tmp2);
 		else
-			dayyear = tmp + tmp2 + 1;
+			dayyear = (7 - (abs(tmp - tmp2)));
+		if ((lastpoint = strstr(s,"next")) && (lastpoint <
+		daypoint) && (lastpoint != NULL))
+			dayyear += 7;
 	}
 	maxdays = (leapyear(0,thetime->tm_year+1900)) ? 364 : 365;
 	dayyear += thetime->tm_yday;
