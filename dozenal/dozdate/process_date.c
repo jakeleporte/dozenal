@@ -88,11 +88,13 @@ int parse_for_date(char *s, char *monthpoint, struct tm *thetime)
 	}
 	daynum[i] = '\0';
 	if (daynum[0] != '\0') {
-		reverse(daynum);
-		date = doztodec(daynum);
-	} else {
+		for (i=0; daynum[i] == '0' && daynum[i] != '\0'; ++i);
+		reverse(daynum+i);
+		date = doztodec(daynum+i);
+	} else {  /* FIXME:  do American slash order, too */
 		date = 1;
 	}
+	/* error checking for date numbers per month */
 	printf("DAYNUM:  %d\n",date);
 	thetime->tm_mday = date;
 	return 0;
