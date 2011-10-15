@@ -7,6 +7,7 @@
 #include<string.h>
 #include "conv.h"
 #include "process_date.h"
+#include "error_codes.h"
 
 #define SIZE 256
 #define MAXNUM 1000
@@ -15,14 +16,17 @@ int padding(char *s, int numpad, char charpad);
 
 int main(int argc, char *argv[])
 {
-	char c;
+	char c; int i;
 	int opterr = 0;
 	char *date = NULL; char *format = NULL;
-	char seps[SIZE][SIZE];
-	char buffer[SIZE];
-	char finans[MAXNUM] = "";
+	char buffer[MAXNUM];
+	char buffer2[MAXNUM];
+	char dateline[MAXNUM];
 	struct tm *thetime;
 	time_t curtime;
+	int needfreef = 0;
+	int fileflag = 0;
+	FILE *fp;
 	
 	curtime = time(NULL);
 	thetime = localtime(&curtime);
@@ -37,7 +41,12 @@ int main(int argc, char *argv[])
 			process_date(date,thetime);
 			break;
 		case 'f':
-			format = optarg;
+			if ((fp = fopen(optarg,"r")) == NULL) {
+				fprintf(stderr,"dozdate:  error:  can't open "
+				"file %s\n",optarg);
+				exit(BAD_FILE);
+			}
+			fileflag = 1;
 			break;
 		case 'v':
 			printf("dozdate v3.1\n");
@@ -58,13 +67,38 @@ int main(int argc, char *argv[])
 	}
 	if (argv[optind] != NULL)
 		format = argv[optind];
-	else
-		format = "@c";
-
-	printf("%s\n",format);
-	tgmify(format,thetime);
-	breakup(format,thetime);
-	printf("%s\n",format);
+	else {
+		if ((format = malloc(sizeof(char)*3)) == NULL) {
+			fprintf(stderr,"dozdate:  error:  insufficient memory\n");
+			exit(INSUFF_MEM);
+		}
+		needfreef = 1;
+		*format = '@'; *(format+1) = 'c'; *(format+2) = '\0';
+	}
+	strcpy(buffer,format);
+	strcpy(buffer2,format);
+	if (fileflag == 0) {
+		tgmify(buffer,thetime);
+		breakup(buffer,thetime);
+		printf("%s\n",buffer);
+	} else {
+		i = 0;
+		while ((c = getc(fp)) != EOF) {
+			dateline[i++] = c;
+			if (dateline[i-1] == '\n') {
+				dateline[i] = '\0';
+				strcpy(buffer,buffer2);
+				process_date(dateline,thetime);
+				tgmify(buffer,thetime);
+				breakup(buffer,thetime);
+				printf("%s\n",buffer);
+				i = 0;
+			}
+		}
+		fclose(fp);
+	}
+	if (needfreef == 1)
+		free(format);
 	return 0;
 }
 
@@ -283,7 +317,7 @@ int tgmify(char *s, struct tm *thetime)
 			default:
 				fprintf(stderr,"dozdate:  no valid TGM "
 				"conversion unit found\n");
-				exit(1);
+				exit(BAD_CONV_CODE);
 				break;
 			}
 			numpad = 0;

@@ -15,6 +15,7 @@
 #include<string.h>
 #include<math.h>
 #include "conv.h"
+#include "error_codes.h"
 
 #define SIZE 256
 
@@ -58,30 +59,109 @@ int process_date(char *s,struct tm *thetime)
 	int i;
 	char *monpointer;
 
-	printdate(thetime);
 	parse_for_weekday(s,thetime);
-	printdate(thetime);
 	monpointer = parse_for_month(s,thetime);
 	if (monpointer != NULL)
 		parse_for_date(s,monpointer,thetime);
-	printf("HERE:  %s; %d\n",monpointer,thetime->tm_mon);
-/*	printf("%d\n",dayofweek(20,00,1,1));*/
-	exit(0);
+	parse_for_year(s,thetime);
+	errorcheck(s,thetime);
+	return 0;
 }
 
-/* tries to parse date from position of month; scans backward 
- * for date, then forward; if not found, make date 1 */
+/* ensures that weekday given matches the dates, etc. */
+int errorcheck(char *s, struct tm *thetime)
+{
+	char *weekday, *oweekday;
+	char *month;
+	int i;
+
+	/* fill some useful variables for error-checking */
+	for (i=0; thetime->tm_wday != weekdays[i].num; ++i);
+	weekday = weekdays[i].longname;
+	oweekday = weekdays[dayofweek(thetime->tm_year+1900,
+		thetime->tm_mon+1,thetime->tm_mday)].longname;
+	for (i=0; thetime->tm_mon != months[i].num; ++i);
+	month = months[i].longname;
+	/* check for mday error */
+	if ((thetime->tm_mon == 0 && thetime->tm_mday > 31) ||
+	(thetime->tm_mon == 1 && thetime->tm_mday > 29) ||
+	(thetime->tm_mon == 2 && thetime->tm_mday > 31) ||
+	(thetime->tm_mon == 3 && thetime->tm_mday > 30) ||
+	(thetime->tm_mon == 4 && thetime->tm_mday > 31) ||
+	(thetime->tm_mon == 5 && thetime->tm_mday > 30) ||
+	(thetime->tm_mon == 6 && thetime->tm_mday > 31) ||
+	(thetime->tm_mon == 7 && thetime->tm_mday > 31) ||
+	(thetime->tm_mon == 8 && thetime->tm_mday > 30) ||
+	(thetime->tm_mon == 9 && thetime->tm_mday > 31) ||
+	(thetime->tm_mon == 10 && thetime->tm_mday > 30) ||
+	(thetime->tm_mon == 11 && thetime->tm_mday > 31)) {
+		fprintf(stderr,"dozdate:  error:  %s does not have "
+		"%d days\n",month,thetime->tm_mday);
+		exit(BAD_MDAY);
+	} else if ((thetime->tm_mon == 1) && (thetime->tm_mday == 29)) {
+		if (!leapyear(0,thetime->tm_year+1900)) {
+			fprintf(stderr,"dozdate:  error:  %d is not a "
+			"leap year\n",thetime->tm_year+1900);
+			exit(BAD_LEAP_YEAR);
+		}
+	}
+	/* check for weekday error; fix if necessary */
+	if (thetime->tm_wday != dayofweek(thetime->tm_year+1900,
+	thetime->tm_mon+1,thetime->tm_mday)) {
+		if (strstr(s,"Sun") || strstr(s,"Mon") ||
+		strstr(s,"Tue") || strstr(s,"Wed") || strstr(s,"Thu")
+		|| strstr(s,"Fri") || strstr(s,"Sat"))
+			fprintf(stderr,"dozdate:  weekday \"%s\" does not "
+			"match the date \"%d %s %d\";\nsetting to the correct "
+			"weekday, \"%s\"\n",weekday,thetime->tm_mday,
+			month,thetime->tm_year+1900,oweekday);
+		thetime->tm_wday = dayofweek(thetime->tm_year+1900,
+			thetime->tm_mon+1,thetime->tm_mday);
+	}
+}
+
+/* find a four-digit number; if doesn't start with : or ;,
+ * assume it's the year, even if leading zeroes */
+int parse_for_year(char *s, struct tm *thetime)
+{
+	int i, j;
+	char yearnum[SIZE] = "";
+	int year = 0;
+	size_t len;
+
+	len = strlen(s);
+	for (i=0; s[i] != '\0'; ++i) {
+		j=0;
+		yearnum[j++] = (i > 0) ? '0' : s[i-1];
+		while ((isdigit(s[i]) || s[i]=='X' || s[i] == 'E') && i <= len) {
+			yearnum[j++] = s[i++];
+		}
+		yearnum[j] = '\0';
+		if ((j == 5) && (yearnum[0] != ';') && (yearnum[0] != ':')) {
+			memmove(yearnum,yearnum+1,5);
+			year = (int)doztodec(yearnum);
+		} else {
+			yearnum[0] = '\0';
+		}
+	}
+	if (year != 0)
+		thetime->tm_year = year - 1900;
+	return 0;
+}
+
+/* tries to parse date from position of alphabetical month; 
+ * scans backward for date, then forward; if not found, make 
+ * date 1 */
 int parse_for_date(char *s, char *monthpoint, struct tm *thetime)
 {
-	char *pt;
+	char *pt, *pt2;
 	char daynum[SIZE] = "NULL";
 	int i = 0;
-	int date;
+	int date = 0;
 
 	pt = monthpoint;
-	if (monthpoint == NULL) {
-	}
-	while (pt >= s) {
+	pt2 = &s[strlen(s)];
+	while (pt >= s) { 				/* do date month year notation */
 		if (isdigit(*pt) || (*pt == 'X') || (*pt == 'E'))
 			daynum[i++] = *pt;
 		--pt;
@@ -90,26 +170,43 @@ int parse_for_date(char *s, char *monthpoint, struct tm *thetime)
 	if (daynum[0] != '\0') {
 		for (i=0; daynum[i] == '0' && daynum[i] != '\0'; ++i);
 		reverse(daynum+i);
-		date = doztodec(daynum+i);
-	} else {  /* FIXME:  do American slash order, too */
-		date = 1;
+		date = (int)doztodec(daynum+i);
+	} else {                       /* do Amer comma notation */
+		pt = monthpoint;
+		while (pt <= pt2) {
+			if (*pt == ',') {
+				i = 0; --pt;
+				while ((isspace(*pt) || *pt == 'X' || *pt == 'E' 
+				|| isdigit(*pt)) && pt > s) {
+					if (!isspace(*pt)) {
+						daynum[i++] = *pt;
+						daynum[i] = '\0';
+					} 
+					--pt;
+				} 
+				break;
+			}
+			++pt; 
+		}
+		reverse(daynum);
+		if (daynum[0] != '\0')
+			date = (int)doztodec(daynum);
+		if (date == 0)
+			date = 1;
 	}
 	/* error checking for date numbers per month */
-	printf("DAYNUM:  %d\n",date);
 	thetime->tm_mday = date;
 	return 0;
 }
 
-/* parses date string for months, short, long, or alpha;
- * returns a pointer to beginning of string if present, NULL
- * if not; instills in struct thetime; if absent, use 0 */
+/* parses date string for alphabetic months, short of long;
+ * if found, loads month into thetime and returns pointer to
+ * month; else, calls appropriate functions and returns NULL */
 char *parse_for_month(char *s, struct tm *thetime)
 {
-	int i, j, flag;
+	int i;
 	char *monthpoint = NULL;
-	char monthnum[SIZE];
 
-	flag = j = 0;
 	for (i=0; i <= 11; ++i) {
 		if ((monthpoint = strstr(s,months[i].longname)) || 
 		(monthpoint = strstr(s,months[i].shortname))) {
@@ -118,23 +215,62 @@ char *parse_for_month(char *s, struct tm *thetime)
 		}
 	}
 	if (monthpoint != NULL) {
-		thetime->tm_mon = i;
 		return monthpoint;
+	} else { /* must be a numeric month */
+		parse_numeric_month(s,thetime);
+		return NULL;
 	}
-	for (i=0; s[i] != '\0'; ++i) {
+}
+
+/* looks for numeric dates, in hyphen or slash format; loads
+ * parts into thetime if found */
+int parse_numeric_month(char *s, struct tm *thetime)
+{
+	char monthnum[SIZE] = "";
+	char daynum[SIZE] = "";
+	char tmp[SIZE] = "";
+	int i, j, flag;
+
+	flag = j = 0; /* FIXME:  get date from hyphens, too */
+	for (i=0; s[i] != '\0'; ++i) { /* test for hyphen notation */
 		if (s[i] == '-') {
-			if (flag == 0)
-				monthpoint = &s[i+1];
 			flag = (flag == 0) ? 1 : 0;
+			j = 0;
 		}
-		if (flag == 1 && (isdigit(s[i]) || s[i]=='X' || s[i]=='E'))
+		if (flag == 1 && (isdigit(s[i]) || s[i]=='X' || s[i]=='E')) {
 			monthnum[j++] = s[i];
+			monthnum[j] = '\0';
+		}
+		if (flag == 0 && (isdigit(s[i]) || s[i]=='X' || s[i]=='E')) {
+			daynum[j++] = s[i];
+			daynum[j] = '\0';
+		}
 	}
 	monthnum[j] == '\0';
-	if (monthpoint != NULL) {
-		thetime->tm_mon = (int)doztodec(monthnum) - 1;
-		return monthpoint;
+	if (monthnum[0] == '\0') { /* test for Amer slash notation */
+		for (i=strlen(s); i >= 0; --i) {
+			if (s[i] == '/') {
+				flag = (flag == 0) ? 1 : 0;
+				j = 0;
+			}
+			if (flag == 1 && (isdigit(s[i]) || s[i]=='X' || s[i]=='E')) {
+				daynum[j++] = s[i];
+				daynum[j] = '\0';
+			}
+			if (flag == 0 && (isdigit(s[i]) || s[i]=='X' || s[i]=='E')) {
+				monthnum[j++] = s[i];
+				monthnum[j] = '\0';
+			}
+		}
+		reverse(monthnum); reverse(daynum);
 	}
+	if (monthnum[0] != '\0') {
+		thetime->tm_mon = (int)doztodec(monthnum) - 1;
+	}
+	if (daynum[0] != '\0') {
+		thetime->tm_mday = (int)doztodec(daynum);
+	}
+	return 0;
 }
 
 /* parses string for weekdays and related modifiers; if
@@ -214,14 +350,8 @@ int date_from_ydays(int dayyear, struct tm *thetime)
 	return 0;
 }
 
-/* ensures that weekday given matches the dates, etc. */
-int errorcheck(struct tm *thetime)
-{
-
-}
-
 /* calculate day of week */
-int dayofweek(int cent, int year, int month, int day)
+int dayofweek(int year, int month, int day)
 {
 	struct centtab {
 		int twocent;
@@ -240,11 +370,11 @@ int dayofweek(int cent, int year, int month, int day)
 	};
 	int theweekday = 0;		/* the answer */
 	int thefirstday = 0;		/* the first day of the year */
-	int tmp;
+	int tmp, cent;
 	int i;
 
-	if (cent == 0)
-		cent = 20;
+	cent = (int)year / 100;
+	year = year - (cent * 100);
 	for (i=0; centuries[i].twocent != cent; ++i);
 	thefirstday = centuries[i].firstday;
 	theweekday = (int)year / 4;
@@ -257,9 +387,9 @@ int dayofweek(int cent, int year, int month, int day)
 			break;
 		case 2:
 			if (leapyear(cent,year) == 1)
-				theweekday = theweekday + thefirstday + year + 3;
-			else
 				theweekday = theweekday + thefirstday + year + 2;
+			else
+				theweekday = theweekday + thefirstday + year + 3;
 			break;
 		case 3:
 			theweekday = theweekday + thefirstday + year + 3; break;
@@ -282,8 +412,8 @@ int dayofweek(int cent, int year, int month, int day)
 		case 12:
 			theweekday = theweekday + thefirstday + year + 5; break;
 		default:
-			fprintf(stderr,"dozdate:  invalid month\n");
-			exit(1);
+			fprintf(stderr,"dozdate:  error:  invalid month\n");
+			exit(BAD_MONTH);
 	}
 	theweekday += day;
 	theweekday %= 7;
