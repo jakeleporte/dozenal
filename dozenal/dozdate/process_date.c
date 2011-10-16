@@ -64,8 +64,40 @@ int process_date(char *s,struct tm *thetime)
 	if (monpointer != NULL)
 		parse_for_date(s,monpointer,thetime);
 	parse_for_year(s,thetime);
+	thetime->tm_yday = ydays_from_date(thetime);
 	errorcheck(s,thetime);
 	return 0;
+}
+
+/* calculate ydays from the date; return ydays; redundant,
+ * but harmless, the relative date options were used */
+int ydays_from_date(struct tm *thetime)
+{
+	int i;
+	int ydays = 0;
+
+	switch (thetime->tm_mon) {
+	case 0:  ydays += 0; break;
+	case 1:  ydays += 30; break;
+	case 2:  ydays += 59; break;
+	case 3:  ydays += 90; break;
+	case 4:  ydays += 120; break;
+	case 5:  ydays += 151; break;
+	case 6:  ydays += 181; break;
+	case 7:  ydays += 212; break;
+	case 8:  ydays += 243; break;
+	case 9:  ydays += 273; break;
+	case 10:  ydays += 304; break;
+	case 11:  ydays += 334; break;
+	default:
+		fprintf(stderr, "dozdate:  error:  %d is an invalid "
+		"month",thetime->tm_mon);
+		exit(BAD_MONTH);
+		break;
+	}
+	if (leapyear(0,thetime->tm_year+1900) && thetime->tm_mon >= 1)
+		++ydays;
+	return ydays + thetime->tm_mday - 1;
 }
 
 /* ensures that weekday given matches the dates, etc. */
@@ -73,6 +105,7 @@ int errorcheck(char *s, struct tm *thetime)
 {
 	char *weekday, *oweekday;
 	char *month;
+	char number[SIZE];
 	int i;
 
 	/* fill some useful variables for error-checking */
@@ -95,13 +128,15 @@ int errorcheck(char *s, struct tm *thetime)
 	(thetime->tm_mon == 9 && thetime->tm_mday > 31) ||
 	(thetime->tm_mon == 10 && thetime->tm_mday > 30) ||
 	(thetime->tm_mon == 11 && thetime->tm_mday > 31)) {
+		dectodoz(number,(double)thetime->tm_mday);
 		fprintf(stderr,"dozdate:  error:  %s does not have "
-		"%d days\n",month,thetime->tm_mday);
+		"%s days\n",month,number);
 		exit(BAD_MDAY);
 	} else if ((thetime->tm_mon == 1) && (thetime->tm_mday == 29)) {
 		if (!leapyear(0,thetime->tm_year+1900)) {
-			fprintf(stderr,"dozdate:  error:  %d is not a "
-			"leap year\n",thetime->tm_year+1900);
+			dectodoz(number,(double)thetime->tm_year+1900);
+			fprintf(stderr,"dozdate:  error:  %s is not a "
+			"leap year\n",number);
 			exit(BAD_LEAP_YEAR);
 		}
 	}
