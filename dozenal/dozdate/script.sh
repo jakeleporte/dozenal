@@ -39,3 +39,12 @@ echo "not leap year:  `./dozdate -d\"11E7-2-25\"`";
 echo "too many days:  `./dozdate -d\"11E7-3-28\"`";
 echo "leap day (Tuesday):  `./dozdate -d\"11X8-2-25\"`";
 echo "Friday:  `./dozdate -d\"11X8-1-24\"`";
+echo "ydays 146:  `./dozdate -d\"14 July 11E8\" \"%j\"`";
+
+echo "Wed 16:16:16:  `./dozdate -d\"Wed 16:16:16\" \"@c; %T\"`";
+echo "Wed 16:16:  `./dozdate -d\"Wed 16:16\" \"@c; %T\"`";
+echo "16:16:  `./dozdate -d\"16:16\" \"@c; %T\"`";
+echo "24 Jun 11X8, 16:16:  `./dozdate \"@c:%T\" -d\"24 Jun 11X8 16:16\"`";
+echo "16:50:  `./dozdate -d\"16:50\" \"@c; %T\"`";
+echo "24:4E:  `./dozdate -d\"24:4E\" \"@c; %T\"`";
+echo "4:4E:50:  `./dozdate -d\"4:4E:50\" \"@c; %T\"`";

@@ -65,7 +65,56 @@ int process_date(char *s,struct tm *thetime)
 		parse_for_date(s,monpointer,thetime);
 	parse_for_year(s,thetime);
 	thetime->tm_yday = ydays_from_date(thetime);
+	parse_sexa_time(s,thetime);
 	errorcheck(s,thetime);
+	return 0;
+}
+
+/* parses our current sexagesimal time, if found */
+int parse_sexa_time(char *s, struct tm *thetime)
+{
+	int i,j,k;
+	char hour[3] = "";
+	char min[3] = "";
+	char sec[3] = "";
+	int flag = 0;
+
+	for (i=0; s[i] != '\0'; ++i) {
+		if (s[i] == ':' && i >= 1) {
+			k = 0;
+			if (i > 1 && (isdigit(s[i-2]) || s[i-2]=='X' || s[i-2]=='E'))
+				j = i - 2;
+			else
+				j = i - 1;
+			for (j=j; j<i; ++j)
+				hour[k++] = s[j];
+			hour[j] = '\0';
+			if (s[i++] == '\0')
+				break;
+			for (j=0; j <= 1; ++j)
+				if (s[i] != '\0')
+					min[j] = s[i++];
+			min[j] = '\0';
+			if (s[i++] == ':') {
+				for (j=0; j <= 1; ++j)
+					if (s[i] != '\0')
+						sec[j] = s[i++];
+				sec[j] = '\0';
+			}
+		}
+		if (hour[0] != '\0')
+			thetime->tm_hour = (int)doztodec(hour);
+		else
+			thetime->tm_hour = 0;
+		if (min[0] != '\0')
+			thetime->tm_min = (int)doztodec(min);
+		else
+			thetime->tm_min = 0;
+		if (sec[0] != '\0')
+			thetime->tm_sec = (int)doztodec(sec);
+		else
+			thetime->tm_sec = 0;
+	}
 	return 0;
 }
 
@@ -91,7 +140,7 @@ int ydays_from_date(struct tm *thetime)
 	case 11:  ydays += 334; break;
 	default:
 		fprintf(stderr, "dozdate:  error:  %d is an invalid "
-		"month",thetime->tm_mon);
+		"month\n",thetime->tm_mon);
 		exit(BAD_MONTH);
 		break;
 	}
@@ -152,6 +201,21 @@ int errorcheck(char *s, struct tm *thetime)
 			month,thetime->tm_year+1900,oweekday);
 		thetime->tm_wday = dayofweek(thetime->tm_year+1900,
 			thetime->tm_mon+1,thetime->tm_mday);
+	}
+	if (thetime->tm_hour > 23) {
+		fprintf(stderr,"dozdate:  error:  hour is too "
+		"large\n");
+		exit(BAD_HOUR);
+	}
+	if (thetime->tm_min > 59) {
+		fprintf(stderr,"dozdate:  error:  minute is too "
+		"large\n");
+		exit(BAD_MIN);
+	}
+	if (thetime->tm_sec > 60) {
+		fprintf(stderr,"dozdate:  error:  second is too "
+		"large\n");
+		exit(BAD_SEC);
 	}
 }
 
@@ -269,14 +333,14 @@ int parse_numeric_month(char *s, struct tm *thetime)
 	flag = j = 0; /* FIXME:  get date from hyphens, too */
 	for (i=0; s[i] != '\0'; ++i) { /* test for hyphen notation */
 		if (s[i] == '-') {
-			flag = (flag == 0) ? 1 : 0;
+			flag = (flag == 0 || flag == 2) ? 1 : 2;
 			j = 0;
 		}
 		if (flag == 1 && (isdigit(s[i]) || s[i]=='X' || s[i]=='E')) {
 			monthnum[j++] = s[i];
 			monthnum[j] = '\0';
 		}
-		if (flag == 0 && (isdigit(s[i]) || s[i]=='X' || s[i]=='E')) {
+		if (flag == 2 && (isdigit(s[i]) || s[i]=='X' || s[i]=='E')) {
 			daynum[j++] = s[i];
 			daynum[j] = '\0';
 		}
@@ -285,14 +349,14 @@ int parse_numeric_month(char *s, struct tm *thetime)
 	if (monthnum[0] == '\0') { /* test for Amer slash notation */
 		for (i=strlen(s); i >= 0; --i) {
 			if (s[i] == '/') {
-				flag = (flag == 0) ? 1 : 0;
+				flag = (flag == 0 || flag == 2) ? 1 : 2;
 				j = 0;
 			}
 			if (flag == 1 && (isdigit(s[i]) || s[i]=='X' || s[i]=='E')) {
 				daynum[j++] = s[i];
 				daynum[j] = '\0';
 			}
-			if (flag == 0 && (isdigit(s[i]) || s[i]=='X' || s[i]=='E')) {
+			if (flag == 2 && (isdigit(s[i]) || s[i]=='X' || s[i]=='E')) {
 				monthnum[j++] = s[i];
 				monthnum[j] = '\0';
 			}

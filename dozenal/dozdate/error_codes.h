@@ -16,3 +16,6 @@
 #define BAD_CONV_CODE 4 /* used an unrecognized conversion code */
 #define INSUFF_MEM 5 /* insufficient memory for format string */
 #define BAD_FILE 6 /* can't open requested file */
+#define BAD_HOUR 7 /* hour isn't a sensible number */
+#define BAD_MIN 8 /* minute isn't a sensible number */
+#define BAD_SEC 9 /* minute isn't a sensible number */
