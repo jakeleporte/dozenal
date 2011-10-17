@@ -155,7 +155,7 @@ int errorcheck(char *s, struct tm *thetime)
 	}
 }
 
-/* find a four-digit number; if doesn't start with : or ;,
+/* find a four-digit number; if doesn't start with ;,
  * assume it's the year, even if leading zeroes */
 int parse_for_year(char *s, struct tm *thetime)
 {
@@ -167,12 +167,12 @@ int parse_for_year(char *s, struct tm *thetime)
 	len = strlen(s);
 	for (i=0; s[i] != '\0'; ++i) {
 		j=0;
-		yearnum[j++] = (i > 0) ? '0' : s[i-1];
+		yearnum[j++] = (i > 0) ? s[i-1] : '0';
 		while ((isdigit(s[i]) || s[i]=='X' || s[i] == 'E') && i <= len) {
 			yearnum[j++] = s[i++];
 		}
 		yearnum[j] = '\0';
-		if ((j == 5) && (yearnum[0] != ';') && (yearnum[0] != ':')) {
+		if ((j == 5) && (yearnum[0] != ';')) {
 			memmove(yearnum,yearnum+1,5);
 			year = (int)doztodec(yearnum);
 		} else {

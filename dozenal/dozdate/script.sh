@@ -37,5 +37,5 @@ echo "next Sat:  `./dozdate -d\"next Sat\"`";
 
 echo "not leap year:  `./dozdate -d\"11E7-2-25\"`";
 echo "too many days:  `./dozdate -d\"11E7-3-28\"`";
-echo "leap day:  `./dozdate -d\"11X8-2-25\"`";
+echo "leap day (Tuesday):  `./dozdate -d\"11X8-2-25\"`";
 echo "Friday:  `./dozdate -d\"11X8-1-24\"`";
