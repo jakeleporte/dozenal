@@ -56,28 +56,142 @@ char *parse_for_month(char *s, struct tm *thetime);
 /* governing function, calls others */
 int process_date(char *s,struct tm *thetime)
 {
-	int i;
+	int i,j,k;
 	char *monpointer;
+	int month;
 
-	parse_for_weekday(s,thetime);
-	monpointer = parse_for_month(s,thetime);
-	if (monpointer != NULL)
-		parse_for_date(s,monpointer,thetime);
-	parse_for_year(s,thetime);
+	k = parse_for_year(s,thetime);
+	if (k == 0) {
+		thetime->tm_mon = 0;
+		thetime->tm_mday = 1;
+	}
+	month = parse_for_alpha_month(s,thetime);
+	if (month == -1)
+		month = parse_for_hyphen_month(s,thetime);
+	if (month == -1)
+		month = parse_for_slash_month(s,thetime);
+	i = parse_for_weekday(s,thetime);
+	j = parse_sexa_time(s,thetime);
+	if (month == -1 && i == -1 && j == -1) {
+		thetime->tm_mon = 0;
+		thetime->tm_mday = 1;
+	} else if (month >= 0) {
+		thetime->tm_mon = month;
+	}
 	thetime->tm_yday = ydays_from_date(thetime);
-	parse_sexa_time(s,thetime);
 	errorcheck(s,thetime);
 	return 0;
 }
 
-/* parses our current sexagesimal time, if found */
+/* parse for hyphen notation; if found, return number of the
+ * month, of -1 if an error; look for date, install it in
+ * struct if found, install 1 if not */
+int parse_for_hyphen_month(char *s, struct tm *thetime)
+{
+	int i, j;
+	int month = -1;
+	char *monthspot = NULL; char *dayspot = NULL;
+	int flag = 0;
+	char monthnum[3] = "";
+	char daynum[3] = "";
+
+	j = 0;
+	for (i=0; s[i] != '\0'; ++i) {
+		if (s[i] == '-' && flag == 0) {
+			flag = 1;
+			monthspot = &s[i+1];
+		} else if (s[i] == '-' && flag == 1) {
+			flag = 0;
+			dayspot = &s[i+1];
+		}
+	}
+	if (monthspot != NULL) {
+		while (*monthspot != '\0' && *monthspot != '-' &&
+		!isspace(*monthspot) && !ispunct(*monthspot)) {
+			if (isdigit(*monthspot) || *monthspot=='X' ||
+			*monthspot == 'E')
+				monthnum[j++] = *monthspot;
+			monthnum[j] = '\0';
+			++monthspot;
+		}
+	}
+	j=0;
+	if (dayspot != NULL) {
+		while (*dayspot != '\0' && *dayspot != '-' &&
+		!isspace(*dayspot) && !ispunct(*dayspot)) {
+			if (isdigit(*dayspot) || *dayspot=='X' ||
+			*dayspot == 'E')
+				daynum[j++] = *dayspot;
+			daynum[j] = '\0';
+			++dayspot;
+		}
+	}
+	if (monthnum[0] != '\0')
+		month = (int)doztodec(monthnum) - 1;
+	if (daynum[0] != '\0')
+		thetime->tm_mday = (int)doztodec(daynum);
+	else if (daynum[0] != '\0' && month != -1)
+		thetime->tm_mday = 1;
+	return month;
+}
+
+/* parse for slash notation; if found, return number of the
+ * month, of -1 if an error; look for date, install it in
+ * struct if found, install 1 if not */
+int parse_for_slash_month(char *s, struct tm *thetime)
+{
+	int i; int j = 0;
+	char *monthspot = NULL;
+	char *dayspot = NULL;
+	int month = -1;
+	char monthnum[3] = "";
+	char daynum[3] = "";
+
+	for (i=0; s[i] != '\0'; ++i) {
+		if (s[i] == '/') {
+			monthspot = dayspot = &s[i];
+			break;
+		}
+	}
+	if (monthspot != NULL) {
+		if (i > 1)
+			monthspot -= 2;
+		else
+			monthspot -= 1;
+		while (monthspot < dayspot) {
+			if (isdigit(*monthspot) || *monthspot == 'X' || *monthspot == 'E')
+				monthnum[j++] = *monthspot;
+			++monthspot;
+		}
+		monthnum[j] = '\0';
+	}
+	if (dayspot != NULL) {
+		if (*(dayspot+1) != '\0')
+			++dayspot;
+		j = 0;
+		while (*dayspot != '/' && j <= 1) {
+			if (isdigit(*dayspot) || *dayspot == 'X' || *dayspot == 'E')
+				daynum[j++] = *dayspot;
+			++dayspot;
+		}
+	}
+	if (monthnum[0] != '\0')
+		month = (int)doztodec(monthnum) - 1;
+	if (daynum[0] != '\0')
+		thetime->tm_mday = (int)doztodec(daynum);
+	else if (month != -1)
+		thetime->tm_mday = 1;
+	return month;
+}
+
+/* parses our current sexagesimal time, if found; return 0
+ * if found, -1 if not */
 int parse_sexa_time(char *s, struct tm *thetime)
 {
 	int i,j,k;
 	char hour[3] = "";
 	char min[3] = "";
 	char sec[3] = "";
-	int flag = 0;
 
 	for (i=0; s[i] != '\0'; ++i) {
 		if (s[i] == ':' && i >= 1) {
@@ -95,26 +209,30 @@ int parse_sexa_time(char *s, struct tm *thetime)
 				if (s[i] != '\0')
 					min[j] = s[i++];
 			min[j] = '\0';
-			if (s[i++] == ':') {
+			if (s[i] == '\0')
+				break;
+			if (s[i] == ':') {
 				for (j=0; j <= 1; ++j)
-					if (s[i] != '\0')
-						sec[j] = s[i++];
+					if (s[++i] != '\0')
+						sec[j] = s[i];
 				sec[j] = '\0';
 			}
 		}
-		if (hour[0] != '\0')
-			thetime->tm_hour = (int)doztodec(hour);
-		else
-			thetime->tm_hour = 0;
-		if (min[0] != '\0')
-			thetime->tm_min = (int)doztodec(min);
-		else
-			thetime->tm_min = 0;
-		if (sec[0] != '\0')
-			thetime->tm_sec = (int)doztodec(sec);
-		else
-			thetime->tm_sec = 0;
 	}
+	if (hour[0] != '\0')
+		thetime->tm_hour = (int)doztodec(hour);
+	else
+		thetime->tm_hour = 0;
+	if (min[0] != '\0')
+		thetime->tm_min = (int)doztodec(min);
+	else
+		thetime->tm_min = 0;
+	if (sec[0] != '\0')
+		thetime->tm_sec = (int)doztodec(sec);
+	else
+		thetime->tm_sec = 0;
+	if (hour[0] == '\0')
+		return -1;
 	return 0;
 }
 
@@ -220,7 +338,8 @@ int errorcheck(char *s, struct tm *thetime)
 }
 
 /* find a four-digit number; if doesn't start with ;,
- * assume it's the year, even if leading zeroes */
+ * assume it's the year, even if leading zeroes; return 0 if
+ * found, -1 if not */
 int parse_for_year(char *s, struct tm *thetime)
 {
 	int i, j;
@@ -243,133 +362,56 @@ int parse_for_year(char *s, struct tm *thetime)
 			yearnum[0] = '\0';
 		}
 	}
-	if (year != 0)
+	if (year != 0) {
 		thetime->tm_year = year - 1900;
-	return 0;
+		return 0;
+	}
+	return -1;
 }
 
-/* tries to parse date from position of alphabetical month; 
- * scans backward for date, then forward; if not found, make 
- * date 1 */
-int parse_for_date(char *s, char *monthpoint, struct tm *thetime)
+/* looks for alpha month; returns month number if found, -1
+ * if not; then seek date, install in thetime */
+int parse_for_alpha_month(char *s, struct tm *thetime)
 {
-	char *pt, *pt2;
-	char daynum[SIZE] = "NULL";
-	int i = 0;
-	int date = 0;
+	int i, j; int month = -1;
+	char *monthspot; char *copy;
+	char datenum[SIZE] = "";
 
-	pt = monthpoint;
-	pt2 = &s[strlen(s)];
-	while (pt >= s) { 				/* do date month year notation */
-		if (isdigit(*pt) || (*pt == 'X') || (*pt == 'E'))
-			daynum[i++] = *pt;
-		--pt;
-	}
-	daynum[i] = '\0';
-	if (daynum[0] != '\0') {
-		for (i=0; daynum[i] == '0' && daynum[i] != '\0'; ++i);
-		reverse(daynum+i);
-		date = (int)doztodec(daynum+i);
-	} else {                       /* do Amer comma notation */
-		pt = monthpoint;
-		while (pt <= pt2) {
-			if (*pt == ',') {
-				i = 0; --pt;
-				while ((isspace(*pt) || *pt == 'X' || *pt == 'E' 
-				|| isdigit(*pt)) && pt > s) {
-					if (!isspace(*pt)) {
-						daynum[i++] = *pt;
-						daynum[i] = '\0';
-					} 
-					--pt;
-				} 
-				break;
-			}
-			++pt; 
-		}
-		reverse(daynum);
-		if (daynum[0] != '\0')
-			date = (int)doztodec(daynum);
-		if (date == 0)
-			date = 1;
-	}
-	/* error checking for date numbers per month */
-	thetime->tm_mday = date;
-	return 0;
-}
-
-/* parses date string for alphabetic months, short of long;
- * if found, loads month into thetime and returns pointer to
- * month; else, calls appropriate functions and returns NULL */
-char *parse_for_month(char *s, struct tm *thetime)
-{
-	int i;
-	char *monthpoint = NULL;
-
-	for (i=0; i <= 11; ++i) {
-		if ((monthpoint = strstr(s,months[i].longname)) || 
-		(monthpoint = strstr(s,months[i].shortname))) {
-			thetime->tm_mon = months[i].num;
+	for (i=0; i < 12; ++i)
+		if ((monthspot = strstr(s,months[i].longname)) ||
+		(monthspot = strstr(s,months[i].shortname))) {
+			month = months[i].num;
 			break;
 		}
+	copy = monthspot;
+	if (month < 0)
+		return month;
+	j = 0;
+	while (copy >= s) {
+		if ((isdigit(*copy) || *copy == 'X' || *copy == 'E') && (j <= 1))
+			datenum[j++] = *copy;
+		if (ispunct(*copy))
+			break;
+		--copy;
 	}
-	if (monthpoint != NULL) {
-		return monthpoint;
-	} else { /* must be a numeric month */
-		parse_numeric_month(s,thetime);
-		return NULL;
-	}
-}
-
-/* looks for numeric dates, in hyphen or slash format; loads
- * parts into thetime if found */
-int parse_numeric_month(char *s, struct tm *thetime)
-{
-	char monthnum[SIZE] = "";
-	char daynum[SIZE] = "";
-	char tmp[SIZE] = "";
-	int i, j, flag;
-
-	flag = j = 0; /* FIXME:  get date from hyphens, too */
-	for (i=0; s[i] != '\0'; ++i) { /* test for hyphen notation */
-		if (s[i] == '-') {
-			flag = (flag == 0 || flag == 2) ? 1 : 2;
-			j = 0;
+	datenum[j] = '\0';
+	if (datenum[0] != '\0')
+		reverse(datenum);
+	if (datenum[0] == '\0') {
+		copy = monthspot;
+		j = 0;
+		while (*copy != '\0' && *copy != ',') {
+			if ((isdigit(*copy) || *copy == 'X' || *copy == 'E') && (j <= 1))
+				datenum[j++] = *copy;
+			++copy;
 		}
-		if (flag == 1 && (isdigit(s[i]) || s[i]=='X' || s[i]=='E')) {
-			monthnum[j++] = s[i];
-			monthnum[j] = '\0';
-		}
-		if (flag == 2 && (isdigit(s[i]) || s[i]=='X' || s[i]=='E')) {
-			daynum[j++] = s[i];
-			daynum[j] = '\0';
-		}
+		datenum[j] = '\0';
 	}
-	monthnum[j] == '\0';
-	if (monthnum[0] == '\0') { /* test for Amer slash notation */
-		for (i=strlen(s); i >= 0; --i) {
-			if (s[i] == '/') {
-				flag = (flag == 0 || flag == 2) ? 1 : 2;
-				j = 0;
-			}
-			if (flag == 1 && (isdigit(s[i]) || s[i]=='X' || s[i]=='E')) {
-				daynum[j++] = s[i];
-				daynum[j] = '\0';
-			}
-			if (flag == 2 && (isdigit(s[i]) || s[i]=='X' || s[i]=='E')) {
-				monthnum[j++] = s[i];
-				monthnum[j] = '\0';
-			}
-		}
-		reverse(monthnum); reverse(daynum);
-	}
-	if (monthnum[0] != '\0') {
-		thetime->tm_mon = (int)doztodec(monthnum) - 1;
-	}
-	if (daynum[0] != '\0') {
-		thetime->tm_mday = (int)doztodec(daynum);
-	}
-	return 0;
+	if (datenum[0] == '\0')
+		thetime->tm_mday = 1;
+	else
+		thetime->tm_mday = (int)doztodec(datenum);
+	return month;
 }
 
 /* parses string for weekdays and related modifiers; if
@@ -391,7 +433,7 @@ int parse_for_weekday(char *s, struct tm *thetime)
 		}
 	}
 	if (daypoint == NULL)
-		return 0;
+		return -1;
 	thetime->tm_wday = tmp2; /* new weekday into struct */
 	if ((lastpoint = strstr(s,"last")) && (lastpoint <
 	daypoint) && (lastpoint != NULL)) {
@@ -411,9 +453,9 @@ int parse_for_weekday(char *s, struct tm *thetime)
 	}
 	maxdays = (leapyear(0,thetime->tm_year+1900)) ? 364 : 365;
 	dayyear += thetime->tm_yday;
-	thetime->tm_yday = dayyear; /* put yday into struct */
 	if (dayyear > maxdays)
 		dayyear -= maxdays;
+	thetime->tm_yday = dayyear; /* put yday into struct */
 	date_from_ydays(dayyear,thetime);
 	return 0;
 }
@@ -425,8 +467,8 @@ int date_from_ydays(int dayyear, struct tm *thetime)
 	int month = 0;
 	int day = 0;
 
-	i = (leapyear(0,thetime->tm_year+1900)) ? 0 : 1;
-	for (i=i; i < dayyear; ++i)
+	j = (leapyear(0,thetime->tm_year+1900)) ? 0 : 1;
+	for (i=0; i <= dayyear+j; ++i)
 		switch (i) {
 			case 31: ++month; day = i; break;
 			case 60: ++month; day = i; break;

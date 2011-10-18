@@ -26,15 +26,17 @@ int main(int argc, char *argv[])
 	time_t curtime;
 	int needfreef = 0;
 	int fileflag = 0;
+	int uflag = 0;
 	FILE *fp;
 	
 	curtime = time(NULL);
 	thetime = localtime(&curtime);
 
-	while ((c = getopt(argc,argv,"vud:f:")) != -1) {
+	while ((c = getopt(argc,argv,"vuRcd:f:")) != -1) {
 		switch (c) {
 		case 'u':
 			thetime = gmtime(&curtime);
+			uflag = 1;
 			break;
 		case 'd':
 			date = optarg;
@@ -58,6 +60,22 @@ int main(int argc, char *argv[])
 			"WARRANTY, to the extent permitted by law.\n");
 			return 0;
 			break;
+		case 'R':
+			if ((format = malloc(sizeof(char)*20)) == NULL) {
+				fprintf(stderr,"dozdate:  error:  insufficient memory\n");
+				exit(INSUFF_MEM);
+			}
+			needfreef = 1;
+			strcpy(format,"%a, %d %b %Y %T %z");
+			break;
+		case 'c': /* --rfc-3339 */
+			if ((format = malloc(sizeof(char)*20)) == NULL) {
+				fprintf(stderr,"dozdate:  error:  insufficient memory\n");
+				exit(INSUFF_MEM);
+			}
+			needfreef = 1;
+			strcpy(format,"%Y-%m-%d %T%z");
+			break;
 		case '?':
 			return 1;
 			break;
@@ -65,9 +83,9 @@ int main(int argc, char *argv[])
 			break;
 		}
 	}
-	if (argv[optind] != NULL)
+	if (argv[optind] != NULL && format == NULL)
 		format = argv[optind];
-	else {
+	else if (needfreef == 0) {
 		if ((format = malloc(sizeof(char)*3)) == NULL) {
 			fprintf(stderr,"dozdate:  error:  insufficient memory\n");
 			exit(INSUFF_MEM);
@@ -92,6 +110,10 @@ int main(int argc, char *argv[])
 				tgmify(buffer,thetime);
 				breakup(buffer,thetime);
 				printf("%s\n",buffer);
+				if (uflag == 1)
+					thetime = gmtime(&curtime);
+				else
+					thetime = localtime(&curtime);
 				i = 0;
 			}
 		}

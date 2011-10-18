@@ -48,3 +48,7 @@ echo "24 Jun 11X8, 16:16:  `./dozdate \"@c:%T\" -d\"24 Jun 11X8 16:16\"`";
 echo "16:50:  `./dozdate -d\"16:50\" \"@c; %T\"`";
 echo "24:4E:  `./dozdate -d\"24:4E\" \"@c; %T\"`";
 echo "4:4E:50:  `./dozdate -d\"4:4E:50\" \"@c; %T\"`";
+echo "Wed 4:4E:50:  `./dozdate -d\"Wed 4:4E:50\" \"@c; %T\"`";
+echo "4:4E:50 Wed:  `./dozdate -d\"Wed 4:4E:50\" \"@c; %T\"`";
+echo "Wed 04:4E:50:  `./dozdate -d\"Wed 4:4E:50\" \"@c; %T\"`";
+echo "04:4E:50 Wed:  `./dozdate -d\"Wed 4:4E:50\" \"@c; %T\"`";
