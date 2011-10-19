@@ -18,7 +18,6 @@
 #include "conv.h"
 
 #define MAXLINE 1000
-#define MAXLEN 50
 
 int main(int argc, char *argv[])
 {
