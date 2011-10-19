@@ -70,7 +70,8 @@ int process_date(char *s,struct tm *thetime)
 		month = parse_for_hyphen_month(s,thetime);
 	if (month == -1)
 		month = parse_for_slash_month(s,thetime);
-	i = parse_for_weekday(s,thetime);
+	if (month < 0)
+		i = parse_for_weekday(s,thetime);
 	j = parse_sexa_time(s,thetime);
 	if (month == -1 && i == -1 && j == -1) {
 		thetime->tm_mon = 0;
@@ -192,32 +193,52 @@ int parse_sexa_time(char *s, struct tm *thetime)
 	char hour[3] = "";
 	char min[3] = "";
 	char sec[3] = "";
+	char *minpoint = NULL; char *secpoint = NULL;
+	char *hourpoint = NULL;
+	int flag = 0;
 
 	for (i=0; s[i] != '\0'; ++i) {
-		if (s[i] == ':' && i >= 1) {
-			k = 0;
-			if (i > 1 && (isdigit(s[i-2]) || s[i-2]=='X' || s[i-2]=='E'))
-				j = i - 2;
+		if (s[i] == ':' && flag == 0) {
+			minpoint = &s[i+1];
+			if (i > 1)
+				hourpoint = &s[i-2];
 			else
-				j = i - 1;
-			for (j=j; j<i; ++j)
-				hour[k++] = s[j];
-			hour[j] = '\0';
-			if (s[i++] == '\0')
-				break;
-			for (j=0; j <= 1; ++j)
-				if (s[i] != '\0')
-					min[j] = s[i++];
-			min[j] = '\0';
-			if (s[i] == '\0')
-				break;
-			if (s[i] == ':') {
-				for (j=0; j <= 1; ++j)
-					if (s[++i] != '\0')
-						sec[j] = s[i];
-				sec[j] = '\0';
-			}
+				hourpoint = &s[i-1];
+			flag = 1;
+		} else if (s[i] == ':' && flag == 1) {
+			secpoint = &s[i+1];
+			break;
 		}
+	}
+	if (hourpoint != NULL) {
+		j=0;
+		while (*hourpoint != ':' && *hourpoint != '\0' && j < 2)
+			if (isdigit(*hourpoint) || *hourpoint == 'X' ||
+			*hourpoint == 'E')
+				hour[j++] = *(hourpoint++);
+			else
+				++hourpoint; ++j;
+		hour[j] = '\0';
+	}
+	if (minpoint != NULL) {
+		j=0;
+		while (*minpoint != ':' && *minpoint != '\0' && j < 2)
+			if ((isdigit(*minpoint) || *minpoint == 'X' ||
+			*minpoint == 'E') && (j <= 1))
+				min[j++] = *(minpoint++);
+			else
+				++minpoint; ++j;
+		min[j] = '\0';
+	}
+	if (secpoint != NULL) {
+		j=0;
+		while (*secpoint != ':' && *secpoint != '\0' & j < 2)
+			if ((isdigit(*secpoint) || *secpoint == 'X' ||
+			*secpoint == 'E') && (j <= 1))
+				sec[j++] = *(secpoint++);
+			else
+				++secpoint; ++j;
+		sec[j] = '\0';
 	}
 	if (hour[0] != '\0')
 		thetime->tm_hour = (int)doztodec(hour);
