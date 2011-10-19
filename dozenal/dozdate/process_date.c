@@ -362,7 +362,7 @@ int errorcheck(char *s, struct tm *thetime)
 int parse_for_year(char *s, struct tm *thetime)
 {
 	int i, j;
-	char yearnum[SIZE] = "";
+	char yearnum[7] = "";
 	int year = 0;
 	size_t len;
 
@@ -394,7 +394,7 @@ int parse_for_alpha_month(char *s, struct tm *thetime)
 {
 	int i, j; int month = -1;
 	char *monthspot; char *copy;
-	char datenum[SIZE] = "";
+	char datenum[5] = "";
 
 	for (i=0; i < 12; ++i)
 		if ((monthspot = strstr(s,months[i].longname)) ||
