@@ -1,4 +1,15 @@
 /* +AMDG */
+/*
+ * +AMDG  This document is humbly dedicated to the
+ * Immaculate Heart of Mary for her prayers and to the
+ * Sacred Heart of Jesus for His mercy.
+ *
+ */
+/*
+ * dozdate:  parses either the current date or a
+ * user-specified date and outputs it in dozenal format,
+ * either conventional or TGM.
+ */
 
 #include<unistd.h>
 #include<stdio.h>

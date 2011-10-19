@@ -8,6 +8,9 @@
  * the Sacred Heart of Jesus for His mercy.
  *
  */
+/*
+ * Parses the date strings for dozdate, if there is one.
+ */
 
 #include<stdio.h>
 #include<time.h>
@@ -340,6 +343,13 @@ int errorcheck(char *s, struct tm *thetime)
 	char number[SIZE];
 	int i;
 
+	/* verify that year is an acceptable value */
+	if (thetime->tm_year+1900 > 2699 || thetime->tm_year+1900 < 1700) {
+		fprintf(stderr,"dozdate:  error:  year is too large; "
+		"only dates between 0E98 and 168E\ncan be "
+		"calculated\n");
+		exit(BAD_YEAR);
+	}
 	/* fill some useful variables for error-checking */
 	for (i=0; thetime->tm_wday != weekdays[i].num; ++i);
 	weekday = weekdays[i].longname;
@@ -420,7 +430,7 @@ int parse_for_year(char *s, struct tm *thetime)
 			yearnum[j++] = s[i++];
 		}
 		yearnum[j] = '\0';
-		if ((j == 5) && (yearnum[0] != ';')) {
+		if ((j == 5) && (yearnum[0] != ';' && yearnum[0] != ':')) {
 			memmove(yearnum,yearnum+1,5);
 			year = (int)doztodec(yearnum);
 		} else {

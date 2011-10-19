@@ -19,3 +19,4 @@
 #define BAD_HOUR 7 /* hour isn't a sensible number */
 #define BAD_MIN 8 /* minute isn't a sensible number */
 #define BAD_SEC 9 /* minute isn't a sensible number */
+#define BAD_YEAR 10 /* year is too large or too small */
