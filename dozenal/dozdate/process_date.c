@@ -51,8 +51,6 @@ struct monthdays {
 	"December", "Dec", 11,
 };
 
-char *parse_for_month(char *s, struct tm *thetime);
-
 /* governing function, calls others */
 int process_date(char *s,struct tm *thetime)
 {
@@ -219,6 +217,8 @@ int parse_sexa_time(char *s, struct tm *thetime)
 			else
 				++hourpoint; ++j;
 		hour[j] = '\0';
+		if (hour[0] != '\0')
+			thetime->tm_hour = (int)doztodec(hour);
 	}
 	if (minpoint != NULL) {
 		j=0;
@@ -229,6 +229,8 @@ int parse_sexa_time(char *s, struct tm *thetime)
 			else
 				++minpoint; ++j;
 		min[j] = '\0';
+		if (min[0] != '\0')
+			thetime->tm_min = (int)doztodec(min);
 	}
 	if (secpoint != NULL) {
 		j=0;
@@ -239,20 +241,16 @@ int parse_sexa_time(char *s, struct tm *thetime)
 			else
 				++secpoint; ++j;
 		sec[j] = '\0';
+		if (sec[0] != '\0')
+			thetime->tm_sec = (int)doztodec(sec);
 	}
-	if (hour[0] != '\0')
-		thetime->tm_hour = (int)doztodec(hour);
-	else
+	if (hourpoint == NULL)
 		thetime->tm_hour = 0;
-	if (min[0] != '\0')
-		thetime->tm_min = (int)doztodec(min);
-	else
+	if (minpoint == NULL)
 		thetime->tm_min = 0;
-	if (sec[0] != '\0')
-		thetime->tm_sec = (int)doztodec(sec);
-	else
+	if (secpoint == NULL)
 		thetime->tm_sec = 0;
-	if (hour[0] == '\0')
+	if (hourpoint == NULL)
 		return -1;
 	return 0;
 }
