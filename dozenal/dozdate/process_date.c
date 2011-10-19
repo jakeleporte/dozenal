@@ -427,6 +427,8 @@ int parse_for_alpha_month(char *s, struct tm *thetime)
 			++copy;
 		}
 		datenum[j] = '\0';
+		if (!isspace(*copy) && !ispunct(*copy))
+			datenum[0] = '\0';
 	}
 	if (datenum[0] == '\0')
 		thetime->tm_mday = 1;
