@@ -71,6 +71,8 @@ int process_date(char *s,struct tm *thetime)
 	if (month < 0)
 		i = parse_for_weekday(s,thetime);
 	j = parse_sexa_time(s,thetime);
+	if (j == -1)
+		j = parse_tgm_time(s,thetime);
 	if (month == -1 && i == -1 && j == -1) {
 		thetime->tm_mon = 0;
 		thetime->tm_mday = 1;
@@ -80,6 +82,50 @@ int process_date(char *s,struct tm *thetime)
 	thetime->tm_yday = ydays_from_date(thetime);
 	errorcheck(s,thetime);
 	return 0;
+}
+
+/* seeks a TGM time in the date string; if found, returns 0
+ * and installs in struct; otherwise, returns -1 */
+int parse_tgm_time(char *s, struct tm *thetime)
+{
+	int i, j;
+	char *hourpoint = NULL;
+	char tim[6];
+
+	j = 0;
+	for (i=0; s[i] != '\0'; ++i)
+		if (s[i] == ';')
+			hourpoint = (i > 1) ? &s[i-2] : &s[i-1];
+	if (hourpoint == NULL)
+		return -1;
+	while (*hourpoint != '\0' && *hourpoint != ';') {
+		if (isdigit(*hourpoint) || *hourpoint=='X' || *hourpoint=='E')
+			tim[j++] = *(hourpoint++);
+		tim[j] = '\0';
+	}
+	thetime->tm_hour = (int)doztodec(tim);
+	++hourpoint; j=0;
+	while (isdigit(*hourpoint) || *hourpoint=='X' || *hourpoint=='E') {
+		tim[j++] = *(hourpoint++);
+		tim[j] = '\0';
+	}
+	thetime->tm_sec = timtosec(tim,thetime);
+	return 0;
+}
+
+/* converts tims to seconds; returns seconds, installs
+ * minutes into struct */
+int timtosec(char *s,struct tm *thetime)
+{
+	double tim;
+	int sec;
+	int min;
+
+	tim = doztodec(s);
+	sec = round(tim * 0.1736111111111111111111111111111111111111);
+	thetime->tm_min = (int)(sec / 60);
+	sec -= (thetime->tm_min * 60);
+	return sec;
 }
 
 /* parse for hyphen notation; if found, return number of the
