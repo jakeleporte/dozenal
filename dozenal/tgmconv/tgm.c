@@ -9,7 +9,7 @@
 /*
  * Functions specific for tgmconv.
  *
- * (C) Copyright 2011  Donald P. Goodman III
+ * (C) Copyright 2010, 2011  Donald P. Goodman III
  *
  * This file is part of tgmconv.
  *

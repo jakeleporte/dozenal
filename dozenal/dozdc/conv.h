@@ -4,7 +4,7 @@
  * package.  The basic conversion routines and a couple of
  * utility functions needed by both programs.
  *
- * (C) Copyright 2011  Donald P. Goodman III
+ * (C) Copyright 2010, 2011  Donald P. Goodman III
  *
  * This file is part of dozdc.
  *
