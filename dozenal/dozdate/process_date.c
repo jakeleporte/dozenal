@@ -10,6 +10,26 @@
  */
 /*
  * Parses the date strings for dozdate, if there is one.
+ *
+ * (C) Copyright 2011  Donald P. Goodman III
+ *
+ * This file is part of dozdate.
+ *
+ * dozdate is free software:  you can redistribute it and/or
+ * modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any
+ * later version.
+ *
+ * dozdate is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the
+ * implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE.  See the GNU General Public License
+ * for more details.
+ *
+ * You should have received a copy of the GNU General Public
+ * License along with dozdate.  If not, see
+ * <http://www.gnu.org/licenses/>.
  */
 
 #include<stdio.h>
@@ -93,7 +113,7 @@ int parse_tgm_time(char *s, struct tm *thetime)
 {
 	int i, j;
 	char *hourpoint = NULL;
-	char tim[6];
+	char tim[6] = "0000";
 
 	j = 0;
 	for (i=0; s[i] != '\0'; ++i)
@@ -104,13 +124,22 @@ int parse_tgm_time(char *s, struct tm *thetime)
 	while (*hourpoint != '\0' && *hourpoint != ';') {
 		if (isdigit(*hourpoint) || *hourpoint=='X' || *hourpoint=='E')
 			tim[j++] = *(hourpoint++);
+		else
+			++hourpoint;
 		tim[j] = '\0';
 	}
 	thetime->tm_hour = (int)doztodec(tim);
 	++hourpoint; j=0;
-	while (isdigit(*hourpoint) || *hourpoint=='X' || *hourpoint=='E') {
+	while ((isdigit(*hourpoint) || *hourpoint=='X' ||
+	*hourpoint=='E') && (j <= 3) && *hourpoint != '\0') {
 		tim[j++] = *(hourpoint++);
 		tim[j] = '\0';
+	}
+	if (j < 4) { /* pad with zeroes if less than four digits of Tims */
+		tim[4] = '\0';
+		for (j = 0; j < 4; ++j)
+			if (!isdigit(tim[j]) && tim[j] != 'X' && tim[j] != 'E')
+				tim[j] = '0';
 	}
 	thetime->tm_sec = timtosec(tim,thetime);
 	return 0;
