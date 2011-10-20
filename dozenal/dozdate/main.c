@@ -291,7 +291,7 @@ int tgmify(char *s, struct tm *thetime)
 				}
 			}
 			switch (s[j]) {
-			case 'c': /* time:  day mon year hours Tims */
+			case 'c': /* time:  day date mon year hours Tims */
 				strftime(tmp,SIZE,"%a %d %b %Y ",thetime);
 				tokenize(tmp);
 				strftime(tmp2,SIZE,"%H",thetime);
@@ -341,13 +341,13 @@ int tgmify(char *s, struct tm *thetime)
 				padding(tmp,numpad,charpad);
 				tgminsert(s,tmp,j-i);
 				break;
-			case 'H': /* hours; 00--20 */
+			case 'H': /* hours; 00--1E */
 				strftime(tmp,SIZE,"%H",thetime);
 				tokenize(tmp);
 				padding(tmp,numpad,charpad);
 				tgminsert(s,tmp,j-i);
 				break;
-			case 'k': /* hours:  1-20 */
+			case 'k': /* hours:  0-1E */
 				strftime(tmp,SIZE,"%H",thetime);
 				dectodoz(tmp,(double)atoi(tmp));
 				padding(tmp,numpad,charpad);
