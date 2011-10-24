@@ -8,7 +8,7 @@
  */
 /*
  * Pretty-prints dozenal numbers output by the other dozenal
- * suite programs.
+ * suite programs---or any text stream, really.
  *
  * (C) Copyright 2011  Donald P. Goodman III
  *
@@ -294,13 +294,13 @@ int dozpret(char *number,char *spacer,char *zenpoint, int spaces, int xflag)
 		strcat(number,zenpoint);
 	} else {
 		fprintf(stderr,"dozpret:  insufficient memory\n");
-		return 1;
+		exit(1);
 	}
 	if (strlen(number) + strlen(fracpart) < MAXLINE) {
 		strcat(number,fracpart);
 	} else {
 		fprintf(stderr,"dozpret:  insufficient memory\n");
-		return 1;
+		exit(1);
 	}
 	return 0;
 }
@@ -319,6 +319,8 @@ int prettify(char *number, char *spacer, int spaces)
 			len = strlen(number);
 			i=i+sepnum;
 		}
+		if (number[j] == 'e')
+			return 0;
 	}
 	return 0;
 }

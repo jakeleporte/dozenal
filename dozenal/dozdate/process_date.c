@@ -154,7 +154,7 @@ int timtosec(char *s,struct tm *thetime)
 	int min;
 
 	tim = doztodec(s);
-	sec = round(tim * 0.1736111111111111111111111111111111111111111111);
+	sec = round(tim *	0.1736111111111111111111111111111111111111111111);
 	thetime->tm_min = (int)(sec / 60);
 	sec -= (thetime->tm_min * 60);
 	return sec;
