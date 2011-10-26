@@ -220,15 +220,14 @@ Same as @H, but without padding; 0-1E.
 @s
 "Short time"; @H;@m.  Hours, semicolon, Tims to two digits.
 .SH FORMAT SPECIFIERS
-Any of the above format specifiers, "%" or "@", may be
+Any of the "@" format specifiers may be further 
 further specified in terms of padding.  After the "%" or "@"
 but before the letter comes the optional field width; e.g.,
 "@5H" will give the hour, in dozenal, in a field five
-characters wide, three zeroes and the hour.  After the
-number but before the character may come another optional
-character; this will pad the field with that optional
-character.  E.g., "@5^H" will pad the field with "^" rather
-than zeroes.
+characters wide, three zeroes and the hour.  Prior to the
+field width can come an optional character which will be
+used for padding instead of zeroes.  E.g., "@5^H" will pad
+the field with "^" rather than zeroes.
 .PP
 Note that this differs from GNU date, which uses "^" and "#"
 to specify change of case; dozdate instead interprets these
@@ -251,12 +250,15 @@ Examples:
 "@5y" --- "000E7"
 .RE
 .RS
-"@5[y" --- "   E7"
+"@[5y" --- "   E7"
 .RE
 .RS
-"@5#y" --- "###E7"
+"@#5y" --- "###E7"
 .RE
 And so forth.
+.PP
+The "%" fields are handled exactly as in GNU date; this was
+not altered for compatibility reasons.
 
 .SH DATE STRINGS
 dozdate will accept some fairly flexible strings as dates to
