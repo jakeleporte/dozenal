@@ -271,7 +271,7 @@ int tgmify(char *s, struct tm *thetime)
 	char tmp2[SIZE];
 	size_t len;
 	int numpad = 0;
-	char charpad = ' ';
+	char charpad = '0';
 
 	len = strlen(s);
 	for (i=0; s[i] != '\0'; ++i) {
@@ -374,7 +374,7 @@ int tgmify(char *s, struct tm *thetime)
 				break;
 			}
 			numpad = 0;
-			charpad = ' ';
+			charpad = '0';
 		}
 	}
 	return 0;
@@ -390,6 +390,8 @@ int padding(char *s, int numpad, char charpad)
 
 	if (numpad == 0)
 		return 0;
+	if (charpad == '[')
+		charpad = ' ';
 	len = strlen(s);
 	j = numpad - len;
 	if (j > 0) {

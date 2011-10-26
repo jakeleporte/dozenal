@@ -355,7 +355,7 @@ int ydays_from_date(struct tm *thetime)
 	case 11:  ydays += 334; break;
 	default:
 		fprintf(stderr, "dozdate:  error:  %d is an invalid "
-		"month\n",thetime->tm_mon);
+		"month\n",thetime->tm_mon-1);
 		exit(BAD_MONTH);
 		break;
 	}
