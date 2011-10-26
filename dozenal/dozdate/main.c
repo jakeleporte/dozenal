@@ -304,6 +304,12 @@ int tgmify(char *s, struct tm *thetime)
 				padding(tmp,numpad,charpad);
 				tgminsert(s,tmp,j-i);
 				break;
+			case 'Y': /* dozenal year */
+				strftime(tmp,SIZE,"%Y",thetime);
+				tokenize(tmp);
+				padding(tmp,numpad,charpad);
+				tgminsert(s,tmp,j-i);
+				break;
 			case 'C': /* zentury without year */
 				strftime(tmp,SIZE,"%Y",thetime);
 				tokenize(tmp);
