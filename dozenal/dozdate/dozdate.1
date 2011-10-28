@@ -220,14 +220,14 @@ Same as @H, but without padding; 0-1E.
 @s
 "Short time"; @H;@m.  Hours, semicolon, Tims to two digits.
 .SH FORMAT SPECIFIERS
-Any of the "@" format specifiers may be further 
-further specified in terms of padding.  After the "%" or "@"
-but before the letter comes the optional field width; e.g.,
-"@5H" will give the hour, in dozenal, in a field five
-characters wide, three zeroes and the hour.  Prior to the
-field width can come an optional character which will be
-used for padding instead of zeroes.  E.g., "@5^H" will pad
-the field with "^" rather than zeroes.
+Any of the "@" format specifiers may be further specified in
+terms of padding.  After the "%" or "@" but before the
+letter comes the optional field width; e.g., "@5H" will give
+the hour, in dozenal, in a field five characters wide, three
+zeroes and the hour.  Prior to the field width can come an
+optional character which will be used for padding instead of
+zeroes.  E.g., "@5^H" will pad the field with "^" rather
+than zeroes.
 .PP
 Note that this differs from GNU date, which uses "^" and "#"
 to specify change of case; dozdate instead interprets these
@@ -245,6 +245,16 @@ Any number, no matter how absurd, can be used as a
 padding figure.  (Not quite true; it has to fit within a C
 "int" variable.)  These numbers are dozenal, of course.
 .PP
+The "@" format sequences are extremely flexible with their
+padding in this way; the "%" format sequences instead work
+precisely as they do in GNU date.  The only options are "-"
+(to suppress padding); "_" (to pad with blanks); "0" (to pad
+with zeroes); "^" (to use uppercase if possible); and "#"
+(to use the opposite case if possible).  This is for
+compatibility purposes; I'd like dozdate to be as near a
+drop-in replacement for GNU date as possible.  But that's no
+reason to handicap the dozdate extensions.
+.PP
 Examples:
 .RS
 "@5y" --- "000E7"
@@ -256,9 +266,6 @@ Examples:
 "@#5y" --- "###E7"
 .RE
 And so forth.
-.PP
-The "%" fields are handled exactly as in GNU date; this was
-not altered for compatibility reasons.
 
 .SH DATE STRINGS
 dozdate will accept some fairly flexible strings as dates to
