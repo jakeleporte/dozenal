@@ -388,6 +388,10 @@ unit to largest nor vice-versa.  However, the other numeric
 formats do the right thing here; "11X8-2" will correctly be
 interpreted as "1 Feb 11X8".
 .PP
+If you ask dozdate for a particular date, but give it the
+wrong weekday, dozdate will silently correct this and output
+the correct weekday.
+.PP
 TIMES
 .PP
 dozdate understands times in either our accustomed mongrel

@@ -102,6 +102,8 @@ int process_date(char *s,struct tm *thetime)
 	} else if (month >= 0) {
 		thetime->tm_mon = month;
 	}
+	thetime->tm_wday = dayofweek(thetime->tm_year+1900,
+		thetime->tm_mon+1,thetime->tm_mday);
 	thetime->tm_yday = ydays_from_date(thetime);
 	errorcheck(s,thetime);
 	return 0;

@@ -25,14 +25,14 @@ dec.o : conv.o conv.h dec.c
 conv.o : conv.c conv.h
 	gcc -g -lm -c conv.c
 
-doc : doz.1
+doc : dozdate.1
 	rman -fHTML dozdate.1 > dozdate_man.html
 
 prefix = /usr/local
 bindir = /usr/local/bin
 mandir = /usr/local/share/man/man1
 
-install : dozdatedoz.1
+install : dozdate.1
 	cp ./dozdate $(bindir)
 	cp ./dozdate.1 $(mandir)
 
