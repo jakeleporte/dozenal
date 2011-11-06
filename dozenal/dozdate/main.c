@@ -338,8 +338,8 @@ int tgmify(char *s, struct tm *thetime)
 				break;
 			case 'm': /* number of quaduaTims, to two places */
 				sectotim(tmp,thetime);
+				padding(tmp,4,'0');
 				tmp[2] = '\0';
-				len = strlen(tmp);
 				if (numpad == 0) {
 					numpad = 2;
 					charpad = '0';
