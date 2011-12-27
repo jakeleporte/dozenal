@@ -15,3 +15,7 @@ cd ../tgmconv;
 make uninstall;
 cd ../dozword;
 make uninstall;
+cd ../dozpret;
+make uninstall;
+cd ../dozdate;
+make uninstall;

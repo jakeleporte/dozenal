@@ -82,7 +82,7 @@ int main(int argc, char *argv[])
 			fileflag = 1;
 			break;
 		case 'v':
-			printf("dozdate v0.9\n");
+			printf("dozdate v1.0\n");
 			printf("Copyright (C) 2011  Donald P. Goodman III\n");
 			printf("License GPLv3+:  GNU GPL version 3 or "
 			"later <http://gnu.org/licenses/gpl.html>\n");

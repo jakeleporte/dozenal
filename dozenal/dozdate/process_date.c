@@ -559,10 +559,12 @@ int parse_for_weekday(char *s, struct tm *thetime)
 		daypoint) && (lastpoint != NULL))
 			dayyear += 7;
 	}
-	maxdays = (leapyear(0,thetime->tm_year+1900)) ? 364 : 365;
+	maxdays = (leapyear(0,thetime->tm_year+1900)) ? 365 : 364;
 	dayyear += thetime->tm_yday;
-	if (dayyear > maxdays)
+	if (dayyear > maxdays) {
 		dayyear -= maxdays;
+		thetime->tm_year += 1;
+	}
 	thetime->tm_yday = dayyear; /* put yday into struct */
 	date_from_ydays(dayyear,thetime);
 	return 0;
@@ -592,7 +594,7 @@ int date_from_ydays(int dayyear, struct tm *thetime)
 		}
 	thetime->tm_mon = month;
 	if (leapyear(0,thetime->tm_year+1900))
-		day = dayyear - day + 1;
+		day = dayyear - day + 0;
 	else
 		day = dayyear - day + 2;
 	thetime->tm_mday = day;
