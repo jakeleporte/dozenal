@@ -302,6 +302,10 @@ double operate(int operator, int *places, char *print)
 		break;
 	case FACTORIAL:
 		tmp = floor(pop());
+		if (tmp == 0) {
+			push(1.0);
+			break;
+		}
 		for (i=tmp-1.0; i > 1.0; --i)
 			tmp *= i;
 		push(tmp);
