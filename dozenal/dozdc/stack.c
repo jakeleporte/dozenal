@@ -59,7 +59,7 @@ void push(double f)
 		stack[sp++] = f;
 	}
 	else
-		fprintf(stderr,"dozdc: stack full, can't push %g\n", f);
+		fprintf(stderr,"dozdc:  stack is full\n");
 }
 
 double pop(void)
