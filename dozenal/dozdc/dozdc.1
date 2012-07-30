@@ -169,7 +169,9 @@ logx" is equivalent to "45 X logb"; and "45 ln" is
 equivalent to "45 eul logb".
 .IP !
 A unary operator; takes the factorial of its single
-argument.  "5 !" yield "X0".
+argument.  "5 !" yield "X0".  If a non-integer is given, it
+will simply truncate thre fractional part and calculate the
+factorial of the integer value.
 .IP exp
 A unary operator; gives the euler number raised to the power
 of its single argument.  So "2 exp" is equivalent to "eul 2
