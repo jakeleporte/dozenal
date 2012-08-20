@@ -39,6 +39,7 @@
 #include "conv.h"
 #include "process_date.h"
 #include "error_codes.h"
+#include "get_symmdate.h"
 
 #define SIZE 256
 #define MAXNUM 1000
@@ -58,12 +59,14 @@ int main(int argc, char *argv[])
 	int needfreef = 0;
 	int fileflag = 0;
 	int uflag = 0;
+	int symoutput = 0; /* if symm676 output */
+	int syminput = 0;  /* if symm676 input */
 	FILE *fp;
 	
 	curtime = time(NULL);
 	thetime = localtime(&curtime);
 
-	while ((c = getopt(argc,argv,"vuRcd:f:")) != -1) {
+	while ((c = getopt(argc,argv,"vsSuRcd:f:")) != -1) {
 		switch (c) {
 		case 'u':
 			thetime = gmtime(&curtime);
@@ -72,6 +75,8 @@ int main(int argc, char *argv[])
 		case 'd':
 			date = optarg;
 			process_date(date,thetime);
+			if (symoutput == 1)
+				get_symmdate(thetime);
 			break;
 		case 'f':
 			if ((fp = fopen(optarg,"r")) == NULL) {
@@ -107,6 +112,12 @@ int main(int argc, char *argv[])
 			needfreef = 1;
 			strcpy(format,"%Y-%m-%d %T%z");
 			break;
+		case 's': /* use Symmetry 676 for output */
+			symoutput = 1;
+			break;
+		case 'S': /* use Symmetry 676 for input */
+			syminput = 1;
+			break;
 		case '?':
 			return 1;
 			break;
@@ -137,6 +148,8 @@ int main(int argc, char *argv[])
 			if (dateline[i-1] == '\n') {
 				dateline[i] = '\0';
 				strcpy(buffer,buffer2);
+				if (syminput == 1)
+					get_symmdate(thetime);
 				process_date(dateline,thetime);
 				tgmify(buffer,thetime);
 				breakup(buffer,thetime);

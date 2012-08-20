@@ -47,22 +47,19 @@
 long get_judate(struct tm *thetime);
 long symnewyear(int symyear);
 
-int main()
+int get_symmdate(struct tm *thetime)
 {
-	struct tm *thetime;
+/*	struct tm *thetime;
 	time_t curtime;
 	curtime = time(NULL);
-	thetime = localtime(&curtime);
+	thetime = localtime(&curtime);*/
 	long firstday;	 /* first day of year */
 	long judate;		/* Julian day */
 	int symyear;
 
 	judate = get_judate(thetime);
-	printf("Julian day:  %d\n",judate);
 	symyear = fixed_to_symyear(judate,&firstday);
-	printf("Symm year:  %d\n",symyear);
-	printf("First day:  %d\n",firstday);
-	convtosym(judate,symyear,firstday);
+	convtosym(thetime,judate,symyear,firstday);
 	return 0;
 }
 
@@ -131,7 +128,7 @@ int daysbfmonth(int symmonth)
 	return 30 * symmonth + (int)(symmonth / 3) - 30;
 }
 
-int convtosym(long judate, int symyear, int firstday)
+int convtosym(struct tm *thetime, long judate, int symyear, int firstday)
 {
 	int dayofyear;
 	int weekofyear;
@@ -143,21 +140,18 @@ int convtosym(long judate, int symyear, int firstday)
 	int symday;
 
 	dayofyear = judate - firstday + 1;
-	printf("Symday of year:  %d\n",dayofyear);
+	thetime->tm_yday = dayofyear;
+	thetime->tm_year = symyear - 1900;
 	weekofyear = (int)(dayofyear / 7.0 + 1.0);
-	printf("Symweek of year:  %d\n",weekofyear);
 	currquart = (int)(4.0 / 53.0 * weekofyear + 1.0);
-	printf("Quarter of year:  %d\n",currquart);
 	dayofquart = dayofyear - 91.0 * (currquart - 1.0);
 	weekofquart = (int)(dayofquart / 7.0 + 1.0);
-	printf("Day of quarter:  %d\n",dayofquart);
-	printf("Week of quarter:  %d\n",weekofquart);
 	monthofquart = (int)(2.0 / 61.0 * dayofquart + 1);
-	printf("Month of quarter:  %d\n",monthofquart);
 	symmonth = 3 * (currquart - 1) + monthofquart;
-	printf("Symmonth:  %d\n",symmonth);
-	printf("Leapyear:  %s\n",(issymleapyear(symyear) == 0) ? "no" : "yes");
+	thetime->tm_mon = symmonth - 1;
 	symday = dayofyear - daysbfmonth(symmonth);
-	printf("Symday:  %d\n",symday);
-	printf("SYMDATE:  %d - %d - %d\n",symyear,symmonth,symday);
+	printf ("symday:  %d\n",symday);
+	printf ("symmon:  %d\n",symmonth);
+	thetime->tm_mday = symday;
+	return 0;
 }
