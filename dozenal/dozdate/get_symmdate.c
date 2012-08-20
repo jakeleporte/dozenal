@@ -38,8 +38,10 @@
 #include "conv.h"
 #include "error_codes.h"
 
-#define symepoch 1721426 /* Julian day SymEpoch */
-#define weekdayadj 6		/* Julian day WeekdayAdjust */
+/*#define symepoch 1721426.0*/ /* Julian day SymEpoch */
+/*#define weekdayadj 6*/		/* Julian day WeekdayAdjust */
+#define symepoch -678575.0
+#define weekdayadj 4
 #define cyclemeanyear 365.24232082 /* CycleMeanYear for 52/293 */
 
 long get_judate(struct tm *thetime);
@@ -74,7 +76,7 @@ long get_judate(struct tm *thetime)
 	judate = thetime->tm_mday + (int)((153.0 * m + 2.0) / 5.0) +
 		(365.0 * y) + (int)(y / 4.0) - (int)(y / 100.0) + 
 		(int)(y / 400.0) - 32045.0;
-	return judate;
+	return judate - 2400000.5;
 }
 
 /* find new year day of symyear */
@@ -84,7 +86,7 @@ long symnewyear(int symyear)
 	int E;
 
 	E = symyear - 1;
-	return symepoch + 364.0 * E + 7.0 * ((int)(52.0 * E +
+	return symepoch + 364.0 * E + 7.0 * (int)((52.0 * E +
 		146.0) / 293.0);
 }
 /* takes the Julian day and pointer to a long which is the
