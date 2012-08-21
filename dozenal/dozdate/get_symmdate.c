@@ -150,8 +150,6 @@ int convtosym(struct tm *thetime, long judate, int symyear, int firstday)
 	symmonth = 3 * (currquart - 1) + monthofquart;
 	thetime->tm_mon = symmonth - 1;
 	symday = dayofyear - daysbfmonth(symmonth);
-	printf ("symday:  %d\n",symday);
-	printf ("symmon:  %d\n",symmonth);
 	thetime->tm_mday = symday;
 	return 0;
 }

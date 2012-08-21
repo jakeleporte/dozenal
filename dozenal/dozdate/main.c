@@ -140,6 +140,7 @@ int main(int argc, char *argv[])
 	if (fileflag == 0) {
 		tgmify(buffer,thetime);
 		breakup(buffer,thetime);
+		dectoirv(buffer,thetime);
 		printf("%s\n",buffer);
 	} else {
 		i = 0;
@@ -148,9 +149,9 @@ int main(int argc, char *argv[])
 			if (dateline[i-1] == '\n') {
 				dateline[i] = '\0';
 				strcpy(buffer,buffer2);
+				process_date(dateline,thetime);
 				if (syminput == 1)
 					get_symmdate(thetime);
-				process_date(dateline,thetime);
 				tgmify(buffer,thetime);
 				breakup(buffer,thetime);
 				printf("%s\n",buffer);
@@ -432,5 +433,30 @@ int tgminsert(char *full, char *insert, int inspoint)
 	for (i=0; full[i] != '@'; ++i);
 	memmove(full+i+len-inspoint,full+i+1,lenfull+1);
 	memcpy(full+i,insert,len);
+	return 0;
+}
+
+/* replace December with Irvember if month == 10 */
+int dectoirv(char *buffer,struct tm *thetime)
+{
+	char *monthstart;
+
+	if (thetime->tm_mon == 12) {
+		if (monthstart = strstr(buffer,"January")) {
+			memmove(monthstart+1,monthstart,strlen(monthstart)+1);
+			*monthstart = 'I';
+			*(monthstart+1) = 'r';
+			*(monthstart+2) = 'v';
+			*(monthstart+3) = 'e';
+			*(monthstart+4) = 'm';
+			*(monthstart+5) = 'b';
+			*(monthstart+6) = 'e';
+			*(monthstart+7) = 'r';
+		} else if (monthstart = strstr(buffer,"Jan")) {
+			*monthstart = 'I';
+			*(monthstart+1) = 'r';
+			*(monthstart+2) = 'v';
+		}
+	}
 	return 0;
 }
