@@ -139,8 +139,11 @@ int main(int argc, char *argv[])
 	strcpy(buffer2,format);
 	if (fileflag == 0) {
 		tgmify(buffer,thetime);
+		if (thetime->tm_mon == 12)
+			thetime->tm_mon = 0;
 		breakup(buffer,thetime);
-		dectoirv(buffer,thetime);
+		if (thetime->tm_yday > 31)
+			dectoirv(buffer,thetime);
 		printf("%s\n",buffer);
 	} else {
 		i = 0;
@@ -306,6 +309,8 @@ int tgmify(char *s, struct tm *thetime)
 			}
 			switch (s[j]) {
 			case 'c': /* time:  day date mon year hours Tims */
+				if (thetime->tm_mon == 12)
+					thetime->tm_mon = 0;
 				strftime(tmp,SIZE,"%a %d %b %Y ",thetime);
 				tokenize(tmp);
 				strftime(tmp2,SIZE,"%H",thetime);
@@ -441,7 +446,7 @@ int dectoirv(char *buffer,struct tm *thetime)
 {
 	char *monthstart;
 
-	if (thetime->tm_mon == 12) {
+/*	if (thetime->tm_mon == 12) {*/
 		if (monthstart = strstr(buffer,"January")) {
 			memmove(monthstart+1,monthstart,strlen(monthstart)+1);
 			*monthstart = 'I';
@@ -457,6 +462,6 @@ int dectoirv(char *buffer,struct tm *thetime)
 			*(monthstart+1) = 'r';
 			*(monthstart+2) = 'v';
 		}
-	}
+/*	}*/
 	return 0;
 }

@@ -148,6 +148,8 @@ int convtosym(struct tm *thetime, long judate, int symyear, int firstday)
 	weekofquart = (int)(dayofquart / 7.0 + 1.0);
 	monthofquart = (int)(2.0 / 61.0 * dayofquart + 1);
 	symmonth = 3 * (currquart - 1) + monthofquart;
+/*	if (symmonth == 13)
+		symmonth = 1;*/
 	thetime->tm_mon = symmonth - 1;
 	symday = dayofyear - daysbfmonth(symmonth);
 	thetime->tm_mday = symday;
