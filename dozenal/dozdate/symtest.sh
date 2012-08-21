@@ -8,6 +8,14 @@ echo ""
 echo -e "Tue 02 Irv 1191 (projected)\n`./dozdate -sd"25 Dec 1191"`"
 echo ""
 
+./dozdate -d"3 Jan 1192"
+echo -e "Sat 07 Irv 1191 (projected)\n`./dozdate -sd"3 Jan 1192"`"
+echo ""
+
+./dozdate -d"4 Jan 1192"
+echo -e "Sat 01 Jan 1192 (projected)\n`./dozdate -sd"4 Jan 1192"`"
+echo ""
+
 ./dozdate -d"25 Dec 1191" "%b"
 echo -e "Irv (projected)\n`./dozdate -sd"25 Dec 1191" "%b"`"
 echo ""
