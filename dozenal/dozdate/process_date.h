@@ -28,4 +28,4 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-int process_date(char *s,struct tm *thetime);
+int process_date(char *s,struct tm *thetime,int usesymm);

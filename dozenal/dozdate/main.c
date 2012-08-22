@@ -43,6 +43,10 @@
 
 #define SIZE 256
 #define MAXNUM 1000
+#define NEITHER 0 		/* begin symm output and input vars */
+#define OUT 1
+#define IN 2
+#define BOTH 3				/* end symm output and input vars */
 
 int padding(char *s, int numpad, char charpad);
 
@@ -59,8 +63,7 @@ int main(int argc, char *argv[])
 	int needfreef = 0;
 	int fileflag = 0;
 	int uflag = 0;
-	int symoutput = 0; /* if symm676 output */
-	int syminput = 0;  /* if symm676 input */
+	int usesymm = NEITHER;
 	FILE *fp;
 	
 	curtime = time(NULL);
@@ -74,9 +77,9 @@ int main(int argc, char *argv[])
 			break;
 		case 'd':
 			date = optarg;
-			process_date(date,thetime);
-			if (symoutput == 1)
-				get_symmdate(thetime);
+			process_date(date,thetime,usesymm);
+			if ((usesymm == OUT) || (usesymm == BOTH))
+				get_symmdate(thetime,usesymm);
 			break;
 		case 'f':
 			if ((fp = fopen(optarg,"r")) == NULL) {
@@ -113,10 +116,16 @@ int main(int argc, char *argv[])
 			strcpy(format,"%Y-%m-%d %T%z");
 			break;
 		case 's': /* use Symmetry 676 for output */
-			symoutput = 1;
+			if (usesymm = NEITHER)
+				usesymm = OUT;
+			else if (usesymm = IN)
+				usesymm = BOTH;
 			break;
 		case 'S': /* use Symmetry 676 for input */
-			syminput = 1;
+			if (usesymm = NEITHER)
+				usesymm = IN;
+			else if (usesymm = OUT)
+				usesymm = BOTH;
 			break;
 		case '?':
 			return 1;
@@ -152,9 +161,9 @@ int main(int argc, char *argv[])
 			if (dateline[i-1] == '\n') {
 				dateline[i] = '\0';
 				strcpy(buffer,buffer2);
-				process_date(dateline,thetime);
-				if (syminput == 1)
-					get_symmdate(thetime);
+				process_date(dateline,thetime,usesymm);
+				if ((usesymm == OUT) || (usesymm == BOTH))
+					get_symmdate(thetime,usesymm);
 				tgmify(buffer,thetime);
 				breakup(buffer,thetime);
 				printf("%s\n",buffer);

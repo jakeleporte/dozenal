@@ -41,6 +41,10 @@
 #include "error_codes.h"
 
 #define SIZE 256
+#define NEITHER 0 		/* begin symm output and input vars */
+#define OUT 1
+#define IN 2
+#define BOTH 3				/* end symm output and input vars */
 
 /* global array of structs for days of week */
 struct nameday {
@@ -72,10 +76,11 @@ struct monthdays {
 	"October", "Oct", 9,
 	"November", "Nov", 10,
 	"December", "Dec", 11,
+	"Irvember", "Irv", 12,
 };
 
 /* governing function, calls others */
-int process_date(char *s,struct tm *thetime)
+int process_date(char *s,struct tm *thetime,int usesymm)
 {
 	int i,j,k;
 	char *monpointer;
@@ -105,7 +110,11 @@ int process_date(char *s,struct tm *thetime)
 	thetime->tm_wday = dayofweek(thetime->tm_year+1900,
 		thetime->tm_mon+1,thetime->tm_mday);
 	thetime->tm_yday = ydays_from_date(thetime);
-	errorcheck(s,thetime);
+	if (usesymm == IN)
+/*		symm_errorcheck(s,thetime);*/
+		;
+	else	
+		errorcheck(s,thetime);
 	return 0;
 }
 
@@ -401,6 +410,85 @@ int errorcheck(char *s, struct tm *thetime)
 	(thetime->tm_mon == 9 && thetime->tm_mday > 31) ||
 	(thetime->tm_mon == 10 && thetime->tm_mday > 30) ||
 	(thetime->tm_mon == 11 && thetime->tm_mday > 31)) {
+		dectodoz(number,(double)thetime->tm_mday);
+		fprintf(stderr,"dozdate:  error:  %s does not have "
+		"%s days\n",month,number);
+		exit(BAD_MDAY);
+	} else if ((thetime->tm_mon == 1) && (thetime->tm_mday == 29)) {
+		if (!leapyear(0,thetime->tm_year+1900)) {
+			dectodoz(number,(double)thetime->tm_year+1900);
+			fprintf(stderr,"dozdate:  error:  %s is not a "
+			"leap year\n",number);
+			exit(BAD_LEAP_YEAR);
+		}
+	}
+	/* check for weekday error; fix if necessary */
+	if (thetime->tm_wday != dayofweek(thetime->tm_year+1900,
+	thetime->tm_mon+1,thetime->tm_mday)) {
+		if (strstr(s,"Sun") || strstr(s,"Mon") ||
+		strstr(s,"Tue") || strstr(s,"Wed") || strstr(s,"Thu")
+		|| strstr(s,"Fri") || strstr(s,"Sat"))
+			fprintf(stderr,"dozdate:  weekday \"%s\" does not "
+			"match the date \"%d %s %d\";\nsetting to the correct "
+			"weekday, \"%s\"\n",weekday,thetime->tm_mday,
+			month,thetime->tm_year+1900,oweekday);
+		thetime->tm_wday = dayofweek(thetime->tm_year+1900,
+			thetime->tm_mon+1,thetime->tm_mday);
+	}
+	if (thetime->tm_hour > 23) {
+		fprintf(stderr,"dozdate:  error:  hour is too "
+		"large\n");
+		exit(BAD_HOUR);
+	}
+	if (thetime->tm_min > 59) {
+		fprintf(stderr,"dozdate:  error:  minute is too "
+		"large\n");
+		exit(BAD_MIN);
+	}
+	if (thetime->tm_sec > 60) {
+		fprintf(stderr,"dozdate:  error:  second is too "
+		"large\n");
+		exit(BAD_SEC);
+	}
+}
+
+/* ensures that weekday given matches the dates, etc.,
+ * specifically for the symmetry calendar */
+int symm_errorcheck(char *s, struct tm *thetime)
+{
+	char *weekday, *oweekday;
+	char *month;
+	char number[SIZE];
+	int i;
+
+	/* verify that year is an acceptable value */
+	if (thetime->tm_year+1900 > 2699 || thetime->tm_year+1900 < 1700) {
+		fprintf(stderr,"dozdate:  error:  year is too large; "
+		"only dates between 0E98 and 168E\ncan be "
+		"calculated\n");
+		exit(BAD_YEAR);
+	}
+	/* fill some useful variables for error-checking */
+	for (i=0; thetime->tm_wday != weekdays[i].num; ++i);
+	weekday = weekdays[i].longname;
+	oweekday = weekdays[dayofweek(thetime->tm_year+1900,
+		thetime->tm_mon+1,thetime->tm_mday)].longname;
+	for (i=0; thetime->tm_mon != months[i].num; ++i);
+	month = months[i].longname;
+	/* check for mday error */
+	if ((thetime->tm_mon == 0 && thetime->tm_mday > 30) ||
+	(thetime->tm_mon == 1 && thetime->tm_mday > 31) ||
+	(thetime->tm_mon == 2 && thetime->tm_mday > 30) ||
+	(thetime->tm_mon == 3 && thetime->tm_mday > 30) ||
+	(thetime->tm_mon == 4 && thetime->tm_mday > 31) ||
+	(thetime->tm_mon == 5 && thetime->tm_mday > 30) ||
+	(thetime->tm_mon == 6 && thetime->tm_mday > 30) ||
+	(thetime->tm_mon == 7 && thetime->tm_mday > 31) ||
+	(thetime->tm_mon == 8 && thetime->tm_mday > 30) ||
+	(thetime->tm_mon == 9 && thetime->tm_mday > 30) ||
+	(thetime->tm_mon == 10 && thetime->tm_mday > 31) ||
+	(thetime->tm_mon == 11 && thetime->tm_mday > 30) ||
+	(thetime->tm_mon == 12 && thetime->tm_mday > 7)) {
 		dectodoz(number,(double)thetime->tm_mday);
 		fprintf(stderr,"dozdate:  error:  %s does not have "
 		"%s days\n",month,number);

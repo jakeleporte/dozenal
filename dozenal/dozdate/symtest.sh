@@ -9,11 +9,11 @@ echo -e "Tue 02 Irv 1191 (projected)\n`./dozdate -sd"25 Dec 1191"`"
 echo ""
 
 ./dozdate -d"3 Jan 1192"
-echo -e "Sat 07 Irv 1191 (projected)\n`./dozdate -sd"3 Jan 1192"`"
+echo -e "Sun 07 Irv 1191 (projected)\n`./dozdate -sd"3 Jan 1192"`"
 echo ""
 
 ./dozdate -d"4 Jan 1192"
-echo -e "Sat 01 Jan 1192 (projected)\n`./dozdate -sd"4 Jan 1192"`"
+echo -e "Mon 01 Jan 1192 (projected)\n`./dozdate -sd"4 Jan 1192"`"
 echo ""
 
 ./dozdate -d"25 Dec 1191" "%b"
@@ -21,5 +21,19 @@ echo -e "Irv (projected)\n`./dozdate -sd"25 Dec 1191" "%b"`"
 echo ""
 
 ./dozdate -d"25 Jan 1190" "%B"
-./dozdate -sd"25 Jan 1190" "%B"
-./dozdate -sd"25 Dec 1191" "%B"
+echo -e "January (projected)\n`./dozdate -sd"25 Jan 1190" "%B"`";
+echo ""
+
+./dozdate -d"25 Dec 1190" "%B"
+echo -e "January (projected)\n`./dozdate -sd"25 Dec 1190" "%B"`";
+echo ""
+
+./dozdate -d"24 Dec 1190" "%B"
+echo -e "December (projected)\n`./dozdate -sd"24 Dec 1190" "%B"`";
+echo ""
+
+./dozdate -d"25 Dec 1191" "%B"
+echo -e "Irvember (projected)\n`./dozdate -sd"25 Dec 1191" "%B"`";
+echo ""
+
+echo -e "Sun 03 Jan 1192 (projected)\n`./dozdate -Ssd"7 Irv 1191"`";

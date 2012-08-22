@@ -38,28 +38,31 @@
 #include "conv.h"
 #include "error_codes.h"
 
-/*#define symepoch 1721426.0*/ /* Julian day SymEpoch */
-/*#define weekdayadj 6*/		/* Julian day WeekdayAdjust */
 #define symepoch -678575.0
 #define weekdayadj 4
 #define cyclemeanyear 365.24232082 /* CycleMeanYear for 52/293 */
+#define NEITHER 0 		/* begin symm output and input vars */
+#define OUT 1
+#define IN 2
+#define BOTH 3				/* end symm output and input vars */
 
 long get_judate(struct tm *thetime);
 long symnewyear(int symyear);
 
-int get_symmdate(struct tm *thetime)
+int get_symmdate(struct tm *thetime,int usesymm)
 {
-/*	struct tm *thetime;
-	time_t curtime;
-	curtime = time(NULL);
-	thetime = localtime(&curtime);*/
 	long firstday;	 /* first day of year */
 	long judate;		/* Julian day */
 	int symyear;
 
-	judate = get_judate(thetime);
-	symyear = fixed_to_symyear(judate,&firstday);
-	convtosym(thetime,judate,symyear,firstday);
+/* here to convert date to Greg from Symm */
+	/* FFF */
+/* here to convert date to Symm from Greg */
+	if ((usesymm == OUT) || (usesymm == BOTH)) {
+		judate = get_judate(thetime);
+		symyear = fixed_to_symyear(judate,&firstday);
+		convtosym(thetime,judate,symyear,firstday);
+	}
 	return 0;
 }
 
