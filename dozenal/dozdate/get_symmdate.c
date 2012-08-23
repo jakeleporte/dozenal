@@ -73,6 +73,7 @@ int get_symmdate(struct tm *thetime,int *usesymm)
 	if (*usesymm == OUT) {
 		judate = get_judate(thetime);
 		symyear = fixed_to_symyear(judate,&firstday);
+		thetime->tm_wday = symmtoweekday(judate,firstday,thetime);
 		convtosym(thetime,judate,symyear,firstday);
 	}
 	return 0;

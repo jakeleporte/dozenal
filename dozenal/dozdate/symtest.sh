@@ -43,3 +43,7 @@ echo -e "Fri 05 Apr 11E5 (projected)\n`./dozdate -Sd"7 Apr 11E5"`";
 echo "";
 
 echo -e "Sun 07 Apr 11E5 (projected)\n`./dozdate -sd"5 Apr 11E5"`";
+echo "";
+
+echo -e "Sun 07 Apr 11E5 (projected)\n`./dozdate -Ssd"7 Apr 11E5"`";
+echo -e "Sun 07 Apr 11E5 (projected)\n`./dozdate -sSd"7 Apr 11E5"`";
