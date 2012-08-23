@@ -36,4 +36,10 @@ echo ""
 echo -e "Irvember (projected)\n`./dozdate -sd"25 Dec 1191" "%B"`";
 echo ""
 
-echo -e "Sun 03 Jan 1192 (projected)\n`./dozdate -Ssd"7 Irv 1191"`";
+echo -e "Sun 03 Jan 1192 (projected)\n`./dozdate -Sd"7 Irv 1191"`";
+echo "";
+
+echo -e "Fri 05 Apr 11E5 (projected)\n`./dozdate -Sd"7 Apr 11E5"`";
+echo "";
+
+echo -e "Sun 07 Apr 11E5 (projected)\n`./dozdate -sd"5 Apr 11E5"`";

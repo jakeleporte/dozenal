@@ -44,6 +44,7 @@
 #define NEITHER 0 		/* begin symm output and input vars */
 #define OUT 1
 #define IN 2
+#define BACK 4
 #define BOTH 3				/* end symm output and input vars */
 
 /* global array of structs for days of week */
@@ -107,12 +108,19 @@ int process_date(char *s,struct tm *thetime,int usesymm)
 	} else if (month >= 0) {
 		thetime->tm_mon = month;
 	}
-	thetime->tm_wday = dayofweek(thetime->tm_year+1900,
-		thetime->tm_mon+1,thetime->tm_mday);
-	thetime->tm_yday = ydays_from_date(thetime);
-	if (usesymm == IN)
-/*		symm_errorcheck(s,thetime);*/
-		;
+	if ((usesymm == NEITHER) || (usesymm == OUT)) {
+		thetime->tm_wday = dayofweek(thetime->tm_year+1900,
+			thetime->tm_mon+1,thetime->tm_mday);
+		thetime->tm_yday = ydays_from_date(thetime);
+	}
+	if ((usesymm == IN) || (usesymm == BOTH)) {
+/*		printf("day:  %d\n",thetime->tm_mday);
+		printf("month:  %d\n",thetime->tm_mon);
+		printf("year:  %d\n",1900+thetime->tm_year);
+		printf("weekday:  %d\n",thetime->tm_wday);
+		proc_symmdate(sthetime);
+		symm_errorcheck(s,thetime);*/
+	}
 	else	
 		errorcheck(s,thetime);
 	return 0;
@@ -571,7 +579,7 @@ int parse_for_alpha_month(char *s, struct tm *thetime)
 	char *monthspot; char *copy;
 	char datenum[5] = "";
 
-	for (i=0; i < 12; ++i)
+	for (i=0; i <= 12; ++i)
 		if ((monthspot = strstr(s,months[i].longname)) ||
 		(monthspot = strstr(s,months[i].shortname))) {
 			month = months[i].num;

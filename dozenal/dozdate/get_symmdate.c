@@ -7,7 +7,8 @@
  *
 */
 /*
- * Gets Julian date and converts to Symm676.
+ * Handles the conversions to and from Symm676 and the
+ * Gregorian calendars.
  *
  * (C) Copyright 2012  Donald P. Goodman III
  *
@@ -44,26 +45,84 @@
 #define NEITHER 0 		/* begin symm output and input vars */
 #define OUT 1
 #define IN 2
+#define BACK 4
 #define BOTH 3				/* end symm output and input vars */
 
 long get_judate(struct tm *thetime);
 long symnewyear(int symyear);
+long symmtofixed(struct tm *thetime);
 
-int get_symmdate(struct tm *thetime,int usesymm)
+int get_symmdate(struct tm *thetime,int *usesymm)
 {
-	long firstday;	 /* first day of year */
+	long firstday;	 	/* first day of year */
 	long judate;		/* Julian day */
 	int symyear;
 
 /* here to convert date to Greg from Symm */
-	/* FFF */
+	if ((*usesymm == IN) || (*usesymm == BOTH)) {
+		if (*usesymm == BOTH)
+			*usesymm = OUT;
+		judate = symmtofixed(thetime);
+		symyear = fixed_to_symyear(judate,&firstday);
+		thetime->tm_wday = symmtoweekday(judate,firstday,thetime);
+		getgregdate(judate,thetime);
+		if (thetime->tm_mon == 12)
+			thetime->tm_year += 1;
+	}
 /* here to convert date to Symm from Greg */
-	if ((usesymm == OUT) || (usesymm == BOTH)) {
+	if (*usesymm == OUT) {
 		judate = get_judate(thetime);
 		symyear = fixed_to_symyear(judate,&firstday);
 		convtosym(thetime,judate,symyear,firstday);
 	}
 	return 0;
+}
+
+/* calc day of week from Symm date */
+int symmtoweekday(long judate, int firstday, struct tm *thetime)
+{
+	int dayofyear;
+
+	dayofyear = judate - firstday + 1;
+	if (thetime->tm_mon == 12)
+		dayofyear += 30;
+	return dayofyear % 7;
+}
+
+/* convert fixed day (modJul) to Gregorian */
+int getgregdate(long judate, struct tm *thetime)
+{
+	int z, r, g, a, b, year,month, c, day;
+
+	judate += 2400000.5;
+	z = (int)(judate - 1721118.5);
+	r = judate - 1721118.5 - z;
+	g = z - 0.25;
+	a = (int)(g / 36524.25);
+	b = a - (int)(a / 4);
+	year = (int)((b + g) / 365.25);
+	c = b + z - (int)(365.25 * year);
+	month = (int)((5 * c + 456) / 153);
+	day = c - (int)((153 * month - 457) / 5) + r;
+	if (month > 12) {
+		year += 1;
+		month -= 12;
+	}
+/*	printf("year:  %d\n",year);
+	printf("month:  %d\n",month);
+	printf("day:  %d\n",day);
+	printf("yday:  %d\n",thetime->tm_yday);*/
+	thetime->tm_year = year-1900;
+	thetime->tm_mon = month;
+	thetime->tm_mday = day;
+	return 0;
+}
+
+/* convert Symm date to fixed day (modified Julian) */
+long symmtofixed(struct tm *thetime)
+{
+	return symnewyear(1900 + thetime->tm_year) +
+		(daysbfmonth(thetime->tm_mon) + thetime->tm_mday) - 1;
 }
 
 /* get the julian day */
@@ -80,7 +139,6 @@ long get_judate(struct tm *thetime)
 }
 
 /* find new year day of symyear */
-
 long symnewyear(int symyear)
 {
 	int E;
@@ -151,8 +209,6 @@ int convtosym(struct tm *thetime, long judate, int symyear, int firstday)
 	weekofquart = (int)(dayofquart / 7.0 + 1.0);
 	monthofquart = (int)(2.0 / 61.0 * dayofquart + 1);
 	symmonth = 3 * (currquart - 1) + monthofquart;
-/*	if (symmonth == 13)
-		symmonth = 1;*/
 	thetime->tm_mon = symmonth - 1;
 	symday = dayofyear - daysbfmonth(symmonth);
 	thetime->tm_mday = symday;

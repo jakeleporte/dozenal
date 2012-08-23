@@ -46,6 +46,7 @@
 #define NEITHER 0 		/* begin symm output and input vars */
 #define OUT 1
 #define IN 2
+#define BACK 4
 #define BOTH 3				/* end symm output and input vars */
 
 int padding(char *s, int numpad, char charpad);
@@ -78,8 +79,7 @@ int main(int argc, char *argv[])
 		case 'd':
 			date = optarg;
 			process_date(date,thetime,usesymm);
-			if ((usesymm == OUT) || (usesymm == BOTH))
-				get_symmdate(thetime,usesymm);
+			get_symmdate(thetime,&usesymm);
 			break;
 		case 'f':
 			if ((fp = fopen(optarg,"r")) == NULL) {
@@ -116,15 +116,15 @@ int main(int argc, char *argv[])
 			strcpy(format,"%Y-%m-%d %T%z");
 			break;
 		case 's': /* use Symmetry 676 for output */
-			if (usesymm = NEITHER)
+			if (usesymm == NEITHER)
 				usesymm = OUT;
-			else if (usesymm = IN)
+			else if (usesymm == IN)
 				usesymm = BOTH;
 			break;
 		case 'S': /* use Symmetry 676 for input */
-			if (usesymm = NEITHER)
+			if (usesymm == NEITHER)
 				usesymm = IN;
-			else if (usesymm = OUT)
+			else if (usesymm == OUT)
 				usesymm = BOTH;
 			break;
 		case '?':
@@ -153,6 +153,8 @@ int main(int argc, char *argv[])
 		breakup(buffer,thetime);
 		if (thetime->tm_yday > 31)
 			dectoirv(buffer,thetime);
+		if ((usesymm == NEITHER) || (usesymm == IN))
+			irvtojan(buffer,thetime);
 		printf("%s\n",buffer);
 	} else {
 		i = 0;
@@ -163,7 +165,7 @@ int main(int argc, char *argv[])
 				strcpy(buffer,buffer2);
 				process_date(dateline,thetime,usesymm);
 				if ((usesymm == OUT) || (usesymm == BOTH))
-					get_symmdate(thetime,usesymm);
+					get_symmdate(thetime,&usesymm);
 				tgmify(buffer,thetime);
 				breakup(buffer,thetime);
 				printf("%s\n",buffer);
@@ -455,22 +457,42 @@ int dectoirv(char *buffer,struct tm *thetime)
 {
 	char *monthstart;
 
-/*	if (thetime->tm_mon == 12) {*/
-		if (monthstart = strstr(buffer,"January")) {
-			memmove(monthstart+1,monthstart,strlen(monthstart)+1);
-			*monthstart = 'I';
-			*(monthstart+1) = 'r';
-			*(monthstart+2) = 'v';
-			*(monthstart+3) = 'e';
-			*(monthstart+4) = 'm';
-			*(monthstart+5) = 'b';
-			*(monthstart+6) = 'e';
-			*(monthstart+7) = 'r';
-		} else if (monthstart = strstr(buffer,"Jan")) {
-			*monthstart = 'I';
-			*(monthstart+1) = 'r';
-			*(monthstart+2) = 'v';
-		}
-/*	}*/
+	if (monthstart = strstr(buffer,"January")) {
+		memmove(monthstart+1,monthstart,strlen(monthstart)+1);
+		*monthstart = 'I';
+		*(monthstart+1) = 'r';
+		*(monthstart+2) = 'v';
+		*(monthstart+3) = 'e';
+		*(monthstart+4) = 'm';
+		*(monthstart+5) = 'b';
+		*(monthstart+6) = 'e';
+		*(monthstart+7) = 'r';
+	} else if (monthstart = strstr(buffer,"Jan")) {
+		*monthstart = 'I';
+		*(monthstart+1) = 'r';
+		*(monthstart+2) = 'v';
+	}
+	return 0;
+}
+
+/* replace Irvember with January if needed */
+int irvtojan(char *buffer,struct tm *thetime)
+{
+	char *monthstart;
+
+	if (monthstart = strstr(buffer,"Irvember")) {
+		memmove(monthstart,monthstart+1,strlen(monthstart)+1);
+		*monthstart = 'J';
+		*(monthstart+1) = 'a';
+		*(monthstart+2) = 'n';
+		*(monthstart+3) = 'u';
+		*(monthstart+4) = 'a';
+		*(monthstart+5) = 'r';
+		*(monthstart+6) = 'y';
+	} else if (monthstart = strstr(buffer,"Irv")) {
+		*monthstart = 'J';
+		*(monthstart+1) = 'a';
+		*(monthstart+2) = 'n';
+	}
 	return 0;
 }
