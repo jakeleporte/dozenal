@@ -75,6 +75,14 @@ int get_symmdate(struct tm *thetime,int *usesymm)
 		symyear = fixed_to_symyear(judate,&firstday);
 		thetime->tm_wday = symmtoweekday(judate,firstday,thetime);
 		convtosym(thetime,judate,symyear,firstday);
+		if (thetime->tm_mday == 0) {
+			thetime->tm_mon--;
+			if ((thetime->tm_mon == 1) || (thetime->tm_mon == 4)
+			|| (thetime->tm_mon == 7) || (thetime->tm_mon == 10))
+				thetime->tm_mday = 31;
+			else
+				thetime->tm_mday = 30;
+		}
 	}
 	return 0;
 }
@@ -208,7 +216,7 @@ int convtosym(struct tm *thetime, long judate, int symyear, int firstday)
 	currquart = (int)(4.0 / 53.0 * weekofyear + 1.0);
 	dayofquart = dayofyear - 91.0 * (currquart - 1.0);
 	weekofquart = (int)(dayofquart / 7.0 + 1.0);
-	monthofquart = (int)(2.0 / 61.0 * dayofquart + 1);
+	monthofquart = (int)((2.0 / 61.0) * dayofquart + 1.0);
 	symmonth = 3 * (currquart - 1) + monthofquart;
 	thetime->tm_mon = symmonth - 1;
 	symday = dayofyear - daysbfmonth(symmonth);

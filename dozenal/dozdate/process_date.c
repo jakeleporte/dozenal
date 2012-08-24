@@ -118,10 +118,9 @@ int process_date(char *s,struct tm *thetime,int usesymm)
 		printf("month:  %d\n",thetime->tm_mon);
 		printf("year:  %d\n",1900+thetime->tm_year);
 		printf("weekday:  %d\n",thetime->tm_wday);
-		proc_symmdate(sthetime);
+		proc_symmdate(s,thetime);
 		symm_errorcheck(s,thetime);*/
-	}
-	else	
+	} else	
 		errorcheck(s,thetime);
 	return 0;
 }
