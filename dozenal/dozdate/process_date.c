@@ -120,7 +120,7 @@ int process_date(char *s,struct tm *thetime,int usesymm)
 		printf("weekday:  %d\n",thetime->tm_wday);
 		proc_symmdate(s,thetime);
 		symm_errorcheck(s,thetime);*/
-	} else	
+	} else
 		errorcheck(s,thetime);
 	return 0;
 }
@@ -721,6 +721,12 @@ int dayofweek(int year, int month, int day)
 	int tmp, cent;
 	int i;
 
+	if ((year >= 2600) || (year <= 1700)) {
+		fprintf(stderr,"dozdate:  error:  year is too large; "
+		"only dates between 0E98 and 168E\ncan be "
+		"calculated\n");
+		exit(BAD_YEAR);
+	}
 	cent = (int)year / 100;
 	year = year - (cent * 100);
 	for (i=0; centuries[i].twocent != cent; ++i);
