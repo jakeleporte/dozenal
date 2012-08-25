@@ -114,11 +114,8 @@ int process_date(char *s,struct tm *thetime,int usesymm)
 		thetime->tm_yday = ydays_from_date(thetime);
 	}
 	if ((usesymm == IN) || (usesymm == BOTH)) {
-/*		printf("day:  %d\n",thetime->tm_mday);
-		printf("month:  %d\n",thetime->tm_mon);
-		printf("year:  %d\n",1900+thetime->tm_year);
-		printf("weekday:  %d\n",thetime->tm_wday);
-		proc_symmdate(s,thetime);
+		/*thetime->tm_wday = dayofweek(thetime->tm_year+1900,
+			thetime->tm_mon+1,thetime->tm_mday);
 		symm_errorcheck(s,thetime);*/
 	} else
 		errorcheck(s,thetime);

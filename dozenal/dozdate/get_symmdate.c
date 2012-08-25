@@ -57,23 +57,22 @@ int get_symmdate(struct tm *thetime,int *usesymm)
 	long firstday;	 	/* first day of year */
 	long judate;		/* Julian day */
 	int symyear;
+	int wday;
 
-/* here to convert date to Greg from Symm */
 	if ((*usesymm == IN) || (*usesymm == BOTH)) {
 		if (*usesymm == BOTH)
 			*usesymm = OUT;
 		judate = symmtofixed(thetime);
 		symyear = fixed_to_symyear(judate,&firstday);
-		thetime->tm_wday = symmtoweekday(judate,firstday,thetime);
 		getgregdate(judate,thetime);
+		thetime->tm_mon--;
+		thetime->tm_wday = (judate + 2) % 7;
 		if (thetime->tm_mon == 12)
 			thetime->tm_year += 1;
-	}
-/* here to convert date to Symm from Greg */
-	if (*usesymm == OUT) {
+	} else if (*usesymm == OUT) {
 		judate = get_judate(thetime);
 		symyear = fixed_to_symyear(judate,&firstday);
-		thetime->tm_wday = symmtoweekday(judate,firstday,thetime);
+/*		thetime->tm_wday = symmtoweekday(judate,firstday,thetime);*/
 		convtosym(thetime,judate,symyear,firstday);
 		if (thetime->tm_mday == 0) {
 			thetime->tm_mon--;
@@ -101,26 +100,22 @@ int symmtoweekday(long judate, int firstday, struct tm *thetime)
 /* convert fixed day (modJul) to Gregorian */
 int getgregdate(long judate, struct tm *thetime)
 {
-	int z, r, g, a, b, year,month, c, day;
+	int z, l, n, i, j, k, day, month, year;
 
-	judate += 2400000.5;
-	z = (int)(judate - 1721118.5);
-	r = judate - 1721118.5 - z;
-	g = z - 0.25;
-	a = (int)(g / 36524.25);
-	b = a - (int)(a / 4);
-	year = (int)((b + g) / 365.25);
-	c = b + z - (int)(365.25 * year);
-	month = (int)((5 * c + 456) / 153);
-	day = c - (int)((153 * month - 457) / 5) + r;
-	if (month > 12) {
-		year += 1;
-		month -= 12;
-	}
-/*	printf("year:  %d\n",year);
-	printf("month:  %d\n",month);
-	printf("day:  %d\n",day);
-	printf("yday:  %d\n",thetime->tm_yday);*/
+	z = judate+2400000;
+	l = z + 68569;
+	n = 4 * l / 146097;
+	l = l - (146097 * n + 3) / 4;
+	i = 4000 * (l + 1) / 1461001;
+	l = l - 1461 * i / 4 + 31;
+	j = 80 * l / 2447;
+	k = l - 2447 * j / 80;
+	l = j / 11;
+	j = j + 2 - 12 * l;
+	i = 100 * (n - 49) + i + l;
+	year = i;
+	month = j;
+	day = k;
 	thetime->tm_year = year-1900;
 	thetime->tm_mon = month;
 	thetime->tm_mday = day;
@@ -130,8 +125,13 @@ int getgregdate(long judate, struct tm *thetime)
 /* convert Symm date to fixed day (modified Julian) */
 long symmtofixed(struct tm *thetime)
 {
-	return symnewyear(1900 + thetime->tm_year) +
-		(daysbfmonth(thetime->tm_mon) + thetime->tm_mday) - 1;
+	int holder;
+	int daybf;
+
+	daybf = daysbfmonth(thetime->tm_mon+1);
+	holder = symnewyear(1900 + thetime->tm_year) +
+		(daybf + thetime->tm_mday);
+	return holder;
 }
 
 /* get the julian day */
