@@ -69,10 +69,10 @@ int get_symmdate(struct tm *thetime,int *usesymm)
 		thetime->tm_wday = (judate + 2) % 7;
 		if (thetime->tm_mon == 12)
 			thetime->tm_year += 1;
-	} else if (*usesymm == OUT) {
+	} 
+	if (*usesymm == OUT) {
 		judate = get_judate(thetime);
 		symyear = fixed_to_symyear(judate,&firstday);
-/*		thetime->tm_wday = symmtoweekday(judate,firstday,thetime);*/
 		convtosym(thetime,judate,symyear,firstday);
 		if (thetime->tm_mday == 0) {
 			thetime->tm_mon--;

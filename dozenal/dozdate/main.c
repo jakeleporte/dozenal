@@ -164,8 +164,7 @@ int main(int argc, char *argv[])
 				dateline[i] = '\0';
 				strcpy(buffer,buffer2);
 				process_date(dateline,thetime,usesymm);
-				if ((usesymm == OUT) || (usesymm == BOTH))
-					get_symmdate(thetime,&usesymm);
+				get_symmdate(thetime,&usesymm);
 				tgmify(buffer,thetime);
 				breakup(buffer,thetime);
 				printf("%s\n",buffer);
