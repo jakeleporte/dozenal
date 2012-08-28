@@ -38,3 +38,4 @@ int fixed_to_symyear(long judate,long *firstday);
 int issymleapyear(int symyear);
 int daysbfmonth(int symmonth);
 int convtosym(struct tm *thetime, long judate, int symyear, int firstday);
+int symm_errcheck(struct tm *thetime);

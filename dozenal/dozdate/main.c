@@ -148,8 +148,8 @@ int main(int argc, char *argv[])
 	strcpy(buffer2,format);
 	if (fileflag == 0) {
 		tgmify(buffer,thetime);
-		if (thetime->tm_mon == 12)
-			thetime->tm_mon = 0;
+/*		if (thetime->tm_mon == 12)
+			thetime->tm_mon = 0;*/
 		breakup(buffer,thetime);
 		if (thetime->tm_yday > 31)
 			dectoirv(buffer,thetime);
@@ -197,6 +197,8 @@ int breakup(char *s, struct tm *thetime)
 				tmp[j] = s[i];
 			tmp[j++] = s[i];
 			tmp[j] = '\0';
+			if ((tmp[j-1] == 'b') && (thetime->tm_yday > 364))
+				thetime->tm_mon = 0;
 			strftime(tmp2,SIZE,tmp,thetime);
 			tokenize(tmp2);
 			dateinsert(s,tmp2,j-1);
@@ -471,6 +473,7 @@ int dectoirv(char *buffer,struct tm *thetime)
 		*(monthstart+1) = 'r';
 		*(monthstart+2) = 'v';
 	}
+	thetime->tm_mon = 12;
 	return 0;
 }
 

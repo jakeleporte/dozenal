@@ -86,6 +86,12 @@ int get_symmdate(struct tm *thetime,int *usesymm)
 	return 0;
 }
 
+int symm_errcheck(struct tm *thetime)
+{
+	if (thetime->tm_yday > 364)
+		thetime->tm_mon = 12;
+}
+
 /* calc day of week from Symm date */
 int symmtoweekday(long judate, int firstday, struct tm *thetime)
 {
