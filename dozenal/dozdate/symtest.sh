@@ -49,5 +49,10 @@
 #echo -e "Sun 07 Apr 11E5 (projected)\n`./dozdate -sSd"7 Apr 11E5"`";
 #echo "";
 #
-echo -e "1191-13-05 (projected)\n`./dozdate -Ssd"5 Irv 1191" "%Y-%m-%d"`";
-echo -e "`./dozdate -Ssd"5 Irv 1191"`";
+echo -e "1191-11-05 (projected)\n`./dozdate -Ssd"5 Irv 1191" "%Y-%m-%d"`";
+echo -e "`./dozdate -Ssd"5 Jan 1191" "%Y-%m-%d"`";
+echo -e "`./dozdate -Ssd"5 Feb 1191" "%Y-%m-%d"`";
+echo -e "`./dozdate -Ssd"26 Dec 1191" "%Y-%m-%d"`";
+echo -e "`./dozdate -sd"25 Dec 1191" "%Y-%m-%d"`";
+echo -e "`./dozdate -sd"27 Dec 1191" "%Y-%m-%d"`";
+echo -e "`./dozdate -sd"04 Jan 1192" "%Y-%m-%d"`";
