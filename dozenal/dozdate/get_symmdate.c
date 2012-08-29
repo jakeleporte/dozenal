@@ -62,6 +62,7 @@ int get_symmdate(struct tm *thetime,int *usesymm)
 	if ((*usesymm == IN) || (*usesymm == BOTH)) {
 		if (*usesymm == BOTH)
 			*usesymm = OUT;
+		symm_errcheck(thetime);
 		judate = symmtofixed(thetime);
 		symyear = fixed_to_symyear(judate,&firstday);
 		getgregdate(judate,thetime);
@@ -88,8 +89,20 @@ int get_symmdate(struct tm *thetime,int *usesymm)
 
 int symm_errcheck(struct tm *thetime)
 {
-	if (thetime->tm_yday > 364)
-		thetime->tm_mon = 12;
+	char tmp[12];
+	char *tmp2;
+	int symyear, firstday;
+	long judate;
+	char c;
+
+	if ((issymleapyear(thetime->tm_year+1900) == 0) &&
+	(thetime->tm_mon > 11)) {
+		dectodoz(tmp,(double)thetime->tm_year+1900);
+		fprintf(stderr, "dozdate:  error:  %s is not a leap "
+		"year\n",tmp);
+		exit(BAD_LEAP_YEAR);
+	}
+	return 0;
 }
 
 /* calc day of week from Symm date */

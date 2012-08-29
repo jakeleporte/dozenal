@@ -29,6 +29,13 @@ Display the date and time in RFC-3339 format.  E.g.:
 Display the date and time in UTC/GMT (Coordinated Universal
 Time or Greenwich Mean Time); in other words, without time
 zone or daylight savings time concerns.
+.IP -S
+The date to be input will be in the Symmetry676 (in decimal,
+Symmetry010) calendar.
+.IP -s
+The date should be output in the Symmetry676 (in decimal,
+Symmetry010) calendar.  Can, of course, be combined with the
+above as "-Ss" or as "-sS".
 .IP -v
 Print version and copyright information, then quit.
 .SH FORMAT
@@ -435,10 +442,11 @@ The date string requires there to be more dates in the month
 than there really are.  E.g., it requires there to be a
 March 32.
 .IP 2
-Requested 29 February, but this isn't a leap year.
+Requested 29 February, or a date in Irvember if using the
+Symm676 calendar, but this isn't a leap year.
 .IP 3
 Bad month; the month you've requested doesn't exist.  E.g.,
-"13".
+"15".
 .IP 4
 Bad conversion code, either "%" or "@"; dozdate doesn't
 recognize what you're asking it to do.

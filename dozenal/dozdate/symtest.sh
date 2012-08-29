@@ -56,3 +56,7 @@ echo -e "`./dozdate -Ssd"26 Dec 1191" "%Y-%m-%d"`";
 echo -e "`./dozdate -sd"25 Dec 1191" "%Y-%m-%d"`";
 echo -e "`./dozdate -sd"27 Dec 1191" "%Y-%m-%d"`";
 echo -e "`./dozdate -sd"04 Jan 1192" "%Y-%m-%d"`";
+echo ""
+echo -e "`./dozdate -Ssd"04 Irv 1192"`";
+echo -e "`./dozdate -Ssd"04 Irv 1191"`";
+echo -e "`./dozdate -Ssd"Sun 04 Irv 1191"`";

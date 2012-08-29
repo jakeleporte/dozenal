@@ -148,8 +148,6 @@ int main(int argc, char *argv[])
 	strcpy(buffer2,format);
 	if (fileflag == 0) {
 		tgmify(buffer,thetime);
-/*		if (thetime->tm_mon == 12)
-			thetime->tm_mon = 0;*/
 		breakup(buffer,thetime);
 		if (thetime->tm_yday > 31)
 			dectoirv(buffer,thetime);
@@ -167,6 +165,10 @@ int main(int argc, char *argv[])
 				get_symmdate(thetime,&usesymm);
 				tgmify(buffer,thetime);
 				breakup(buffer,thetime);
+				if (thetime->tm_yday > 31)
+					dectoirv(buffer,thetime);
+				if ((usesymm == NEITHER) || (usesymm == IN))
+					irvtojan(buffer,thetime);
 				printf("%s\n",buffer);
 				if (uflag == 1)
 					thetime = gmtime(&curtime);
