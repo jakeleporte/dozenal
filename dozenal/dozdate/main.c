@@ -65,6 +65,7 @@ int main(int argc, char *argv[])
 	int fileflag = 0;
 	int uflag = 0;
 	int usesymm = NEITHER;
+	int oldusesymm;
 	FILE *fp;
 	
 	curtime = time(NULL);
@@ -157,6 +158,7 @@ int main(int argc, char *argv[])
 	} else {
 		i = 0;
 		while ((c = getc(fp)) != EOF) {
+			oldusesymm = usesymm;
 			dateline[i++] = c;
 			if (dateline[i-1] == '\n') {
 				dateline[i] = '\0';
@@ -170,7 +172,9 @@ int main(int argc, char *argv[])
 				if ((usesymm == NEITHER) || (usesymm == IN))
 					irvtojan(buffer,thetime);
 				printf("%s\n",buffer);
+				usesymm = oldusesymm;
 				if (uflag == 1)
+					if ((usesymm == IN) || (usesymm == BOTH))
 					thetime = gmtime(&curtime);
 				else
 					thetime = localtime(&curtime);
