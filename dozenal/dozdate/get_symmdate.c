@@ -45,7 +45,6 @@
 #define NEITHER 0 		/* begin symm output and input vars */
 #define OUT 1
 #define IN 2
-#define BACK 4
 #define BOTH 3				/* end symm output and input vars */
 
 long get_judate(struct tm *thetime);

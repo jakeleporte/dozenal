@@ -44,7 +44,6 @@
 #define NEITHER 0 		/* begin symm output and input vars */
 #define OUT 1
 #define IN 2
-#define BACK 4
 #define BOTH 3				/* end symm output and input vars */
 
 /* global array of structs for days of week */
@@ -114,9 +113,6 @@ int process_date(char *s,struct tm *thetime,int usesymm)
 		thetime->tm_yday = ydays_from_date(thetime);
 	}
 	if ((usesymm == IN) || (usesymm == BOTH)) {
-		/*thetime->tm_wday = dayofweek(thetime->tm_year+1900,
-			thetime->tm_mon+1,thetime->tm_mday);
-		symm_errorcheck(s,thetime);*/
 	} else
 		errorcheck(s,thetime);
 	return 0;
