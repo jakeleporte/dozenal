@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
 	curtime = time(NULL);
 	thetime = localtime(&curtime);
 
-	while ((c = getopt(argc,argv,"vsSuRcd:f:")) != -1) {
+	while ((c = getopt(argc,argv,"vsSYuRcd:f:")) != -1) {
 		switch (c) {
 		case 'u':
 			thetime = gmtime(&curtime);
@@ -127,6 +127,9 @@ int main(int argc, char *argv[])
 			else if (usesymm == OUT)
 				usesymm = BOTH;
 			break;
+		case 'Y': /* input and output Symm676 */
+			usesymm = BOTH;
+			break;
 		case '?':
 			return 1;
 			break;
@@ -144,8 +147,11 @@ int main(int argc, char *argv[])
 		needfreef = 1;
 		*format = '@'; *(format+1) = 'c'; *(format+2) = '\0';
 	}
-/*	if ((usesymm == BOTH) || (usesymm == IN))
-		get_symmdate(thetime,&usesymm);*/
+	if ((usesymm != NEITHER) && (date == NULL)) {
+		oldusesymm = usesymm;
+		get_symmdate(thetime,&usesymm);
+		usesymm = oldusesymm;
+	}
 	strcpy(buffer,format);
 	strcpy(buffer2,format);
 	if (fileflag == 0) {
