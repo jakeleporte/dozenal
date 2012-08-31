@@ -90,7 +90,7 @@ int main(int argc, char *argv[])
 			fileflag = 1;
 			break;
 		case 'v':
-			printf("dozdate v1.0\n");
+			printf("dozdate v2.0\n");
 			printf("Copyright (C) 2011  Donald P. Goodman III\n");
 			printf("License GPLv3+:  GNU GPL version 3 or "
 			"later <http://gnu.org/licenses/gpl.html>\n");
@@ -144,6 +144,8 @@ int main(int argc, char *argv[])
 		needfreef = 1;
 		*format = '@'; *(format+1) = 'c'; *(format+2) = '\0';
 	}
+/*	if ((usesymm == BOTH) || (usesymm == IN))
+		get_symmdate(thetime,&usesymm);*/
 	strcpy(buffer,format);
 	strcpy(buffer2,format);
 	if (fileflag == 0) {
@@ -202,7 +204,7 @@ int breakup(char *s, struct tm *thetime)
 				tmp[j] = s[i];
 			tmp[j++] = s[i];
 			tmp[j] = '\0';
-			if ((tmp[j-1] == 'b') && (thetime->tm_yday > 364))
+			if ((tmp[j-1] == 'b') && (thetime->tm_yday >= 364))
 				thetime->tm_mon = 0;
 			strftime(tmp2,SIZE,tmp,thetime);
 			tokenize(tmp2);

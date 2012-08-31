@@ -228,7 +228,7 @@ int convtosym(struct tm *thetime, long judate, int symyear, int firstday)
 	int symday;
 
 	dayofyear = judate - firstday + 1;
-	thetime->tm_yday = dayofyear;
+	thetime->tm_yday = dayofyear-1;
 	thetime->tm_year = symyear - 1900;
 	weekofyear = (int)(dayofyear / 7.0 + 1.0);
 	currquart = (int)(4.0 / 53.0 * weekofyear + 1.0);
