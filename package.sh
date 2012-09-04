@@ -5,11 +5,11 @@
 # the Immaculate Heart of Mary for her prayers, and to the
 # Sacred Heart of Jesus for His mercy.
 
-tar -cvvf dozenal_v11E80325_src.tar ./dozenal/dec ./dozenal/doz \
+tar -cvvf dozenal_v11E80827_src.tar ./dozenal/dec ./dozenal/doz \
 ./dozenal/dozdc ./dozenal/tgmconv ./dozenal/dozword \
 ./dozenal/dozpret ./dozenal/dozdate \
 ./dozenal/install.sh ./dozenal/uninstall.sh;
-tar -f dozenal_v11E80325_src.tar --wildcards --verbose --delete *.o ./dozenal/dozdc/dozdc ./dozenal/doz/doz ./dozenal/dec/dec ./dozenal/tgmconv/tgmconv ./dozenal/dozword/dozword ./dozenal/dozpret/dozpret ./dozenal/dozdate/dozdate;
-gzip dozenal_v11E80325_src.tar;
-tar -cvvf dozenal_v11E80325_bin_x86_64.tar ./dozenal/doz/doz ./dozenal/dec/dec ./dozenal/dozdc/dozdc ./dozenal/dozword/dozword ./dozenal/tgmconv/tgmconv ./dozenal/dozpret/dozpret ./dozenal/dozdate/dozdate ./dozenal/dozdate/gpl-3.0.txt;
-gzip dozenal_v11E80325_bin_x86_64.tar;
+tar -f dozenal_v11E80827_src.tar --wildcards --verbose --delete *.o ./dozenal/dozdc/dozdc ./dozenal/doz/doz ./dozenal/dec/dec ./dozenal/tgmconv/tgmconv ./dozenal/dozword/dozword ./dozenal/dozpret/dozpret ./dozenal/dozdate/dozdate;
+gzip dozenal_v11E80827_src.tar;
+tar -cvvf dozenal_v11E80827_bin_x86.tar ./dozenal/doz/doz ./dozenal/dec/dec ./dozenal/dozdc/dozdc ./dozenal/dozword/dozword ./dozenal/tgmconv/tgmconv ./dozenal/dozpret/dozpret ./dozenal/dozdate/dozdate ./dozenal/dozdate/gpl-3.0.txt;
+gzip dozenal_v11E80827_bin_x86.tar;
