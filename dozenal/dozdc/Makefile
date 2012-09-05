@@ -4,6 +4,10 @@
 # to the Immaculate Heart of Mary for their prayers, and to
 # the Sacred Heart of Jesus for His mercy.
 
+logo_shapes_mask.xpm : logo_shapes_dozenal.png
+	convert logo_shapes_dozenal.png -alpha copy \
+	logo_shapes_mask.xbm
+
 dozdc : main.o conv.h conv.o doz.o dec.o dozdc.h \
 			getop.o stack.o stack.h vars.o vars.h
 	gcc -g -lm -o dozdc main.o conv.o doz.o dec.o \

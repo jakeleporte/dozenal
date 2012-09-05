@@ -7,10 +7,17 @@
 
 use Tk;
 use Tk::Balloon;
+use Tk::PNG;
 
 # main window
 
 my $mw = new MainWindow;
+$mw->title('gdozdc v1.0');
+my $icon = $mw->Photo(-file=>'logo_shapes_dozenal.png',-format=>'png');
+$mw->iconimage($icon);
+$mw->iconmask('@logo_shapes_mask.xbm');
+#$mw->iconname('clock');
+#$mw->Icon(-image=>$icon);
 
 # smaller font
 
