@@ -4,7 +4,7 @@
 # to the Immaculate Heart of Mary for their prayers, and to
 # the Sacred Heart of Jesus for His mercy.
 
-logo_shapes_mask.xpm : logo_shapes_dozenal.png
+logo_shapes_mask.xbm : logo_shapes_dozenal.xbm
 	convert logo_shapes_dozenal.png -alpha copy \
 	logo_shapes_mask.xbm
 
