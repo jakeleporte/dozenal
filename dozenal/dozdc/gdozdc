@@ -15,6 +15,7 @@ my $mw = new MainWindow;
 # smaller font
 
 $smallfont = $mw -> fontCreate('small',-family=>'serif',-size=>8);
+$halffont = $mw -> fontCreate('half',-family=>'sans',-size=>6);
 
 # format for the help balloons
 
@@ -43,36 +44,36 @@ sub about
 
 # the calculation field, prec field, and angle field
 
-my $ent = $mw -> Entry(-bg=>"white",-width=>25,
+my $ent = $mw -> Entry(-bg=>"white",
 	-textvariable=>\$calcfield,-justify=>"right")
-	-> grid(-row=>1,-column=>6,-columnspan=>5,-sticky=>"e");
-my $preclab = $mw -> Label(-text=>"Prec.:")
-	-> grid(-row=>1,-column=>1);
+	-> grid(-row=>1,-column=>3,-columnspan=>8,-sticky=>"ew");
+my $container = $mw -> Frame() -> grid(-row=>1,-column=>1,
+	-columnspan=>2);
+my $preccont = $container -> Frame() -> grid(-row=>1,-column=>1);
+my $preclab = $preccont -> Label(-text=>"Pr.:",-font=>'half')
+	-> grid(-row=>1,-column=>1,-sticky=>'e');
 my $prec = 4;
-my $precis = $mw -> Entry(-bg=>"white",
+my $precis = $preccont -> Entry(-bg=>"white",-font=>'half',
 	-textvariable=>\$prec,-width=>1,-justify=>"right")
 	-> grid(-row=>1,-column=>2,-sticky=>"e");
 $mw ->bind('<Key-p>',sub{$precis->focus;});
 $mw ->bind('<Key-Escape>',sub{$mw->focus;backit();});
 my $ang = 'z';
-my $unciapi = $mw -> Radiobutton(-text=>"U",-value=>'z',
-	-selectcolor=>gray,-variable=>\$ang,-width=>1);
+my $unciapi = $container -> Radiobutton(-text=>"U",-value=>'z',
+	-selectcolor=>gray,-font=>'half',-variable=>\$ang,-width=>1);
 $mw ->bind('<Key-u>',sub{$ang = 'z'});
 $b->attach($unciapi,-msg=>"(u) angles in unciaPi"); 
-my $degrees = $mw -> Radiobutton(-text=>"D",-value=>'d',
-	-selectcolor=>gray,-variable=>\$ang,-width=>1);
+my $degrees = $container -> Radiobutton(-text=>"D",-value=>'d',
+	-selectcolor=>gray,-font=>'half',-variable=>\$ang,-width=>1);
 $mw ->bind('<Key-d>',sub{$ang = 'd'});
 $b->attach($degrees,-msg=>"(d) angles in degrees"); 
-my $radians = $mw -> Radiobutton(-text=>"R",-value=>'r',
-	-selectcolor=>gray,-variable=>\$ang,-width=>1);
+my $radians = $container -> Radiobutton(-text=>"R",-value=>'r',
+	-selectcolor=>gray,-font=>'half',-variable=>\$ang,-width=>1);
 $mw ->bind('<Key-r>',sub{$ang = 'r'});
 $b->attach($radians,-msg=>"(r) angles in radians"); 
-$unciapi -> grid(-row=>1,-column=>3);
-$degrees -> grid(-row=>1,-column=>4);
-$radians -> grid(-row=>1,-column=>5);
-#my $unciapi = $angular -> Button(
-#	-text=>'u',-command=>[$ang = "-z"])
-#	-> grid(-row=>1,-column=>1);
+$unciapi -> grid(-row=>1,-column=>2);
+$degrees -> grid(-row=>2,-column=>1);
+$radians -> grid(-row=>2,-column=>2);
 
 # the number buttons and keypad
 
