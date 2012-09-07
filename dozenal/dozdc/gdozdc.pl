@@ -39,13 +39,24 @@ my $filemenu = $mainmenu->cascade(-label=>"File",-underline=>0,
 $filemenu->command(-label=>"Quit",-underline=>0,-command=>sub{exit});
 my $helpmenu = $mainmenu->cascade(-label=>"Help",-underline=>0,
 	-tearoff=>0);
+$helpmenu->command(-label=>"Help",-underline=>0,-command=>\&help);
 $helpmenu->command(-label=>"About",-underline=>0,-command=>\&about);
+
+sub help
+{
+	$helpmess =<<EOMESS;
+gdozdc is a graphical frontend for the dozdc calculator, available at http://www.sourceforge.net/dozenal/.  It covers a number of functions and works in the dozenal (twelve) base only.\n\nEach function has a keyboard shortcut; the application can be used entirely without the keyboard, or entirely without the mouse, as the user sees fit.\n\nHover the mouse over a button to learn the keyboard shortcut.  I tried to make these as obvious as possible, but with the number of functions available that wasn't always easy.  Hovering with cause a help balloon to pop up with the button's keyboard shortcut in parentheses and a brief explanation of the function's purpose.\n\nUnary functions are standard postfix; that is, put the number, then hit the function desired.  E.g., "0;2 sin" will give the sine of the angle 0;2 unciaPi.  Binary functions are standard infix; that is, the function goes between the numbers.  E.g., "2 + 4" gives the sum of two and four; "5 logb 2" gives the logarithm of five to base two.\n\nFunctions can be grouped by parentheses as normal; this allows any order of operations desired.\n\nFor more information on the individual functions, please see the dozdc documentation at http://www.sourceforge.net/dozenal/.
+EOMESS
+	$aboutbox => $mw->messageBox(-title=>"gdozdc v1.0 Help",-font=>"small",
+		-message=>$helpmess,-type=>'OK',-icon=>'question');
+}
 
 sub about
 {
 	$aboutbox => $mw->messageBox(-title=>"About
 	gdozdc",-font=>"small",
-		-message=>"gdozdc v1.0\nCopyright (C) Donald P. Goodman III.  Released under the GNU GPL v3.0, available at http://www.gnu.org/copyleft/gpl.html.", -type=>'OK');
+		-message=>"gdozdc v1.0\nCopyright (C) Donald P.  Goodman III.  Released under the GNU GPL v3.0, available at http://www.gnu.org/copyleft/gpl.html.\n\ngdozdc is a graphical frontend written in Perl/Tk for the command-line program dozdc, part of the dozenal suite, available at http://www.sourceforge.net/dozenal/.",
+		-type=>'OK',-icon=>'question');
 }
 
 # the calculation field, prec field, and angle field
@@ -386,8 +397,8 @@ sub enterit
 		if ($tempvar =~ /:/) {
 			$errtext = `dozdc -k$prec -$ang " $rpn" 2>&1 1>/dev/null`;
 			$errbox => $mw->messageBox(-title=>'gdozdc Error',
-				-font=>'small', -message=>"Error:  $errtext",
-				-type=>'OK');
+				-bitmap=>"warning",-font=>'small', 
+				-message=>"Error:  $errtext",-type=>'OK');
 			chomp($calcfield);
 		} else {
 			$calcfield = $tempvar;
