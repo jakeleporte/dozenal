@@ -93,9 +93,11 @@ my $dit = $mw -> Button(-width=>1,-text=>";",
 	-> grid(-row=>6,-column=>2);
 $mw ->bind('<Key-semicolon>',sub{enterit(';')});
 $b->attach($dit,-msg=>"(;) Uncial point");
-my $exp = $mw -> Button(-width=>1,-text=>" ",
+my $expnot = $mw -> Button(-width=>1,-text=>"e",
 	-command=>[\&enterit,'e'])
 	-> grid(-row=>6,-column=>3);
+$mw ->bind('<Key-E>',sub{enterit('e')});
+$b->attach($expnot,-msg=>"(E) Exponential notation (ZeZ)");
 my $zero = $mw -> Button(-width=>1,-text=>"0",
 	-command =>[\&enterit,'0'])
 	-> grid(-row=>5,-column=>1);
@@ -318,8 +320,8 @@ $b->attach($pi,-msg=>"(P) Pi (constant)");
 my $eul = $mw -> Button(-width=>1.5,-text=>"eul",
 	-command=>[\&enterit,' eul '])
 	-> grid(-row=>6,-column=>9);
-$mw ->bind('<Key-E>',sub{enterit(' eul ')});
-$b->attach($eul,-msg=>"(E) Euler's constant");
+$mw ->bind('<Key-U>',sub{enterit(' eul ')});
+$b->attach($eul,-msg=>"(U) Euler's constant");
 
 # memory buttons
 
@@ -443,8 +445,7 @@ sub shuntyard
 	# Retrieved from:
 	# http://en.literateprograms.org/Shunting_yard_algorithm_(Perl)?oldid=12069
 	my $expr=$_[0];
-#	my @tokens=split(/\ *([\+\-\*\/\(\)]|\d+\.\d+|\d+) */, $expr);
-	my @tokens=split(/\ *([\+\-\*\/\(\)]|[0-9XE]+;[0-9XE]+|[0-9XE]+) */, $expr);
+	my @tokens=split(/\ *([\+\-\*\/\(\)]|[0-9XE]+;[e0-9XE]+|[0-9XE]+) */, $expr);
 	my %prec=('-u'=>5, '*'=>4, '/'=>3, '+'=>2, '-'=>1, '('=>0, ''=>9);
 	my %right=('-u'=>1);
 	sub getprec {
@@ -458,7 +459,7 @@ sub shuntyard
 	foreach my $token (@tokens) {
 		!$token and next;
 		if($token eq '-' and getprec($last)>=0) {$token='-u';}
-		if($token=~/^[\dXE]+$|^[\dXE]+;[\dXE]+$/) {
+		if($token=~/^[\dXE]+$|^[\dXE]+;[\dXE]+$|^[\dXE]+;[\dXE]+e[\dXE]+$/) {
 			if($last=~/^[\dXE]+$|^[\dXE]+;[\dXE]+$/ || $last eq ")") {
 				die "Value tokens must be separated by an operator";
 			}
