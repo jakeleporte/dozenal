@@ -8,6 +8,9 @@ logo_shapes_mask.xbm : logo_shapes_dozenal.xbm
 	convert logo_shapes_dozenal.png -alpha copy \
 	logo_shapes_mask.xbm
 
+logo_shapes_dozenal.xbm : logo_shapes_dozenal.png
+	convert logo_shapes_dozenal.png logo_shapes_dozenal.xbm
+
 dozdc : main.o conv.h conv.o doz.o dec.o dozdc.h \
 			getop.o stack.o stack.h vars.o vars.h
 	gcc -g -lm -o dozdc main.o conv.o doz.o dec.o \
