@@ -14,7 +14,7 @@ use Tk::Bitmap;
 
 my $mw = new MainWindow;
 $mw->title('gdozdc v1.0');
-my $icon = $mw->Bitmap(-file=>'logo_shapes_dozenal.xbm');#,-format=>'xbm');
+my $icon = $mw->Bitmap(-file=>'logo_shapes_dozenal.xbm');
 $mw->iconimage($icon);
 $mw->iconmask('@logo_shapes_mask.xbm');
 
@@ -28,7 +28,6 @@ $halffont = $mw -> fontCreate('half',-family=>'sans',-size=>6);
 $msgarea = $mw->Label(-borderwidth=>2,-relief=>'groove',
 	-justify=>'left')
 	-> grid(-column=>1,-row=>8,-columnspan=>10,-sticky=>'ew');
-$b = $mw -> Balloon(-statusbar=>$msgarea);
 
 # create the menus
 
@@ -73,21 +72,13 @@ my $prec = 4;
 my $precis = $preccont -> Entry(-bg=>"white",-font=>'half',
 	-textvariable=>\$prec,-width=>1,-justify=>"right")
 	-> grid(-row=>1,-column=>2,-sticky=>"e");
-$mw ->bind('<Key-p>',sub{$precis->focus;});
-$mw ->bind('<Key-Escape>',sub{$mw->focus;backit();});
 my $ang = 'z';
 my $unciapi = $container -> Radiobutton(-text=>"U",-value=>'z',
 	-selectcolor=>gray,-font=>'half',-variable=>\$ang,-width=>1);
-$mw ->bind('<Key-u>',sub{$ang = 'z'});
-$b->attach($unciapi,-msg=>"(u) angles in unciaPi"); 
 my $degrees = $container -> Radiobutton(-text=>"D",-value=>'d',
 	-selectcolor=>gray,-font=>'half',-variable=>\$ang,-width=>1);
-$mw ->bind('<Key-d>',sub{$ang = 'd'});
-$b->attach($degrees,-msg=>"(d) angles in degrees"); 
 my $radians = $container -> Radiobutton(-text=>"R",-value=>'r',
 	-selectcolor=>gray,-font=>'half',-variable=>\$ang,-width=>1);
-$mw ->bind('<Key-r>',sub{$ang = 'r'});
-$b->attach($radians,-msg=>"(r) angles in radians"); 
 $unciapi -> grid(-row=>1,-column=>2);
 $degrees -> grid(-row=>2,-column=>1);
 $radians -> grid(-row=>2,-column=>2);
@@ -97,270 +88,168 @@ $radians -> grid(-row=>2,-column=>2);
 my $neg = $mw -> Button(-width=>1,-text=>"-",
 	-command=>[\&enterit,' -'])
 	-> grid(-row=>6,-column=>1);
-$mw ->bind('<Key-underscore>',sub{enterit(' -')});
-$b->attach($neg,-msg=>"(_) Negative sign");
 my $dit = $mw -> Button(-width=>1,-text=>";",
 	-command=>[\&enterit,';'])
 	-> grid(-row=>6,-column=>2);
-$mw ->bind('<Key-semicolon>',sub{enterit(';')});
-$b->attach($dit,-msg=>"(;) Uncial point");
 my $expnot = $mw -> Button(-width=>1,-text=>"e",
 	-command=>[\&enterit,'e'])
 	-> grid(-row=>6,-column=>3);
-$mw ->bind('<Key-E>',sub{enterit('e')});
-$b->attach($expnot,-msg=>"(E) Exponential notation (ZeZ)");
 my $zero = $mw -> Button(-width=>1,-text=>"0",
 	-command =>[\&enterit,'0'])
 	-> grid(-row=>5,-column=>1);
-$mw ->bind('<Key-0>',sub{enterit('0')});
-$b->attach($zero,-msg=>"(0) Zero");
 my $one = $mw -> Button(-width=>1,-text=>"1",
 	-command =>[\&enterit,'1'])
 	-> grid(-row=>5,-column=>2);
-$mw ->bind('<Key-1>',sub{enterit('1')});
-$b->attach($one,-msg=>"(1) One");
 my $two = $mw -> Button(-width=>1,-text=>"2",
 	-command =>[\&enterit,'2'])
 	-> grid(-row=>5,-column=>3);
-$mw ->bind('<Key-2>',sub{enterit('2')});
-$b->attach($two,-msg=>"(2) Two");
 my $three = $mw -> Button(-width=>1,-text=>"3",
 	-command =>[\&enterit,'3'])
 	-> grid(-row=>4,-column=>1);
-$mw ->bind('<Key-3>',sub{enterit('3')});
-$b->attach($three,-msg=>"(3) Three");
 my $four = $mw -> Button(-width=>1,-text=>"4",
 	-command =>[\&enterit,'4'])
 	-> grid(-row=>4,-column=>2);
-$mw ->bind('<Key-4>',sub{enterit('4')});
-$b->attach($four,-msg=>"(4) Four");
 my $five = $mw -> Button(-width=>1,-text=>"5",
 	-command =>[\&enterit,'5'])
 	-> grid(-row=>4,-column=>3);
-$mw ->bind('<Key-5>',sub{enterit('5')});
-$b->attach($five,-msg=>"(5) Five");
 my $six = $mw -> Button(-width=>1,-text=>"6",
 	-command =>[\&enterit,'6'])
 	-> grid(-row=>3,-column=>1);
-$mw ->bind('<Key-6>',sub{enterit('6')});
-$b->attach($six,-msg=>"(6) Six");
 my $seven = $mw -> Button(-width=>1,-text=>"7",
 	-command =>[\&enterit,'7'])
 	-> grid(-row=>3,-column=>2);
-$mw ->bind('<Key-7>',sub{enterit('7')});
-$b->attach($seven,-msg=>"(7) Seven");
 my $eight = $mw -> Button(-width=>1,-text=>"8",
 	-command =>[\&enterit,'8'])
 	-> grid(-row=>3,-column=>3);
-$mw ->bind('<Key-8>',sub{enterit('8')});
-$b->attach($eight,-msg=>"(8) Eight");
 my $nine = $mw -> Button(-width=>1,-text=>"9",
 	-command =>[\&enterit,'9'])
 	-> grid(-row=>2,-column=>1);
-$mw ->bind('<Key-9>',sub{enterit('9')});
-$b->attach($nine,-msg=>"(9) Nine");
 my $ten = $mw -> Button(-width=>1,-text=>"X",
 	-command =>[\&enterit,'X'])
 	-> grid(-row=>2,-column=>2);
-$mw ->bind('<Key-x>',sub{enterit('X')});
-$b->attach($ten,-msg=>"(x) Ten");
 my $elv = $mw -> Button(-width=>1,-text=>"E",
 	-command =>[\&enterit,'E'])
 	-> grid(-row=>2,-column=>3);
-$mw ->bind('<Key-e>',sub{enterit('E')});
-$b->attach($elv,-msg=>"(e) Elv");
 
 # the four functions and equals
 
 my $equals = $mw -> Button(-width=>1,-text=>"=",
 	-command =>[\&enterit,' ='])
 	-> grid(-row=>6,-column=>4);
-$mw ->bind('<Key-equal>',sub{enterit(' =')});
-$mw ->bind('<Key-Return>',sub{enterit(' =')});
-$mw ->bind('<Key-KP_Enter>',sub{enterit(' =')});
-$b->attach($equals,-msg=>"(=, enter) Equals; perform calculation");
 my $plus = $mw -> Button(-width=>1,-text=>"+",
 	-command =>[\&enterit,' + '])
 	-> grid(-row=>5,-column=>4);
-$mw ->bind('<Key-plus>',sub{enterit(' + ')});
-$b->attach($plus,-msg=>"(+) Plus, addition");
 my $minus = $mw -> Button(-width=>1,-text=>"-",
 	-command =>[\&enterit,' - '])
 	-> grid(-row=>4,-column=>4);
-$mw ->bind('<Key-minus>',sub{enterit(' - ')});
-$b->attach($minus,-msg=>"(-) Minus, subtraction");
 my $times = $mw -> Button(-width=>1,-text=>"*",
 	-command =>[\&enterit,' * '])
 	-> grid(-row=>3,-column=>4);
-$mw ->bind('<Key-asterisk>',sub{enterit(' * ')});
-$b->attach($times,-msg=>"(*) Times, multiplication");
 my $divide = $mw -> Button(-width=>1,-text=>"/",
 	-command =>[\&enterit,' / '])
 	-> grid(-row=>2,-column=>4);
-$mw ->bind('<Key-slash>',sub{enterit(' / ')});
-$b->attach($divide,-msg=>"(/) Division");
 
 # the clear button, parens, exponents, square roots
 
 my $clear = $mw -> Button(-width=>1,-text=>"Cl",
 	-command=>[\&enterit,'clear'])
 	-> grid(-row=>2,-column=>5);
-$mw ->bind('<Key-w>',sub{enterit('clear')});
-$b->attach($clear,-msg=>"(w) Clear (wipe) the calculation field");
 my $leftp = $mw -> Button(-width=>1,-text=>"(",
 	-command=>[\&enterit,'('])
 	-> grid(-row=>3,-column=>5);
-$mw ->bind('<Key-parenleft>',sub{enterit('(')});
-$b->attach($leftp,-msg=>"(\'(\') Left parenthesis");
 my $rightp = $mw -> Button(-width=>1,-text=>")",
 	-command=>[\&enterit,')'])
 	-> grid(-row=>4,-column=>5);
-$mw ->bind('<Key-parenright>',sub{enterit(')')});
-$b->attach($rightp,-msg=>"(\')\') Right Parenthesis");
 my $expon = $mw -> Button(-width=>1,-text=>"^",
 	-command=>[\&enterit,' ^ '])
 	-> grid(-row=>5,-column=>5);
-$mw ->bind('<Key-asciicircum>',sub{enterit(' ^ ')});
-$b->attach($expon,-msg=>"(^) Exponentiation");
 my $sqrt = $mw -> Button(-width=>1,-text=>"sqrt",
 	-command=>[\&enterit,'sqrt'])
 	-> grid(-row=>6,-column=>5);
-$mw ->bind('<Key-v>',sub{enterit('sqrt')});
-$b->attach($sqrt,-msg=>"(v) Square root");
 
 # trig functions, arbitrary base log, natural log
 
 my $sin = $mw -> Button(-width=>1.5,-text=>"sin",
 	-command=>[\&enterit,' sin '])
 	-> grid(-row=>2,-column=>6);
-$mw ->bind('<Key-s>',sub{enterit(' sin ')});
-$b->attach($sin,-msg=>"(s) Sine");
 my $cos = $mw -> Button(-width=>1.5,-text=>"cos",
 	-command=>[\&enterit,' cos '])
 	-> grid(-row=>3,-column=>6);
-$mw ->bind('<Key-c>',sub{enterit(' cos ')});
-$b->attach($cos,-msg=>"(c) Cosine");
 my $tan = $mw -> Button(-width=>1.5,-text=>"tan",
 	-command=>[\&enterit,' tan '])
 	-> grid(-row=>4,-column=>6);
-$mw ->bind('<Key-t>',sub{enterit(' tan ')});
-$b->attach($tan,-msg=>"(t) Tangent");
 my $log = $mw -> Button(-width=>1,-text=>"log",
 	-command=>[\&enterit,' log '])
 	-> grid(-row=>5,-column=>6);
-$mw ->bind('<Key-l>',sub{enterit(' log ')});
-$b->attach($log,-msg=>"(l) Base-10 logarithms");
 my $logx = $mw -> Button(-width=>1,-text=>"logx",
 	-command=>[\&enterit,' logx '])
 	-> grid(-row=>6,-column=>6);
-$mw ->bind('<Key-X>',sub{enterit(' logx ')});
-$b->attach($logx,-msg=>"(X) Base-X logarithms");
 my $asin = $mw -> Button(-width=>1.5,-text=>"asin",
 	-command=>[\&enterit,' asin '])
 	-> grid(-row=>2,-column=>7);
-$mw ->bind('<Key-S>',sub{enterit(' asin ')});
-$b->attach($asin,-msg=>"(S) Arcsine");
 my $acos = $mw -> Button(-width=>1.5,-text=>"acos",
 	-command=>[\&enterit,' acos '])
 	-> grid(-row=>3,-column=>7);
-$mw ->bind('<Key-C>',sub{enterit(' acos ')});
-$b->attach($acos,-msg=>"(S) Arccosine");
 my $atan = $mw -> Button(-width=>1.5,-text=>"atan",
 	-command=>[\&enterit,' atan '])
 	-> grid(-row=>4,-column=>7);
-$mw ->bind('<Key-T>',sub{enterit(' atan ')});
-$b->attach($atan,-msg=>"(T) Arctangent");
 my $logb = $mw -> Button(-width=>1.5,-text=>"logb",
 	-command=>[\&enterit,' logb '])
 	-> grid(-row=>5,-column=>7);
-$mw ->bind('<Key-b>',sub{enterit(' logb ')});
-$b->attach($logb,-msg=>"(b) Arbitrary-base logarithms");
 my $ln = $mw -> Button(-width=>1.5,-text=>"ln",
 	-command=>[\&enterit,' ln '])
 	-> grid(-row=>6,-column=>7);
-$mw ->bind('<Key-n>',sub{enterit(' ln ')});
-$b->attach($ln,-msg=>"(n) Natural logarithms");
 my $sinh = $mw -> Button(-width=>1.5,-text=>"sinh",
 	-command=>[\&enterit,' sinh '])
 	-> grid(-row=>2,-column=>8);
-$mw ->bind('<Key-h>',sub{enterit(' sinh ')});
-$b->attach($sinh,-msg=>"(h) Hyperbolic sine");
 my $cosh = $mw -> Button(-width=>1.5,-text=>"cosh",
 	-command=>[\&enterit,' cosh '])
 	-> grid(-row=>3,-column=>8);
-$mw ->bind('<Key-H>',sub{enterit(' cosh ')});
-$b->attach($cosh,-msg=>"(H) Hyperbolic cosine");
 my $tanh = $mw -> Button(-width=>1.5,-text=>"tanh",
 	-command=>[\&enterit,' tanh '])
 	-> grid(-row=>4,-column=>8);
-$mw ->bind('<Key-A>',sub{enterit(' tanh ')});
-$b->attach($tanh,-msg=>"(A) Hyperbolic tangent");
 my $dlg = $mw -> Button(-width=>1.5,-text=>"dlg",
 	-command=>[\&enterit,' dlg '])
 	-> grid(-row=>5,-column=>8);
-$mw ->bind('<Key-D>',sub{enterit(' dlg ')});
-$b->attach($dlg,-msg=>"(D) Dublogs (base-two logarithms)");
 my $recip = $mw -> Button(-width=>1.5,-text=>"1/x",
 	-command=>[\&enterit,' 1/x '])
 	-> grid(-row=>6,-column=>8);
-$mw ->bind('<Key-R>',sub{enterit(' 1/x ')});
-$b->attach($recip,-msg=>"(R) Reciprocal");
 
 # backspace, factorial, mod, pi, eul
 
 my $back = $mw -> Button(-width=>1.5,-text=>"<-",
 	-command=>[\&backit])
 	-> grid(-row=>2,-column=>9);
-$mw ->bind('<Key-BackSpace>',sub{backit()});
-$b->attach($back,-msg=>"(backspace) delete last character from field"); 
 my $factorial = $mw -> Button(-width=>1.5,-text=>"!",
 	-command=>[\&enterit,' ! '])
 	-> grid(-row=>3,-column=>9);
-$mw ->bind('<Key-exclam>',sub{enterit(' ! ')});
-$b->attach($factorial,-msg=>"(!) Factorial");
 my $mod = $mw -> Button(-width=>1.5,-text=>"%",
 	-command=>[\&enterit,' % '])
 	-> grid(-row=>4,-column=>9);
-$mw ->bind('<Key-percent>',sub{enterit(' % ')});
-$b->attach($mod,-msg=>"(%) Modulus (remainder)");
 my $pi = $mw -> Button(-width=>1.5,-text=>"pi",
 	-command=>[\&enterit,' pi '])
 	-> grid(-row=>5,-column=>9);
-$mw ->bind('<Key-P>',sub{enterit(' pi ')});
-$b->attach($pi,-msg=>"(P) Pi (constant)");
 my $eul = $mw -> Button(-width=>1.5,-text=>"eul",
 	-command=>[\&enterit,' eul '])
 	-> grid(-row=>6,-column=>9);
-$mw ->bind('<Key-U>',sub{enterit(' eul ')});
-$b->attach($eul,-msg=>"(U) Euler's constant");
 
 # memory buttons
 
 my $replace = $mw -> Button(-width=>1.5,-text=>"M+",
 	-command=>[\&saveit,'M+'])
 	-> grid(-row=>2,-column=>10);
-$mw ->bind('<Key-m>',sub{saveit('M+')});
-$b->attach($replace,-msg=>"(m) Replace all with memory");
 my $append = $mw -> Button(-width=>1.5,-text=>"M++",
 	-command=>[\&saveit,'M++'])
 	-> grid(-row=>3,-column=>10);
-$mw ->bind('<Key-M>',sub{saveit('M++')});
-$b->attach($append,-msg=>"(m) Append memory to field");
 my $save = $mw -> Button(-width=>1.5,-text=>"M",
 	-command=>[\&saveit,'M'])
 	-> grid(-row=>4,-column=>10);
-$mw ->bind('<Key-k>',sub{saveit('M')});
-$b->attach($save,-msg=>"(k) Save current field to memory");
 my $wipe = $mw -> Button(-width=>1.5,-text=>"CM",
 	-command=>[\&saveit,'K'])
 	-> grid(-row=>5,-column=>10);
-$mw ->bind('<Key-K>',sub{saveit('K')});
-$b->attach($wipe,-msg=>"(K) Clear (wipe) current memory");
 my $quit = $mw -> Button(-width=>1.5,-text=>"Quit",
 	-command=>sub{$ent->focus;})
 	-> grid(-row=>6,-column=>10);
-$mw ->bind('<Key-Q>',sub{exit;});
-$b->attach($quit,-msg=>"(Q) Quit the application");
 
 # memory subroutines
 
@@ -508,6 +397,146 @@ sub shuntyard
 	}
 	$newcalc .= " = ";
 }
+
+# define the key bindings
+
+$mw -> bind('<Key-p>',sub{$precis->focus;});
+$mw -> bind('<Key-Escape>',sub{$mw->focus;backit();});
+$mw -> bind('<Key-u>',sub{$ang = 'z'});
+$mw -> bind('<Key-d>',sub{$ang = 'd'});
+$mw -> bind('<Key-r>',sub{$ang = 'r'});
+$mw -> bind('<Key-underscore>',sub{enterit(' -')});
+$mw -> bind('<Key-semicolon>',sub{enterit(';')});
+$mw -> bind('<Key-e>',sub{enterit('e')});
+$mw -> bind('<Key-0>',sub{enterit('0')});
+$mw -> bind('<Key-1>',sub{enterit('1')});
+$mw -> bind('<Key-2>',sub{enterit('2')});
+$mw -> bind('<Key-3>',sub{enterit('3')});
+$mw -> bind('<Key-4>',sub{enterit('4')});
+$mw -> bind('<Key-5>',sub{enterit('5')});
+$mw -> bind('<Key-6>',sub{enterit('6')});
+$mw -> bind('<Key-7>',sub{enterit('7')});
+$mw -> bind('<Key-8>',sub{enterit('8')});
+$mw -> bind('<Key-9>',sub{enterit('9')});
+$mw -> bind('<Key-X>',sub{enterit('X')});
+$mw -> bind('<Key-E>',sub{enterit('E')});
+$mw -> bind('<Key-equal>',sub{enterit(' =')});
+$mw -> bind('<Key-Return>',sub{enterit(' =')});
+$mw -> bind('<Key-KP_Enter>',sub{enterit(' =')});
+$mw -> bind('<Key-plus>',sub{enterit(' + ')});
+$mw -> bind('<Key-minus>',sub{enterit(' - ')});
+$mw -> bind('<Key-asterisk>',sub{enterit(' * ')});
+$mw -> bind('<Key-slash>',sub{enterit(' / ')});
+$mw -> bind('<Key-w>',sub{enterit('clear')});
+$mw -> bind('<Key-parenleft>',sub{enterit('(')});
+$mw -> bind('<Key-parenright>',sub{enterit(')')});
+$mw -> bind('<Key-asciicircum>',sub{enterit(' ^ ')});
+$mw -> bind('<Key-v>',sub{enterit('sqrt')});
+$mw -> bind('<Key-s>',sub{enterit(' sin ')});
+$mw -> bind('<Key-c>',sub{enterit(' cos ')});
+$mw -> bind('<Key-t>',sub{enterit(' tan ')});
+$mw -> bind('<Key-l>',sub{enterit(' log ')});
+$mw -> bind('<Key-x>',sub{enterit(' logx ')});
+$mw -> bind('<Key-S>',sub{enterit(' asin ')});
+$mw -> bind('<Key-C>',sub{enterit(' acos ')});
+$mw -> bind('<Key-T>',sub{enterit(' atan ')});
+$mw -> bind('<Key-b>',sub{enterit(' logb ')});
+$mw -> bind('<Key-n>',sub{enterit(' ln ')});
+$mw -> bind('<Key-h>',sub{enterit(' sinh ')});
+$mw -> bind('<Key-H>',sub{enterit(' cosh ')});
+$mw -> bind('<Key-A>',sub{enterit(' tanh ')});
+$mw -> bind('<Key-D>',sub{enterit(' dlg ')});
+$mw -> bind('<Key-R>',sub{enterit(' 1/x ')});
+$mw -> bind('<Key-BackSpace>',sub{backit()});
+$mw -> bind('<Key-exclam>',sub{enterit(' ! ')});
+$mw -> bind('<Key-percent>',sub{enterit(' % ')});
+$mw -> bind('<Key-P>',sub{enterit(' pi ')});
+$mw -> bind('<Key-U>',sub{enterit(' eul ')});
+$mw -> bind('<Key-m>',sub{saveit('M+')});
+$mw -> bind('<Key-M>',sub{saveit('M++')});
+$mw -> bind('<Key-k>',sub{saveit('M')});
+$mw -> bind('<Key-K>',sub{saveit('K')});
+$mw -> bind('<Key-Q>',sub{exit;});
+
+$precis -> bind('<Key-0>',sub{precent('0')});
+$precis -> bind('<Key-1>',sub{precent('1')});
+$precis -> bind('<Key-2>',sub{precent('2')});
+$precis -> bind('<Key-3>',sub{precent('3')});
+$precis -> bind('<Key-4>',sub{precent('4')});
+$precis -> bind('<Key-5>',sub{precent('5')});
+$precis -> bind('<Key-6>',sub{precent('6')});
+$precis -> bind('<Key-7>',sub{precent('7')});
+$precis -> bind('<Key-8>',sub{precent('8')});
+$precis -> bind('<Key-9>',sub{precent('9')});
+$precis -> bind('<Key-X>',sub{precent('X')});
+$precis -> bind('<Key-E>',sub{precent('E')});
+$precis -> bind('<Key-Escape>',sub{$mw->focus();});
+$precis->bindtags([$precis,ref($precis),$precis,'all']);
+sub precent
+{
+	if ($_[0] eq 'back') {
+		chop($precis);
+	} else{
+		$precis .= '$_[0]';
+	}
+}
+
+# put in the help balloons
+
+$b = $mw -> Balloon(-statusbar=>$msgarea);
+$b->attach($unciapi,-msg=>"(u) angles in unciaPi"); 
+$b->attach($degrees,-msg=>"(d) angles in degrees"); 
+$b->attach($radians,-msg=>"(r) angles in radians"); 
+$b->attach($neg,-msg=>"(_) Negative sign");
+$b->attach($dit,-msg=>"(;) Uncial point");
+$b->attach($expnot,-msg=>"(E) Exponential notation (ZeZ)");
+$b->attach($zero,-msg=>"(0) Zero");
+$b->attach($one,-msg=>"(1) One");
+$b->attach($two,-msg=>"(2) Two");
+$b->attach($three,-msg=>"(3) Three");
+$b->attach($four,-msg=>"(4) Four");
+$b->attach($five,-msg=>"(5) Five");
+$b->attach($six,-msg=>"(6) Six");
+$b->attach($seven,-msg=>"(7) Seven");
+$b->attach($eight,-msg=>"(8) Eight");
+$b->attach($nine,-msg=>"(9) Nine");
+$b->attach($ten,-msg=>"(x) Ten");
+$b->attach($elv,-msg=>"(e) Elv");
+$b->attach($equals,-msg=>"(=, enter) Equals; perform calculation");
+$b->attach($plus,-msg=>"(+) Plus, addition");
+$b->attach($minus,-msg=>"(-) Minus, subtraction");
+$b->attach($times,-msg=>"(*) Times, multiplication");
+$b->attach($divide,-msg=>"(/) Division");
+$b->attach($clear,-msg=>"(w) Clear (wipe) the calculation field");
+$b->attach($leftp,-msg=>"(\'(\') Left parenthesis");
+$b->attach($rightp,-msg=>"(\')\') Right Parenthesis");
+$b->attach($expon,-msg=>"(^) Exponentiation");
+$b->attach($sqrt,-msg=>"(v) Square root");
+$b->attach($sin,-msg=>"(s) Sine");
+$b->attach($cos,-msg=>"(c) Cosine");
+$b->attach($tan,-msg=>"(t) Tangent");
+$b->attach($log,-msg=>"(l) Base-10 logarithms");
+$b->attach($logx,-msg=>"(X) Base-X logarithms");
+$b->attach($asin,-msg=>"(S) Arcsine");
+$b->attach($acos,-msg=>"(S) Arccosine");
+$b->attach($atan,-msg=>"(T) Arctangent");
+$b->attach($logb,-msg=>"(b) Arbitrary-base logarithms");
+$b->attach($ln,-msg=>"(n) Natural logarithms");
+$b->attach($sinh,-msg=>"(h) Hyperbolic sine");
+$b->attach($cosh,-msg=>"(H) Hyperbolic cosine");
+$b->attach($tanh,-msg=>"(A) Hyperbolic tangent");
+$b->attach($dlg,-msg=>"(D) Dublogs (base-two logarithms)");
+$b->attach($recip,-msg=>"(R) Reciprocal");
+$b->attach($back,-msg=>"(backspace) delete last character from field"); 
+$b->attach($factorial,-msg=>"(!) Factorial");
+$b->attach($mod,-msg=>"(%) Modulus (remainder)");
+$b->attach($pi,-msg=>"(P) Pi (constant)");
+$b->attach($eul,-msg=>"(U) Euler's constant");
+$b->attach($replace,-msg=>"(m) Replace all with memory");
+$b->attach($append,-msg=>"(m) Append memory to field");
+$b->attach($save,-msg=>"(k) Save current field to memory");
+$b->attach($wipe,-msg=>"(K) Clear (wipe) current memory");
+$b->attach($quit,-msg=>"(Q) Quit the application");
 
 # get it all rolling
 
