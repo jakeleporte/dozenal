@@ -248,7 +248,7 @@ my $wipe = $mw -> Button(-width=>1.5,-text=>"CM",
 	-command=>[\&saveit,'K'])
 	-> grid(-row=>5,-column=>10);
 my $quit = $mw -> Button(-width=>1.5,-text=>"Quit",
-	-command=>sub{$ent->focus;})
+	-command=>\&exit)
 	-> grid(-row=>6,-column=>10);
 
 # memory subroutines
@@ -400,8 +400,7 @@ sub shuntyard
 
 # define the key bindings
 
-$mw -> bind('<Key-p>',sub{$precis->focus;});
-$mw -> bind('<Key-Escape>',sub{$mw->focus;backit();});
+$mw -> bind('<Key-p>',sub{$precis->focus();});
 $mw -> bind('<Key-u>',sub{$ang = 'z'});
 $mw -> bind('<Key-d>',sub{$ang = 'd'});
 $mw -> bind('<Key-r>',sub{$ang = 'r'});
@@ -458,28 +457,8 @@ $mw -> bind('<Key-k>',sub{saveit('M')});
 $mw -> bind('<Key-K>',sub{saveit('K')});
 $mw -> bind('<Key-Q>',sub{exit;});
 
-$precis -> bind('<Key-0>',sub{precent('0')});
-$precis -> bind('<Key-1>',sub{precent('1')});
-$precis -> bind('<Key-2>',sub{precent('2')});
-$precis -> bind('<Key-3>',sub{precent('3')});
-$precis -> bind('<Key-4>',sub{precent('4')});
-$precis -> bind('<Key-5>',sub{precent('5')});
-$precis -> bind('<Key-6>',sub{precent('6')});
-$precis -> bind('<Key-7>',sub{precent('7')});
-$precis -> bind('<Key-8>',sub{precent('8')});
-$precis -> bind('<Key-9>',sub{precent('9')});
-$precis -> bind('<Key-X>',sub{precent('X')});
-$precis -> bind('<Key-E>',sub{precent('E')});
 $precis -> bind('<Key-Escape>',sub{$mw->focus();});
 $precis->bindtags([$precis,ref($precis),$precis,'all']);
-sub precent
-{
-	if ($_[0] eq 'back') {
-		chop($precis);
-	} else{
-		$precis .= '$_[0]';
-	}
-}
 
 # put in the help balloons
 
