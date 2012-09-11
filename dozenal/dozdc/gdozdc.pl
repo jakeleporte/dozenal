@@ -516,6 +516,7 @@ $b->attach($append,-msg=>"(m) Append memory to field");
 $b->attach($save,-msg=>"(k) Save current field to memory");
 $b->attach($wipe,-msg=>"(K) Clear (wipe) current memory");
 $b->attach($quit,-msg=>"(Q) Quit the application");
+$b->attach($preccont,-msg=>"(p) Change precision of results");
 
 # get it all rolling
 
