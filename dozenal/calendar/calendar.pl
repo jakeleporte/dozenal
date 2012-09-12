@@ -76,8 +76,8 @@ sub popsched(*)
 			print STDERR "file $_[0] at line $k\n";
 			exit $BAD_INPUT_FILE;
 		}
-		@row = ($_ =~ /(.*)\t(.*)\t(.*)\t(.*)/);
-		push @{$calendar[$i]},@row;
+		@row = ($_ =~ /(.*)\t(.*)\t(.*)\t(.*)/) if $_ !~ /^#/;
+		push @{$calendar[$i]},@row if $_ !~ /^#/;
 		$i++;
 	}
 	close $calfile;
@@ -199,6 +199,83 @@ sub ind_date($)
 	return julday($year,$month,$day);
 }
 
+# takes a scalar; parses it for dayname, including ranges;
+# returns an array of julian days that match
+
+sub parse_daynames($)
+{
+	my $temp = $_[0];
+	my $first = "";
+	my $last = "";
+	my @weekdays = qw( Sun Mon Tue Wed Thu Fri Sat );
+	my @months = qw( Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec Irv );
+	my @monthdays = qw( 31 28 31 30 31 30 31 31 30 31 30 31 7);
+	my @range;
+	my $year;
+	my $month = -1;
+	my $day;
+	my $t = localtime;
+	my $i = 0;
+	my $weekday;
+	my $flag = 0;
+
+	while ($temp =~ /--/) {
+		($first,$last)=($temp=~/([A-Z][a-z]+day)--([A-Z][a-z]+day)/);
+		$temp =~ s/$first--$last//;
+	}
+	while (($temp =~ /,/) || ($temp !~ /[,]/ && $temp =~ /day/)) {
+		($first) = ($temp =~ /[^\s\w\d]*([\/-\s\w\d]+)/);
+		$temp =~ s/$first[,]*//;
+		foreach my $var (@weekdays) {
+			if (grep(/$var/,$first)) {
+				$weekday = $var;
+			}
+		}
+		foreach $month (@months) {
+			if (grep(/$month/,$first)) {
+				$flag = 1;
+				$i = 0;
+				$i++ while $months[$i] ne $month;
+				$month = $i + 1;
+				if ($first =~ /([\dXE]{4,4})/) {
+					$year = $1;
+				} else {
+					$year = $t->year;
+				}
+				$day = 1;
+				$weekday = lc($weekday);
+				$day++ while (lc(day($month,$day,$year)) ne $weekday);
+				while ($day <= @monthdays[$month-1]) {
+					push(@range,julday($year,$month,$day));
+					$day += 7;
+				}
+			}
+		}
+		if ($flag == 0) {
+			$month = 1;
+			if ($first =~ /([\dXE]{4,4})/) {
+				$year = $1;
+			} else { $year = $t->year; }
+			$day = 1;
+			$weekday = lc($weekday);
+			$day++ while (lc(day(1,$day,$year)) ne $weekday);
+			while ($day <= $monthdays[$month-1] && $month <= 12) {
+				push(@range,julday($year,$month,$day));
+				$day += 7;
+				if ($day > $monthdays[$month-1]) {
+					$month++;
+					$day = 1;
+					if ($month <= 12) {
+						$day++ while (lc(day($month,$day,$year)) ne $weekday);
+					}
+				}
+			}
+		}
+	}
+#	$i=0;print "$range[$i++]\n" while $i <= $#range;
+	return @range;
+}
+
 # takes a scalar (a date field from @calendar); parses it; 
 # returns a list of dates which meet the requirements
 
@@ -211,20 +288,25 @@ sub get_dates($)
 
 	$temp = $_[0];
 	$temp =~ s/\s//g;
-	while ($temp =~ /--/) {
+	while ($temp =~ /--/ && $temp !~ /day/) {
 		($first,$last)=($temp=~/[^\s\w\d]*([\/-\s\w\d]+)--([\/-\s\w\d]+)/);
 		$temp =~ s/$first--$last//;
 		$first = parse_dates($first) if parse_dates($first) != -1;
 		$last = parse_dates($last) if parse_dates($last) != -1;
 		push(@range,fill_range($first,$last));
 	}
-	while ($temp =~ /,/) {
+	while ($temp =~ /,/ && $temp !~ /day/) {
 		($first) = ($temp =~ /[^\s\w\d]*([\/-\s\w\d]+),/);
 		$temp =~ s/$first,//;
 		$first = parse_dates($first) if parse_dates($first) != -1;
 		push(@range,ind_date($first));
 	}
-	push(@range,ind_date(parse_dates($temp))) if parse_dates($temp) != -1;
+	if ($temp =~ /day/) {
+		@range = parse_daynames($temp);
+	} else {
+		push(@range,ind_date(parse_dates($temp))) 
+			if parse_dates($temp) != -1;
+	}
 #	print @range; print "\n";
 	return @range;
 }

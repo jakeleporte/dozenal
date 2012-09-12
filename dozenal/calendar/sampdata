@@ -1,10 +1,12 @@
-Staff Meeting	Wednesday:12;00		event
-Louise's Birthday	21 April		special
-Work Meeting	Thursdays of March:12;00		event
-Vacation	14--19 March 11E8		special
+#Staff Meeting	Wednesday:12;00		event
+#Louise's Birthday	21 April		special
+#Work Meeting	Thursdays of March:12;00		event
+#Vacation	14--19 March 11E8		special
 Other Vacation	14 May --19 July 11E8		special
+Something Else	Tuesdays in March,Thursdays in April		event
+Something Silly	Tuesdays,Thursdays		event
 Still Other Vacation	1X Nov 11E8 --19 Feb 11E9		special
-More Meetings	5/6/11E7 -- 6/2/11E7		event
-More Meetings	5-6-11E7 -- 6-2-11E7		event
-Still More Meetings	11E7-X-26 -- 11E7-E-18	11E7-E-18	event
-Meetings Galore!	11E7-X-26 -- 11E7-E-18	11E7-E-11, 11E7-E-12, 11E7-E-14--11E7-E-18	event
+#More Meetings	5/6/11E7 -- 6/2/11E7		event
+#More Meetings	5-6-11E7 -- 6-2-11E7		event
+#Still More Meetings	11E7-X-26 -- 11E7-E-18	11E7-E-18	event
+#Meetings Galore!	11E7-X-26 -- 11E7-E-18	11E7-E-11, 11E7-E-12, 11E7-E-14--11E7-E-18	event
