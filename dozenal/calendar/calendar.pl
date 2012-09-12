@@ -25,18 +25,18 @@ my $INPUT_FILE_NOT_EXIST = 2;
 # define our mod functions; both take two arguments, x and
 # y, and return an integer
 
-sub mod
+sub mod($$)
 {
 	return $_[0] - $_[1] * ($_[0] / $_[1]);
 }
-sub amod
+sub amod($$)
 {
 	return $_[1] + mod($_[0],-$_[1]);
 }
 
 # get the julian date; takes year, month, day
 
-sub julday
+sub julday($$$)
 {
 	return 1721423.5 + Date_to_Days($_[0],$_[1],$_[2]) + 1;
 }
@@ -44,7 +44,7 @@ sub julday
 # convert julian date back to gregorian date; takes the
 # julian day, returns an array of year, month, day
 
-sub jultogreg
+sub jultogreg($)
 {
 	return Add_Delta_Days(1,1,1,$_[0] - 1721423.5 - 2);
 }
@@ -60,12 +60,9 @@ my @calendar;
 
 my @eventlist;
 
-# define @datelist; this array holds the broken-down dates
-# and the events that go with them
+# takes a filehandle; returns no value; populates @calendar
 
-my @datelist;
-
-sub popsched
+sub popsched(*)
 {
 	my $i = 0;
 	my $j = 0;
@@ -86,7 +83,7 @@ sub popsched
 	close $calfile;
 }
 
-sub use_input_file
+sub use_input_file()
 {
 	if ($opt_f) {
 		if (!-e $opt_f) {
@@ -105,7 +102,7 @@ sub use_input_file
 # list of all the dates between them, including them
 # themselves
 
-sub fill_range
+sub fill_range($$)
 {
 	my $firstmon = -1;		# first month in range
 	my $lastmon = -1;			# second month in range
@@ -141,37 +138,130 @@ sub fill_range
 	return @range;
 }
 
-# gets the date from the array; parses it; returns a list of
-# dates which meet the requirements
+# before passing to the range and list functions (if
+# applicable), parse the date and put it into a standard
+# form (e.g., 4 Mar 11E8); accepts variety of dates in
+# little-endian or big-endian formats, but not the strange
+# American way; requires four-digit year; returns a string,
+# or -1 if a valid date isn't found
 
-sub get_dates
+sub parse_dates($)
 {
-	my $entry;			# date field we're working with
+	my $flag = 0;					# set to 1 if found valid date
+	my $temp = $_[0];				# variable to deal with in calcs
+	my $year;
+	my $month;
+	my $day;
+	my $standate = -1;
+	my @months = qw( Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec Irv );
+
+	if ($temp =~ /([\dXE]{2,4})[-|\/]([\dXE]{1,2})[-\/]([\dXE]{1,2})/) {
+		$flag = 1;
+		($year,$month,$day) = ($1,$2,$3);
+	} elsif ($temp =~ /(\w{3,9}).*([\dXE]{1,2}).*,.*([\dXE]{2,4})/) {
+		$flag = 1;
+		($year,$month,$day) = ($3,$1,$2);
+	} elsif ($temp =~ /([\dXE]{1,2})[-|\/]([\dXE]{1,2})[-\/]([\dXE]{2,4})/) {
+		$flag = 1;
+		($year,$month,$day) = ($3,$1,$2);
+	}
+	if ($flag == 1) {
+		$month = "Oct" if $month eq "X";
+		$month = "Nov" if $month eq "E";
+		$month = "Dec" if $month eq "10";
+		if ($month =~ /[\dXE]+/) {
+			$month--;
+			$month = $months[$month];
+		}
+		$standate = $day." ".$month." ".$year;
+	}
+	return $standate;
+}
+
+# takes an individual date as scalar string, returns it as
+# julian day
+
+sub ind_date($)
+{
+	my $year;
+	my $month;
+	my $day;
+	my @months = qw( Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec Irv );
+
+	for (my $i = 0; $i < 13; $i++) {
+		$month = $i if ($_[0] =~ /$months[$i]/);
+	}
+	$year = $1 if $_[0] =~ /([\dXE]{4,4})/;
+	$day = $1 if $_[0] =~ /([\d\dXE]{1,2})/;
+	$day = qx(dec $day);
+	$year = qx(dec $year);
+	$month++;
+	return julday($year,$month,$day);
+}
+
+# takes a scalar (a date field from @calendar); parses it; 
+# returns a list of dates which meet the requirements
+
+sub get_dates($)
+{
 	my $first = "";	# first date of a range
 	my $last = "";		# last date of a range
+	my @range = ();	# the array of dates which match the field
+	my $temp;			# placeholder so we don't clobber $_[0]
+
+	$temp = $_[0];
+	$temp =~ s/\s//g;
+	while ($temp =~ /--/) {
+		($first,$last)=($temp=~/[^\s\w\d]*([\/-\s\w\d]+)--([\/-\s\w\d]+)/);
+		$temp =~ s/$first--$last//;
+		$first = parse_dates($first) if parse_dates($first) != -1;
+		$last = parse_dates($last) if parse_dates($last) != -1;
+		push(@range,fill_range($first,$last));
+	}
+	while ($temp =~ /,/) {
+		($first) = ($temp =~ /[^\s\w\d]*([\/-\s\w\d]+),/);
+		$temp =~ s/$first,//;
+		$first = parse_dates($first) if parse_dates($first) != -1;
+		push(@range,ind_date($first));
+	}
+	push(@range,ind_date(parse_dates($temp))) if parse_dates($temp) != -1;
+#	print @range; print "\n";
+	return @range;
+}
+
+# after @calendar is populated, creates the date ranges with
+# the events associated with them; takes no args, returns
+# nothing
+
+sub parse_input_file()
+{
 	my @range;
+	my @exceptions;
+	my @row;
+	my @final_range;
+	my $j = 0;
 
 	for (my $i=0; $i <= $#calendar; ++$i) {
-		$entry = $calendar[$i][1];
-		($first,$last) = ($entry =~ /[^\s\w\d]*([\s\w\d]+)-([\s\w\d]+)/);
-		if ($first ne "") {
-			@range = fill_range($first,$last);
-			print @range;
-			#process exceptions to range here
-			#then feed @range into @eventlist, with other data
-			#from @calendar
+		@range = get_dates($calendar[$i][1]);
+		@exceptions = get_dates($calendar[$i][2]);
+		foreach my $var (@range) {
+			@row = ($var,$calendar[$i][0],$calendar[$i][3]);
+			push @{$eventlist[$j++]},@row if !grep(/$var/,@exceptions);
+		}
+	}
+	for (my $i = 0; $i <= $#eventlist; $i++) {
+		for ($j = 0; $j < 3; $j++) {
+			print $eventlist[$i][$j]."\n";
 		}
 	}
 }
 
-use_input_file();
-get_dates();
+# we all know what this one's for
 
-#for (my $i = 0; $i <= $#calendar; ++$i) {
-#	for (my $j = 0; $j < 4; ++$j) {
-#		print $calendar[$i]->[$j]."|";
-#	}
-#	print "\n";
-#}
-#
-#print $calendar[0][1];
+sub main()
+{
+	use_input_file();
+	parse_input_file();
+}
+
+main();
