@@ -149,11 +149,12 @@ sub parse_dates($)
 {
 	my $flag = 0;					# set to 1 if found valid date
 	my $temp = $_[0];				# variable to deal with in calcs
-	my $year;
-	my $month;
-	my $day;
+	my $year = -1;
+	my $month = -1;
+	my $day = -1;
 	my $standate = -1;
 	my @months = qw( Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec Irv );
+	my $t = localtime;
 
 	if ($temp =~ /([\dXE]{2,4})[-|\/]([\dXE]{1,2})[-\/]([\dXE]{1,2})/) {
 		$flag = 1;
@@ -164,6 +165,27 @@ sub parse_dates($)
 	} elsif ($temp =~ /([\dXE]{1,2})[-|\/]([\dXE]{1,2})[-\/]([\dXE]{2,4})/) {
 		$flag = 1;
 		($year,$month,$day) = ($3,$1,$2);
+	} else {
+		my $i;
+		foreach my $var (@months) {
+			$i++;
+			next if ($temp !~ /$var/);
+			$month = $i if $i < 13;
+			$month = 1 if $month == -1;
+			if ($temp =~ /([\dXE]{4,4})/) {
+				$year = $1;
+			} else {
+				$year = $t->year;
+				$year = qx(doz $year);
+			}
+			if ($temp =~ /([\dXE]{1,2})/) {
+				$day = $1;
+			} else {
+				$day = $t->mday;
+				$day = qx(doz $day);
+			}
+			$standate =  "$day $months[$month-1] $year";
+		}
 	}
 	if ($flag == 1) {
 		$month = "Oct" if $month eq "X";
@@ -187,11 +209,17 @@ sub ind_date($)
 	my $month;
 	my $day;
 	my @months = qw( Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec Irv );
+	my $t = localtime;
 
 	for (my $i = 0; $i < 13; $i++) {
 		$month = $i if ($_[0] =~ /$months[$i]/);
 	}
-	$year = $1 if $_[0] =~ /([\dXE]{4,4})/;
+	if ($_[0] =~ /([\dXE]{4,4})/) {
+		$year = $1;
+	} else {
+		$year = $t->year;
+		$year = qx(doz $year);
+	}
 	$day = $1 if $_[0] =~ /([\d\dXE]{1,2})/;
 	$day = qx(dec $day);
 	$year = qx(dec $year);
@@ -216,13 +244,28 @@ sub parse_daynames($)
 	my $day;
 	my $t = localtime;
 	my $i = 0;
+	my $j = 0;
 	my $weekday;
 	my $flag = 0;
+	my $monthname = "";
 
 	while ($temp =~ /--/) {
 		($first,$last)=($temp=~/([A-Z][a-z]+day)--([A-Z][a-z]+day)/);
 		$temp =~ s/$first--$last//;
+		foreach my $var (@months) {
+			last if grep(/$var/,$temp);
+			$j++;
+		} foreach my $var (@weekdays) {
+			last if grep(/$var/,$first);
+			$i++;
+		}
+		$monthname = $months[$j];
+		while (!grep(/$weekdays[$i]/,$last)) {	
+			$temp .= $weekdays[$i++]."day"." ".$monthname.",";
+		}
+		$temp .= $weekdays[$i++]."day"." ".$monthname.",";
 	}
+	$i = 0;
 	while (($temp =~ /,/) || ($temp !~ /[,]/ && $temp =~ /day/)) {
 		($first) = ($temp =~ /[^\s\w\d]*([\/-\s\w\d]+)/);
 		$temp =~ s/$first[,]*//;
@@ -231,16 +274,17 @@ sub parse_daynames($)
 				$weekday = $var;
 			}
 		}
-		foreach $month (@months) {
-			if (grep(/$month/,$first)) {
+		foreach my $var (@months) {
+			if (grep(/$var/,$first)) {
 				$flag = 1;
 				$i = 0;
-				$i++ while $months[$i] ne $month;
+				$i++ while $months[$i] ne $var;
 				$month = $i + 1;
 				if ($first =~ /([\dXE]{4,4})/) {
 					$year = $1;
 				} else {
 					$year = $t->year;
+#					$year = qx(doz $year);
 				}
 				$day = 1;
 				$weekday = lc($weekday);
@@ -255,7 +299,10 @@ sub parse_daynames($)
 			$month = 1;
 			if ($first =~ /([\dXE]{4,4})/) {
 				$year = $1;
-			} else { $year = $t->year; }
+			} else { 
+				$year = $t->year;
+#				$year = qx(doz $year);
+			}
 			$day = 1;
 			$weekday = lc($weekday);
 			$day++ while (lc(day(1,$day,$year)) ne $weekday);
@@ -272,7 +319,6 @@ sub parse_daynames($)
 			}
 		}
 	}
-#	$i=0;print "$range[$i++]\n" while $i <= $#range;
 	return @range;
 }
 
@@ -307,8 +353,25 @@ sub get_dates($)
 		push(@range,ind_date(parse_dates($temp))) 
 			if parse_dates($temp) != -1;
 	}
-#	print @range; print "\n";
 	return @range;
+}
+
+# takes a scalar argument, the first field of the calendar
+# line, and scans it for a time or times; returns an array
+# of times
+
+sub get_times($)
+{
+	my @times;
+	my $temp;
+	my $i;
+
+	$temp = $_[0];
+	while ($temp =~ /([\dXE]{1,2};[\dXE]{1,4})/) {
+		push(@times,$1);
+		$temp =~ s/$1//;
+	}
+	return @times;
 }
 
 # after @calendar is populated, creates the date ranges with
@@ -319,20 +382,24 @@ sub parse_input_file()
 {
 	my @range;
 	my @exceptions;
+	my @times;
+	my $times;
 	my @row;
 	my @final_range;
 	my $j = 0;
 
 	for (my $i=0; $i <= $#calendar; ++$i) {
 		@range = get_dates($calendar[$i][1]);
+		@times = get_times($calendar[$i][1]);
+		$times = join(",",@times);
 		@exceptions = get_dates($calendar[$i][2]);
 		foreach my $var (@range) {
-			@row = ($var,$calendar[$i][0],$calendar[$i][3]);
+			@row = ($var,$times,$calendar[$i][0],$calendar[$i][3]);
 			push @{$eventlist[$j++]},@row if !grep(/$var/,@exceptions);
 		}
 	}
 	for (my $i = 0; $i <= $#eventlist; $i++) {
-		for ($j = 0; $j < 3; $j++) {
+		for ($j = 0; $j < 4; $j++) {
 			print $eventlist[$i][$j]."\n";
 		}
 	}
