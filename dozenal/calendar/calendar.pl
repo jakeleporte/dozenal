@@ -71,12 +71,12 @@ sub popsched(*)
 	open($calfile,"<","$_[0]") || die $!;
 	while (<$calfile>) {
 		$k++;
-		if ($_ !~ /(.*)\t(.*)\t(.*)\t(.*)/) {
+		if ($_ !~ /(.*)\t(.*)\t(.*)\t(.*)\t(.*)/) {
 			print STDERR "dozcal error:  malformation in data ";
 			print STDERR "file $_[0] at line $k\n";
 			exit $BAD_INPUT_FILE;
 		}
-		@row = ($_ =~ /(.*)\t(.*)\t(.*)\t(.*)/) if $_ !~ /^#/;
+		@row = ($_ =~ /(.*)\t(.*)\t(.*)\t(.*)\t(.*)/) if $_ !~ /^#/;
 		push @{$calendar[$i]},@row if $_ !~ /^#/;
 		$i++;
 	}
@@ -207,7 +207,7 @@ sub ind_date($)
 {
 	my $year;
 	my $month;
-	my $day;
+	my $day = 1;
 	my @months = qw( Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec Irv );
 	my $t = localtime;
 
@@ -342,9 +342,10 @@ sub get_dates($)
 		push(@range,fill_range($first,$last));
 	}
 	while ($temp =~ /,/ && $temp !~ /day/) {
-		($first) = ($temp =~ /[^\s\w\d]*([\/-\s\w\d]+),/);
+		($first) = ($temp =~ /[^\s\w\d]*([^;][\/-\s\w\d]+),/);
 		$temp =~ s/$first,//;
 		$first = parse_dates($first) if parse_dates($first) != -1;
+		print "HERE:  $first\n";
 		push(@range,ind_date($first));
 	}
 	if ($temp =~ /day/) {
@@ -367,7 +368,8 @@ sub get_times($)
 	my $i;
 
 	$temp = $_[0];
-	while ($temp =~ /([\dXE]{1,2};[\dXE]{1,4})/) {
+	$temp =~ s/\s//g;
+	while ($temp =~ /([\dXE]{1,2};[\dXE]{1,4}[-]{0,2})/) {
 		push(@times,$1);
 		$temp =~ s/$1//;
 	}
@@ -390,11 +392,12 @@ sub parse_input_file()
 
 	for (my $i=0; $i <= $#calendar; ++$i) {
 		@range = get_dates($calendar[$i][1]);
-		@times = get_times($calendar[$i][1]);
+		@times = get_times($calendar[$i][2]);
 		$times = join(",",@times);
-		@exceptions = get_dates($calendar[$i][2]);
+		$times =~ s/--,/--/g;
+		@exceptions = get_dates($calendar[$i][3]);
 		foreach my $var (@range) {
-			@row = ($var,$times,$calendar[$i][0],$calendar[$i][3]);
+			@row = ($var,$times,$calendar[$i][0],$calendar[$i][4]);
 			push @{$eventlist[$j++]},@row if !grep(/$var/,@exceptions);
 		}
 	}
@@ -403,6 +406,12 @@ sub parse_input_file()
 			print $eventlist[$i][$j]."\n";
 		}
 	}
+#	my @parseddate;
+#	for (my $i = 0; $i <= $#eventlist; $i++) {
+#		@parseddate = jultogreg($eventlist[$i][0]);
+#		print day($parseddate[1],$parseddate[2],$parseddate[0]);
+#		print " $parseddate[0] $parseddate[1] $parseddate[2]\n";
+#	}
 }
 
 # we all know what this one's for
