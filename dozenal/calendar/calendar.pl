@@ -11,7 +11,7 @@ use Time::Piece;
 use Date::Day;
 use Date::Easter;
 use Date::Pcalc qw(Add_Delta_Days
-	Date_to_Days);
+	Date_to_Days leap_year);
 use Getopt::Std;
 getopts('f:');
 our($opt_f);
@@ -60,6 +60,19 @@ my @calendar;
 
 my @eventlist;
 
+# define arrays to hold the dates grouped by various
+# criteria
+
+my @callist;
+my @monthlist;
+my @weeklist;
+my @daylist;
+
+# define date format default; command line option or file
+# option can change
+
+my $dateformat = "%d %b %Y";
+
 # takes a filehandle; returns no value; populates @calendar
 
 sub popsched(*)
@@ -70,6 +83,10 @@ sub popsched(*)
 	my @row = ();			# placeholder to feed into @calndar
 	open($calfile,"<","$_[0]") || die $!;
 	while (<$calfile>) {
+		if ($_ =~ /^DATEFORM/) {
+			($dateformat) = ($_ =~ /^DATEFORM:\s(.*)\s$/);
+			next;
+		}
 		$k++;
 		if ($_ !~ /(.*)\t(.*)\t(.*)\t(.*)\t(.*)/) {
 			print STDERR "dozcal error:  malformation in data ";
@@ -188,8 +205,8 @@ sub parse_dates($)
 		}
 	}
 	if ($flag == 1) {
-		$month = "Oct" if $month eq "X";
-		$month = "Nov" if $month eq "E";
+		$month = "Oct" if $month eq "X" || $month eq "0X";
+		$month = "Nov" if $month eq "E" || $month eq "0E";
 		$month = "Dec" if $month eq "10";
 		if ($month =~ /[\dXE]+/) {
 			$month--;
@@ -282,12 +299,13 @@ sub parse_daynames($)
 				$month = $i + 1;
 				if ($first =~ /([\dXE]{4,4})/) {
 					$year = $1;
+					$year = qx(dec $year);
 				} else {
 					$year = $t->year;
-#					$year = qx(doz $year);
 				}
 				$day = 1;
 				$weekday = lc($weekday);
+				$monthdays[1]++ if (leap_year($year)) && $monthdays[1] < 29;
 				$day++ while (lc(day($month,$day,$year)) ne $weekday);
 				while ($day <= @monthdays[$month-1]) {
 					push(@range,julday($year,$month,$day));
@@ -303,6 +321,7 @@ sub parse_daynames($)
 				$year = $t->year;
 #				$year = qx(doz $year);
 			}
+			$monthdays[1]++ if (leap_year($year)) && $monthdays[1] < 29;
 			$day = 1;
 			$weekday = lc($weekday);
 			$day++ while (lc(day(1,$day,$year)) ne $weekday);
@@ -345,7 +364,6 @@ sub get_dates($)
 		($first) = ($temp =~ /[^\s\w\d]*([^;][\/-\s\w\d]+),/);
 		$temp =~ s/$first,//;
 		$first = parse_dates($first) if parse_dates($first) != -1;
-		print "HERE:  $first\n";
 		push(@range,ind_date($first));
 	}
 	if ($temp =~ /day/) {
@@ -401,11 +419,11 @@ sub parse_input_file()
 			push @{$eventlist[$j++]},@row if !grep(/$var/,@exceptions);
 		}
 	}
-	for (my $i = 0; $i <= $#eventlist; $i++) {
-		for ($j = 0; $j < 4; $j++) {
-			print $eventlist[$i][$j]."\n";
-		}
-	}
+#	for (my $i = 0; $i <= $#eventlist; $i++) {
+#		for ($j = 0; $j < 4; $j++) {
+#			print $eventlist[$i][$j]."\n";
+#		}
+#	}
 #	my @parseddate;
 #	for (my $i = 0; $i <= $#eventlist; $i++) {
 #		@parseddate = jultogreg($eventlist[$i][0]);
@@ -414,12 +432,94 @@ sub parse_input_file()
 #	}
 }
 
+# takes day, month, and year; returns a string with the
+# dozenalized date
+
+sub thedate($$$)
+{
+	my $date;
+	my $year;
+	my $month;
+	my $day;
+
+	$year = qx(doz $_[2]);
+	$month = qx(doz $_[1]);
+	$day = qx(doz $_[0]);
+	$date = qx(dozdate -d"$year-$month-$day" "$dateformat");
+	return $date;
+}
+
+# request a calendar; takes the year, the month, and the
+# day, and returns the requested array; if month is zero,
+# gives the entire year; if day is zero, gives the entire
+# month
+
+sub prod_cal($$$)
+{
+	my $i;
+	my $j;
+	my $k;
+	my @parsed;
+
+	for ($i = 0; $i <= $#eventlist; ++$i) {
+		@parsed = jultogreg($eventlist[$i][0]);
+		if ($parsed[0] == $_[0]) {
+			for ($j = 0; $j <= 4; ++$j) {
+				$callist[$k][$j]=thedate($parsed[2],$parsed[1],
+					$parsed[0]) if ($j == 4);
+				$callist[$k][$j]=$eventlist[$i][$j] 
+					if ($j != 4);
+			}
+			$k++;
+			if ($_[1] != 0) {
+				if ($parsed[1] != $_[1]) {
+					splice(@callist,(--$k),1);
+				} elsif (($parsed[2] != $_[2]) && ($_[2] != 0)) {
+					splice(@callist,(--$k),1);
+				}
+			}
+		}
+	}
+	return @callist;
+}
+
+# a function for testing the rest
+
+sub test_func()
+{
+	my @testarray;
+	my $i;
+	my $j;
+
+#	@testarray = prod_cal(2011,0,0);
+#	for (my $i = 0; $i <= $#testarray; $i++) {
+#		for ($j = 0; $j < 5; $j++) {
+#			print "$testarray[$i][$j] ";
+#		}
+#	}
+#	print "="x60;
+#	print "\n";
+#	@testarray = prod_cal(2011,10,0);
+#	for (my $i = 0; $i <= $#testarray; $i++) {
+#		for ($j = 0; $j < 5; $j++) {
+#			print "$testarray[$i][$j] ";
+#		}
+#	}
+	@testarray = prod_cal(2011,10,0);
+	for (my $i = 0; $i <= $#testarray; $i++) {
+		for ($j = 0; $j < 5; $j++) {
+			print "$testarray[$i][$j] ";
+		}
+	}
+}
+
 # we all know what this one's for
 
 sub main()
 {
 	use_input_file();
 	parse_input_file();
+	test_func();
 }
 
 main();

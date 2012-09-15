@@ -9,7 +9,13 @@ Something Silly	Tuesdays,Thursdays			event
 Still Other Vacation	1X Nov 11E8 --19 Feb 11E9			special
 More Meetings	5/6/11E7 -- 6/2/11E7			event
 More Meetings	5-6-11E7 -- 6-2-11E7			event
-Still More Meetings	11E7-X-26 -- 11E7-E-18		11E7-E-18	event
-Meetings Galore!	11E7-X-26 -- 11E7-E-18		11E7-E-11, 11E7-E-12, 11E7-E-14--11E7-E-18	event
+Still More Meetings	11E7-10-18 -- 11E7-10-26		11E7-E-18	event
+Meetings Galore!	11E7-0X-26 -- 11E7-E-18		11E7-E-11, 11E7-E-12, 11E7-E-14--11E7-E-18	event
 Fun Stuff!	Wednesday--Friday in October			event
 More Fun Stuff!	Thursday in October,Friday in November			event
+Testing for Jan	Tuesdays of January	3;00		event
+Leapyear Test	Wednesdays in February			event
+Leapyear Test 2	Wednesdays			event
+Leapyear Test 3	Wednesdays in February 11E7	14;00		event
+Fill a Day	Mondays in April	8;00		event
+DATEFORM:	 %d %B %Y
