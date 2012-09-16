@@ -56,6 +56,39 @@ sub doz_int($)
 	return scalar reverse($doznum);
 }
 
+# converts single dozenal digits to decimal values; takes a
+# scalar dozenal digit, returns the scalar decimal digit
+
+sub decimalize($)
+{
+	if ($_[0] eq 'X') {
+		return 10;
+	} elsif ($_[0] eq 'E') {
+		return 11;
+	} else {
+		return $_[0];
+	}
+}
+
+# converts dozenal integers into decimal integers; takes the
+# dozenal integer as a scalar, returns the decimal integer
+# as a scalar
+
+sub dec_int($)
+{
+	my @digits;
+	my $len;
+	my $decnum;
+	my $exp = 0;
+
+	@digits = split(//,$_[0]);
+	$exp = $#digits;
+	foreach my $var (@digits) {
+		$decnum += decimalize($var) * (12**($exp--));
+	}
+	return $decnum;
+}
+
 # define our mod functions; both take two arguments, x and
 # y, and return an integer
 
@@ -176,10 +209,10 @@ sub fill_range($$)
 	$lastyear = $firstyear if (($firstyear > -1) && ($lastyear == -1));
 	$firstday = $1 if $_[0] =~ /([\d\dXE]{1,2})/;
 	$lastday = $1 if $_[1] =~ /([\d\dXE]{1,2})/;
-	$firstday = qx(dec $firstday);
-	$lastday = qx(dec $lastday);
-	$firstyear = qx(dec $firstyear);
-	$lastyear = qx(dec $lastyear);
+	$firstday = dec_int($firstday);
+	$lastday = dec_int($lastday);
+	$firstyear = dec_int($firstyear);
+	$lastyear = dec_int($lastyear);
 	$firstmon++;
 	$lastmon++;
 	$firstday = julday($firstyear,$firstmon,$firstday);
@@ -272,8 +305,8 @@ sub ind_date($)
 		$year = doz_int($year);
 	}
 	$day = $1 if $_[0] =~ /([\d\dXE]{1,2})/;
-	$day = qx(dec $day);
-	$year = qx(dec $year);
+	$day = dec_int($day);
+	$year = dec_int($year);
 	$month++;
 	return julday($year,$month,$day);
 }
@@ -333,7 +366,7 @@ sub parse_daynames($)
 				$month = $i + 1;
 				if ($first =~ /([\dXE]{4,4})/) {
 					$year = $1;
-					$year = qx(dec $year);
+					$year = dec_int($year);
 				} else {
 					$year = $t->year;
 				}
@@ -538,7 +571,7 @@ sub test_func()
 #			print "$testarray[$i][$j] ";
 #		}
 #	}
-	@testarray = prod_cal(2011,0,0);
+	@testarray = prod_cal(2012,2,0);
 	for (my $i = 0; $i <= $#testarray; $i++) {
 		for ($j = 0; $j < 5; $j++) {
 			print "$testarray[$i][$j] ";
