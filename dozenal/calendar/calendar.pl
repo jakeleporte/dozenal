@@ -22,6 +22,40 @@ my $SUCCESS = 0;
 my $BAD_INPUT_FILE = 1;
 my $INPUT_FILE_NOT_EXIST = 2;
 
+# change to dozenal digits; takes the scalar integer,
+# returnst he dozenal digit character
+
+sub dozenize($)
+{
+	if (($_[0] >= 0) && ($_[0] <= 9)) {
+		return $_[0];
+	} else {
+		return 'X' if ($_[0] == 10);
+		return 'E' if ($_[0] == 11);
+	}
+}
+
+# convert integers from decmial to dozenal; takes the scalar
+# integer, returns the scalar string
+
+sub doz_int($)
+{
+	my $decnum = $_[0];
+	my $holder = 1;
+	my $doznum = "";
+
+	while ($decnum >= 12) {
+		$holder = $decnum % 12;
+		$holder = dozenize($holder);
+		$doznum .= $holder;
+		$decnum /= 12;
+	}
+	$holder = $decnum % 12;
+	$holder = dozenize($holder);
+	$doznum .= $holder;
+	return scalar reverse($doznum);
+}
+
 # define our mod functions; both take two arguments, x and
 # y, and return an integer
 
@@ -193,13 +227,13 @@ sub parse_dates($)
 				$year = $1;
 			} else {
 				$year = $t->year;
-				$year = qx(doz $year);
+				$year = doz_int($year);
 			}
 			if ($temp =~ /([\dXE]{1,2})/) {
 				$day = $1;
 			} else {
 				$day = $t->mday;
-				$day = qx(doz $day);
+				$day = doz_int($day);
 			}
 			$standate =  "$day $months[$month-1] $year";
 		}
@@ -235,7 +269,7 @@ sub ind_date($)
 		$year = $1;
 	} else {
 		$year = $t->year;
-		$year = qx(doz $year);
+		$year = doz_int($year);
 	}
 	$day = $1 if $_[0] =~ /([\d\dXE]{1,2})/;
 	$day = qx(dec $day);
@@ -319,7 +353,6 @@ sub parse_daynames($)
 				$year = $1;
 			} else { 
 				$year = $t->year;
-#				$year = qx(doz $year);
 			}
 			$monthdays[1]++ if (leap_year($year)) && $monthdays[1] < 29;
 			$day = 1;
@@ -442,9 +475,9 @@ sub thedate($$$)
 	my $month;
 	my $day;
 
-	$year = qx(doz $_[2]);
-	$month = qx(doz $_[1]);
-	$day = qx(doz $_[0]);
+	$year = doz_int($_[2]);
+	$month = doz_int($_[1]);
+	$day = doz_int($_[0]);
 	$date = qx(dozdate -d"$year-$month-$day" "$dateformat");
 	return $date;
 }
@@ -505,7 +538,7 @@ sub test_func()
 #			print "$testarray[$i][$j] ";
 #		}
 #	}
-	@testarray = prod_cal(2011,10,0);
+	@testarray = prod_cal(2011,0,0);
 	for (my $i = 0; $i <= $#testarray; $i++) {
 		for ($j = 0; $j < 5; $j++) {
 			print "$testarray[$i][$j] ";

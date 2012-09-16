@@ -9,6 +9,7 @@ use Tk;
 use Tk::Balloon;
 use Tk::PNG;
 use Tk::Bitmap;
+use PAR;
 
 # main window
 
