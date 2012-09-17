@@ -20,5 +20,5 @@ Leapyear Test 3	Wednesdays in February 11E7	14;00		event
 Fill a Day	Mondays in April	8;00		event
 More for the Day	1E Apr 11E8	10;00--11;00		event
 %DATEFORM:	 %d %B %Y
-#%FORM_TEXT event "%d \n \t %t %n"
-#%FORM_TEXT special "%d \n \t *** %n ***"
+#%FORM_TEXT event "%d \n \t %t %n\n"
+#%FORM_TEXT special "%d \n *** %n ***\n"

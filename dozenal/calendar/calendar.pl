@@ -7,6 +7,8 @@
 
 use strict;
 use POSIX;
+use Data::Dumper::Simple;
+use String::Escape qw (unbackslash);
 use Time::Piece;
 use Date::Day;
 use Date::Easter;
@@ -141,14 +143,12 @@ my @daylist;
 
 my $dateformat = "%d %b %Y";
 
-# define the hash of array for layout function; each key is
-# associated with an array, and each array is grouped as
-# type-of-event, date-start, date-end, time-start, time-end,
-# name-start, and name-end
+# define layouts; an array of strings; each string
+# is formatted "output-type, type, formatstring"
 
-my %layouts = (
-	"text",("event","","\n","\t","","",""),
-	"text",("special","","\n","\t","","","")
+my @layouts = (
+	"text, event, %d: %t: %n\\n",
+	"text, special, %d: %n\\n"
 );
 
 # option handling from config file; takes the line involved
@@ -157,14 +157,17 @@ my %layouts = (
 
 sub config_opt($)
 {
+	my $var; my $ovar; my $finish;
+
 	if ($_ =~ /^%DATEFORM/) {
 		($dateformat) = ($_ =~ /^%DATEFORM:\s(.*)\s$/);
-	}
-	elsif ($_ =~ /^%FORM_(\W+)/) {
-		if (!exists $layouts{$1}) {
-			$layouts{$1} = ();
+	} elsif ($_ =~ /^%FORM_([A-Z]+)\s+(\w+)\s+"(.*)"$/) {
+		$var = lc($1); $ovar = $2; $finish = $3;
+		for (my $i = 0; $i <= $#layouts; $i++) {
+			if ($layouts[$i] =~ /$var, $ovar/) {
+				$layouts[$i] =~ s/($var, $ovar,\s*).*/$1 $finish/;
+			}
 		}
-#FIXME:  finish population of hash with new layouts
 	}
 }
 
@@ -666,12 +669,23 @@ sub text_format(\@)
 {
 	my $lastdate = "";		# variable to prevent duplicate 
 									# printing of dates
+	my $outline = "";
 
 	for (my $i = 0; $i <= $#{$_[0]}; $i++) {
-		printf "%-14s\n",$_[0][$i][4] if $_[0][$i][4] != $lastdate;
-		printf "\t\t%-14s",$_[0][$i][1];
-		printf "%-14s\n",$_[0][$i][2];
-		$lastdate = $_[0][$i][4];
+		for (my $j = 0; $j <= $#layouts; $j++) {
+			if (grep(/text, $_[0][$i][3]/,$layouts[$j])) {
+				($outline) = ($layouts[$j] =~ /\w+,\s*\w+,\s*(.*)$/);
+				#print "$outline\n";
+				$outline =~ s/%d/$_[0][$i][4]/;
+				$outline =~ s/%t/$_[0][$i][1]/;
+				$outline =~ s/%n/$_[0][$i][2]/;
+				print unbackslash($outline);
+			}
+		}
+#		printf "%-14s\n",$_[0][$i][4] if $_[0][$i][4] != $lastdate;
+#		printf "\t\t%-14s",$_[0][$i][1];
+#		printf "%-14s\n",$_[0][$i][2];
+#		$lastdate = $_[0][$i][4];
 	}
 }
 
