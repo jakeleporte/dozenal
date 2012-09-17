@@ -13,14 +13,15 @@ use Date::Easter;
 use Date::Pcalc qw(Add_Delta_Days
 	Date_to_Days leap_year);
 use Getopt::Std;
-getopts('f:');
-our($opt_f);
+getopts('f:d:o:');
+our($opt_f,$opt_d,$opt_o);
 
 # define our exit codes
 
 my $SUCCESS = 0;
 my $BAD_INPUT_FILE = 1;
 my $INPUT_FILE_NOT_EXIST = 2;
+my $BAD_OUTPUT_FORMAT = 3;
 
 # change to dozenal digits; takes the scalar integer,
 # returnst he dozenal digit character
@@ -512,6 +513,7 @@ sub thedate($$$)
 	$month = doz_int($_[1]);
 	$day = doz_int($_[0]);
 	$date = qx(dozdate -d"$year-$month-$day" "$dateformat");
+	$date =~ s/^\s(.*)\s$/$1/;
 	return $date;
 }
 
@@ -549,6 +551,113 @@ sub prod_cal($$$)
 	return @callist;
 }
 
+# parse the request dates; return an array of year, month, day
+
+sub get_input_date($)
+{
+	my $year;
+	my $month = 0;
+	my $day = 0;
+	my @months = qw( Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec Irv );
+	my $i = 0;
+	my $whole = "";
+	my $flag = 0;
+
+	if ($_[0] =~ /([\dXE]{4,4})/) {
+		$year = $1;
+	}
+	foreach my $var (@months) {
+		$i++;
+		if ($_[0] =~ $var) {
+			$month = doz_int($i);
+			$flag = 1;
+			last;
+		}
+	}
+	if ($flag == 1) {
+		$day = $1 if ($_[0] =~ /[^\dXE]([\dXE]{1,2})(^\dXE|$)/);
+		$day = $1 if ($_[0] =~ /\w{3,9}.*?([\dXE]{1,2}),/);
+	}
+	$whole .= $year;
+	if ($month eq "0") {
+		if ($_[0] =~ /($year.*?([\dXE]{1,2}))/) {
+			$month = $2;
+			$whole = $1;
+		} elsif ($_[0] =~ /(([\dXE]{1,2})[^\dXE]*?$year)/) {
+			$month = $2;
+			$whole = $1;
+		}
+	}
+	if ($day eq "0") {
+		if ($_[0] =~ /($whole.*?([\dXE]{1,2}))(^\dXE|$)/) {
+			$day = $2;
+			$whole = $1;
+		} elsif ($_[0] =~ /(([\dXE]{1,2}).*?$whole)/) {
+			$day = $2;
+			$whole = $1;
+		}
+	}
+	return ($year,$month,$day);
+}
+
+# parses the requested input date; returns an array of the
+# list of the matching appointments/events
+
+sub parse_it()
+{
+	my $year;
+	my $month = 0;
+	my $day = 0;
+	my $t = localtime;
+	my @resarray;
+
+	if ($opt_d) {
+		($year,$month,$day) = get_input_date($opt_d);
+		$year = dec_int($year);
+	} else {
+		($year,$month,$day) = get_input_date($t->year);
+	}
+	$month = dec_int($month);
+	$day = dec_int($day);
+	@resarray = prod_cal($year,$month,$day);
+#	for (my $i = 0; $i <= $#resarray; $i++) {
+#		for (my $j = 0; $j < 5; $j++) {
+#			print "$resarray[$i][$j] ";
+#		}
+#	}
+	return @resarray;
+}
+
+# formats the requeste dates for plain text output; takes an
+# array of the dates, returns nothing
+
+sub text_format(\@)
+{
+	for (my $i = 0; $i <= $#{$_[0]}; $i++) {
+		print "$_[0][$i][4]\n";
+		print "\t$_[0][$i][1]";
+		print "\t$_[0][$i][2]\n";
+	}
+}
+
+# checks for a requested output format (default is text);
+# then calls the appropriate function to crank it out; takes
+# the array of relevant dates, returns nothing
+
+sub output(\@)
+{
+	my $format = "text";
+
+	$format = $opt_o if ($opt_o);
+	if ($format eq "text") {
+		text_format(@{$_[0]});
+	} else {
+		print STDERR "dozcal error:  the output format ";
+		print STDERR "$format is not recognized\n";
+		exit $BAD_OUTPUT_FORMAT;
+	}
+}
+
 # a function for testing the rest
 
 sub test_func()
@@ -557,21 +666,7 @@ sub test_func()
 	my $i;
 	my $j;
 
-#	@testarray = prod_cal(2011,0,0);
-#	for (my $i = 0; $i <= $#testarray; $i++) {
-#		for ($j = 0; $j < 5; $j++) {
-#			print "$testarray[$i][$j] ";
-#		}
-#	}
-#	print "="x60;
-#	print "\n";
-#	@testarray = prod_cal(2011,10,0);
-#	for (my $i = 0; $i <= $#testarray; $i++) {
-#		for ($j = 0; $j < 5; $j++) {
-#			print "$testarray[$i][$j] ";
-#		}
-#	}
-	@testarray = prod_cal(2012,2,0);
+	@testarray = prod_cal(2011,2,0);
 	for (my $i = 0; $i <= $#testarray; $i++) {
 		for ($j = 0; $j < 5; $j++) {
 			print "$testarray[$i][$j] ";
@@ -583,9 +678,12 @@ sub test_func()
 
 sub main()
 {
+	my @datearray;
 	use_input_file();
 	parse_input_file();
-	test_func();
+	@datearray = parse_it();
+	output(@datearray);
+#	test_func();
 }
 
 main();
