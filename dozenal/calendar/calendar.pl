@@ -141,6 +141,33 @@ my @daylist;
 
 my $dateformat = "%d %b %Y";
 
+# define the hash of array for layout function; each key is
+# associated with an array, and each array is grouped as
+# type-of-event, date-start, date-end, time-start, time-end,
+# name-start, and name-end
+
+my %layouts = (
+	"text",("event","","\n","\t","","",""),
+	"text",("special","","\n","\t","","","")
+);
+
+# option handling from config file; takes the line involved
+# (starts with "%") and fills the appropriate value in the
+# options hash; returns nothing
+
+sub config_opt($)
+{
+	if ($_ =~ /^%DATEFORM/) {
+		($dateformat) = ($_ =~ /^%DATEFORM:\s(.*)\s$/);
+	}
+	elsif ($_ =~ /^%FORM_(\W+)/) {
+		if (!exists $layouts{$1}) {
+			$layouts{$1} = ();
+		}
+#FIXME:  finish population of hash with new layouts
+	}
+}
+
 # takes a filehandle; returns no value; populates @calendar
 
 sub popsched(*)
@@ -151,19 +178,23 @@ sub popsched(*)
 	my @row = ();			# placeholder to feed into @calndar
 	open($calfile,"<","$_[0]") || die $!;
 	while (<$calfile>) {
-		if ($_ =~ /^DATEFORM/) {
-			($dateformat) = ($_ =~ /^DATEFORM:\s(.*)\s$/);
-			next;
+		if ($_ =~ /^%/) {
+			config_opt($_);
 		}
 		$k++;
-		if ($_ !~ /(.*)\t(.*)\t(.*)\t(.*)\t(.*)/) {
+		if ($_ !~ /^#/) {
+			if ($_ =~ /(.*)\t(.*)\t(.*)\t(.*)\t(.*)/) {
+				@row = ($_ =~ /(.*)\t(.*)\t(.*)\t(.*)\t(.*)/);
+				push @{$calendar[$i]},@row if $_ !~ /^#/;
+				$i++;
+			}
+		} elsif ($_ =~ /^#/) {
+			next;
+		} else {
 			print STDERR "dozcal error:  malformation in data ";
 			print STDERR "file $_[0] at line $k\n";
 			exit $BAD_INPUT_FILE;
 		}
-		@row = ($_ =~ /(.*)\t(.*)\t(.*)\t(.*)\t(.*)/) if $_ !~ /^#/;
-		push @{$calendar[$i]},@row if $_ !~ /^#/;
-		$i++;
 	}
 	close $calfile;
 }
@@ -633,10 +664,14 @@ sub parse_it()
 
 sub text_format(\@)
 {
+	my $lastdate = "";		# variable to prevent duplicate 
+									# printing of dates
+
 	for (my $i = 0; $i <= $#{$_[0]}; $i++) {
-		print "$_[0][$i][4]\n";
-		print "\t$_[0][$i][1]";
-		print "\t$_[0][$i][2]\n";
+		printf "%-14s\n",$_[0][$i][4] if $_[0][$i][4] != $lastdate;
+		printf "\t\t%-14s",$_[0][$i][1];
+		printf "%-14s\n",$_[0][$i][2];
+		$lastdate = $_[0][$i][4];
 	}
 }
 
@@ -653,7 +688,7 @@ sub output(\@)
 		text_format(@{$_[0]});
 	} else {
 		print STDERR "dozcal error:  the output format ";
-		print STDERR "$format is not recognized\n";
+		print STDERR "\"$format\" is not recognized\n";
 		exit $BAD_OUTPUT_FORMAT;
 	}
 }
@@ -679,9 +714,11 @@ sub test_func()
 sub main()
 {
 	my @datearray;
+
 	use_input_file();
 	parse_input_file();
 	@datearray = parse_it();
+	@datearray = sort { $a->[0] <=> $b->[0] } @datearray;
 	output(@datearray);
 #	test_func();
 }
