@@ -22,3 +22,4 @@ More for the Day	1E Apr 11E8	10;00--11;00		event
 %DATEFORM:	 %d %B %Y
 #%FORM_TEXT event "%d \n \t %t %n\n"
 #%FORM_TEXT special "%d \n *** %n ***\n"
+%FORM_TEXT event "%#20d \n %@-20t %_20n\n"

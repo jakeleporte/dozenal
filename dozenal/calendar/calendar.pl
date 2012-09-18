@@ -662,6 +662,69 @@ sub parse_it()
 	return @resarray;
 }
 
+# form_string, which formats the parts of the output (date,
+# time, and name) and sends them back to the format
+# function; takes the format string, the index in the
+# layouts array that we're dealing with, and then the date,
+# time, and name, and returns the formatted string
+
+sub form_string($$$$$)
+{
+	my $date = $_[2];
+	my $time = $_[3];
+	my $name = $_[4];
+	my $i = $_[1];
+	my $string = $_[0];
+	my $holder;
+	my $spacer = " ";
+	my $numfill = 0;
+	my $curr;
+	my $whole;
+	my $leftjust = 0;
+
+	my $var = $string;
+	while ($var =~ /(%.*?([dnt]))/) {
+		$curr = $2;
+		$whole = $1;
+		if ($var =~ /%(.*?)$curr/) {
+			$holder = $1;
+			if ($holder =~ /-/) {
+				$leftjust = 1;
+				$holder =~ s/-//;
+			}
+			if ($holder =~ /([\dXE]+)/) {
+				$numfill = dec_int($1);
+				if ($holder =~ /([^\d])/) {
+					$spacer = $1;
+				}
+			}
+			if ($curr eq 'd') {
+				$numfill -= length($date);
+				$spacer x= $numfill;
+				$date =~ s/($date)/$spacer$1/ if $leftjust == 0;
+				$date =~ s/($date)/$1$spacer/ if $leftjust == 1;
+			}
+			if ($curr eq 't') {
+				$numfill -= length($time);
+				$spacer x= $numfill;
+				$time =~ s/($time)/$spacer$1/ if $leftjust == 0;
+				$time =~ s/($time)/$1$spacer/ if $leftjust == 1;
+			}
+			if ($curr eq 'n') {
+				$numfill -= length($name);
+				$spacer x= $numfill;
+				$name =~ s/($name)/$spacer$1/ if $leftjust == 0;
+				$name =~ s/($name)/$1$spacer/ if $leftjust == 1;
+			}
+		}
+		$var =~ s/$whole//;
+	}
+	$string =~ s/%.*?d/$date/;
+	$string =~ s/%.*?t/$time/;
+	$string =~ s/%.*?n/$name/;
+	return $string;
+}
+
 # formats the requeste dates for plain text output; takes an
 # array of the dates, returns nothing
 
@@ -670,22 +733,22 @@ sub text_format(\@)
 	my $lastdate = "";		# variable to prevent duplicate 
 									# printing of dates
 	my $outline = "";
+	my $date = "";
+	my $time = "";
+	my $name = "";
 
 	for (my $i = 0; $i <= $#{$_[0]}; $i++) {
 		for (my $j = 0; $j <= $#layouts; $j++) {
 			if (grep(/text, $_[0][$i][3]/,$layouts[$j])) {
 				($outline) = ($layouts[$j] =~ /\w+,\s*\w+,\s*(.*)$/);
-				#print "$outline\n";
-				$outline =~ s/%d/$_[0][$i][4]/;
-				$outline =~ s/%t/$_[0][$i][1]/;
-				$outline =~ s/%n/$_[0][$i][2]/;
+				$outline = form_string($outline,$i,$_[0][$i][4],$_[0][$i][1],
+					$_[0][$i][2]);
+#				$outline =~ s/%.*?d/$_[0][$i][4]/;
+#				$outline =~ s/%.*?t/$_[0][$i][1]/;
+#				$outline =~ s/%.*?n/$_[0][$i][2]/;
 				print unbackslash($outline);
 			}
 		}
-#		printf "%-14s\n",$_[0][$i][4] if $_[0][$i][4] != $lastdate;
-#		printf "\t\t%-14s",$_[0][$i][1];
-#		printf "%-14s\n",$_[0][$i][2];
-#		$lastdate = $_[0][$i][4];
 	}
 }
 
