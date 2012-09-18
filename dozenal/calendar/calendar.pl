@@ -718,10 +718,10 @@ sub form_string($$$$$)
 			}
 		}
 		$var =~ s/$whole//;
+		$string =~ s/%.*?$curr/$date/ if $curr eq 'd';
+		$string =~ s/%.*?$curr/$time/ if $curr eq 't';
+		$string =~ s/%.*?$curr/$name/ if $curr eq 'n';
 	}
-	$string =~ s/%.*?d/$date/;
-	$string =~ s/%.*?t/$time/;
-	$string =~ s/%.*?n/$name/;
 	return $string;
 }
 
