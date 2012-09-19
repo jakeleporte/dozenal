@@ -7,7 +7,6 @@
 
 use strict;
 use POSIX;
-use Data::Dumper::Simple;
 use String::Escape qw (unbackslash);
 use Time::Piece;
 use Date::Day;
@@ -134,9 +133,6 @@ my @eventlist;
 # criteria
 
 my @callist;
-my @monthlist;
-my @weeklist;
-my @daylist;
 
 # define date format default; command line option or file
 # option can change
@@ -148,7 +144,9 @@ my $dateformat = "%d %b %Y";
 
 my @layouts = (
 	"text, event, %d: %t: %n\\n",
-	"text, special, %d: %n\\n"
+	"text, special, %d: %n\\n",
+	"html, event, <tr><td><strong>%d</strong></td><td><em>%t</em></td><td>%n</td></tr>\n",
+	"html, special, <tr><td><strong>%d</strong></td><td colspan=\"2\"><em>%n</em></td></tr>\n"
 );
 
 # option handling from config file; takes the line involved
@@ -158,15 +156,23 @@ my @layouts = (
 sub config_opt($)
 {
 	my $var; my $ovar; my $finish;
+	my $flag = 0;							# set to 1 if exists
+	my $i;
 
 	if ($_ =~ /^%DATEFORM/) {
 		($dateformat) = ($_ =~ /^%DATEFORM:\s(.*)\s$/);
 	} elsif ($_ =~ /^%FORM_([A-Z]+)\s+(\w+)\s+"(.*)"$/) {
 		$var = lc($1); $ovar = $2; $finish = $3;
-		for (my $i = 0; $i <= $#layouts; $i++) {
+		for ($i = 0; $i <= $#layouts; $i++) {
 			if ($layouts[$i] =~ /$var, $ovar/) {
 				$layouts[$i] =~ s/($var, $ovar,\s*).*/$1 $finish/;
+				$flag = 1;
 			}
+		}
+		if ($flag == 0) {
+			($var,$ovar,$finish) =~ /^%FORM_([A-Z]+)\s+(\w+)\s+"(.*)"$/;
+			$var = lc($var);
+			push(@layouts,"$var, "."$ovar, "."$finish");
 		}
 	}
 }
@@ -178,7 +184,7 @@ sub popsched(*)
 	my $i = 0;
 	my $j = 0;
 	my $k = 0;
-	my @row = ();			# placeholder to feed into @calndar
+	my @row = ();			# placeholder to feed into @calendar
 	open($calfile,"<","$_[0]") || die $!;
 	while (<$calfile>) {
 		if ($_ =~ /^%/) {
@@ -520,17 +526,6 @@ sub parse_input_file()
 			push @{$eventlist[$j++]},@row if !grep(/$var/,@exceptions);
 		}
 	}
-#	for (my $i = 0; $i <= $#eventlist; $i++) {
-#		for ($j = 0; $j < 4; $j++) {
-#			print $eventlist[$i][$j]."\n";
-#		}
-#	}
-#	my @parseddate;
-#	for (my $i = 0; $i <= $#eventlist; $i++) {
-#		@parseddate = jultogreg($eventlist[$i][0]);
-#		print day($parseddate[1],$parseddate[2],$parseddate[0]);
-#		print " $parseddate[0] $parseddate[1] $parseddate[2]\n";
-#	}
 }
 
 # takes day, month, and year; returns a string with the
@@ -654,11 +649,6 @@ sub parse_it()
 	$month = dec_int($month);
 	$day = dec_int($day);
 	@resarray = prod_cal($year,$month,$day);
-#	for (my $i = 0; $i <= $#resarray; $i++) {
-#		for (my $j = 0; $j < 5; $j++) {
-#			print "$resarray[$i][$j] ";
-#		}
-#	}
 	return @resarray;
 }
 
@@ -682,11 +672,10 @@ sub form_string($$$$$)
 	my $whole;
 	my $leftjust = 0;
 
-	my $var = $string;
-	while ($var =~ /(%.*?([dnt]))/) {
+	while ($string =~ /(%.*?([dnt]))/) {
 		$curr = $2;
 		$whole = $1;
-		if ($var =~ /%(.*?)$curr/) {
+		if ($string =~ /%(.*?)$curr/) {
 			$holder = $1;
 			if ($holder =~ /-/) {
 				$leftjust = 1;
@@ -717,7 +706,6 @@ sub form_string($$$$$)
 				$name =~ s/($name)/$1$spacer/ if $leftjust == 1;
 			}
 		}
-		$var =~ s/$whole//;
 		$string =~ s/%.*?$curr/$date/ if $curr eq 'd';
 		$string =~ s/%.*?$curr/$time/ if $curr eq 't';
 		$string =~ s/%.*?$curr/$name/ if $curr eq 'n';
@@ -728,7 +716,7 @@ sub form_string($$$$$)
 # formats the requeste dates for plain text output; takes an
 # array of the dates, returns nothing
 
-sub text_format(\@)
+sub out_format(\@$)
 {
 	my $lastdate = "";		# variable to prevent duplicate 
 									# printing of dates
@@ -739,13 +727,10 @@ sub text_format(\@)
 
 	for (my $i = 0; $i <= $#{$_[0]}; $i++) {
 		for (my $j = 0; $j <= $#layouts; $j++) {
-			if (grep(/text, $_[0][$i][3]/,$layouts[$j])) {
+			if (grep(/$_[1], $_[0][$i][3]/,$layouts[$j])) {
 				($outline) = ($layouts[$j] =~ /\w+,\s*\w+,\s*(.*)$/);
 				$outline = form_string($outline,$i,$_[0][$i][4],$_[0][$i][1],
 					$_[0][$i][2]);
-#				$outline =~ s/%.*?d/$_[0][$i][4]/;
-#				$outline =~ s/%.*?t/$_[0][$i][1]/;
-#				$outline =~ s/%.*?n/$_[0][$i][2]/;
 				print unbackslash($outline);
 			}
 		}
@@ -761,12 +746,18 @@ sub output(\@)
 	my $format = "text";
 
 	$format = $opt_o if ($opt_o);
-	if ($format eq "text") {
-		text_format(@{$_[0]});
+	if ($format eq "html") {
+		print "<html><body><table border=\"2\">\n";
+	}
+	if (grep(/$format/,@layouts)) {
+		out_format(@{$_[0]},$format);
 	} else {
 		print STDERR "dozcal error:  the output format ";
 		print STDERR "\"$format\" is not recognized\n";
 		exit $BAD_OUTPUT_FORMAT;
+	}
+	if ($format eq "html") {
+		print "</table></body></html>";
 	}
 }
 
