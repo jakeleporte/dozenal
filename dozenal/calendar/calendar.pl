@@ -14,8 +14,8 @@ use Date::Easter;
 use Date::Pcalc qw(Add_Delta_Days
 	Date_to_Days leap_year);
 use Getopt::Std;
-getopts('f:d:o:');
-our($opt_f,$opt_d,$opt_o);
+getopts('f:d:o:thc');
+our($opt_f,$opt_d,$opt_o,$opt_t,$opt_h,$opt_c);
 
 # define our exit codes
 
@@ -135,18 +135,20 @@ my @eventlist;
 my @callist;
 
 # define date format default; command line option or file
-# option can change
+# option can change; also define output format, defaults to
+# "text"
 
 my $dateformat = "%d %b %Y";
+my $format = "text";
 
 # define layouts; an array of strings; each string
 # is formatted "output-type, type, formatstring"
 
 my @layouts = (
 	"text, event, %d: %t: %n\\n",
-	"text, special, %d: %n\\n",
-	"html, event, <tr><td><strong>%d</strong></td><td><em>%t</em></td><td>%n</td></tr>\n",
-	"html, special, <tr><td><strong>%d</strong></td><td colspan=\"2\"><em>%n</em></td></tr>\n"
+	"text, aspecial, %d: %n\\n",
+	"html, event, %d <table><col width=\"150\" /><col width=\"300\" /><tr><td align=\"right\">%Xt</td><td>%n</td></tr></table>",
+	"html, aspecial, %d <center><em>%n</em></center>"
 );
 
 # option handling from config file; takes the line involved
@@ -158,8 +160,7 @@ sub config_opt($)
 	my $var; my $ovar; my $finish;
 	my $flag = 0;							# set to 1 if exists
 	my $i;
-
-	if ($_ =~ /^%DATEFORM/) {
+if ($_ =~ /^%DATEFORM/) {
 		($dateformat) = ($_ =~ /^%DATEFORM:\s(.*)\s$/);
 	} elsif ($_ =~ /^%FORM_([A-Z]+)\s+(\w+)\s+"(.*)"$/) {
 		$var = lc($1); $ovar = $2; $finish = $3;
@@ -557,7 +558,9 @@ sub prod_cal($$$)
 	my $j;
 	my $k;
 	my @parsed;
+	my @holder;
 
+	# fill the empty dates of the array
 	for ($i = 0; $i <= $#eventlist; ++$i) {
 		@parsed = jultogreg($eventlist[$i][0]);
 		if ($parsed[0] == $_[0]) {
@@ -683,8 +686,10 @@ sub form_string($$$$$)
 			}
 			if ($holder =~ /([\dXE]+)/) {
 				$numfill = dec_int($1);
-				if ($holder =~ /([^\d])/) {
+				if ($holder =~ /([^\dXE])/) {
 					$spacer = $1;
+				} else {
+					$spacer = " ";
 				}
 			}
 			if ($curr eq 'd') {
@@ -724,6 +729,7 @@ sub out_format(\@$)
 	my $date = "";
 	my $time = "";
 	my $name = "";
+	my @datearray;
 
 	for (my $i = 0; $i <= $#{$_[0]}; $i++) {
 		for (my $j = 0; $j <= $#layouts; $j++) {
@@ -731,50 +737,141 @@ sub out_format(\@$)
 				($outline) = ($layouts[$j] =~ /\w+,\s*\w+,\s*(.*)$/);
 				$outline = form_string($outline,$i,$_[0][$i][4],$_[0][$i][1],
 					$_[0][$i][2]);
-				print unbackslash($outline);
+				if ($opt_t) {
+					$outline =~ s/\\n$/ %$_[0][$i][3]%\\n/ 
+						if ($outline =~ /\\n$/);
+					$outline =~ s/$/ %$_[0][$i][3]%/ 
+						if ($outline !~ /\\n$/);
+				}
+				$outline = unbackslash($outline);
+				push(@datearray,$outline);
 			}
 		}
 	}
+	return @datearray;
 }
 
 # checks for a requested output format (default is text);
 # then calls the appropriate function to crank it out; takes
-# the array of relevant dates, returns nothing
+# the array of relevant dates, returns the array of
+# formatted date strings
 
 sub output(\@)
 {
-	my $format = "text";
+	my @datearray;
 
 	$format = $opt_o if ($opt_o);
-	if ($format eq "html") {
-		print "<html><body><table border=\"2\">\n";
-	}
 	if (grep(/$format/,@layouts)) {
-		out_format(@{$_[0]},$format);
+		@datearray = out_format(@{$_[0]},$format);
 	} else {
 		print STDERR "dozcal error:  the output format ";
 		print STDERR "\"$format\" is not recognized\n";
 		exit $BAD_OUTPUT_FORMAT;
 	}
-	if ($format eq "html") {
-		print "</table></body></html>";
+	return @datearray;
+}
+
+# do the output in HTML format
+
+sub out_html(\@)
+{
+	my $i;
+	my @datearray = @{$_[0]};
+	my $lastdate;
+	my $holder;
+
+	print "<html><body><table>";
+	foreach my $var (@datearray) {
+		($holder) = ($var =~ /^(.*?)</);
+		if ($holder ne $lastdate) {
+			$lastdate = $holder;
+			$var =~ s/$holder\s*//;
+			print "</table>\n\n<table width=\"50%\" border=\"2\">";
+			print "<tr>\n\t<td colspan=\"2\"> ";
+			print "<center><strong>$holder</strong></center></td>\n</tr>";
+			print "<tr>\n\t<td>$var</td>\n</tr>\n";
+		} else {
+			$var =~ s/$holder\s*//;
+			print "<tr>\n\t<td>$var</td>\n</tr>\n";
+		}
+	}
+	print "</table>";
+	print "</body></html>";
+}
+
+# fills up the dates in the array which don't have anything;
+# this makes it easier to produce formatted calendars; not
+# called by default in plain text; takes the date array,
+# returns the new date array
+
+sub fill_up(\@)
+{
+	my @datearray = @{$_[0]};
+	my $i = $#datearray;
+
+	for (my $i = 1; $i <= $#datearray; $i++) {
+		if (($datearray[$i][0] - $datearray[$i-1][0]) > 1) {
+			splice(@datearray,$i,0,[($datearray[$i-1][0]+1)]);
+		} else {
+		}
+	}
+	return @datearray;
+}
+
+# do the output in text format
+
+sub out_text(\@)
+{
+	foreach my $var (@{$_[0]}) {
+		print $var;
 	}
 }
 
-# a function for testing the rest
+# loads the holy days of the Catholic calendar into the
+# array if requested; loads it into @calendar
+# assumes it's working with the year of the first date in
+# the array; takes no args, returns nothing
 
-sub test_func()
+sub load_holydays()
 {
-	my @testarray;
+	my $year; my $month; my $day;
+	my $oyear; my $omonth; my $oday;
 	my $i;
 	my $j;
+	my $t = localtime();
+	my @row;
 
-	@testarray = prod_cal(2011,2,0);
-	for (my $i = 0; $i <= $#testarray; $i++) {
-		for ($j = 0; $j < 5; $j++) {
-			print "$testarray[$i][$j] ";
-		}
+	if ($opt_d =~ /([\dXE]{4,4})/) {
+		$year = dec_int($1);
+	} else {
+		$year = $t->year;
 	}
+	($month,$day) = gregorian_easter($year);
+	$month = doz_int($month);
+	$day = doz_int($day);
+	$year = doz_int($year);
+	@{$calendar[$#calendar+1]} = 
+		("Easter","$year-$month-$day","","","aspecial");
+	($oyear,$omonth,$oday) = 
+		Add_Delta_Days(dec_int($year),dec_int($month),dec_int($day),7);
+	@{$calendar[$#calendar+1]} = 
+		("Low Sunday",doz_int($oyear)."-".doz_int($omonth).
+		"-".doz_int($oday),"","","aspecial");
+	($oyear,$omonth,$oday) = 
+		Add_Delta_Days(dec_int($year),dec_int($month),dec_int($day),14);
+	@{$calendar[$#calendar+1]} = 
+		("Second Sunday of Easter",doz_int($oyear)."-".doz_int($omonth).
+		"-".doz_int($oday),"","","aspecial");
+	($oyear,$omonth,$oday) = 
+		Add_Delta_Days(dec_int($year),dec_int($month),dec_int($day),21);
+	@{$calendar[$#calendar+1]} = 
+		("Third Sunday of Easter",doz_int($oyear)."-".doz_int($omonth).
+		"-".doz_int($oday),"","","aspecial");
+	($oyear,$omonth,$oday) = 
+		Add_Delta_Days(dec_int($year),dec_int($month),dec_int($day),28);
+	@{$calendar[$#calendar+1]} = 
+		("Fourth Sunday of Easter",doz_int($oyear)."-".doz_int($omonth).
+		"-".doz_int($oday),"","","aspecial");
 }
 
 # we all know what this one's for
@@ -783,12 +880,21 @@ sub main()
 {
 	my @datearray;
 
+	$format = "html" if ($opt_h);
 	use_input_file();
+	load_holydays() if ($opt_c);
 	parse_input_file();
+	@eventlist = sort { $a->[0] <=> $b->[0] || $a->[3] cmp
+		$b->[3] } @eventlist;
+	@eventlist = fill_up(@eventlist) if ($format ne "text");
 	@datearray = parse_it();
-	@datearray = sort { $a->[0] <=> $b->[0] } @datearray;
-	output(@datearray);
-#	test_func();
+	@datearray = output(@datearray);
+### WORKS:  only commented out to develop religious days code ###
+	if ($opt_h) {
+		out_html(@datearray);
+	} else {
+		out_text(@datearray);
+	}
 }
 
 main();
