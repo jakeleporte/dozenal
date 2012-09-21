@@ -9,13 +9,14 @@ use strict;
 use POSIX;
 use String::Escape qw (unbackslash);
 use Time::Piece;
+#use List::MoreUtils;
 use Date::Day;
 use Date::Easter;
 use Date::Pcalc qw(Add_Delta_Days
 	Date_to_Days leap_year);
 use Getopt::Std;
-getopts('f:d:o:thc');
-our($opt_f,$opt_d,$opt_o,$opt_t,$opt_h,$opt_c);
+getopts('f:d:o:thcl');
+our($opt_f,$opt_d,$opt_o,$opt_t,$opt_h,$opt_c,$opt_l);
 
 # define our exit codes
 
@@ -145,10 +146,12 @@ my $format = "text";
 # is formatted "output-type, type, formatstring"
 
 my @layouts = (
+	"text, blank, %d\\n",
 	"text, event, %d: %t: %n\\n",
 	"text, aspecial, %d: %n\\n",
+	"html, blank, %d",
 	"html, event, %d <table><col width=\"150\" /><col width=\"300\" /><tr><td align=\"right\">%Xt</td><td>%n</td></tr></table>",
-	"html, aspecial, %d <center><em>%n</em></center>"
+	"html, aspecial, %d <center><em>%n</em></center>",
 );
 
 # option handling from config file; takes the line involved
@@ -780,9 +783,9 @@ sub out_html(\@)
 	my $lastdate;
 	my $holder;
 
-	print "<html><body><table>";
+	print "<html><body><table width=\"50%\" border=\"2\">";
 	foreach my $var (@datearray) {
-		($holder) = ($var =~ /^(.*?)</);
+		($holder,$i) = ($var =~ /^(.*?)(<|$)/);
 		if ($holder ne $lastdate) {
 			$lastdate = $holder;
 			$var =~ s/$holder\s*//;
@@ -807,15 +810,18 @@ sub out_html(\@)
 sub fill_up(\@)
 {
 	my @datearray = @{$_[0]};
-	my $i = $#datearray;
+	my $count = $#datearray;
+	my @newarray;
 
-	for (my $i = 1; $i <= $#datearray; $i++) {
-		if (($datearray[$i][0] - $datearray[$i-1][0]) > 1) {
-			splice(@datearray,$i,0,[($datearray[$i-1][0]+1)]);
-		} else {
+	my $pastdate = $datearray[0][0];
+	foreach my $var (@datearray) {
+		while (($var->[0] - $pastdate) > 1) {
+			push(@newarray,[(++$pastdate,"","","blank")]);
 		}
+		push(@newarray,$var);
+		$pastdate = $var->[0];
 	}
-	return @datearray;
+	return @newarray;
 }
 
 # do the output in text format
@@ -825,6 +831,52 @@ sub out_text(\@)
 	foreach my $var (@{$_[0]}) {
 		print $var;
 	}
+}
+
+# do the output in latex format
+
+sub out_latex(\@)
+{
+	my $preamble = <<END;
+		\\documentclass{minimal}
+		\\usepackage[T1]{fontenc}
+		\\usepackage{lmodern}
+		\\usepackage{array}
+		\\usepackage{calc}
+		\\usepackage{graphicx}
+		\\setlength\\arrayrulewidth{.4pt}
+		\\setlength\\extrarowheight{6pt}
+		\\usepackage[paperwidth=8.5in,paperheight=11in,width=8in,height=10in,bottom=0.5in]{geometry}
+		\\def\\Biggie{\\fontsize{17pt}{19pt}\\selectfont}
+		\\def\\daysty{\\centering\\Biggie\\scshape}
+		\\def\\numsty{\\fontsize{14pt}{16pt}\\selectfont}
+		\\def\\feaststy#1{\\vbox{\\centering\\scshape\\fontsize{11pt}{12pt}\\selectfont#1}}
+		\\def\\halffeast#1{\\vbox{\\centering\\scshape\\fontsize{10pt}{11pt}\\selectfont#1}}
+		\\def\\classsty#1{\\vspace{-0.5em}\\vbox{\\centering\\scshape\\fontsize{9pt}{10pt}\\selectfont#1}}
+		\\def\\halfclass#1{\\vspace{\\fill}\\scshape\\fontsize{8pt}{10pt}\\selectfont#1}
+		\\def\\commsty#1{\\vskip-.5em\\vbox{\\centering\\upshape\\fontsize{8pt}{9pt}\\selectfont#1}}
+		\\def\\halfcomm#1{\\upshape\\fontsize{9pt}{10pt}\\selectfont#1}
+		\\def\\colorsty#1{\\vbox to\\fill{\\vfill\\hbox to\\linewidth{\\hfill\\itshape\\fontsize{8pt}{10pt}\\selectfont#1\\hfill}}}
+		\\def\\halfcolor#1{\\itshape\\fontsize{8pt}{10pt}\\selectfont#1}
+		\\def\\ls{\\hskip0.2em}
+		\\begin{document}
+		\\newlength\\daywidth
+		\\setlength{\\daywidth}{10in/7 - 3.19986pt/7}
+		\\newlength\\boxwidth
+		\\setlength{\\boxwidth}{10in/7 - 2pt}
+		\\newlength\\dayheight
+		\\setlength{\\dayheight}{7in/7}
+		\\setlength\\parindent{0em}
+END
+	print $preamble;
+	my $day;
+	my $month;
+	my $year;
+	my @datearray = @{$_[0]};
+	my @weekdays = qw( Sun Mon Tue Wed Thu Fri Sat );
+	my $wday;
+	$wday = lc(day($month,$day,$year));
+	print "\\end{document}";
 }
 
 # loads the holy days of the Catholic calendar into the
@@ -892,6 +944,8 @@ sub main()
 ### WORKS:  only commented out to develop religious days code ###
 	if ($opt_h) {
 		out_html(@datearray);
+	} elsif ($opt_l) {
+		out_latex(@datearray);
 	} else {
 		out_text(@datearray);
 	}
