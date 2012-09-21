@@ -7,7 +7,7 @@
 
 use strict;
 use POSIX;
-use String::Escape qw (unbackslash);
+use String::Escape qw (unbackslash backslash);
 use Time::Piece;
 #use List::MoreUtils;
 use Date::Day;
@@ -841,42 +841,66 @@ sub out_latex(\@)
 		\\documentclass{minimal}
 		\\usepackage[T1]{fontenc}
 		\\usepackage{lmodern}
+		\\usepackage{booktabs}
+		\\usepackage{supertabular}
 		\\usepackage{array}
 		\\usepackage{calc}
 		\\usepackage{graphicx}
 		\\setlength\\arrayrulewidth{.4pt}
 		\\setlength\\extrarowheight{6pt}
-		\\usepackage[paperwidth=8.5in,paperheight=11in,width=8in,height=10in,bottom=0.5in]{geometry}
-		\\def\\Biggie{\\fontsize{17pt}{19pt}\\selectfont}
-		\\def\\daysty{\\centering\\Biggie\\scshape}
-		\\def\\numsty{\\fontsize{14pt}{16pt}\\selectfont}
-		\\def\\feaststy#1{\\vbox{\\centering\\scshape\\fontsize{11pt}{12pt}\\selectfont#1}}
-		\\def\\halffeast#1{\\vbox{\\centering\\scshape\\fontsize{10pt}{11pt}\\selectfont#1}}
-		\\def\\classsty#1{\\vspace{-0.5em}\\vbox{\\centering\\scshape\\fontsize{9pt}{10pt}\\selectfont#1}}
-		\\def\\halfclass#1{\\vspace{\\fill}\\scshape\\fontsize{8pt}{10pt}\\selectfont#1}
-		\\def\\commsty#1{\\vskip-.5em\\vbox{\\centering\\upshape\\fontsize{8pt}{9pt}\\selectfont#1}}
-		\\def\\halfcomm#1{\\upshape\\fontsize{9pt}{10pt}\\selectfont#1}
-		\\def\\colorsty#1{\\vbox to\\fill{\\vfill\\hbox to\\linewidth{\\hfill\\itshape\\fontsize{8pt}{10pt}\\selectfont#1\\hfill}}}
-		\\def\\halfcolor#1{\\itshape\\fontsize{8pt}{10pt}\\selectfont#1}
-		\\def\\ls{\\hskip0.2em}
-		\\begin{document}
-		\\newlength\\daywidth
-		\\setlength{\\daywidth}{10in/7 - 3.19986pt/7}
-		\\newlength\\boxwidth
-		\\setlength{\\boxwidth}{10in/7 - 2pt}
-		\\newlength\\dayheight
-		\\setlength{\\dayheight}{7in/7}
+		\\usepackage[paperwidth=11in,paperheight=8.5in,width=10in,height=7.5in,bottom=0.5in]{geometry}
 		\\setlength\\parindent{0em}
+		\\begin{document}
 END
 	print $preamble;
-	my $day;
-	my $month;
-	my $year;
+	my $holder;
+	my $lastdate;
+	my $i;
 	my @datearray = @{$_[0]};
-	my @weekdays = qw( Sun Mon Tue Wed Thu Fri Sat );
-	my $wday;
-	$wday = lc(day($month,$day,$year));
-	print "\\end{document}";
+	print "\\begin{supertabular}{cc}";
+	foreach my $var (@datearray) {
+		($holder) = ($var =~ /^(.*?}|$)/);
+		if ($holder ne $lastdate) {
+			$lastdate = $holder;
+			$holder = backslash($holder);
+			$var =~ s/$holder\s*//;
+			$holder = unbackslash($holder);
+			print "\\toprule";
+			print "\\multicolumn{2}{c}{$holder} \\\\\n";
+			print "\\midrule";
+			if ($var =~ /%event%/) {
+				$var =~ s/%event%//;
+				($holder) = ($var =~ /^(.*)&/);
+				$holder = backslash($holder);
+				$var =~ s/$holder//;
+				$var =~ s/&//;
+				$holder = unbackslash($holder);
+				print "$holder & ";
+				print "$var \\\\\n";
+			} else {
+				$var =~ s/%.*%//;
+				print "\\multicolumn{2}{c}{$var} \\\\\n";
+			}
+		} else {
+			$holder = backslash($holder);
+			$var =~ s/$holder//;
+			$holder = unbackslash($holder);
+			if ($var =~ /%event%/) {
+				$var =~ s/%event%//;
+				($holder) = ($var =~ /^(.*)&/);
+				$holder = backslash($holder);
+				$var =~ s/$holder//;
+				$var =~ s/&//;
+				$holder = unbackslash($holder);
+				print "$holder & ";
+				print "$var \\\\\n";
+			} else {
+				$var =~ s/%.*%//;
+				print "\\multicolumn{2}{c}{$var} \\\\\n";
+			}
+		}
+	}
+	print "\\end{supertabular}\n\\end{document}";
 }
 
 # loads the holy days of the Catholic calendar into the
@@ -933,6 +957,7 @@ sub main()
 	my @datearray;
 
 	$format = "html" if ($opt_h);
+	$format = "latex" if ($opt_l);
 	use_input_file();
 	load_holydays() if ($opt_c);
 	parse_input_file();
@@ -941,7 +966,6 @@ sub main()
 	@eventlist = fill_up(@eventlist) if ($format ne "text");
 	@datearray = parse_it();
 	@datearray = output(@datearray);
-### WORKS:  only commented out to develop religious days code ###
 	if ($opt_h) {
 		out_html(@datearray);
 	} elsif ($opt_l) {

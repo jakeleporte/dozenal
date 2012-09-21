@@ -22,7 +22,8 @@ More for the Day	1E Apr 11E8	10;00--11;00		event
 %DATEFORM:	 %d %B %Y
 #%FORM_TEXT aspecial "%n \n *** %d ***\n"
 #%FORM_TEXT event "%#20d\n%@-20t%_20n\n"
-%FORM_LATEX event "%*20d --- %-^20t%#20n\n"
-%FORM_LATEX aspecial "%*20d ### %n ###\n"
+%FORM_LATEX event "\\textbf{%d} %20t & %-20n"
+%FORM_LATEX aspecial "\\textbf{%d} \\centering\\textit{%n}"
+%FORM_LATEX blank "\\textbf{%d}"
 New Format Test---Event	11E8/4/1E	4;00		event
 New Format Test---Special	11E8/4/1E	14;00		aspecial
