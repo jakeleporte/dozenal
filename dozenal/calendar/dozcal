@@ -963,7 +963,7 @@ sub main()
 	parse_input_file();
 	@eventlist = sort { $a->[0] <=> $b->[0] || $a->[3] cmp
 		$b->[3] } @eventlist;
-	@eventlist = fill_up(@eventlist) if ($format ne "text");
+	@eventlist = fill_up(@eventlist);# if ($format ne "text");
 	@datearray = parse_it();
 	@datearray = output(@datearray);
 	if ($opt_h) {
