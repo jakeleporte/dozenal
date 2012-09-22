@@ -1,0 +1,406 @@
+#!/usr/bin/perl
+#+AMDG  This document was begun on 19 Sept 11E8, the feast
+# of St. Matthew the Apostle and Evangelist, and it is
+# humbly dedicated to him and to the Immaculate Heart of
+# Mary for their prayers, and to the Sacred Heart of Jesus
+# for His mercy.
+
+use strict;
+use Date::Day;
+
+my $boxnum;
+my $ishalfweek;
+my $ishalfday;
+my $daynum;
+my $ishalfday;
+my $ishalfweek;
+my $celltext = "";
+my $numdays;
+my $totalboxes;
+my $startblanks;
+my $endblanks;
+my $calyear;
+my $calmonth;
+my $firstday;
+my @callist;
+
+# sets up the calendar's basic routines
+
+sub preamble()
+{
+	my $preamble;
+	$preamble = <<END;
+		\\documentclass{minimal}
+		\\usepackage{dozenal}
+		\\usepackage[T1]{fontenc}
+		\\usepackage{lmodern}
+		\\usepackage{array}
+		\\usepackage{calc}
+		\\usepackage{graphicx}
+		\\setlength\\arrayrulewidth{.4pt}
+		\\setlength\\extrarowheight{6pt}
+		\\usepackage[paperwidth=11in,paperheight=8.5in,width=10in,height=7.5in,bottom=0.5in]{geometry}
+		\\def\\Biggie{\\fontsize{17pt}{19pt}\\selectfont}
+		\\def\\monthsty#1{\\fontsize{36pt}{40pt}\\textsc{#1}}
+		\\def\\daysty{\\centering\\Biggie\\scshape}
+		\\def\\numsty{\\fontsize{14pt}{16pt}\\selectfont}
+		\\def\\feaststy#1{\\vbox{\\centering\\scshape\\fontsize{11pt}{12pt}\\selectfont#1}}
+		\\def\\halffeast#1{\\vbox{\\centering\\scshape\\fontsize{10pt}{11pt}\\selectfont#1}}
+		\\def\\classsty#1{\\vspace{-0.5em}\\vbox{\\centering\\scshape\\fontsize{9pt}{10pt}\\selectfont#1}}
+		\\def\\halfclass#1{\\vspace{\\fill}\\scshape\\fontsize{8pt}{10pt}\\selectfont#1}
+		\\def\\commsty#1{\\vskip-.5em\\vbox{\\centering\\upshape\\fontsize{8pt}{9pt}\\selectfont#1}}
+		\\def\\halfcomm#1{\\upshape\\fontsize{9pt}{10pt}\\selectfont#1}
+		\\def\\colorsty#1{\\vbox to\\fill{\\vfill\\hbox to\\linewidth{\\hfill\\itshape\\fontsize{8pt}{10pt}\\selectfont#1\\hfill}}}
+		\\def\\halfcolor#1{\\itshape\\fontsize{8pt}{10pt}\\selectfont#1}
+		\\def\\ls{\\hskip0.2em}
+		\\def\\shorts{\\hskip0.1em}
+		\\begin{document}
+		\\newlength\\daywidth
+		\\setlength{\\daywidth}{10in/7 - 3.19986pt/7}
+		\\newlength\\boxwidth
+		\\setlength{\\boxwidth}{10in/7 - 2pt}
+		\\newlength\\dayheight
+		\\setlength{\\dayheight}{6in/7}
+		\\setlength\\parindent{0em}
+END
+	print "$preamble";
+}
+
+# convert numbers to dozenal, LaTeX-ready (e.g., with \\x)
+
+# change to dozenal digits; takes the scalar integer,
+# returnst he dozenal digit character
+
+sub dozenize($)
+{
+	if (($_[0] >= 0) && ($_[0] <= 9)) {
+		return $_[0];
+	} else {
+		return 'X' if ($_[0] == 10);
+		return 'E' if ($_[0] == 11);
+	}
+}
+
+# convert integers from decmial to dozenal; takes the scalar
+# integer, returns the scalar string
+
+sub doz_int($)
+{
+	my $decnum = $_[0];
+	my $holder = 1;
+	my $doznum = "";
+
+	while ($decnum >= 12) {
+		$holder = $decnum % 12;
+		$holder = dozenize($holder);
+		$doznum .= $holder;
+		$decnum /= 12;
+	}
+	$holder = $decnum % 12;
+	$holder = dozenize($holder);
+	$doznum .= $holder;
+	$doznum = scalar reverse($doznum);
+	$doznum =~ s/X/\\x/;
+	$doznum =~ s/E/\\e/;
+	return $doznum;
+}
+
+
+
+# builds the cell text for the large monthlies
+
+sub makecell($)
+{
+	my $numprint = doz_int($_[0]);
+	$celltext = "";
+	$celltext .= "\\hbox to \\linewidth{\\hfil\\numsty $numprint\\ls}";
+}
+
+# determines if it's a half week or not; useful for the
+# large monthlies and the samll thumbnails
+
+sub halfweek()
+{
+	$ishalfday = "no"; $ishalfweek = "no";
+	if ($boxnum == 0) {
+		if ($numdays == 30) {
+			if ($daynum == 23) {
+				$ishalfday = "yes";
+ 				$ishalfweek = "yes";
+			}
+		} elsif ($numdays == 31) {
+			if ($daynum == 23) {
+				$ishalfday = "yes";
+				$ishalfweek = "yes";
+			} elsif ($daynum == 24) {
+				$ishalfday = "yes";
+				$ishalfweek = "yes";
+			}
+		}
+	} elsif ($boxnum == 1) {
+		if ($numdays == 31) {
+			if ($daynum == 24) {
+				$ishalfday = "yes";
+				$ishalfweek = "yes";
+			}
+		} elsif ($numdays == 30) {
+				$ishalfday = "no";
+				$ishalfweek = "no";
+		}
+	} else {
+		$ishalfday = "no";
+		$ishalfweek = "no";
+	}
+}
+
+# prints out the day list on the large monthly calendars
+
+sub daylist($)
+{
+	my $startmonthtable;
+	my @monthnames = qw( January February March April May June July August
+		September October November December );
+	my $monthname = $monthnames[$_[0]-1];
+	$startmonthtable = <<END;
+		\\vspace{-1em}\\centering\\monthsty{$monthname}\\vskip1em\\\\
+		\\noindent
+		\\begin{tabular}{|%
+			>{\\daysty\\vspace{-.5em}}p{\\daywidth}<{\\vspace{-.8em}}|%
+			>{\\daysty\\vspace{-.5em}}p{\\daywidth}<{\\vspace{-.8em}}|%
+			>{\\daysty\\vspace{-.5em}}p{\\daywidth}<{\\vspace{-.8em}}|%
+			>{\\daysty\\vspace{-.5em}}p{\\daywidth}<{\\vspace{-.8em}}|%
+			>{\\daysty\\vspace{-.5em}}p{\\daywidth}<{\\vspace{-.8em}}|%
+			>{\\daysty\\vspace{-.5em}}p{\\daywidth}<{\\vspace{-.8em}}|%
+			>{\\daysty\\vspace{-.5em}}p{\\daywidth}<{\\vspace{-.8em}}|}
+		\\hline
+		Sunday & Monday & Tuesday & Wednesday & Thursday%
+		& Friday & Saturday \\\\
+		\\end{tabular}
+END
+	print "$startmonthtable";
+}
+
+# writes the first week of the month
+
+sub firstweek()
+{
+	my $firstweektable;
+
+	$firstweektable = <<END;
+		\\noindent
+		\\begin{tabular}{|p{\\daywidth}|p{\\daywidth}|%
+		p{\\daywidth}|p{\\daywidth}|p{\\daywidth}|p{\\daywidth}|%
+		p{\\daywidth}|}
+		\\hline
+END
+	print "$firstweektable";
+	$totalboxes = 0; $boxnum = 0; $daynum = 1;
+	if ($startblanks > 0) {
+		print "\\multicolumn{$startblanks}{|c|}{multi!$startblanks} &";
+		$boxnum+=$startblanks;
+		$totalboxes+=$startblanks;
+	}
+	while ($boxnum < 7) {
+		makedaybox();
+		$boxnum+=1;
+		$totalboxes+=1;
+	}
+}
+
+# makes each individual day box for the large monthlies
+
+sub makedaybox()
+{
+	# set up for the double cells
+	halfweek();
+	if ($ishalfweek eq "yes") {
+		if ($ishalfday eq "yes") {
+			makecell($daynum);
+			$celltext =~ s/\\ls/\\shorts/;
+			print "{\\vtop to.3\\dayheight{$celltext}\\vfill}";
+			print "\\vspace{1.5em}\\hbox{\\rule{\\linewidth}{.4pt}}";
+			makecell($daynum+7);
+			$celltext =~ s/\\ls/\\shorts/;
+			print "{\\vtop to.3\\dayheight{$celltext}}";
+			print "&";
+		} elsif ($ishalfday eq "no") {
+			makecell($daynum);
+			$celltext .= "\\rule{0pt}{\\dayheight}";
+			print "\\vtop to\\dayheight{$celltext}";
+			print "&" if $boxnum < 6;
+			print "\\\\" if $boxnum == 6;
+		}
+	} else {
+		makecell($daynum);
+		$celltext .= "\\rule{0pt}{\\dayheight}";
+		print "\\vtop to\\dayheight{$celltext}";
+		print "&" if $boxnum < 6;
+		print "\\\\" if $boxnum == 6;
+	}
+	$daynum+=1;
+}
+
+# builds the weeks other than the first week for the large
+# monthlies
+
+sub nextweeks()
+{
+	print "\\hline";
+	$boxnum = 0;
+	while (($boxnum < 7) && ($daynum <= $numdays)) {
+		makedaybox();
+		$boxnum+=1;
+		$totalboxes+=1;
+	}
+	if ($endblanks > 0 && $daynum > $numdays) {
+		print "\\multicolumn{$endblanks}{c|}{multi!$endblanks}\\\\";
+	}
+}
+
+# preps for the monthlies; takes year, month
+
+sub opening($$)
+{
+	$calmonth = $_[1];
+	$calyear = $_[0];
+	$ishalfday = "no";
+	$ishalfweek = "yes";
+	$firstday = getdaynum($calyear,$calmonth,1);
+	getblanknums();
+}
+
+# returns the weekday number; takes year, month, day
+
+sub getdaynum($$$)
+{
+	my $thefirstday;
+	my $dayname;
+
+	$dayname = &day($_[1],$_[2],$_[0]);
+	if ($dayname eq "SUN") {
+		$thefirstday = 0;
+	} elsif ($dayname eq "MON") {
+		$thefirstday = 1;
+	} elsif ($dayname eq "TUE") {
+		$thefirstday = 2;
+	} elsif ($dayname eq "WED") {
+		$thefirstday = 3;
+	} elsif ($dayname eq "THU") {
+		$thefirstday = 4;
+	} elsif ($dayname eq "FRI") {
+		$thefirstday = 5;
+	} elsif ($dayname eq "SAT") {
+		$thefirstday = 6;
+	} else {
+		print STDERR "ERROR:  Not a real weekday"; die;
+	}
+	return $thefirstday;
+}
+
+# gets the number of blank days in a month, beginning or end
+
+sub getblanknums($)
+{
+	my $monthname;
+
+	$startblanks = $firstday;
+	if ($calmonth == 1) {
+		$numdays = 31;
+		$monthname = "january";
+	} elsif ($calmonth == 2) {
+		$monthname = "february";
+		if (($calyear % 4 == 0) && ($calyear % 100 != 0)) {
+			$numdays = 29;
+		} else {
+			$numdays = 28;
+		}
+	} elsif ($calmonth == 3) {
+		$numdays = 31;
+		$monthname = "march";
+	} elsif ($calmonth == 4) {
+		$numdays = 30;
+		$monthname = "april";
+	} elsif ($calmonth == 5) {
+		$numdays = 31;
+		$monthname = "may";
+	} elsif ($calmonth == 6) {
+		$numdays = 30;
+		$monthname = "june";
+	} elsif ($calmonth == 7) {
+		$numdays = 31;
+		$monthname = "july";
+	} elsif ($calmonth == 8) {
+		$numdays = 31;
+		$monthname = "august";
+	} elsif ($calmonth == 9) {
+		$numdays = 30;
+		$monthname = "september";
+	} elsif ($calmonth == 10) {
+		$numdays = 31;
+		$monthname = "october";
+	} elsif ($calmonth == 11) {
+		$numdays = 30;
+		$monthname = "november";
+	} elsif ($calmonth == 12) {
+		$numdays = 31;
+		$monthname = "december";
+	} else {
+		print STDERR "ERROR:  Not a real month."; die;
+	}
+	$endblanks = 35 - $numdays - $startblanks;
+	if ($endblanks < 0) {
+		$endblanks = 0;
+	}
+}
+
+# prints an individual large monthly; takes year, month
+
+sub run_month($$)
+{
+	my $i;
+
+	opening($_[0],$_[1]);
+	daylist($_[1]);
+	firstweek();
+	for ($i=0; $i < 4; $i++) {
+		nextweeks();
+	}
+	print "\\hline\\end{tabular}\\newpage";
+}
+
+# prints out the full large monthly calendars
+
+sub large_monthlies()
+{
+	my $i;
+	my $j;
+	my $k;
+
+	run_month($calyear-1,12);
+	$calyear++;
+	for ($i = 1; $i < 13; ++$i) {
+		run_month($calyear,$i);
+	}
+	run_month($calyear+1,1);
+	$calyear--;
+}
+
+sub finish()
+{
+	print "\\end{document}";
+}
+
+# we all know what this one is for
+
+sub main()
+{
+	preamble();
+#	@callist = qx(./dozcal -t);
+#FUTURE:  get this from callist
+	$calyear = 2012;
+	large_monthlies();
+
+	finish();
+}
+
+main();
