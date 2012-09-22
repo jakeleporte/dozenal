@@ -33,6 +33,7 @@ sub preamble()
 		\\def\\monthsty#1{\\fontsize{36pt}{40pt}\\textsc{#1}}
 		\\def\\daysty{\\centering\\Biggie\\scshape}
 		\\def\\numsty{\\fontsize{14pt}{16pt}\\selectfont}
+		\\def\\smallnum{\\fontsize{10pt}{10pt}\\selectfont}
 		\\def\\feaststy#1{\\vbox{\\centering\\scshape\\fontsize{11pt}{12pt}\\selectfont#1}}
 		\\def\\halffeast#1{\\vbox{\\centering\\scshape\\fontsize{10pt}{11pt}\\selectfont#1}}
 		\\def\\classsty#1{\\vspace{-0.5em}\\vbox{\\centering\\scshape\\fontsize{9pt}{10pt}\\selectfont#1}}
@@ -46,10 +47,14 @@ sub preamble()
 		\\begin{document}
 		\\newlength\\daywidth
 		\\setlength{\\daywidth}{10in/7 - 3.19986pt/7}
+		\\newlength{\\smallday}
+		\\setlength{\\smallday}{2em}
 		\\newlength\\boxwidth
 		\\setlength{\\boxwidth}{10in/7 - 2pt}
 		\\newlength\\dayheight
 		\\setlength{\\dayheight}{6in/7}
+		\\newlength{\\smallheight}
+		\\selength{\\smallheight}{\\smallday}
 		\\setlength\\parindent{0em}
 END
 	print "$preamble";
@@ -96,13 +101,16 @@ sub doz_int($)
 
 
 
-# builds the cell text for the large monthlies
+# builds the cell text for the large monthlies; takes the
+# day number and the style for the number
 
-sub makecell($)
+sub makecell($$)
 {
+	my $numsty = $_[1];
 	my $numprint = doz_int($_[0]);
+
 	$celltext = "";
-	$celltext .= "\\hbox to \\linewidth{\\hfil\\numsty $numprint\\ls}";
+	$celltext .= "\\hbox to \\linewidth{\\hfil\\$numsty $numprint\\ls}";
 }
 
 # determines if it's a half week or not; useful for the
@@ -176,20 +184,24 @@ END
 }
 
 # writes the first week of the month; takes the number of
-# blank days at the beginning, and the box number
+# blank days at the beginning, the width of a daybox, 
+# the height of a daybox, and the style of the number
 
-sub firstweek($)
+sub firstweek($$$$)
 {
 	my $firstweektable;
 	my $startblanks = $_[0];
 	my $totalboxes;
 	my $boxnum;
+	my $width = $_[1];
+	my $height = $_[2];
+	my $numsty = $_[3];
 
 	$firstweektable = <<END;
 		\\noindent
-		\\begin{tabular}{|p{\\daywidth}|p{\\daywidth}|%
-		p{\\daywidth}|p{\\daywidth}|p{\\daywidth}|p{\\daywidth}|%
-		p{\\daywidth}|}
+		\\begin{tabular}{|p{\\$width}|p{\\$width}|%
+		p{\\$width}|p{\\$width}|p{\\$width}|p{\\$width}|%
+		p{\\$width}|}
 		\\hline
 END
 	print "$firstweektable";
@@ -200,7 +212,7 @@ END
 		$totalboxes+=$startblanks;
 	}
 	while ($boxnum < 7) {
-		makedaybox($boxnum);
+		makedaybox($boxnum,$height,$numsty);
 		$boxnum+=1;
 		$totalboxes+=1;
 	}
@@ -208,37 +220,40 @@ END
 }
 
 # makes each individual day box for the large monthlies;
-# takes the box number
+# takes the box number and the height of a box, and the
+# style for the numbers
 
-sub makedaybox($)
+sub makedaybox($$$)
 {
 	my $ishalfweek;
 	my $ishalfday;
 	my $boxnum = $_[0];
+	my $height = $_[1];
+	my $numsty = $_[2];
 
 	# set up for the double cells
 	($ishalfweek,$ishalfday) = halfweek($boxnum);
 	if ($ishalfweek eq "yes") {
 		if ($ishalfday eq "yes") {
-			makecell($daynum);
+			makecell($daynum,$numsty);
 			$celltext =~ s/\\ls/\\shorts/;
-			print "{\\vtop to.3\\dayheight{$celltext}\\vfill}";
+			print "{\\vtop to.3\\$height {$celltext}\\vfill}";
 			print "\\vspace{1.5em}\\hbox{\\rule{\\linewidth}{.4pt}}";
-			makecell($daynum+7);
+			makecell($daynum+7,$numsty);
 			$celltext =~ s/\\ls/\\shorts/;
-			print "{\\vtop to.3\\dayheight{$celltext}}";
+			print "{\\vtop to.3\\$height {$celltext}}";
 			print "&";
 		} elsif ($ishalfday eq "no") {
-			makecell($daynum);
-			$celltext .= "\\rule{0pt}{\\dayheight}";
-			print "\\vtop to\\dayheight{$celltext}";
+			makecell($daynum,$numsty);
+			$celltext .= "\\rule{0pt}{\\$height}";
+			print "\\vtop to\\$height {$celltext}";
 			print "&" if $boxnum < 6;
 			print "\\\\" if $boxnum == 6;
 		}
 	} else {
-		makecell($daynum);
-		$celltext .= "\\rule{0pt}{\\dayheight}";
-		print "\\vtop to\\dayheight{$celltext}";
+		makecell($daynum,$numsty);
+		$celltext .= "\\rule{0pt}{\\$height}";
+		print "\\vtop to\\$height {$celltext}";
 		print "&" if $boxnum < 6;
 		print "\\\\" if $boxnum == 6;
 	}
@@ -246,19 +261,21 @@ sub makedaybox($)
 }
 
 # builds the weeks other than the first week for the large
-# monthlies; takes the number of blank days at the end and
-# the total boxes
+# monthlies; takes the number of blank days at the end,
+# the total boxes, the daybox height, and the number style
 
-sub nextweeks($$)
+sub nextweeks($$$$)
 {
 	my $endblanks = $_[0];
 	my $totalboxes = $_[1];
+	my $height = $_[2];
+	my $numsty = $_[3];
 	my $boxnum;
 
 	print "\\hline";
 	$boxnum = 0;
 	while (($boxnum < 7) && ($daynum <= $numdays)) {
-		makedaybox($boxnum);
+		makedaybox($boxnum,$height,$numsty);
 		$boxnum+=1;
 		$totalboxes+=1;
 	}
@@ -383,11 +400,11 @@ sub run_month($$)
 
 	($startblanks, $endblanks) = opening($_[0],$_[1]);
 	daylist($_[1]);
-	$totalboxes = firstweek($startblanks);
+	$totalboxes = firstweek($startblanks,"daywidth","dayheight","numsty");
 	for ($i=0; $i < 4; $i++) {
-		nextweeks($endblanks,$totalboxes);
+		nextweeks($endblanks,$totalboxes,"dayheight","numsty");
 	}
-	print "\\hline\\end{tabular}\\newpage";
+	print "\\hline\\end{tabular}";
 }
 
 # prints out the full large monthly calendars; takes year
@@ -400,10 +417,49 @@ sub large_monthlies($)
 	my $calyear = $_[0];
 
 	run_month($calyear-1,12);
+	print "\\newpage";
 	for ($i = 1; $i < 13; ++$i) {
 		run_month($calyear,$i);
+		print "\\newpage";
 	}
 	run_month($calyear+1,1);
+	print "\\newpage";
+}
+
+# create the thumbnail months
+
+sub run_smallmonth($$)
+{
+	my $i;
+	my $startblanks;
+	my $endblanks;
+	my $totalboxes;
+	my $boxnum;
+
+	($startblanks, $endblanks) = opening($_[0],$_[1]);
+	$totalboxes = firstweek($startblanks,"smallday","smallheight","smallnum"); #FFF
+	for ($i=0; $i < 4; $i++) {
+		nextweeks($endblanks,$totalboxes,"smallheight","smallnum");
+	}
+	print "\\hline\\end{tabular}";
+}
+
+# produces the small monthlies that rest in the nooks and
+# crannies of the rest of the calendar; takes the current
+# year
+
+sub small_monthlies($)
+{
+	my $i;
+	my $j;
+	my $k;
+	my $calyear = $_[0];
+	my @nums = qw( negone one two three four five six seven eight
+	nine ten elv unqua unqone );
+
+# cut this out when this works; just for testing purposes
+	print "\\newpage";
+	run_smallmonth($calyear-1,12);
 }
 
 sub finish()
@@ -420,6 +476,7 @@ sub main()
 #FUTURE:  get this from callist
 	my $calyear = 2012;
 	large_monthlies($calyear);
+	small_monthlies($calyear);
 
 	finish();
 }
