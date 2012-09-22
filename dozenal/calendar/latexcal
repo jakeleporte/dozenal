@@ -8,20 +8,9 @@
 use strict;
 use Date::Day;
 
-my $boxnum;
-my $ishalfweek;
-my $ishalfday;
 my $daynum;
-my $ishalfday;
-my $ishalfweek;
 my $celltext = "";
 my $numdays;
-my $totalboxes;
-my $startblanks;
-my $endblanks;
-my $calyear;
-my $calmonth;
-my $firstday;
 my @callist;
 
 # sets up the calendar's basic routines
@@ -117,11 +106,16 @@ sub makecell($)
 }
 
 # determines if it's a half week or not; useful for the
-# large monthlies and the samll thumbnails
+# large monthlies and the samll thumbnails; returns whether
+# it's a half week and whether it's a half day; takes the
+# box number
 
-sub halfweek()
+sub halfweek($)
 {
-	$ishalfday = "no"; $ishalfweek = "no";
+	my $ishalfday = "no";
+	my $ishalfweek = "no";
+	my $boxnum = $_[0];
+
 	if ($boxnum == 0) {
 		if ($numdays == 30) {
 			if ($daynum == 23) {
@@ -151,6 +145,7 @@ sub halfweek()
 		$ishalfday = "no";
 		$ishalfweek = "no";
 	}
+	return ($ishalfweek, $ishalfday);
 }
 
 # prints out the day list on the large monthly calendars
@@ -180,11 +175,15 @@ END
 	print "$startmonthtable";
 }
 
-# writes the first week of the month
+# writes the first week of the month; takes the number of
+# blank days at the beginning, and the box number
 
-sub firstweek()
+sub firstweek($)
 {
 	my $firstweektable;
+	my $startblanks = $_[0];
+	my $totalboxes;
+	my $boxnum;
 
 	$firstweektable = <<END;
 		\\noindent
@@ -201,18 +200,24 @@ END
 		$totalboxes+=$startblanks;
 	}
 	while ($boxnum < 7) {
-		makedaybox();
+		makedaybox($boxnum);
 		$boxnum+=1;
 		$totalboxes+=1;
 	}
+	return $totalboxes;
 }
 
-# makes each individual day box for the large monthlies
+# makes each individual day box for the large monthlies;
+# takes the box number
 
-sub makedaybox()
+sub makedaybox($)
 {
+	my $ishalfweek;
+	my $ishalfday;
+	my $boxnum = $_[0];
+
 	# set up for the double cells
-	halfweek();
+	($ishalfweek,$ishalfday) = halfweek($boxnum);
 	if ($ishalfweek eq "yes") {
 		if ($ishalfday eq "yes") {
 			makecell($daynum);
@@ -241,14 +246,19 @@ sub makedaybox()
 }
 
 # builds the weeks other than the first week for the large
-# monthlies
+# monthlies; takes the number of blank days at the end and
+# the total boxes
 
-sub nextweeks()
+sub nextweeks($$)
 {
+	my $endblanks = $_[0];
+	my $totalboxes = $_[1];
+	my $boxnum;
+
 	print "\\hline";
 	$boxnum = 0;
 	while (($boxnum < 7) && ($daynum <= $numdays)) {
-		makedaybox();
+		makedaybox($boxnum);
 		$boxnum+=1;
 		$totalboxes+=1;
 	}
@@ -257,16 +267,17 @@ sub nextweeks()
 	}
 }
 
-# preps for the monthlies; takes year, month
+# preps for the monthlies; takes year, month; returns the
+# number of blank days at the start and the end
 
 sub opening($$)
 {
-	$calmonth = $_[1];
-	$calyear = $_[0];
-	$ishalfday = "no";
-	$ishalfweek = "yes";
+	my $calmonth = $_[1];
+	my $calyear = $_[0];
+	my $firstday;
+
 	$firstday = getdaynum($calyear,$calmonth,1);
-	getblanknums();
+	return getblanknums($calyear,$calmonth,$firstday);
 }
 
 # returns the weekday number; takes year, month, day
@@ -297,11 +308,17 @@ sub getdaynum($$$)
 	return $thefirstday;
 }
 
-# gets the number of blank days in a month, beginning or end
+# gets the number of blank days in a month, beginning or
+# end; takes year, month, the first day of the month
 
-sub getblanknums($)
+sub getblanknums($$$)
 {
 	my $monthname;
+	my $calyear = $_[0];
+	my $calmonth = $_[1];
+	my $firstday = $_[2];
+	my $startblanks;
+	my $endblanks;
 
 	$startblanks = $firstday;
 	if ($calmonth == 1) {
@@ -351,6 +368,7 @@ sub getblanknums($)
 	if ($endblanks < 0) {
 		$endblanks = 0;
 	}
+	return ($startblanks, $endblanks);
 }
 
 # prints an individual large monthly; takes year, month
@@ -358,31 +376,34 @@ sub getblanknums($)
 sub run_month($$)
 {
 	my $i;
+	my $startblanks;
+	my $endblanks;
+	my $totalboxes;
+	my $boxnum;
 
-	opening($_[0],$_[1]);
+	($startblanks, $endblanks) = opening($_[0],$_[1]);
 	daylist($_[1]);
-	firstweek();
+	$totalboxes = firstweek($startblanks);
 	for ($i=0; $i < 4; $i++) {
-		nextweeks();
+		nextweeks($endblanks,$totalboxes);
 	}
 	print "\\hline\\end{tabular}\\newpage";
 }
 
-# prints out the full large monthly calendars
+# prints out the full large monthly calendars; takes year
 
-sub large_monthlies()
+sub large_monthlies($)
 {
 	my $i;
 	my $j;
 	my $k;
+	my $calyear = $_[0];
 
 	run_month($calyear-1,12);
-	$calyear++;
 	for ($i = 1; $i < 13; ++$i) {
 		run_month($calyear,$i);
 	}
 	run_month($calyear+1,1);
-	$calyear--;
 }
 
 sub finish()
@@ -397,8 +418,8 @@ sub main()
 	preamble();
 #	@callist = qx(./dozcal -t);
 #FUTURE:  get this from callist
-	$calyear = 2012;
-	large_monthlies();
+	my $calyear = 2012;
+	large_monthlies($calyear);
 
 	finish();
 }
