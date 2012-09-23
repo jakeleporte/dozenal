@@ -20,6 +20,7 @@ sub preamble()
 	my $preamble;
 	$preamble = <<END;
 		\\documentclass{minimal}
+		\\pagestyle{plain}
 		\\usepackage{dozenal}
 		\\usepackage[T1]{fontenc}
 		\\usepackage{lmodern}
@@ -28,12 +29,12 @@ sub preamble()
 		\\usepackage{graphicx}
 		\\setlength\\arrayrulewidth{.4pt}
 		\\setlength\\extrarowheight{4pt}
-		\\usepackage[paperwidth=11in,paperheight=8.5in,width=10in,height=7.5in,bottom=0.5in]{geometry}
+		\\usepackage[paperwidth=11in,paperheight=8.5in,width=10in,height=7.5in,bottom=0.5in,footskip=0.1in,foot=10pt]{geometry}
 		\\def\\Biggie{\\fontsize{17pt}{19pt}\\selectfont}
 		\\def\\monthsty#1{\\fontsize{36pt}{40pt}\\textsc{#1}}
 		\\def\\daysty{\\centering\\Biggie\\scshape}
 		\\def\\numsty{\\fontsize{14pt}{16pt}\\selectfont}
-		\\def\\smallnum{\\fontsize{10pt}{10pt}\\selectfont}
+		\\def\\smallnum{\\fontsize{10pt}{10pt}\\selectfont\\bfseries}
 		\\def\\feaststy#1{\\vbox{\\centering\\scshape\\fontsize{11pt}{12pt}\\selectfont#1}}
 		\\def\\halffeast#1{\\vbox{\\centering\\scshape\\fontsize{10pt}{11pt}\\selectfont#1}}
 		\\def\\classsty#1{\\vspace{-0.5em}\\vbox{\\centering\\scshape\\fontsize{9pt}{10pt}\\selectfont#1}}
@@ -201,11 +202,12 @@ sub firstweek($$$$)
 	my $numsty = $_[3];
 
 	if ($numsty eq "smallnum") {
-		print "\\noindent";
+		print "\\renewcommand*{\\arraystretch}{0.5}";
 		print "\\begin{tabular}{p{\\$width}|p{\\$width}|%\n";
 		print "p{\\$width}|p{\\$width}|p{\\$width}|p{\\$width}|%\n";
 		print "p{\\$width}}\n";
 	} else {
+		print "\\renewcommand*{\\arraystretch}{1.2}";
 		print "\\noindent";
 		print "\\begin{tabular}{|p{\\$width}|p{\\$width}|%\n";
 		print "p{\\$width}|p{\\$width}|p{\\$width}|p{\\$width}|%\n";
@@ -454,8 +456,7 @@ sub run_smallmonth($$)
 
 	
 	($startblanks, $endblanks) = opening($_[0],$_[1]);
-	$totalboxes =
-	firstweek($startblanks,"smallday","smallheight","smallnum"); #FFF
+	$totalboxes=firstweek($startblanks,"smallday","smallheight","smallnum");
 	for ($i=0; $i < 4; $i++) {
 		nextweeks($endblanks,$totalboxes,"smallheight","smallnum");
 	}
