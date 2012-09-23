@@ -27,7 +27,7 @@ sub preamble()
 		\\usepackage{calc}
 		\\usepackage{graphicx}
 		\\setlength\\arrayrulewidth{.4pt}
-		\\setlength\\extrarowheight{6pt}
+		\\setlength\\extrarowheight{4pt}
 		\\usepackage[paperwidth=11in,paperheight=8.5in,width=10in,height=7.5in,bottom=0.5in]{geometry}
 		\\def\\Biggie{\\fontsize{17pt}{19pt}\\selectfont}
 		\\def\\monthsty#1{\\fontsize{36pt}{40pt}\\textsc{#1}}
@@ -48,13 +48,13 @@ sub preamble()
 		\\newlength\\daywidth
 		\\setlength{\\daywidth}{10in/7 - 3.19986pt/7}
 		\\newlength{\\smallday}
-		\\setlength{\\smallday}{2em}
+		\\setlength{\\smallday}{1.3em}
 		\\newlength\\boxwidth
 		\\setlength{\\boxwidth}{10in/7 - 2pt}
 		\\newlength\\dayheight
 		\\setlength{\\dayheight}{6in/7}
 		\\newlength{\\smallheight}
-		\\selength{\\smallheight}{\\smallday}
+		\\setlength{\\smallheight}{0em}
 		\\setlength\\parindent{0em}
 END
 	print "$preamble";
@@ -110,7 +110,11 @@ sub makecell($$)
 	my $numprint = doz_int($_[0]);
 
 	$celltext = "";
-	$celltext .= "\\hbox to \\linewidth{\\hfil\\$numsty $numprint\\ls}";
+	if ($numsty eq "smallnum") {
+		$celltext .= "\\hbox to \\linewidth{\\hfil\\$numsty $numprint\\hfil}";
+	} else {
+		$celltext .= "\\hbox to \\linewidth{\\hfil\\$numsty $numprint\\ls}";
+	}
 }
 
 # determines if it's a half week or not; useful for the
@@ -165,7 +169,7 @@ sub daylist($)
 		September October November December );
 	my $monthname = $monthnames[$_[0]-1];
 	$startmonthtable = <<END;
-		\\vspace{-1em}\\centering\\monthsty{$monthname}\\vskip1em\\\\
+		\\vspace{-1em}\\centering\\monthsty{$monthname}\\vskip1em
 		\\noindent
 		\\begin{tabular}{|%
 			>{\\daysty\\vspace{-.5em}}p{\\daywidth}<{\\vspace{-.8em}}|%
@@ -189,7 +193,6 @@ END
 
 sub firstweek($$$$)
 {
-	my $firstweektable;
 	my $startblanks = $_[0];
 	my $totalboxes;
 	my $boxnum;
@@ -197,17 +200,25 @@ sub firstweek($$$$)
 	my $height = $_[2];
 	my $numsty = $_[3];
 
-	$firstweektable = <<END;
-		\\noindent
-		\\begin{tabular}{|p{\\$width}|p{\\$width}|%
-		p{\\$width}|p{\\$width}|p{\\$width}|p{\\$width}|%
-		p{\\$width}|}
-		\\hline
-END
-	print "$firstweektable";
+	if ($numsty eq "smallnum") {
+		print "\\noindent";
+		print "\\begin{tabular}{p{\\$width}|p{\\$width}|%\n";
+		print "p{\\$width}|p{\\$width}|p{\\$width}|p{\\$width}|%\n";
+		print "p{\\$width}}\n";
+	} else {
+		print "\\noindent";
+		print "\\begin{tabular}{|p{\\$width}|p{\\$width}|%\n";
+		print "p{\\$width}|p{\\$width}|p{\\$width}|p{\\$width}|%\n";
+		print "p{\\$width}|}\n";
+		print "\\hline\n";
+	}
 	$totalboxes = 0; $boxnum = 0; $daynum = 1;
 	if ($startblanks > 0) {
-		print "\\multicolumn{$startblanks}{|c|}{multi!$startblanks} &";
+		if ($numsty eq "smallnum") {
+			print "\\multicolumn{$startblanks}{c|}{multi!$startblanks} &";
+		} else {
+			print "\\multicolumn{$startblanks}{|c|}{multi!$startblanks} &";
+		}
 		$boxnum+=$startblanks;
 		$totalboxes+=$startblanks;
 	}
@@ -253,7 +264,8 @@ sub makedaybox($$$)
 	} else {
 		makecell($daynum,$numsty);
 		$celltext .= "\\rule{0pt}{\\$height}";
-		print "\\vtop to\\$height {$celltext}";
+		print "\\vtop to\\$height {$celltext}" if ($numsty ne "smallnum");
+		print "\\vbox to\\$height {$celltext}" if ($numsty eq "smallnum");
 		print "&" if $boxnum < 6;
 		print "\\\\" if $boxnum == 6;
 	}
@@ -280,7 +292,11 @@ sub nextweeks($$$$)
 		$totalboxes+=1;
 	}
 	if ($endblanks > 0 && $daynum > $numdays) {
-		print "\\multicolumn{$endblanks}{c|}{multi!$endblanks}\\\\";
+		if ($numsty eq "smallnum") {
+			print "\\multicolumn{$endblanks}{c}{multi!$endblanks}\\\\";
+		} else {
+			print "\\multicolumn{$endblanks}{c|}{multi!$endblanks}\\\\";
+		}
 	}
 }
 
@@ -436,12 +452,14 @@ sub run_smallmonth($$)
 	my $totalboxes;
 	my $boxnum;
 
+	
 	($startblanks, $endblanks) = opening($_[0],$_[1]);
-	$totalboxes = firstweek($startblanks,"smallday","smallheight","smallnum"); #FFF
+	$totalboxes =
+	firstweek($startblanks,"smallday","smallheight","smallnum"); #FFF
 	for ($i=0; $i < 4; $i++) {
 		nextweeks($endblanks,$totalboxes,"smallheight","smallnum");
 	}
-	print "\\hline\\end{tabular}";
+	print "\\end{tabular}";
 }
 
 # produces the small monthlies that rest in the nooks and
@@ -459,7 +477,13 @@ sub small_monthlies($)
 
 # cut this out when this works; just for testing purposes
 	print "\\newpage";
+	print "\\newsavebox{\\month$nums[$i]}\n";
+	print "\\savebox{\\month$nums[$i]}[\\smallday]{%\n";
+	print "\\setlength\\extrarowheight{0pt}\n";
 	run_smallmonth($calyear-1,12);
+	print "\\setlength\\extrarowheight{4pt}\n";
+	print "} % end savebox month$nums[$i]\n";
+	print "\\usebox{\\month$nums[$i]}";
 }
 
 sub finish()
