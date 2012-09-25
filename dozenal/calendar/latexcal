@@ -12,6 +12,7 @@ my $daynum;
 my $celltext = "";
 my $numdays;
 my @callist;
+my $calyear;
 
 # sets up the calendar's basic routines
 
@@ -29,12 +30,14 @@ sub preamble()
 		\\usepackage{graphicx}
 		\\setlength\\arrayrulewidth{.4pt}
 		\\setlength\\extrarowheight{4pt}
-		\\usepackage[paperwidth=11in,paperheight=8.5in,width=10in,height=7.5in,bottom=0.5in,footskip=0.1in,foot=10pt]{geometry}
+		\\usepackage[twoside,paperwidth=8.5in,paperheight=11in,width=7.5in,height=10in,bottom=0.5in,footskip=0.1in,foot=10pt]{geometry}
+		\\usepackage{lscape}
 		\\def\\Biggie{\\fontsize{17pt}{19pt}\\selectfont}
 		\\def\\monthsty#1{\\fontsize{36pt}{40pt}\\textsc{#1}}
 		\\def\\daysty{\\centering\\Biggie\\scshape}
 		\\def\\numsty{\\fontsize{14pt}{16pt}\\selectfont}
 		\\def\\smallnum{\\fontsize{10pt}{10pt}\\selectfont\\bfseries}
+		\\def\\extsmall{\\fontsize{7pt}{7pt}\\selectfont\\bfseries}
 		\\def\\feaststy#1{\\vbox{\\centering\\scshape\\fontsize{11pt}{12pt}\\selectfont#1}}
 		\\def\\halffeast#1{\\vbox{\\centering\\scshape\\fontsize{10pt}{11pt}\\selectfont#1}}
 		\\def\\classsty#1{\\vspace{-0.5em}\\vbox{\\centering\\scshape\\fontsize{9pt}{10pt}\\selectfont#1}}
@@ -53,12 +56,12 @@ sub preamble()
 		\\newlength\\boxwidth
 		\\setlength{\\boxwidth}{10in/7 - 2pt}
 		\\newlength\\dayheight
-		\\setlength{\\dayheight}{6in/7}
+		\\setlength{\\dayheight}{6.7in/7}
 		\\newlength{\\smallheight}
 		\\setlength{\\smallheight}{0em}
 		\\setlength\\parindent{0em}
 END
-	print "$preamble";
+	print "$preamble\n";
 }
 
 # convert numbers to dozenal, LaTeX-ready (e.g., with \\x)
@@ -112,9 +115,9 @@ sub makecell($$)
 
 	$celltext = "";
 	if ($numsty eq "smallnum") {
-		$celltext .= "\\hbox to \\linewidth{\\hfil\\$numsty $numprint\\hfil}";
+		$celltext .= "\\hbox to \\linewidth{\\hfil\\$numsty $numprint\\hfil}\n";
 	} else {
-		$celltext .= "\\hbox to \\linewidth{\\hfil\\$numsty $numprint\\ls}";
+		$celltext .= "\\hbox to \\linewidth{\\hfil\\$numsty $numprint\\ls}\n";
 	}
 }
 
@@ -170,6 +173,8 @@ sub daylist($)
 		September October November December );
 	my $monthname = $monthnames[$_[0]-1];
 	$startmonthtable = <<END;
+		\\renewcommand*{\\arraystretch}{1.2}
+		\\begin{landscape}
 		\\vspace{-1em}\\centering\\monthsty{$monthname}\\vskip1em
 		\\noindent
 		\\begin{tabular}{|%
@@ -183,16 +188,17 @@ sub daylist($)
 		\\hline
 		Sunday & Monday & Tuesday & Wednesday & Thursday%
 		& Friday & Saturday \\\\
-		\\end{tabular}
+		\\end{tabular}\\vskip-1.4pt
 END
-	print "$startmonthtable";
+	print "$startmonthtable\n";
 }
 
 # writes the first week of the month; takes the number of
 # blank days at the beginning, the width of a daybox, 
-# the height of a daybox, and the style of the number
+# the height of a daybox, the style of the number, the
+# month number, and the year number
 
-sub firstweek($$$$)
+sub firstweek($$$$$$)
 {
 	my $startblanks = $_[0];
 	my $totalboxes;
@@ -200,26 +206,54 @@ sub firstweek($$$$)
 	my $width = $_[1];
 	my $height = $_[2];
 	my $numsty = $_[3];
+	my $multicont = "";
+	my $month = $_[4];
+	my $year = $_[5];
 
 	if ($numsty eq "smallnum") {
-		print "\\renewcommand*{\\arraystretch}{0.5}";
+		print "\\renewcommand*{\\arraystretch}{0.2}\n";
 		print "\\begin{tabular}{p{\\$width}|p{\\$width}|%\n";
 		print "p{\\$width}|p{\\$width}|p{\\$width}|p{\\$width}|%\n";
 		print "p{\\$width}}\n";
 	} else {
-		print "\\renewcommand*{\\arraystretch}{1.2}";
-		print "\\noindent";
+		print "\\renewcommand*{\\arraystretch}{1.2}\n";
+		print "\\noindent\n";
 		print "\\begin{tabular}{|p{\\$width}|p{\\$width}|%\n";
 		print "p{\\$width}|p{\\$width}|p{\\$width}|p{\\$width}|%\n";
 		print "p{\\$width}|}\n";
 		print "\\hline\n";
 	}
 	$totalboxes = 0; $boxnum = 0; $daynum = 1;
+	my @nums = qw( negtwo negone one two three four five six seven eight
+		nine ten elv unqua unqone unqtwo );
 	if ($startblanks > 0) {
 		if ($numsty eq "smallnum") {
-			print "\\multicolumn{$startblanks}{c|}{multi!$startblanks} &";
+			print "\\multicolumn{$startblanks}{c|}{} &\n";
 		} else {
-			print "\\multicolumn{$startblanks}{|c|}{multi!$startblanks} &";
+			my $monthmin;
+			my $monthplus;
+			if (($month == 12) && ($year < $calyear)) {
+				$monthmin = 0;
+				$monthplus = 2;
+			} elsif (($month == 12) && ($year == $calyear)) {
+				$monthmin = 12;
+				$monthplus = 14;
+			} elsif (($month == 1) && ($year > $calyear)) {
+				$monthmin = 13;
+				$monthplus = 15;
+			} else {
+				$monthmin = $month;
+				$monthplus = $month + 2;
+			}
+			if ($startblanks >= 3) {
+				$multicont .= "\\vbox{\\hbox to $startblanks\\daywidth{%\n";
+				$multicont .= "\\hfil\\usebox{\\month$nums[$monthmin]}%\n";
+				$multicont .= 
+					"\\hfil\\usebox{\\month$nums[$monthplus]}\\hfil}}";
+			} elsif ($startblanks <= 2) {
+				$multicont .= "\\usebox{\\month$nums[$monthmin]}";
+			}
+			print "\\multicolumn{$startblanks}{|c|}{$multicont} &\n";
 		}
 		$boxnum+=$startblanks;
 		$totalboxes+=$startblanks;
@@ -250,16 +284,29 @@ sub makedaybox($$$)
 		if ($ishalfday eq "yes") {
 			makecell($daynum,$numsty);
 			$celltext =~ s/\\ls/\\shorts/;
-			print "{\\vtop to.3\\$height {$celltext}\\vfill}";
-			print "\\vspace{1.5em}\\hbox{\\rule{\\linewidth}{.4pt}}";
+			$celltext =~ s/\\smallnum/\\extsmall/;
+			print "{\\vtop to.3\\$height {$celltext}\\vfill}" 
+				if ($numsty ne "smallnum");
+			print "\\vspace{1.3em}\\hbox{\\rule{\\linewidth}{.4pt}}\n"
+				if ($numsty ne "smallnum");
+			print "\\vtop{\\vfill$celltext\\vfill}" 
+				if ($numsty eq "smallnum");
 			makecell($daynum+7,$numsty);
+			$celltext =~
+			s/\\smallnum/\\vskip-1.8em\\hbox{\\rule{\\linewidth}{.4pt}}\\vskip-0.2pt\\hskip1.0pt\\extsmall/;
 			$celltext =~ s/\\ls/\\shorts/;
-			print "{\\vtop to.3\\$height {$celltext}}";
-			print "&";
+			print "{\\vtop to.3\\$height {$celltext}}" 
+				if ($numsty ne "smallnum");
+			print "\\vtop{\\vfill$celltext\\vfill}" 
+				if ($numsty eq "smallnum");
+			print "&\n";
 		} elsif ($ishalfday eq "no") {
 			makecell($daynum,$numsty);
 			$celltext .= "\\rule{0pt}{\\$height}";
-			print "\\vtop to\\$height {$celltext}";
+			print "\\vtop to\\$height {$celltext}" 
+				if ($numsty ne "smallnum");
+			print "\\vbox to\\$height {$celltext}" 
+				if ($numsty eq "smallnum");
 			print "&" if $boxnum < 6;
 			print "\\\\" if $boxnum == 6;
 		}
@@ -276,17 +323,23 @@ sub makedaybox($$$)
 
 # builds the weeks other than the first week for the large
 # monthlies; takes the number of blank days at the end,
-# the total boxes, the daybox height, and the number style
+# the total boxes, the daybox height, the number style, 
+# the current month, and the year
 
-sub nextweeks($$$$)
+sub nextweeks($$$$$$)
 {
 	my $endblanks = $_[0];
 	my $totalboxes = $_[1];
 	my $height = $_[2];
 	my $numsty = $_[3];
 	my $boxnum;
+	my @nums = qw( negtwo negone one two three four five six seven eight
+		nine ten elv unqua unqone unqtwo);
+	my $multicont = "";
+	my $month = $_[4];
+	my $year = $_[5];
 
-	print "\\hline";
+	print "\\hline\n";
 	$boxnum = 0;
 	while (($boxnum < 7) && ($daynum <= $numdays)) {
 		makedaybox($boxnum,$height,$numsty);
@@ -295,9 +348,35 @@ sub nextweeks($$$$)
 	}
 	if ($endblanks > 0 && $daynum > $numdays) {
 		if ($numsty eq "smallnum") {
-			print "\\multicolumn{$endblanks}{c}{multi!$endblanks}\\\\";
+			print "\\multicolumn{$endblanks}{c}{}\\\\\n";
 		} else {
-			print "\\multicolumn{$endblanks}{c|}{multi!$endblanks}\\\\";
+			if ($endblanks > 0) {
+				my $monthmin;
+				my $monthplus;
+				if (($month == 12) && ($year < $calyear)) {
+					print STDERR "$month, $year\n";
+					$monthmin = 0;
+					$monthplus = 2;
+				} elsif (($month == 12) && ($year == $calyear)) {
+					$monthmin = 12;
+					$monthplus = 14;
+				} elsif (($month == 1) && ($year > $calyear)) {
+					$monthmin = 13;
+					$monthplus = 15;
+				} else {
+					$monthmin = $month;
+					$monthplus = $month + 2;
+				}
+				if ($endblanks >= 3) {
+					$multicont .= "\\vbox{\\hbox to $endblanks\\daywidth{%\n";
+					$multicont .= "\\hfil\\usebox{\\month$nums[$monthmin]}%\n";
+					$multicont .= 
+						"\\hfil\\usebox{\\month$nums[$monthplus]}\\hfil}}";
+				} elsif ($endblanks <= 2) {
+					$multicont .= "\\usebox{\\month$nums[$monthplus]}";
+				}
+				print "\\multicolumn{$endblanks}{c|}{$multicont} &\n";
+			}
 		}
 	}
 }
@@ -307,12 +386,12 @@ sub nextweeks($$$$)
 
 sub opening($$)
 {
-	my $calmonth = $_[1];
-	my $calyear = $_[0];
+	my $month = $_[1];
+	my $year = $_[0];
 	my $firstday;
 
-	$firstday = getdaynum($calyear,$calmonth,1);
-	return getblanknums($calyear,$calmonth,$firstday);
+	$firstday = getdaynum($year,$month,1);
+	return getblanknums($year,$month,$firstday);
 }
 
 # returns the weekday number; takes year, month, day
@@ -338,7 +417,7 @@ sub getdaynum($$$)
 	} elsif ($dayname eq "SAT") {
 		$thefirstday = 6;
 	} else {
-		print STDERR "ERROR:  Not a real weekday"; die;
+		print STDERR "ERROR:  Not a real weekday\n"; die;
 	}
 	return $thefirstday;
 }
@@ -349,7 +428,7 @@ sub getdaynum($$$)
 sub getblanknums($$$)
 {
 	my $monthname;
-	my $calyear = $_[0];
+	my $year = $_[0];
 	my $calmonth = $_[1];
 	my $firstday = $_[2];
 	my $startblanks;
@@ -361,7 +440,7 @@ sub getblanknums($$$)
 		$monthname = "january";
 	} elsif ($calmonth == 2) {
 		$monthname = "february";
-		if (($calyear % 4 == 0) && ($calyear % 100 != 0)) {
+		if (($year % 4 == 0) && ($year % 100 != 0)) {
 			$numdays = 29;
 		} else {
 			$numdays = 28;
@@ -397,7 +476,7 @@ sub getblanknums($$$)
 		$numdays = 31;
 		$monthname = "december";
 	} else {
-		print STDERR "ERROR:  Not a real month."; die;
+		print STDERR "ERROR:  Not a real month.\n"; die;
 	}
 	$endblanks = 35 - $numdays - $startblanks;
 	if ($endblanks < 0) {
@@ -415,14 +494,17 @@ sub run_month($$)
 	my $endblanks;
 	my $totalboxes;
 	my $boxnum;
+	my $month = $_[1];
 
 	($startblanks, $endblanks) = opening($_[0],$_[1]);
 	daylist($_[1]);
-	$totalboxes = firstweek($startblanks,"daywidth","dayheight","numsty");
+	$totalboxes = 
+		firstweek($startblanks,"daywidth","dayheight","numsty",$month,$_[0]);
 	for ($i=0; $i < 4; $i++) {
-		nextweeks($endblanks,$totalboxes,"dayheight","numsty");
+		nextweeks($endblanks,$totalboxes,"dayheight","numsty",$month,$_[0]);
 	}
-	print "\\hline\\end{tabular}";
+	print "\\hline\\end{tabular}\n";
+	print "\\end{landscape}\n";
 }
 
 # prints out the full large monthly calendars; takes year
@@ -432,16 +514,16 @@ sub large_monthlies($)
 	my $i;
 	my $j;
 	my $k;
-	my $calyear = $_[0];
+	my $year = $_[0];
 
-	run_month($calyear-1,12);
-	print "\\newpage";
+	run_month($year-1,12);
+	print "\\newpage\n";
 	for ($i = 1; $i < 13; ++$i) {
-		run_month($calyear,$i);
-		print "\\newpage";
+		run_month($year,$i);
+		print "\\newpage\n";
 	}
-	run_month($calyear+1,1);
-	print "\\newpage";
+	run_month($year+1,1);
+	print "\\newpage\n";
 }
 
 # create the thumbnail months
@@ -454,13 +536,14 @@ sub run_smallmonth($$)
 	my $totalboxes;
 	my $boxnum;
 
-	
+
 	($startblanks, $endblanks) = opening($_[0],$_[1]);
-	$totalboxes=firstweek($startblanks,"smallday","smallheight","smallnum");
+	$totalboxes = 
+		firstweek($startblanks,"smallday","smallheight","smallnum",0,$_[0]);
 	for ($i=0; $i < 4; $i++) {
-		nextweeks($endblanks,$totalboxes,"smallheight","smallnum");
+		nextweeks($endblanks,$totalboxes,"smallheight","smallnum",$_[1],$_[0]);
 	}
-	print "\\end{tabular}";
+	print "\\end{tabular}\n";
 }
 
 # produces the small monthlies that rest in the nooks and
@@ -470,26 +553,37 @@ sub run_smallmonth($$)
 sub small_monthlies($)
 {
 	my $i;
-	my $j;
-	my $k;
-	my $calyear = $_[0];
-	my @nums = qw( negone one two three four five six seven eight
-	nine ten elv unqua unqone );
+	my $year = $_[0];
+	my @nums = qw( negtwo negone one two three four five six seven eight
+	nine ten elv unqua unqone unqtwo );
 
-# cut this out when this works; just for testing purposes
-	print "\\newpage";
-	print "\\newsavebox{\\month$nums[$i]}\n";
-	print "\\savebox{\\month$nums[$i]}[\\smallday]{%\n";
-	print "\\setlength\\extrarowheight{0pt}\n";
-	run_smallmonth($calyear-1,12);
-	print "\\setlength\\extrarowheight{4pt}\n";
-	print "} % end savebox month$nums[$i]\n";
-	print "\\usebox{\\month$nums[$i]}";
+	for ($i = 0; $i <= 15; ++$i) {
+		print "\\newsavebox{\\month$nums[$i]}\n";
+		print "\\savebox{\\month$nums[$i]}[\\smallday]{%\n";
+		print "\\vbox to1em{\\hbox{%\n";
+		print "\\setlength\\extrarowheight{0pt}\n";
+		if ($i == 0) {
+			run_smallmonth($year-1,11);
+		} elsif ($i == 1) {
+			run_smallmonth($year-1,12);
+		} elsif ($i == 13) {
+			run_smallmonth($year,12);
+		} elsif ($i == 14) {
+			run_smallmonth($year+1,1);
+		} elsif ($i == 15) {
+			run_smallmonth($year+1,2);
+		} else {
+			run_smallmonth($year,$i-1);
+		}
+		print "\\setlength\\extrarowheight{4pt}\n";
+		print "}} % end the vbox and the hbox\n";
+		print "} % end savebox month$nums[$i]\n";
+	}
 }
 
 sub finish()
 {
-	print "\\end{document}";
+	print "\\end{document}\n";
 }
 
 # we all know what this one is for
@@ -499,9 +593,9 @@ sub main()
 	preamble();
 #	@callist = qx(./dozcal -t);
 #FUTURE:  get this from callist
-	my $calyear = 2012;
-	large_monthlies($calyear);
+	$calyear = 2012;
 	small_monthlies($calyear);
+	large_monthlies($calyear);
 
 	finish();
 }
