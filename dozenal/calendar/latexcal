@@ -7,12 +7,15 @@
 
 use strict;
 use Date::Day;
+use Getopt::Std;
 
 my $daynum;
 my $celltext = "";
 my $numdays;
 my @callist;
 my $calyear;
+getopts('d:');
+our($opt_d);
 
 # sets up the calendar's basic routines
 
@@ -59,9 +62,45 @@ sub preamble()
 		\\setlength{\\dayheight}{6.7in/7}
 		\\newlength{\\smallheight}
 		\\setlength{\\smallheight}{0em}
+		\\def\\specstyl#1{\\centering\\fontsize{10pt}{12pt}\\selectfont\\itshape #1}
 		\\setlength\\parindent{0em}
 END
 	print "$preamble\n";
+}
+
+# convert numbers to decimal
+
+# converts single dozenal digits to decimal values; takes a
+# scalar dozenal digit, returns the scalar decimal digit
+
+sub decimalize($)
+{
+	if ($_[0] eq 'X') {
+		return 10;
+	} elsif ($_[0] eq 'E') {
+		return 11;
+	} else {
+		return $_[0];
+	}
+}
+
+# converts dozenal integers into decimal integers; takes the
+# dozenal integer as a scalar, returns the decimal integer
+# as a scalar
+
+sub dec_int($)
+{
+	my @digits;
+	my $len;
+	my $decnum;
+	my $exp = 0;
+
+	@digits = split(//,$_[0]);
+	$exp = $#digits;
+	foreach my $var (@digits) {
+		$decnum += decimalize($var) * (12**($exp--));
+	}
+	return $decnum;
 }
 
 # convert numbers to dozenal, LaTeX-ready (e.g., with \\x)
@@ -103,10 +142,8 @@ sub doz_int($)
 	return $doznum;
 }
 
-
-
 # builds the cell text for the large monthlies; takes the
-# day number and the style for the number
+# day number, the style for the number, and year, month, day
 
 sub makecell($$)
 {
@@ -259,30 +296,65 @@ sub firstweek($$$$$$)
 		$totalboxes+=$startblanks;
 	}
 	while ($boxnum < 7) {
-		makedaybox($boxnum,$height,$numsty);
+		makedaybox($boxnum,$height,$numsty,$year,$month,$daynum);
 		$boxnum+=1;
 		$totalboxes+=1;
 	}
 	return $totalboxes;
 }
 
+# fills the cell with the specials, etc. for the day from
+# the calendar list; takes year, month, day
+
+sub filldaybox($$$)
+{
+	my $year = $_[0];
+	my $month = $_[1];
+	my $day = $_[2];
+	my $tmpy;
+	my $tmpm;
+	my $tmpd;
+	my $tmp;
+
+#	print STDERR "$year - $month - $day\n" if ($year == 2011);
+#	print STDERR "$year - $month - $day\n";
+	foreach my $var (@callist) {
+		if ($var !~ /%aspecial%/) {
+			next;
+		} else {
+			($tmpy,$tmpm,$tmpd,$tmp) = ($var =~ 
+				/(.*?)\/(.*?)\/(.*?):\s*(.*)$/);
+			$tmp =~ s/%.*%//;
+			$tmp .= "\\linebreak";
+			if (($year == dec_int($tmpy)) && ($month == dec_int($tmpm)) 
+				&& ($day == dec_int($tmpd))) {
+				$celltext .= "\\specstyl{$tmp}\n";
+			}
+		}
+	}
+}
+
 # makes each individual day box for the large monthlies;
 # takes the box number and the height of a box, and the
-# style for the numbers
+# style for the numbers, the year, the month, and the day
 
-sub makedaybox($$$)
+sub makedaybox($$$$$$)
 {
 	my $ishalfweek;
 	my $ishalfday;
 	my $boxnum = $_[0];
 	my $height = $_[1];
 	my $numsty = $_[2];
+	my $year = $_[3];
+	my $month = $_[4];
+	my $day = $_[5];
 
 	# set up for the double cells
 	($ishalfweek,$ishalfday) = halfweek($boxnum);
 	if ($ishalfweek eq "yes") {
 		if ($ishalfday eq "yes") {
 			makecell($daynum,$numsty);
+			filldaybox($year,$month,$day) if $numsty ne "smallnum";
 			$celltext =~ s/\\ls/\\shorts/;
 			$celltext =~ s/\\smallnum/\\extsmall/;
 			print "{\\vtop to.3\\$height {$celltext}\\vfill}" 
@@ -292,6 +364,7 @@ sub makedaybox($$$)
 			print "\\vtop{\\vfill$celltext\\vfill}" 
 				if ($numsty eq "smallnum");
 			makecell($daynum+7,$numsty);
+			filldaybox($year,$month,$day) if $numsty ne "smallnum";
 			$celltext =~
 			s/\\smallnum/\\vskip-1.8em\\hbox{\\rule{\\linewidth}{.4pt}}\\vskip-0.2pt\\hskip1.0pt\\extsmall/;
 			$celltext =~ s/\\ls/\\shorts/;
@@ -302,6 +375,7 @@ sub makedaybox($$$)
 			print "&\n";
 		} elsif ($ishalfday eq "no") {
 			makecell($daynum,$numsty);
+			filldaybox($year,$month,$day) if $numsty ne "smallnum";
 			$celltext .= "\\rule{0pt}{\\$height}";
 			print "\\vtop to\\$height {$celltext}" 
 				if ($numsty ne "smallnum");
@@ -312,6 +386,7 @@ sub makedaybox($$$)
 		}
 	} else {
 		makecell($daynum,$numsty);
+		filldaybox($year,$month,$day) if $numsty ne "smallnum";
 		$celltext .= "\\rule{0pt}{\\$height}";
 		print "\\vtop to\\$height {$celltext}" if ($numsty ne "smallnum");
 		print "\\vbox to\\$height {$celltext}" if ($numsty eq "smallnum");
@@ -342,7 +417,7 @@ sub nextweeks($$$$$$)
 	print "\\hline\n";
 	$boxnum = 0;
 	while (($boxnum < 7) && ($daynum <= $numdays)) {
-		makedaybox($boxnum,$height,$numsty);
+		makedaybox($boxnum,$height,$numsty,$year,$month,$daynum);
 		$boxnum+=1;
 		$totalboxes+=1;
 	}
@@ -354,7 +429,6 @@ sub nextweeks($$$$$$)
 				my $monthmin;
 				my $monthplus;
 				if (($month == 12) && ($year < $calyear)) {
-					print STDERR "$month, $year\n";
 					$monthmin = 0;
 					$monthplus = 2;
 				} elsif (($month == 12) && ($year == $calyear)) {
@@ -539,7 +613,7 @@ sub run_smallmonth($$)
 
 	($startblanks, $endblanks) = opening($_[0],$_[1]);
 	$totalboxes = 
-		firstweek($startblanks,"smallday","smallheight","smallnum",0,$_[0]);
+		firstweek($startblanks,"smallday","smallheight","smallnum",$_[1],$_[0]);
 	for ($i=0; $i < 4; $i++) {
 		nextweeks($endblanks,$totalboxes,"smallheight","smallnum",$_[1],$_[0]);
 	}
@@ -590,13 +664,24 @@ sub finish()
 
 sub main()
 {
+	my $callist;
+	my $date = dec_int($opt_d);
+	my $datemin = doz_int($date - 1);
+	my $dateplus = doz_int($date + 1);
+	my $date = $opt_d;
+	$datemin =~ s/\\x/X/g;
+	$datemin =~ s/\\e/E/g;
+	$dateplus =~ s/\\x/X/g;
+	$dateplus =~ s/\\e/E/g;
+
+	$callist = qx(./dozcal -lt -d$datemin);
+	$callist .= qx(./dozcal -lt -d$date);
+	$callist .= qx(./dozcal -lt -d$dateplus);
+	@callist = split(/\n/,$callist);
 	preamble();
-#	@callist = qx(./dozcal -t);
-#FUTURE:  get this from callist
-	$calyear = 2012;
+	$calyear = dec_int($date);
 	small_monthlies($calyear);
 	large_monthlies($calyear);
-
 	finish();
 }
 

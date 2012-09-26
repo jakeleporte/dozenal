@@ -152,6 +152,9 @@ my @layouts = (
 	"html, blank, %d",
 	"html, event, %d <table><col width=\"150\" /><col width=\"300\" /><tr><td align=\"right\">%Xt</td><td>%n</td></tr></table>",
 	"html, aspecial, %d <center><em>%n</em></center>",
+	"latex, blank, %d\\n",
+	"latex, event, %d: %t: %n\\n",
+	"latex, aspecial, %d: %n\\n"
 );
 
 # option handling from config file; takes the line involved
@@ -546,6 +549,7 @@ sub thedate($$$)
 	$month = doz_int($_[1]);
 	$day = doz_int($_[0]);
 	$date = qx(dozdate -d"$year-$month-$day" "$dateformat");
+	chomp($date);
 	$date =~ s/^\s(.*)\s$/$1/;
 	return $date;
 }
@@ -959,6 +963,7 @@ sub main()
 	$format = "html" if ($opt_h);
 	$format = "latex" if ($opt_l);
 	use_input_file();
+	$dateformat = "%Y/%m/%d" if ($opt_l);
 	load_holydays() if ($opt_c);
 	parse_input_file();
 	@eventlist = sort { $a->[0] <=> $b->[0] || $a->[3] cmp
@@ -968,8 +973,8 @@ sub main()
 	@datearray = output(@datearray);
 	if ($opt_h) {
 		out_html(@datearray);
-	} elsif ($opt_l) {
-		out_latex(@datearray);
+#	} elsif ($opt_l) {
+#		out_latex(@datearray);
 	} else {
 		out_text(@datearray);
 	}
