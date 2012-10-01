@@ -148,13 +148,13 @@ my $format = "text";
 my @layouts = (
 	"text, blank, %d\\n",
 	"text, event, %d: %t: %n\\n",
-	"text, aspecial, %d: %n\\n",
+	"text, special, %d: %n\\n",
 	"html, blank, %d",
 	"html, event, %d <table><col width=\"150\" /><col width=\"300\" /><tr><td align=\"right\">%Xt</td><td>%n</td></tr></table>",
-	"html, aspecial, %d <center><em>%n</em></center>",
+	"html, special, %d <center><em>%n</em></center>",
 	"latex, blank, %d\\n",
 	"latex, event, %d: %t: %n\\n",
-	"latex, aspecial, %d: %n\\n"
+	"latex, special, %d: %n\\n"
 );
 
 # option handling from config file; takes the line involved
@@ -740,7 +740,9 @@ sub out_format(\@$)
 
 	for (my $i = 0; $i <= $#{$_[0]}; $i++) {
 		for (my $j = 0; $j <= $#layouts; $j++) {
-			if (grep(/$_[1], $_[0][$i][3]/,$layouts[$j])) {
+			my $format = $_[0][$i][3];
+			$format =~ s/\d|X|E*//;
+			if (grep(/$_[1], $format/,$layouts[$j])) {
 				($outline) = ($layouts[$j] =~ /\w+,\s*\w+,\s*(.*)$/);
 				$outline = form_string($outline,$i,$_[0][$i][4],$_[0][$i][1],
 					$_[0][$i][2]);
@@ -931,27 +933,27 @@ sub load_holydays()
 	$day = doz_int($day);
 	$year = doz_int($year);
 	@{$calendar[$#calendar+1]} = 
-		("Easter","$year-$month-$day","","","aspecial");
+		("Easter","$year-$month-$day","","","special");
 	($oyear,$omonth,$oday) = 
 		Add_Delta_Days(dec_int($year),dec_int($month),dec_int($day),7);
 	@{$calendar[$#calendar+1]} = 
 		("Low Sunday",doz_int($oyear)."-".doz_int($omonth).
-		"-".doz_int($oday),"","","aspecial");
+		"-".doz_int($oday),"","","special");
 	($oyear,$omonth,$oday) = 
 		Add_Delta_Days(dec_int($year),dec_int($month),dec_int($day),14);
 	@{$calendar[$#calendar+1]} = 
 		("Second Sunday of Easter",doz_int($oyear)."-".doz_int($omonth).
-		"-".doz_int($oday),"","","aspecial");
+		"-".doz_int($oday),"","","special");
 	($oyear,$omonth,$oday) = 
 		Add_Delta_Days(dec_int($year),dec_int($month),dec_int($day),21);
 	@{$calendar[$#calendar+1]} = 
 		("Third Sunday of Easter",doz_int($oyear)."-".doz_int($omonth).
-		"-".doz_int($oday),"","","aspecial");
+		"-".doz_int($oday),"","","special");
 	($oyear,$omonth,$oday) = 
 		Add_Delta_Days(dec_int($year),dec_int($month),dec_int($day),28);
 	@{$calendar[$#calendar+1]} = 
 		("Fourth Sunday of Easter",doz_int($oyear)."-".doz_int($omonth).
-		"-".doz_int($oday),"","","aspecial");
+		"-".doz_int($oday),"","","special");
 }
 
 # we all know what this one's for

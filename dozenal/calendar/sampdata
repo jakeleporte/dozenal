@@ -1,12 +1,12 @@
 Staff Meeting	Wednesday	12;00		event
-Louise's Birthday	1E April			aspecial
+Louise's Birthday	1E April			1special
 Work Meeting	Thursdays in March	12;00, 2;60		event
 Work Meeting	Thursdays of March	12;00-- 2;60		event
-Vacation	14--19 March 11E8			aspecial
-Other Vacation	14 May --19 July 11E8			aspecial
+Vacation	14--19 March 11E8			1special
+Other Vacation	14 May --19 July 11E8			1special
 Something Else	Tuesdays in March,Thursdays in April			event
 Something Silly	Tuesdays,Thursdays			event
-Still Other Vacation	1X Nov 11E8 --19 Feb 11E9			aspecial
+Still Other Vacation	1X Nov 11E8 --19 Feb 11E9			1special
 More Meetings	5/6/11E7 -- 6/2/11E7			event
 More Meetings	5-6-11E7 -- 6-2-11E7			event
 Still More Meetings	11E7-10-18 -- 11E7-10-26		11E7-E-18	event
@@ -20,10 +20,10 @@ Leapyear Test 3	Wednesdays in February 11E7	14;00		event
 Fill a Day	Mondays in April	8;00		event
 More for the Day	1E Apr 11E8	10;00--11;00		event
 %DATEFORM:	 %d %B %Y
-#%FORM_TEXT aspecial "%n \n *** %d ***\n"
+#%FORM_TEXT 1special "%n \n *** %d ***\n"
 #%FORM_TEXT event "%#20d\n%@-20t%_20n\n"
 #%FORM_LATEX event "\\textbf{%d} %20t & %-20n"
-#%FORM_LATEX aspecial "\\textbf{%d} \\centering\\textit{%n}"
+#%FORM_LATEX 1special "\\textbf{%d} \\centering\\textit{%n}"
 #%FORM_LATEX blank "\\textbf{%d}"
 New Format Test---Event	11E8/4/1E	4;00		event
-New Format Test---Special	11E8/4/1E	14;00		aspecial
+New Format Test---Special	11E8/4/1E	14;00		1special
