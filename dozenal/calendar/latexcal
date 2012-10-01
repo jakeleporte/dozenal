@@ -24,7 +24,6 @@ sub preamble()
 	my $preamble;
 	$preamble = <<END;
 		\\documentclass{minimal}
-		\\pagestyle{plain}
 		\\usepackage{dozenal}
 		\\usepackage[T1]{fontenc}
 		\\usepackage{lmodern}
@@ -33,7 +32,7 @@ sub preamble()
 		\\usepackage{graphicx}
 		\\setlength\\arrayrulewidth{.4pt}
 		\\setlength\\extrarowheight{4pt}
-		\\usepackage[twoside,paperwidth=8.5in,paperheight=11in,width=7.5in,height=10in,bottom=0.5in,footskip=0.1in,foot=10pt]{geometry}
+		\\usepackage[twoside,paperwidth=8.5in,paperheight=11in,width=7.5in,height=10.5in,bottom=0.25in]{geometry}
 		\\usepackage{lscape}
 		\\def\\Biggie{\\fontsize{17pt}{19pt}\\selectfont}
 		\\def\\monthsty#1{\\fontsize{36pt}{40pt}\\textsc{#1}}
@@ -319,7 +318,7 @@ sub filldaybox($$$)
 #	print STDERR "$year - $month - $day\n" if ($year == 2011);
 #	print STDERR "$year - $month - $day\n";
 	foreach my $var (@callist) {
-		if ($var !~ /%aspecial%/) {
+		if ($var !~ /special%/) {
 			next;
 		} else {
 			($tmpy,$tmpm,$tmpd,$tmp) = ($var =~ 
@@ -655,6 +654,33 @@ sub small_monthlies($)
 	}
 }
 
+sub buildweek($$)
+{
+	my $time = 6;
+	my $year = $_[0];
+	print "\\newpage\n";
+	print "\\vspace*{\\daywidth}\n";
+	print "\\rule{\\linewidth}{2pt}\n";
+	for (my $i = 1; $i <= (14*4); $i++) {
+		print "\\vss\n";
+		print "\\rule{\\linewidth}{0.4pt}\n" if ($i % 4) != 0;
+		print "\\rule{\\linewidth}{2pt}\n" if ($i % 4) == 0;
+#		print "\\vbox to0pt{Time}";
+	}
+
+	print "\\newpage\n";
+}
+
+sub weeklies($)
+{
+	my @nums = qw( negtwo negone one two three four five six seven eight
+		nine ten elv unqua unqone unqtwo );
+	my $i;
+
+	$i = 0;
+	buildweek($_[0],$i);
+}
+
 sub finish()
 {
 	print "\\end{document}\n";
@@ -682,6 +708,7 @@ sub main()
 	$calyear = dec_int($date);
 	small_monthlies($calyear);
 	large_monthlies($calyear);
+	weeklies($calyear);
 	finish();
 }
 
