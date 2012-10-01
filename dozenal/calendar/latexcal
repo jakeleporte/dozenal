@@ -30,6 +30,8 @@ sub preamble()
 		\\usepackage{array}
 		\\usepackage{calc}
 		\\usepackage{graphicx}
+		\\newlength{\\shortline}
+		\\newlength{\\thirdskip}
 		\\setlength\\arrayrulewidth{.4pt}
 		\\setlength\\extrarowheight{4pt}
 		\\usepackage[twoside,paperwidth=8.5in,paperheight=11in,width=7.5in,height=10.5in,bottom=0.25in]{geometry}
@@ -658,16 +660,38 @@ sub buildweek($$)
 {
 	my $time = 6;
 	my $year = $_[0];
+	my $hour = 6;
+	my $min = 0;
+	my $phr = "06";
+	my $pmn = "00";
+
 	print "\\newpage\n";
+	print "\\setlength\\shortline{\\linewidth-6ex-9pt}";
+	print "\\setlength\\thirdskip{\\shortline/3}";
 	print "\\vspace*{\\daywidth}\n";
 	print "\\rule{\\linewidth}{2pt}\n";
 	for (my $i = 1; $i <= (14*4); $i++) {
+		$phr = doz_int($hour);
+		$phr = "0".$phr if (length($phr) < 2);
+		$phr = "0".$phr if $phr =~ /^\\/;
+		$pmn = $min."0";
 		print "\\vss\n";
+		print "\\nointerlineskip\\vbox to0pt{%\n";
+		print "\t\\vskip3pt\\hskip3pt$phr;$pmn\\vss%\n";
+		if ($i > 1) {
+			print "\t\\rule{2pt}{\\baselineskip}%\n";
+			print "\t\\hskip6ex\\rule{2pt}{\\baselineskip}%\n";
+			print "\t\\hskip\\thirdskip\\rule{2pt}{\\baselineskip}%\n";
+			print "\t\\hskip\\thirdskip\\rule{2pt}{\\baselineskip}%\n";
+			print "\t\\hskip\\thirdskip\\rule{2pt}{\\baselineskip}%\n";
+		}
+		print "}%\n";
 		print "\\rule{\\linewidth}{0.4pt}\n" if ($i % 4) != 0;
 		print "\\rule{\\linewidth}{2pt}\n" if ($i % 4) == 0;
-#		print "\\vbox to0pt{Time}";
+		$hour++ if ($i % 4) == 0;
+		$min = 0 if ($i % 4) == 0;
+		$min += 3 if ($i % 4) != 0;
 	}
-
 	print "\\newpage\n";
 }
 
