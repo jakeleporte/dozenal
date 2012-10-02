@@ -685,6 +685,7 @@ sub buildweek($$)
 	print "\\else\\def\\dayone{Monday}\\def\\daytwo{Tuesday}%\n";
 	print "\t\\def\\daythree{Wednesday}\\fi%\n";
 	print "\\vbox to\\daywidth{\\vfill}\n";
+# begin the weekday name box
 	print "\\begin{tcolorbox}[boxrule=2pt,arc=0pt,%\n";
 	print "\twidth=\\weeklydayboxwid,height=1.5\\baselineskip,%\n";
 	print "\tcolback=gray,coltext=white]%\n";
@@ -693,7 +694,7 @@ sub buildweek($$)
 	print "\t\\hbox to\\thirdskip{\\hfil\\weekdaysty\\daytwo\\hfil}%\n";
 	print "\t\\hbox to\\thirdskip{\\hfil\\weekdaysty\\daythree\\hfil}%\n";
 	print "\\end{tcolorbox}\\nointerlineskip\\vskip-2pt%\n";
-# end the weekday box
+# end the weekday name box
 	print "\\rule{\\linewidth}{2pt}\n";
 	for (my $i = 1; $i <= (14*4); $i++) {
 		$phr = doz_int($hour);
@@ -706,7 +707,25 @@ sub buildweek($$)
 		print "\t\\rule{2pt}{\\baselineskip}%\n";
 		print "\t\\hskip6ex\\rule{2pt}{\\baselineskip}%\n";
 		print "\t\\hskip\\thirdskip\\rule{2pt}{\\baselineskip}%\n";
-		print "\t\\hskip\\thirdskip\\rule{2pt}{\\baselineskip}%\n";
+		print "\t\\hskip\\thirdskip%\n";
+		print "\t\\checkoddpage\\ifoddpage%\n";
+		if ($phr ne "13" && $phr ne "14") {
+			print "\\rule{2pt}{\\baselineskip}%\n";
+		} else {#FFF
+			if ($pmn eq "90" & $phr eq "13") {
+				print "\\begin{tcolorbox}[boxrule=2pt,arc=0pt,%\n";
+				print "\twidth=.318\\weeklydayboxwid,height=2\\baselineskip,%\n";
+				print "\tcolback=gray,coltext=white,%\n";
+				print "\tbefore={\\hskip0em}]%\n";
+				print "\t\\vskip-0.25em\\hbox to.318\\weeklydayboxwid{%\n";
+				print "\t\\hfil\\hskip-3em\\weekdaysty Sunday\\hfil}\\end{tcolorbox}%\n";
+				print "\\hskip2pt%\n";
+			} else {
+				print "\\rule{2pt}{\\baselineskip}%\n";
+			}
+		}
+		print "\\else\\rule{2pt}{\\baselineskip}%\n";
+		print "\\fi%\n";
 		print "\t\\hskip\\thirdskip\\rule{2pt}{\\baselineskip}%\n";
 		print "\\vss}%\n";
 		print "\\rule{\\linewidth}{0.4pt}\n" if ($i % 4) != 0;
@@ -715,6 +734,13 @@ sub buildweek($$)
 		$min = 0 if ($i % 4) == 0;
 		$min += 3 if ($i % 4) != 0;
 	}
+	print "\\checkoddpage\\ifoddpage%\n";
+	print "\\begin{tcolorbox}[boxrule=2pt,arc=0pt,%\n";
+	print "\twidth=.3\\weeklydayboxwid,height=1.5\\baselineskip,%\n";
+	print "\tcolback=gray,coltext=white]%\n";
+	print "\t\\vskip-0.5em\\hskip3ex\\hbox to\\thirdskip{%\n";
+	print "\t\\weekdaysty Sunday}\\end{tcolorbox}%\n";
+	print "\\fi%\n";
 	print "\\newpage\n";
 }
 
@@ -748,9 +774,9 @@ sub main()
 	$dateplus =~ s/\\x/X/g;
 	$dateplus =~ s/\\e/E/g;
 
-	$callist = qx(./dozcal -lt -d$datemin);
-	$callist .= qx(./dozcal -lt -d$date);
-	$callist .= qx(./dozcal -lt -d$dateplus);
+#	$callist = qx(./dozcal -lt -d$datemin);
+#	$callist .= qx(./dozcal -lt -d$date);
+#	$callist .= qx(./dozcal -lt -d$dateplus);
 	@callist = split(/\n/,$callist);
 	preamble();
 	$calyear = dec_int($date);
