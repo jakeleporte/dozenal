@@ -29,9 +29,12 @@ sub preamble()
 		\\usepackage{lmodern}
 		\\usepackage{array}
 		\\usepackage{calc}
+		\\usepackage{ifoddpage}
+		\\usepackage{tcolorbox}
 		\\usepackage{graphicx}
 		\\newlength{\\shortline}
 		\\newlength{\\thirdskip}
+		\\newlength{\\weeklydayboxwid}
 		\\setlength\\arrayrulewidth{.4pt}
 		\\setlength\\extrarowheight{4pt}
 		\\usepackage[twoside,paperwidth=8.5in,paperheight=11in,width=7.5in,height=10.5in,bottom=0.25in]{geometry}
@@ -39,6 +42,7 @@ sub preamble()
 		\\def\\Biggie{\\fontsize{17pt}{19pt}\\selectfont}
 		\\def\\monthsty#1{\\fontsize{36pt}{40pt}\\textsc{#1}}
 		\\def\\daysty{\\centering\\Biggie\\scshape}
+		\\def\\weekdaysty{\\centering\\scshape}
 		\\def\\numsty{\\fontsize{14pt}{16pt}\\selectfont}
 		\\def\\smallnum{\\fontsize{10pt}{10pt}\\selectfont\\bfseries}
 		\\def\\extsmall{\\fontsize{7pt}{7pt}\\selectfont\\bfseries}
@@ -65,6 +69,9 @@ sub preamble()
 		\\setlength{\\smallheight}{0em}
 		\\def\\specstyl#1{\\centering\\fontsize{10pt}{12pt}\\selectfont\\itshape #1}
 		\\setlength\\parindent{0em}
+		\\begin{titlepage}
+		CALENDAR
+		\\end{titlepage}
 END
 	print "$preamble\n";
 }
@@ -664,11 +671,29 @@ sub buildweek($$)
 	my $min = 0;
 	my $phr = "06";
 	my $pmn = "00";
+	my $dayone = "Monday";
+	my $daytwo = "Tuesday";
+	my $daythree = "Wednesday";
 
 	print "\\newpage\n";
-	print "\\setlength\\shortline{\\linewidth-6ex-9pt}";
-	print "\\setlength\\thirdskip{\\shortline/3}";
-	print "\\vspace*{\\daywidth}\n";
+	print "\\setlength\\shortline{\\linewidth-6ex-9pt}\n";
+	print "\\setlength\\thirdskip{\\shortline/3}\n";
+	print "\\setlength\\weeklydayboxwid{\\linewidth+1pt}\n";
+	print "\\checkoddpage\\ifoddpage%\n";
+	print "\t\\def\\dayone{Thursday}\\def\\daytwo{Friday}%\n";
+	print "\t\\def\\daythree{Saturday}%\n";
+	print "\\else\\def\\dayone{Monday}\\def\\daytwo{Tuesday}%\n";
+	print "\t\\def\\daythree{Wednesday}\\fi%\n";
+	print "\\vbox to\\daywidth{\\vfill}\n";
+	print "\\begin{tcolorbox}[boxrule=2pt,arc=0pt,%\n";
+	print "\twidth=\\weeklydayboxwid,height=1.5\\baselineskip,%\n";
+	print "\tcolback=gray,coltext=white]%\n";
+	print "\t\\vskip-0.5em\\hskip3ex\\hbox to\\thirdskip{%\n";
+	print "\t\t\\hfil\\weekdaysty\\dayone\\hfil}%\n";
+	print "\t\\hbox to\\thirdskip{\\hfil\\weekdaysty\\daytwo\\hfil}%\n";
+	print "\t\\hbox to\\thirdskip{\\hfil\\weekdaysty\\daythree\\hfil}%\n";
+	print "\\end{tcolorbox}\\nointerlineskip\\vskip-2pt%\n";
+# end the weekday box
 	print "\\rule{\\linewidth}{2pt}\n";
 	for (my $i = 1; $i <= (14*4); $i++) {
 		$phr = doz_int($hour);
@@ -678,14 +703,12 @@ sub buildweek($$)
 		print "\\vss\n";
 		print "\\nointerlineskip\\vbox to0pt{%\n";
 		print "\t\\vskip3pt\\hskip3pt$phr;$pmn\\vss%\n";
-		if ($i > 1) {
-			print "\t\\rule{2pt}{\\baselineskip}%\n";
-			print "\t\\hskip6ex\\rule{2pt}{\\baselineskip}%\n";
-			print "\t\\hskip\\thirdskip\\rule{2pt}{\\baselineskip}%\n";
-			print "\t\\hskip\\thirdskip\\rule{2pt}{\\baselineskip}%\n";
-			print "\t\\hskip\\thirdskip\\rule{2pt}{\\baselineskip}%\n";
-		}
-		print "}%\n";
+		print "\t\\rule{2pt}{\\baselineskip}%\n";
+		print "\t\\hskip6ex\\rule{2pt}{\\baselineskip}%\n";
+		print "\t\\hskip\\thirdskip\\rule{2pt}{\\baselineskip}%\n";
+		print "\t\\hskip\\thirdskip\\rule{2pt}{\\baselineskip}%\n";
+		print "\t\\hskip\\thirdskip\\rule{2pt}{\\baselineskip}%\n";
+		print "\\vss}%\n";
 		print "\\rule{\\linewidth}{0.4pt}\n" if ($i % 4) != 0;
 		print "\\rule{\\linewidth}{2pt}\n" if ($i % 4) == 0;
 		$hour++ if ($i % 4) == 0;
@@ -702,6 +725,7 @@ sub weeklies($)
 	my $i;
 
 	$i = 0;
+	buildweek($_[0],$i);
 	buildweek($_[0],$i);
 }
 
