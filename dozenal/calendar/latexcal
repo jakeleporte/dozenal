@@ -31,7 +31,6 @@ sub preamble()
 		\\usepackage{lmodern}
 		\\usepackage{array}
 		\\usepackage{calc}
-		\\usepackage{ifoddpage}
 		\\usepackage{tcolorbox}
 		\\usepackage{ifthen}
 		\\usepackage{graphicx}
@@ -44,6 +43,7 @@ sub preamble()
 		\\usepackage{lscape}
 		\\def\\Biggie{\\fontsize{17pt}{19pt}\\selectfont}
 		\\def\\monthsty#1{\\fontsize{36pt}{40pt}\\textsc{#1}}
+		\\def\\weektitlsty{\\fontsize{24pt}{26pt}\\selectfont\\scshape}
 		\\def\\daysty{\\centering\\Biggie\\scshape}
 		\\def\\weekdaysty{\\centering\\scshape}
 		\\def\\numsty{\\fontsize{14pt}{16pt}\\selectfont}
@@ -212,18 +212,20 @@ sub halfweek($)
 	return ($ishalfweek, $ishalfday);
 }
 
-# prints out the day list on the large monthly calendars
+# prints out the day list on the large monthly calendars and
+# the month name and year; takes the month and year
 
-sub daylist($)
+sub daylist($$)
 {
 	my $startmonthtable;
 	my @monthnames = qw( January February March April May June July August
 		September October November December );
 	my $monthname = $monthnames[$_[0]-1];
+	my $year = doz_int($_[1]);
 	$startmonthtable = <<END;
 		\\renewcommand*{\\arraystretch}{1.2}
 		\\begin{landscape}
-		\\vspace{-1em}\\centering\\monthsty{$monthname}\\vskip1em
+		\\vspace{-1em}\\centering\\monthsty{$monthname $year}\\vskip1em
 		\\noindent
 		\\begin{tabular}{|%
 			>{\\daysty\\vspace{-.5em}}p{\\daywidth}<{\\vspace{-.8em}}|%
@@ -582,7 +584,7 @@ sub run_month($$)
 	my $month = $_[1];
 
 	($startblanks, $endblanks) = opening($_[0],$_[1]);
-	daylist($_[1]);
+	daylist($_[1],$_[0]);
 	$totalboxes = 
 		firstweek($startblanks,"daywidth","dayheight","numsty",$month,$_[0]);
 	for ($i=0; $i < 4; $i++) {
@@ -689,6 +691,8 @@ sub buildweek($$$)
 	my $pmn = "00";
 	my @months = qw( Jan Feb Mar Apr May Jun Jul Aug Sep Oct
 	Nov Dec );
+	my @fmonths = qw ( January February March April May June
+	July August September October November December );
 	my @dayplone;
 	my @daypltwo;
 	my @dayplthree;
@@ -708,6 +712,8 @@ sub buildweek($$$)
 	print "\t\\def\\daytwo{Friday, $dozplone\\ $months[$dayplone[1]-1]}%\n";
 	@daypltwo = dayplone($dayplone[0],$dayplone[1],$dayplone[2]);
 	$dozpltwo = doz_int($daypltwo[2]);
+	@dayplthree = dayplone($daypltwo[0],$daypltwo[1],$daypltwo[2]);
+	$dozplthree = doz_int($dayplthree[2]);
 	print "\t\\def\\daythree{Saturday, $dozpltwo\\ $months[$daypltwo[1]-1]}";
 	print "}{%end the ifodd part\n";
 	print "\t\\def\\dayone{Monday, $dozday\\ $months[$month-1]}";
@@ -718,7 +724,19 @@ sub buildweek($$$)
 	$dozpltwo = doz_int($daypltwo[2]);
 	print "\t\\def\\daythree{Wednesday, $dozpltwo\\ $months[$daypltwo[1]-1]}";
 	print "}%end the ifeven part\n";
-	print "\\vbox to\\daywidth{\\vfill}%\n";
+	print "\\vbox to\\daywidth{\\vfill%\n";
+	print "\\ifthenelse{\\isodd{\\value{page}}}{%\n";
+	print "\\hfill\\weektitlsty\\ldots $dozplthree\\ $fmonths[$dayplthree[1]-1]\n";
+	print "}{% if even, week title\n";
+	print "\\hbox to\\linewidth{%\n";
+	print "\t\\vbox to \\dayheight{\\vfill%\n";
+	print "\t\t\\weektitlsty $dozday\\ $fmonths[$month-1] to\\ldots%\n";
+	print "\t}%\n";
+	print "\t\\vtop{\\vskip-7.5em\\hskip-39ex\\usebox{\\monthnegone}}%\n";
+	print "}%\n";
+	print "}% end the week title if \n";
+	print "\\vskip0.5em%\n";
+	print "}% end the top weekly vbox\n";
 # begin the weekday name box
 	print "\\begin{tcolorbox}[boxrule=2pt,arc=0pt,%\n";
 	print "\twidth=\\weeklydayboxwid,height=1.5\\baselineskip,%\n";
@@ -752,8 +770,6 @@ sub buildweek($$$)
 				print "\tcolback=gray,coltext=white,%\n";
 				print "\tbefore={\\hskip0em}]%\n";
 				print "\t\\vskip-0.25em\\hbox to.318\\weeklydayboxwid{%\n";
-				@dayplthree = dayplone($daypltwo[0],$daypltwo[1],$daypltwo[2]);
-				$dozplthree = doz_int($dayplthree[2]);
 				print "\t\\hfil\\hskip-3em\\weekdaysty Sunday, $dozplthree\\ $months[$dayplthree[1]-1]\\hfil}\\end{tcolorbox}%\n";
 				print "\\hskip-\\thirdskip%\n";
 			} else {
