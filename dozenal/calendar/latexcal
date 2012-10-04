@@ -692,6 +692,7 @@ sub buildweek($$$)
 	my @dayplone;
 	my @daypltwo;
 	my @dayplthree;
+	my $dozplone; my $dozpltwo; my $dozplthree; my $dozplfour; my $dozday;
 	my $year; my $month; my $day;
 	($year,$month,$day) = Add_Delta_Days(1,1,1,$_[2]);
 
@@ -700,17 +701,22 @@ sub buildweek($$$)
 	print "\\setlength\\thirdskip{\\shortline/3}\n";
 	print "\\setlength\\weeklydayboxwid{\\linewidth+1pt}\n";
 	print "\\ifthenelse{\\isodd{\\value{page}}}{%\n";
-	print "\t\\def\\dayone{Thursday, $day $months[$month-1]}";
+	$dozday = doz_int($day);
+	print "\t\\def\\dayone{Thursday, $dozday\\ $months[$month-1]}";
 	@dayplone = dayplone($year,$month,$day);
-	print "\t\\def\\daytwo{Friday, $dayplone[2] $months[$dayplone[1]-1]}%\n";
+	$dozplone = doz_int($dayplone[2]);
+	print "\t\\def\\daytwo{Friday, $dozplone\\ $months[$dayplone[1]-1]}%\n";
 	@daypltwo = dayplone($dayplone[0],$dayplone[1],$dayplone[2]);
-	print "\t\\def\\daythree{Saturday, $daypltwo[2] $months[$daypltwo[1]-1]}";
+	$dozpltwo = doz_int($daypltwo[2]);
+	print "\t\\def\\daythree{Saturday, $dozpltwo\\ $months[$daypltwo[1]-1]}";
 	print "}{%end the ifodd part\n";
-	print "\t\\def\\dayone{Monday, $day $months[$month-1]}";
+	print "\t\\def\\dayone{Monday, $dozday\\ $months[$month-1]}";
 	@dayplone = dayplone($year,$month,$day);
-	print "\t\\def\\daytwo{Tuesday, $dayplone[2] $months[$dayplone[1]-1]}";
+	$dozplone = doz_int($dayplone[2]);
+	print "\t\\def\\daytwo{Tuesday, $dozplone\\ $months[$dayplone[1]-1]}";
 	@daypltwo = dayplone($dayplone[0],$dayplone[1],$dayplone[2]);
-	print "\t\\def\\daythree{Wednesday, $daypltwo[2] $months[$daypltwo[1]-1]}";
+	$dozpltwo = doz_int($daypltwo[2]);
+	print "\t\\def\\daythree{Wednesday, $dozpltwo\\ $months[$daypltwo[1]-1]}";
 	print "}%end the ifeven part\n";
 	print "\\vbox to\\daywidth{\\vfill}%\n";
 # begin the weekday name box
@@ -736,7 +742,7 @@ sub buildweek($$$)
 		print "\t\\hskip6ex\\rule{2pt}{\\baselineskip}%\n";
 		print "\t\\hskip\\thirdskip\\rule{2pt}{\\baselineskip}%\n";
 		print "\t\\hskip\\thirdskip%\n";
-		print "\t\\checkoddpage\\ifoddpage%\n"; #FIXME
+		print "\t\\ifthenelse{\\isodd{\\value{page}}}{%\n";
 		if ($phr ne "13" && $phr ne "14") {
 			print "\\rule{2pt}{\\baselineskip}%\n";
 		} else {#FFF
@@ -747,14 +753,14 @@ sub buildweek($$$)
 				print "\tbefore={\\hskip0em}]%\n";
 				print "\t\\vskip-0.25em\\hbox to.318\\weeklydayboxwid{%\n";
 				@dayplthree = dayplone($daypltwo[0],$daypltwo[1],$daypltwo[2]);
-				print "\t\\hfil\\hskip-3em\\weekdaysty Sunday, $dayplthree[2] $months[$dayplthree[1]-1]\\hfil}\\end{tcolorbox}%\n";
+				$dozplthree = doz_int($dayplthree[2]);
+				print "\t\\hfil\\hskip-3em\\weekdaysty Sunday, $dozplthree\\ $months[$dayplthree[1]-1]\\hfil}\\end{tcolorbox}%\n";
 				print "\\hskip-\\thirdskip%\n";
 			} else {
 				print "\\rule{2pt}{\\baselineskip}%\n";
 			}
 		}
-		print "\\else\\rule{2pt}{\\baselineskip}%\n";
-		print "\\fi%\n";
+		print "}{\\rule{2pt}{\\baselineskip}}%\n";
 		print "\t\\hskip\\thirdskip\\rule{2pt}{\\baselineskip}%\n";
 		print "\\vss}%\n";
 		print "\\rule{\\linewidth}{0.4pt}\n" if ($i % 4) != 0;
@@ -763,13 +769,13 @@ sub buildweek($$$)
 		$min = 0 if ($i % 4) == 0;
 		$min += 3 if ($i % 4) != 0;
 	}
-	print "\\checkoddpage\\ifoddpage%\n";
-	print "\\begin{tcolorbox}[boxrule=2pt,arc=0pt,%\n";
-	print "\twidth=.3\\weeklydayboxwid,height=1.5\\baselineskip,%\n";
-	print "\tcolback=gray,coltext=white]%\n";
-	print "\t\\vskip-0.5em\\hskip3ex\\hbox to\\thirdskip{%\n";
-	print "\t\\weekdaysty Sunday}\\end{tcolorbox}%\n";
-	print "\\fi%\n";
+#	print "\\ifthenelse{\\isodd{\\value{page}}}{%\n";
+#	print "\\begin{tcolorbox}[boxrule=2pt,arc=0pt,%\n";
+#	print "\twidth=.3\\weeklydayboxwid,height=1.5\\baselineskip,%\n";
+#	print "\tcolback=gray,coltext=white]%\n";
+#	print "\t\\vskip-0.5em\\hskip3ex\\hbox to\\thirdskip{%\n";
+#	print "\t\\weekdaysty Sunday}\\end{tcolorbox}%\n";
+#	print "}{}%\n";
 	print "\\newpage\n";
 }
 
@@ -793,7 +799,7 @@ sub weeklies($)
 	$firstday = $firstday - (30 - --$i);
 	$i = 0;
 	$j = 0;
-	for ($j = 0; $j < 420; $j=$j+3) {
+	for ($j = 0; $j < 434; $j=$j+3) {
 		buildweek($_[0],$i,$firstday+$j);
 		($year,$month,$day) = Add_Delta_Days(1,1,1,$firstday+$j);
 		$j++ if (&day($month,$day,$year) eq "THU");
