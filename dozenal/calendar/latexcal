@@ -43,7 +43,8 @@ sub preamble()
 		\\usepackage{lscape}
 		\\def\\Biggie{\\fontsize{17pt}{19pt}\\selectfont}
 		\\def\\monthsty#1{\\fontsize{36pt}{40pt}\\textsc{#1}}
-		\\def\\weektitlsty{\\fontsize{24pt}{26pt}\\selectfont\\scshape}
+		\\def\\weektitlsty{\\fontsize{24pt}{24pt}\\selectfont\\scshape}
+		\\def\\thumbtitsty{\\scshape}
 		\\def\\daysty{\\centering\\Biggie\\scshape}
 		\\def\\weekdaysty{\\centering\\scshape}
 		\\def\\numsty{\\fontsize{14pt}{16pt}\\selectfont}
@@ -684,7 +685,8 @@ sub dayplone($$$)
 sub buildweek($$$)
 {
 	my $time = 6;
-	my $year = $_[0];
+	my $thisyear = $_[0];
+	my $thumbyear = doz_int($thisyear);
 	my $hour = 6;
 	my $min = 0;
 	my $phr = "06";
@@ -692,13 +694,31 @@ sub buildweek($$$)
 	my @months = qw( Jan Feb Mar Apr May Jun Jul Aug Sep Oct
 	Nov Dec );
 	my @fmonths = qw ( January February March April May June
-	July August September October November December );
+		July August September October November December );
+	my @tmonths = qw ( November December January February
+		March April May June July August September October
+		November December January February );
+	my @nums = qw( negtwo negone one two three four five six seven eight
+		nine ten elv unqua unqone unqtwo );
 	my @dayplone;
 	my @daypltwo;
 	my @dayplthree;
 	my $dozplone; my $dozpltwo; my $dozplthree; my $dozplfour; my $dozday;
 	my $year; my $month; my $day;
 	($year,$month,$day) = Add_Delta_Days(1,1,1,$_[2]);
+	my $tmonth;
+	if ($year < $thisyear) {
+		$tmonth = 0 if $month == 11;
+		$tmonth = 1 if $month == 12;
+		$thumbyear = doz_int($thisyear - 1);
+	} elsif ($year > $thisyear) {
+		$tmonth = 13 if $month == 1;
+		$tmonth = 14 if $month == 2;
+		$thumbyear = doz_int($thisyear + 1);
+	} else {
+		$tmonth = $month;
+		$thumbyear = doz_int($thisyear);
+	}
 
 	print "\\newpage\n";
 	print "\\setlength\\shortline{\\linewidth-6ex-9pt}\n";
@@ -724,16 +744,40 @@ sub buildweek($$$)
 	$dozpltwo = doz_int($daypltwo[2]);
 	print "\t\\def\\daythree{Wednesday, $dozpltwo\\ $months[$daypltwo[1]-1]}";
 	print "}%end the ifeven part\n";
-	print "\\vbox to\\daywidth{\\vfill%\n";
+	print "\\vbox to.9\\daywidth{\\vfill%\n";
 	print "\\ifthenelse{\\isodd{\\value{page}}}{%\n";
-	print "\\hfill\\weektitlsty\\ldots $dozplthree\\ $fmonths[$dayplthree[1]-1]\n";
+	print "\\hbox to\\linewidth{%\n";
+	print "\\hbox to\\daywidth{\\hfill% the thumbnail hbox\n";
+	print "\t\\vbox to1.2\\dayheight{%\n";
+	print "\t\\hbox to\\daywidth{\\hfil\\thumbtitsty $tmonths[$tmonth+1] $thumbyear\\hfil}%\n";
+	print "\t\\hbox to\\daywidth{\\hfil\\usebox{\\month$nums[$tmonth+1]}\\hfil}%\n";
+	print "} % end the first thumbnail vbox\n";
+	print "\\hskip-0in\\vbox to1.2\\dayheight{%\n";
+	print "\t\\hbox to\\daywidth{\\hfil\\thumbtitsty $tmonths[$tmonth+2] ";
+	print "$thumbyear\\hfil}%\n";
+	print "\t\\hbox to\\daywidth{\\hfil\\usebox{\\month$nums[$tmonth+2]}\\hfil}%\n";
+	print "} % end the second thumbnail vbox\n";
+	print "} % end the thumbnail hbox\n";
+	print "\t\\hskip-2\\daywidth\\vbox to1.2\\dayheight{\\vfill%\n";
+	print "\t\t\\hfill\\weektitlsty\\ldots $dozplthree\\ $fmonths[$dayplthree[1]-1]%\n";
+	print "\t}%\n";
+	print "}% end the top bar hbox for odd pages\n";
 	print "}{% if even, week title\n";
 	print "\\hbox to\\linewidth{%\n";
-	print "\t\\vbox to \\dayheight{\\vfill%\n";
+	print "\t\\vbox to1.2\\dayheight{\\vfill%\n";
 	print "\t\t\\weektitlsty $dozday\\ $fmonths[$month-1] to\\ldots%\n";
-	print "\t}%\n";
-	print "\t\\vtop{\\vskip-7.5em\\hskip-39ex\\usebox{\\monthnegone}}%\n";
-	print "}%\n";
+	print "\t}\\hskip-2\\daywidth%\n";
+	print "\\hbox to\\daywidth{\\hfill% the thumbnail hbox\n";
+	print "\t\\vbox to1.2\\dayheight{%\n";
+	print "\t\\hbox to\\daywidth{\\hfil\\thumbtitsty $tmonths[$tmonth] $thumbyear\\hfil}%\n";
+	print "\t\\hbox to\\daywidth{\\hfil\\usebox{\\month$nums[$tmonth]}\\hfil}%\n";
+	print "} % end the first thumbnail vbox\n";
+	print "\\hskip-0in\\vbox to1.2\\dayheight{%\n";
+	print "\t\\hbox to\\daywidth{\\hfil\\thumbtitsty $tmonths[$tmonth+1] $thumbyear\\hfil}%\n";
+	print "\t\\hbox to\\daywidth{\\hfil\\usebox{\\month$nums[$tmonth+1]}\\hfil}%\n";
+	print "} % end the second thumbnail vbox\n";
+	print "} % end the thumbnail hbox\n";
+	print "}% end the top bar hbox for even pages\n";
 	print "}% end the week title if \n";
 	print "\\vskip0.5em%\n";
 	print "}% end the top weekly vbox\n";
