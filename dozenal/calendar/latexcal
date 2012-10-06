@@ -680,6 +680,20 @@ sub dayplone($$$)
 	return Add_Delta_Days(1,1,1,$newday);
 }
 
+# calculates the year to be used for the thumbnails; takes
+# tmonth value
+
+sub get_tyear($)
+{
+	if ($_[0] <= 1) {
+		return doz_int($calyear-1);
+	} elsif ($_[0] > 13) {
+		return doz_int($calyear+1);
+	} else {
+		return doz_int($calyear);
+	}
+}
+
 # takes the year, the mini-month,  and the day number
 
 sub buildweek($$$)
@@ -710,14 +724,11 @@ sub buildweek($$$)
 	if ($year < $thisyear) {
 		$tmonth = 0 if $month == 11;
 		$tmonth = 1 if $month == 12;
-		$thumbyear = doz_int($thisyear - 1);
 	} elsif ($year > $thisyear) {
 		$tmonth = 13 if $month == 1;
 		$tmonth = 14 if $month == 2;
-		$thumbyear = doz_int($thisyear + 1);
 	} else {
 		$tmonth = $month;
-		$thumbyear = doz_int($thisyear);
 	}
 
 	print "\\newpage\n";
@@ -749,10 +760,12 @@ sub buildweek($$$)
 	print "\\hbox to\\linewidth{%\n";
 	print "\\hbox to\\daywidth{\\hfill% the thumbnail hbox\n";
 	print "\t\\vbox to1.2\\dayheight{%\n";
+	$thumbyear = get_tyear($tmonth+1);
 	print "\t\\hbox to\\daywidth{\\hfil\\thumbtitsty $tmonths[$tmonth+1] $thumbyear\\hfil}%\n";
 	print "\t\\hbox to\\daywidth{\\hfil\\usebox{\\month$nums[$tmonth+1]}\\hfil}%\n";
 	print "} % end the first thumbnail vbox\n";
 	print "\\hskip-0in\\vbox to1.2\\dayheight{%\n";
+	$thumbyear = get_tyear($tmonth+2);
 	print "\t\\hbox to\\daywidth{\\hfil\\thumbtitsty $tmonths[$tmonth+2] ";
 	print "$thumbyear\\hfil}%\n";
 	print "\t\\hbox to\\daywidth{\\hfil\\usebox{\\month$nums[$tmonth+2]}\\hfil}%\n";
@@ -769,10 +782,12 @@ sub buildweek($$$)
 	print "\t}\\hskip-2\\daywidth%\n";
 	print "\\hbox to\\daywidth{\\hfill% the thumbnail hbox\n";
 	print "\t\\vbox to1.2\\dayheight{%\n";
+	$thumbyear = get_tyear($tmonth);
 	print "\t\\hbox to\\daywidth{\\hfil\\thumbtitsty $tmonths[$tmonth] $thumbyear\\hfil}%\n";
 	print "\t\\hbox to\\daywidth{\\hfil\\usebox{\\month$nums[$tmonth]}\\hfil}%\n";
 	print "} % end the first thumbnail vbox\n";
 	print "\\hskip-0in\\vbox to1.2\\dayheight{%\n";
+	$thumbyear = get_tyear($tmonth+1);
 	print "\t\\hbox to\\daywidth{\\hfil\\thumbtitsty $tmonths[$tmonth+1] $thumbyear\\hfil}%\n";
 	print "\t\\hbox to\\daywidth{\\hfil\\usebox{\\month$nums[$tmonth+1]}\\hfil}%\n";
 	print "} % end the second thumbnail vbox\n";
