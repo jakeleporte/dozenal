@@ -47,6 +47,7 @@ sub preamble()
 		\\def\\thumbtitsty{\\scshape}
 		\\def\\daysty{\\centering\\Biggie\\scshape}
 		\\def\\weekdaysty{\\centering\\scshape}
+		\\def\\eventsty{\\fontsize{8pt}{10pt}\\itshape}
 		\\def\\numsty{\\fontsize{14pt}{16pt}\\selectfont}
 		\\def\\smallnum{\\fontsize{10pt}{10pt}\\selectfont\\bfseries}
 		\\def\\extsmall{\\fontsize{7pt}{7pt}\\selectfont\\bfseries}
@@ -808,15 +809,35 @@ sub buildweek($$$)
 # end the weekday name box
 	print "\\rule{\\linewidth}{2pt}\n";
 	for (my $i = 1; $i <= (14*4); $i++) {
+		my $event;
+		my $dozyear = doz_int($thisyear);
+		my $dozmonth = doz_int($month);
+		my $zday = $dozday;
+		$zday =~ s/\\x/X/g;
+		$zday =~ s/\\e/E/g;
+		$dozmonth =~ s/\\x/X/g;
+		$dozmonth =~ s/\\e/E/g;
+		$dozyear =~ s/\\x/X/g;
+		$dozyear =~ s/\\e/E/g;
 		$phr = doz_int($hour);
+		$pmn = $min."0";
+		foreach my $var (@callist) {
+			if ($var =~ /$dozyear\/[0]*$dozmonth\/[0]*$zday/) {
+				if ($var =~ /[0]*$phr;$pmn/) { 
+					$var =~ /[0]*$phr;$pmn[^a-zA-Z]*(.*)%.*%/;
+					$event = $1;
+					$event = "\\eventsty ".$event;
+				}
+			}
+		}
 		$phr = "0".$phr if (length($phr) < 2);
 		$phr = "0".$phr if $phr =~ /^\\/;
-		$pmn = $min."0";
 		print "\\vss\n";
 		print "\\nointerlineskip\\vbox to0pt{%\n";
 		print "\t\\vskip3pt\\hskip3pt$phr;$pmn\\vss%\n";
 		print "\t\\rule{2pt}{\\baselineskip}%\n";
 		print "\t\\hskip6ex\\rule{2pt}{\\baselineskip}%\n";
+		print "\t\\hbox to0pt{$event}%\n"; #FINISH ME
 		print "\t\\hskip\\thirdskip\\rule{2pt}{\\baselineskip}%\n";
 		print "\t\\hskip\\thirdskip%\n";
 		print "\t\\ifthenelse{\\isodd{\\value{page}}}{%\n";
@@ -900,9 +921,9 @@ sub main()
 	$dateplus =~ s/\\x/X/g;
 	$dateplus =~ s/\\e/E/g;
 
-#	$callist = qx(./dozcal -lt -d$datemin);
-#	$callist .= qx(./dozcal -lt -d$date);
-#	$callist .= qx(./dozcal -lt -d$dateplus);
+	$callist = qx(./dozcal -lt -d$datemin);
+	$callist .= qx(./dozcal -lt -d$date);
+	$callist .= qx(./dozcal -lt -d$dateplus);
 	@callist = split(/\n/,$callist);
 	preamble();
 	$calyear = dec_int($date);
