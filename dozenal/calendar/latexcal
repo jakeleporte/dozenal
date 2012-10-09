@@ -47,7 +47,7 @@ sub preamble()
 		\\def\\thumbtitsty{\\scshape}
 		\\def\\daysty{\\centering\\Biggie\\scshape}
 		\\def\\weekdaysty{\\centering\\scshape}
-		\\def\\eventsty{\\fontsize{8pt}{10pt}\\itshape}
+		\\def\\eventsty{\\fontsize{9pt}{9pt}\\itshape}
 		\\def\\numsty{\\fontsize{14pt}{16pt}\\selectfont}
 		\\def\\smallnum{\\fontsize{10pt}{10pt}\\selectfont\\bfseries}
 		\\def\\extsmall{\\fontsize{7pt}{7pt}\\selectfont\\bfseries}
@@ -331,8 +331,6 @@ sub filldaybox($$$)
 	my $tmpd;
 	my $tmp;
 
-#	print STDERR "$year - $month - $day\n" if ($year == 2011);
-#	print STDERR "$year - $month - $day\n";
 	foreach my $var (@callist) {
 		if ($var !~ /special%/) {
 			next;
@@ -695,6 +693,26 @@ sub get_tyear($)
 	}
 }
 
+# takes dozyear, dozmonth, zday, ophr, and opmn; returns the
+# event text
+
+sub get_event($$$$$)
+{
+	my $event = "";
+	my $ophr = $_[4];
+
+	foreach my $var (@callist) {
+		if ($var =~ /$_[0]\/[0]*$_[1]\/[0]*$_[2]/) {
+			if ($var =~ /[0]*$_[3];$_[4]/) { 
+				$var =~ /[0]*$_[3];$ophr[^a-zA-Z]*(.*)%.*%/;
+				$event = $1;
+				$event = "\\eventsty ".$event;
+			}
+		}
+	}
+	return $event;
+}
+
 # takes the year, the mini-month,  and the day number
 
 sub buildweek($$$)
@@ -706,6 +724,8 @@ sub buildweek($$$)
 	my $min = 0;
 	my $phr = "06";
 	my $pmn = "00";
+	my $ophr = "";
+	my $opmn = "";
 	my @months = qw( Jan Feb Mar Apr May Jun Jul Aug Sep Oct
 	Nov Dec );
 	my @fmonths = qw ( January February March April May June
@@ -819,17 +839,29 @@ sub buildweek($$$)
 		$dozmonth =~ s/\\e/E/g;
 		$dozyear =~ s/\\x/X/g;
 		$dozyear =~ s/\\e/E/g;
+		my @dozplone = @dayplone;
+		my $dozyearone = doz_int($dozplone[0]);
+		$dozyearone =~ s/\\x/X/g;
+		$dozyearone =~ s/\\e/E/g;
+		my $dozmonthone = doz_int($dozplone[1]);
+		$dozmonthone =~ s/\\x/X/g;
+		$dozmonthone =~ s/\\e/E/g;
+		my $dozdayone = doz_int($dozplone[2]);
+		$dozdayone =~ s/\\x/X/g;
+		$dozdayone =~ s/\\e/E/g;
+		my @dozpltwo = @daypltwo;
+		my $dozyeartwo = doz_int($dozpltwo[0]);
+		$dozyeartwo =~ s/\\x/X/g;
+		$dozyeartwo =~ s/\\e/E/g;
+		my $dozmonthtwo = doz_int($dozpltwo[1]);
+		$dozmonthtwo =~ s/\\x/X/g;
+		$dozmonthtwo =~ s/\\e/E/g;
+		my $dozdaytwo = doz_int($dozpltwo[2]);
+		$dozdaytwo =~ s/\\x/X/g;
+		$dozdaytwo =~ s/\\e/E/g;
 		$phr = doz_int($hour);
 		$pmn = $min."0";
-		foreach my $var (@callist) {
-			if ($var =~ /$dozyear\/[0]*$dozmonth\/[0]*$zday/) {
-				if ($var =~ /[0]*$phr;$pmn/) { 
-					$var =~ /[0]*$phr;$pmn[^a-zA-Z]*(.*)%.*%/;
-					$event = $1;
-					$event = "\\eventsty ".$event;
-				}
-			}
-		}
+		$ophr = $phr; $opmn = $pmn;
 		$phr = "0".$phr if (length($phr) < 2);
 		$phr = "0".$phr if $phr =~ /^\\/;
 		print "\\vss\n";
@@ -837,8 +869,11 @@ sub buildweek($$$)
 		print "\t\\vskip3pt\\hskip3pt$phr;$pmn\\vss%\n";
 		print "\t\\rule{2pt}{\\baselineskip}%\n";
 		print "\t\\hskip6ex\\rule{2pt}{\\baselineskip}%\n";
-		print "\t\\hbox to0pt{$event}%\n"; #FINISH ME
+		$event = get_event($dozyear,$dozmonth,$zday,$ophr,$opmn);
+		print "\t\\vbox to 0pt{\\vskip-.9em\\hbox to0pt{$event}\\vfil}%\n";
 		print "\t\\hskip\\thirdskip\\rule{2pt}{\\baselineskip}%\n";
+		$event = get_event($dozyearone,$dozmonthone,$dozdayone,$ophr,$opmn);
+		print "\t\\vbox to 0pt{\\vskip-.9em\\hbox to0pt{$event}\\vfil}%\n";
 		print "\t\\hskip\\thirdskip%\n";
 		print "\t\\ifthenelse{\\isodd{\\value{page}}}{%\n";
 		if ($phr ne "13" && $phr ne "14") {
@@ -857,6 +892,8 @@ sub buildweek($$$)
 			}
 		}
 		print "}{\\rule{2pt}{\\baselineskip}}%\n";
+		$event = get_event($dozyeartwo,$dozmonthtwo,$dozdaytwo,$ophr,$opmn);
+		print "\t\\vbox to 0pt{\\vskip-.9em\\hbox to0pt{$event}\\vfil}%\n";
 		print "\t\\hskip\\thirdskip\\rule{2pt}{\\baselineskip}%\n";
 		print "\\vss}%\n";
 		print "\\rule{\\linewidth}{0.4pt}\n" if ($i % 4) != 0;
@@ -865,13 +902,6 @@ sub buildweek($$$)
 		$min = 0 if ($i % 4) == 0;
 		$min += 3 if ($i % 4) != 0;
 	}
-#	print "\\ifthenelse{\\isodd{\\value{page}}}{%\n";
-#	print "\\begin{tcolorbox}[boxrule=2pt,arc=0pt,%\n";
-#	print "\twidth=.3\\weeklydayboxwid,height=1.5\\baselineskip,%\n";
-#	print "\tcolback=gray,coltext=white]%\n";
-#	print "\t\\vskip-0.5em\\hskip3ex\\hbox to\\thirdskip{%\n";
-#	print "\t\\weekdaysty Sunday}\\end{tcolorbox}%\n";
-#	print "}{}%\n";
 	print "\\newpage\n";
 }
 
