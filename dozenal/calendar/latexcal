@@ -27,6 +27,7 @@ sub preamble()
 	$preamble = <<END;
 		\\documentclass{minimal}
 		\\usepackage{dozenal}
+		\\usepackage[absolute,showboxes,overlay]{textpos}
 		\\usepackage[T1]{fontenc}
 		\\usepackage{lmodern}
 		\\usepackage{array}
@@ -74,6 +75,11 @@ sub preamble()
 		\\setlength{\\smallheight}{0em}
 		\\def\\specstyl#1{\\centering\\fontsize{10pt}{12pt}\\selectfont\\itshape #1}
 		\\setlength\\parindent{0em}
+		\\setlength\\shortline{\\linewidth-6ex-9pt}
+		\\setlength\\thirdskip{\\shortline/3}
+		\\setlength\\weeklydayboxwid{\\linewidth+1pt}
+		\\setlength{\\TPVertModule}{\\dayheight}
+		\\setlength{\\TPHorizModule}{\\thirdskip}
 		\\begin{titlepage}
 		CALENDAR
 		\\end{titlepage}
@@ -717,6 +723,8 @@ sub get_event($$$$$)
 
 sub buildweek($$$)
 {
+	my @satevs;
+	my @sunevs;
 	my $time = 6;
 	my $thisyear = $_[0];
 	my $thumbyear = doz_int($thisyear);
@@ -753,9 +761,6 @@ sub buildweek($$$)
 	}
 
 	print "\\newpage\n";
-	print "\\setlength\\shortline{\\linewidth-6ex-9pt}\n";
-	print "\\setlength\\thirdskip{\\shortline/3}\n";
-	print "\\setlength\\weeklydayboxwid{\\linewidth+1pt}\n";
 	print "\\ifthenelse{\\isodd{\\value{page}}}{%\n";
 	$dozday = doz_int($day);
 	print "\t\\def\\dayone{Thursday, $dozday\\ $months[$month-1]}";
@@ -893,6 +898,14 @@ sub buildweek($$$)
 		}
 		print "}{\\rule{2pt}{\\baselineskip}}%\n";
 		$event = get_event($dozyeartwo,$dozmonthtwo,$dozdaytwo,$ophr,$opmn);
+		my $j = 0; my $k = 0;
+		if (&day($daypltwo[1],$daypltwo[2],$daypltwo[0]) eq "SAT") {
+			$satevs[$j++] = "\\eventsty $phr;$pmn:  $event" if $event ne "";
+			$event = "";
+		} elsif (&day($daypltwo[1],$daypltwo[2],$daypltwo[0]) eq "SUN") {
+			$sunevs[$k++] = "\\eventsty $phr;$pmn:  $event";
+			$event = "";
+		}
 		print "\t\\vbox to 0pt{\\vskip-.9em\\hbox to0pt{$event}\\vfil}%\n";
 		print "\t\\hskip\\thirdskip\\rule{2pt}{\\baselineskip}%\n";
 		print "\\vss}%\n";
@@ -902,7 +915,18 @@ sub buildweek($$$)
 		$min = 0 if ($i % 4) == 0;
 		$min += 3 if ($i % 4) != 0;
 	}
+	if (&day($daypltwo[1],$daypltwo[2],$daypltwo[0]) eq "SAT") {
+		print "\\begin{textblock}{1}(2,1)%\n";
+		for (my $l = 0; $l <= $#satevs; $l++) {
+			print "HEY:  $satevs[$l]\n";
+		}
+		print "\\end{textblock}%\n";
+	} elsif (&day($daypltwo[1],$daypltwo[2],$daypltwo[0]) eq "SUN") {
+
+	}
 	print "\\newpage\n";
+	@satevs = ();
+	@sunevs = ();
 }
 
 # takes the year
