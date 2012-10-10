@@ -35,6 +35,7 @@ sub preamble()
 		\\usepackage{tcolorbox}
 		\\usepackage{ifthen}
 		\\usepackage{graphicx}
+		\\newlength{\\vertskip}
 		\\newlength{\\shortline}
 		\\newlength{\\thirdskip}
 		\\newlength{\\weeklydayboxwid}
@@ -918,14 +919,13 @@ sub buildweek($$$)
 	if ((&day($daypltwo[1],$daypltwo[2],$daypltwo[0]) eq "SAT") && 
 		($#satevs > 0)) {
 		my $numslots = 38;
-		print "\\begin{textblock}{1}(2.38,10.65)%\n";
-		print "\t\\vbox to 36.3\\baselineskip{%\n";
-		$numslots -= 1 until ($numslots % ($#satevs + 1) == 0);
-		$numslots = $numslots / ($#satevs + 3);
+		print "\\setlength{\\vertskip}{\\baselineskip+1pt}%\n";
+		print "\\begin{textblock}{1}(2.38,10.63)%\n";
+		print "\t\\vbox to38\\baselineskip{%\n";
+		print "\t\t\\vskip-0pt%\n";
 		for (my $l = 0; $l <= $#satevs; $l++) {
-			print "\t\t\\vskip".$numslots."\\baselineskip $satevs[$l]";
+			print "\t\t\\vbox to\\baselineskip{\\vss\\hbox{$satevs[$l]\\hfil}\\vss}%\n";
 		}
-		print "\t\t\\vskip".$numslots."\\baselineskip%\n";
 		print "}\\end{textblock}%\n";
 	} elsif (&day($daypltwo[1],$daypltwo[2],$daypltwo[0]) eq "SUN") {
 
