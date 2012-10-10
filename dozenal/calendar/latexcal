@@ -35,7 +35,6 @@ sub preamble()
 		\\usepackage{tcolorbox}
 		\\usepackage{ifthen}
 		\\usepackage{graphicx}
-		\\newlength{\\vertskip}
 		\\newlength{\\shortline}
 		\\newlength{\\thirdskip}
 		\\newlength{\\weeklydayboxwid}
@@ -706,12 +705,16 @@ sub get_tyear($)
 sub get_event($$$$$)
 {
 	my $event = "";
-	my $ophr = $_[4];
+	my $year = $_[0];
+	my $month = $_[1];
+	my $day = $_[2];
+	my $ophr = $_[3];
+	my $opmn = $_[4];
 
 	foreach my $var (@callist) {
-		if ($var =~ /$_[0]\/[0]*$_[1]\/[0]*$_[2]/) {
-			if ($var =~ /[0]*$_[3];$_[4]/) { 
-				$var =~ /[0]*$_[3];$ophr[^a-zA-Z]*(.*)%.*%/;
+		if ($var =~ /$year\/[0]*$month\/[0]*$day:/) {
+			if ($var =~ /[0]*$ophr;$opmn/) { 
+				$var =~ /[0]*$ophr;$opmn[^a-zA-Z]*(.*)%.*%/;
 				$event = $1;
 				$event = "\\eventsty ".$event;
 			}
@@ -866,6 +869,16 @@ sub buildweek($$$)
 		my $dozdaytwo = doz_int($dozpltwo[2]);
 		$dozdaytwo =~ s/\\x/X/g;
 		$dozdaytwo =~ s/\\e/E/g;
+		my @dozplthree = @dayplthree;
+		my $dozyearthree = doz_int($dozplthree[0]);
+		$dozyearthree =~ s/\\x/X/g;
+		$dozyearthree =~ s/\\e/E/g;
+		my $dozmonththree = doz_int($dozplthree[1]);
+		$dozmonththree =~ s/\\x/X/g;
+		$dozmonththree =~ s/\\e/E/g;
+		my $dozdaythree = doz_int($dozplthree[2]);
+		$dozdaythree =~ s/\\x/X/g;
+		$dozdaythree =~ s/\\e/E/g;
 		$phr = doz_int($hour);
 		$pmn = $min."0";
 		$ophr = $phr; $opmn = $pmn;
@@ -885,7 +898,7 @@ sub buildweek($$$)
 		print "\t\\ifthenelse{\\isodd{\\value{page}}}{%\n";
 		if ($phr ne "13" && $phr ne "14") {
 			print "\\rule{2pt}{\\baselineskip}%\n";
-		} else {#FFF
+		} else {
 			if ($pmn eq "90" & $phr eq "13") {
 				print "\\begin{tcolorbox}[boxrule=2pt,arc=0pt,%\n";
 				print "\twidth=.318\\weeklydayboxwid,height=2\\baselineskip,%\n";
@@ -903,11 +916,16 @@ sub buildweek($$$)
 		if (&day($daypltwo[1],$daypltwo[2],$daypltwo[0]) eq "SAT") {
 			$satevs[$j++] = "\\eventsty $phr;$pmn:  $event" if $event ne "";
 			$event = "";
-		} elsif (&day($daypltwo[1],$daypltwo[2],$daypltwo[0]) eq "SUN") {
-			$sunevs[$k++] = "\\eventsty $phr;$pmn:  $event";
+		} else {
+			print "\t\\vbox to 0pt{\\vskip-.9em\\hbox to0pt{$event}\\vfil}%\n";
+		}
+		$event = get_event($dozyearthree,$dozmonththree,$dozdaythree,$ophr,$opmn);
+		if (&day($dayplthree[1],$dayplthree[2],$dayplthree[0]) eq "SUN") {
+			if (($event ne "")) {
+				$sunevs[$k++] = "\\eventsty $phr;$pmn:  $event%\n";
+			}
 			$event = "";
 		}
-		print "\t\\vbox to 0pt{\\vskip-.9em\\hbox to0pt{$event}\\vfil}%\n";
 		print "\t\\hskip\\thirdskip\\rule{2pt}{\\baselineskip}%\n";
 		print "\\vss}%\n";
 		print "\\rule{\\linewidth}{0.4pt}\n" if ($i % 4) != 0;
@@ -919,16 +937,20 @@ sub buildweek($$$)
 	if ((&day($daypltwo[1],$daypltwo[2],$daypltwo[0]) eq "SAT") && 
 		($#satevs > 0)) {
 		my $numslots = 38;
-		print "\\setlength{\\vertskip}{\\baselineskip+1pt}%\n";
 		print "\\begin{textblock}{1}(2.38,10.63)%\n";
 		print "\t\\vbox to38\\baselineskip{%\n";
-		print "\t\t\\vskip-0pt%\n";
 		for (my $l = 0; $l <= $#satevs; $l++) {
 			print "\t\t\\vbox to\\baselineskip{\\vss\\hbox{$satevs[$l]\\hfil}\\vss}%\n";
 		}
 		print "}\\end{textblock}%\n";
-	} elsif (&day($daypltwo[1],$daypltwo[2],$daypltwo[0]) eq "SUN") {
-
+	}
+	if (&day($dayplthree[1],$dayplthree[2],$dayplthree[0]) eq "SUN") {
+		print "\\begin{textblock}{1}(2.38,49.33)%\n";
+		print "\t\\vbox to16\\baselineskip{%\n";
+		for (my $l = 0; $l <= $#sunevs; $l++) {
+			print "\t\t\\vbox to\\baselineskip{\\vss\\hbox{$sunevs[$l]\\hfil}\\vss}%\n";
+		}
+		print "}\\end{textblock}%\n";
 	}
 	print "\\newpage\n";
 	@satevs = ();
