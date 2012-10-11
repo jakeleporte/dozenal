@@ -27,7 +27,7 @@ sub preamble()
 	$preamble = <<END;
 		\\documentclass{minimal}
 		\\usepackage{dozenal}
-		\\usepackage[absolute,showboxes,overlay]{textpos}
+		\\usepackage[absolute,overlay]{textpos}
 		\\usepackage[T1]{fontenc}
 		\\usepackage{lmodern}
 		\\usepackage{array}
@@ -715,8 +715,10 @@ sub get_event($$$$$)
 		if ($var =~ /$year\/[0]*$month\/[0]*$day:/) {
 			if ($var =~ /[0]*$ophr;$opmn/) { 
 				$var =~ /[0]*$ophr;$opmn[^a-zA-Z]*(.*)%.*%/;
-				$event = $1;
-				$event = "\\eventsty ".$event;
+				$event = "\\eventsty ".$1 if $event eq "";
+				chomp($event);
+				print STDERR "$event\n" if $month == 3 && $day == 19;
+				$event .= ", ".$1 if $event ne "" && $event !~ $1;
 			}
 		}
 	}

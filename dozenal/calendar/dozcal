@@ -501,6 +501,7 @@ sub get_times($)
 
 	$temp = $_[0];
 	$temp =~ s/\s//g;
+	print "$temp\n";
 	while ($temp =~ /([\dXE]{1,2};[\dXE]{1,4}[-]{0,2})/) {
 		push(@times,$1);
 		$temp =~ s/$1//;
