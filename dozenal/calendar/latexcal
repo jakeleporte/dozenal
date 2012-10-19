@@ -19,9 +19,10 @@ my $calyear;
 getopts('d:');
 our($opt_d);
 
-# sets up the calendar's basic routines
+# sets up the calendar's basic routines; takes the current
+# year (for outputting title page)
 
-sub preamble()
+sub preamble($)
 {
 	my $preamble;
 	$preamble = <<END;
@@ -29,7 +30,8 @@ sub preamble()
 		\\usepackage{dozenal}
 		\\usepackage[absolute,overlay]{textpos}
 		\\usepackage[T1]{fontenc}
-		\\usepackage{lmodern}
+		\\usepackage{lmodern} \\normalfont
+		\\DeclareFontShape{T1}{lmr}{bx}{sc} { <-> ssub * cmr/bx/sc }{}
 		\\usepackage{array}
 		\\usepackage{calc}
 		\\usepackage{tcolorbox}
@@ -45,7 +47,8 @@ sub preamble()
 		\\def\\Biggie{\\fontsize{17pt}{19pt}\\selectfont}
 		\\def\\monthsty#1{\\fontsize{36pt}{40pt}\\textsc{#1}}
 		\\def\\weektitlsty{\\fontsize{24pt}{24pt}\\selectfont\\scshape}
-		\\def\\thumbtitsty{\\scshape}
+		\\def\\thumbtitsty{\\fontsize{11pt}{11pt}\\selectfont\\bfseries\\scshape}
+		\\def\\weekletsty{\\fontsize{8pt}{8pt}\\selectfont}
 		\\def\\daysty{\\centering\\Biggie\\scshape}
 		\\def\\weekdaysty{\\centering\\scshape}
 		\\def\\eventsty{\\fontsize{9pt}{9pt}\\itshape}
@@ -80,11 +83,38 @@ sub preamble()
 		\\setlength\\weeklydayboxwid{\\linewidth+1pt}
 		\\setlength{\\TPVertModule}{\\baselineskip}
 		\\setlength{\\TPHorizModule}{\\thirdskip}
-		\\begin{titlepage}
-		CALENDAR
-		\\end{titlepage}
 END
 	print "$preamble\n";
+	print "{\\vspace*{\\stretch{1}}%\n";
+	print "\\fontsize{40pt}{40pt}\\selectfont%\n";
+	print "\\centering%\n";
+	print "\\textsc{Calendar}\\vskip.6em%\n";
+	print "\\fontsize{18pt}{18pt}\\selectfont%\n";
+	print "\\textbf{FOR}\\vskip1em%\n";
+	print "\\fontsize{40pt}{40pt}\\selectfont%\n";
+	$_[0] = doz_int($_[0]);
+	print "\\textsc{$_[0]}%\n";
+	print "\\vfill%\n";
+	print "\\fontsize{12pt}{12pt}\\selectfont%\n";
+	print "\\textbf{WITH}\\vskip1em%\n";
+	print "\\fontsize{30pt}{30pt}\\selectfont%\n";
+	print "\\textsc{Yearly, Monthly,}\\vskip1em%\n";
+	print "\\fontsize{12pt}{12pt}\\selectfont%\n";
+	print "\\textbf{AND}\\vskip1em%\n";
+	print "\\fontsize{30pt}{30pt}\\selectfont%\n";
+	print "\\textsc{Weekly Planning Sections}\\vskip1em%\n";
+	print "\\fontsize{12pt}{12pt}\\selectfont%\n";
+	print "\\textbf{PLUS}\\vskip1em%\n";
+	print "\\fontsize{30pt}{30pt}\\selectfont%\n";
+	print "\\textsc{Other Useful Data}%\n";
+	print "\\vfill%\n";
+	print "\\fontsize{20pt}{20pt}\\selectfont%\n";
+	print "\\textsc{Numeration Throughout is Dozenal (Base Twelve)}%\n";
+	print "\\fontsize{18pt}{18pt}\\selectfont%\n";
+	print "\\vskip1em\\bfseries%\n";
+	print "\\hfil 0\\hfil 1\\hfil 2\\hfil 3\\hfil 4\\hfil 5\\hfil 6\\hfil 7\\hfil 8\\hfil 9\\hfil \\x\\hfil \\e\\hfil 10\\hfil%\n";
+	print "\\normalsize}%\n";
+	print "\\newpage%\n";
 }
 
 # convert numbers to decimal
@@ -284,6 +314,9 @@ sub firstweek($$$$$$)
 	$totalboxes = 0; $boxnum = 0; $daynum = 1;
 	my @nums = qw( negtwo negone one two three four five six seven eight
 		nine ten elv unqua unqone unqtwo );
+	my @monnames = qw( November December January February March 
+		April May June July August September October November 
+		December January February);
 	if ($startblanks > 0) {
 		if ($numsty eq "smallnum") {
 			print "\\multicolumn{$startblanks}{c|}{} &\n";
@@ -304,12 +337,39 @@ sub firstweek($$$$$$)
 				$monthplus = $month + 2;
 			}
 			if ($startblanks >= 3) {
-				$multicont .= "\\vbox{\\hbox to $startblanks\\daywidth{%\n";
-				$multicont .= "\\hfil\\usebox{\\month$nums[$monthmin]}%\n";
-				$multicont .= 
-					"\\hfil\\usebox{\\month$nums[$monthplus]}\\hfil}}";
+				$multicont .= qq(
+\\hbox to $startblanks\\daywidth{%\n
+	\\hfil\\hbox to\\daywidth{%\n
+		\\vbox to.2\\dayheight{\\vskip2pt%\n
+			\\hbox to\\daywidth{\\hfil\\thumbtitsty%\n
+				$monnames[$monthmin]\\hfil}\\vskip2pt%\n
+			\\hbox to\\daywidth{\\hfil%\n
+				\\usebox{\\month$nums[$monthmin]}\\hfil}%\n
+		}%\n
+	}%\n
+	\\hfil\\hbox to\\daywidth{%\n
+		\\vbox to.2\\dayheight{\\vskip2pt%\n
+			\\hbox to\\daywidth{\\hfil\\thumbtitsty%\n
+				$monnames[$monthplus]\\hfil}\\vskip2pt%\n
+			\\hbox to\\daywidth{\\hfil%\n
+				\\usebox{\\month$nums[$monthplus]}\\hfil}%\n
+		}%\n
+	}\\hfil%\n
+}%\n
+);
 			} elsif ($startblanks <= 2) {
-				$multicont .= "\\usebox{\\month$nums[$monthmin]}";
+				$multicont .= qq(
+\\hbox to $startblanks\\daywidth{%\n
+	\\hfil\\hbox to\\daywidth{%\n
+		\\vbox to.2\\dayheight{\\vskip2pt%\n
+			\\hbox to\\daywidth{\\hfil\\thumbtitsty%\n
+				$monnames[$monthmin]\\hfil}\\vskip2pt%\n
+			\\hbox to\\daywidth{\\hfil%\n
+				\\usebox{\\month$nums[$monthmin]}\\hfil}%\n
+		}%\n
+	}\\hfil%\n
+}%\n
+);
 			}
 			print "\\multicolumn{$startblanks}{|c|}{$multicont} &\n";
 		}
@@ -429,6 +489,9 @@ sub nextweeks($$$$$$)
 	my $boxnum;
 	my @nums = qw( negtwo negone one two three four five six seven eight
 		nine ten elv unqua unqone unqtwo);
+	my @monnames = qw( November December January February March 
+		April May June July August September October November 
+		December January February);
 	my $multicont = "";
 	my $month = $_[4];
 	my $year = $_[5];
@@ -461,12 +524,39 @@ sub nextweeks($$$$$$)
 					$monthplus = $month + 2;
 				}
 				if ($endblanks >= 3) {
-					$multicont .= "\\vbox{\\hbox to $endblanks\\daywidth{%\n";
-					$multicont .= "\\hfil\\usebox{\\month$nums[$monthmin]}%\n";
-					$multicont .= 
-						"\\hfil\\usebox{\\month$nums[$monthplus]}\\hfil}}";
+					$multicont .= qq(
+\\hbox to $endblanks\\daywidth{%\n
+	\\hfil\\hbox to\\daywidth{%\n
+		\\vbox to.2\\dayheight{\\vskip2pt%\n
+			\\hbox to\\daywidth{\\hfil\\thumbtitsty%\n
+				$monnames[$monthmin]\\hfil}\\vskip2pt%\n
+			\\hbox to\\daywidth{\\hfil%\n
+				\\usebox{\\month$nums[$monthmin]}\\hfil}%\n
+		}%\n
+	}%\n
+	\\hfil\\hbox to\\daywidth{%\n
+		\\vbox to.2\\dayheight{\\vskip2pt%\n
+			\\hbox to\\daywidth{\\hfil\\thumbtitsty%\n
+				$monnames[$monthplus]\\hfil}\\vskip2pt%\n
+			\\hbox to\\daywidth{\\hfil%\n
+				\\usebox{\\month$nums[$monthplus]}\\hfil}%\n
+		}%\n
+	}\\hfil%\n
+}%\n
+);
 				} elsif ($endblanks <= 2) {
-					$multicont .= "\\usebox{\\month$nums[$monthplus]}";
+					$multicont .= qq(
+\\hbox to $endblanks\\daywidth{%\n
+	\\hfil\\hbox to\\daywidth{%\n
+		\\vbox to.2\\dayheight{\\vskip2pt%\n
+			\\hbox to\\daywidth{\\hfil\\thumbtitsty%\n
+				$monnames[$monthplus]\\hfil}\\vskip2pt%\n
+			\\hbox to\\daywidth{\\hfil%\n
+				\\usebox{\\month$nums[$monthplus]}\\hfil}%\n
+		}%\n
+	}\\hfil%\n
+}%\n
+);
 				}
 				print "\\multicolumn{$endblanks}{c|}{$multicont} &\n";
 			}
@@ -717,7 +807,6 @@ sub get_event($$$$$)
 				$var =~ /[0]*$ophr;$opmn[^a-zA-Z]*(.*)%.*%/;
 				$event = "\\eventsty ".$1 if $event eq "";
 				chomp($event);
-				print STDERR "$event\n" if $month == 3 && $day == 19;
 				$event .= ", ".$1 if $event ne "" && $event !~ $1;
 			}
 		}
@@ -788,40 +877,49 @@ sub buildweek($$$)
 	$dozpltwo = doz_int($daypltwo[2]);
 	print "\t\\def\\daythree{Wednesday, $dozpltwo\\ $months[$daypltwo[1]-1]}";
 	print "}%end the ifeven part\n";
-	print "\\vbox to.9\\daywidth{\\vfill%\n";
+	print "\\vbox to0.95\\daywidth{\\vfill%\n";
 	print "\\ifthenelse{\\isodd{\\value{page}}}{%\n";
 	print "\\hbox to\\linewidth{%\n";
 	print "\\hbox to\\daywidth{\\hfill% the thumbnail hbox\n";
-	print "\t\\vbox to1.2\\dayheight{%\n";
+	print "\t\\vbox to1.35\\dayheight{%\n";
 	$thumbyear = get_tyear($tmonth+1);
 	print "\t\\hbox to\\daywidth{\\hfil\\thumbtitsty $tmonths[$tmonth+1] $thumbyear\\hfil}%\n";
-	print "\t\\hbox to\\daywidth{\\hfil\\usebox{\\month$nums[$tmonth+1]}\\hfil}%\n";
+	print "\t\\vskip-.3em%\n";
+	print "\t\\hbox to\\daywidth{\\hskip0.3em\\weekletsty\\hfill\\hbox to\\smallday{S}\\hfil\\hbox to\\smallday{M}\\hfil\\hbox to\\smallday{T}\\hfil\\hbox to\\smallday{W}\\hfil\\hbox to\\smallday{T}\\hfil\\hbox to\\smallday{F}\\hfil\\hbox to\\smallday{S}\\hfill}%\n";
+	print "\t\\hbox to\\daywidth{%\n";
+	print "\t\\hfil\\usebox{\\month$nums[$tmonth+1]}\\hfil}%\n";
 	print "} % end the first thumbnail vbox\n";
-	print "\\hskip-0in\\vbox to1.2\\dayheight{%\n";
+	print "\\hskip-0in\\vbox to1.35\\dayheight{%\n";
 	$thumbyear = get_tyear($tmonth+2);
 	print "\t\\hbox to\\daywidth{\\hfil\\thumbtitsty $tmonths[$tmonth+2] ";
 	print "$thumbyear\\hfil}%\n";
+	print "\t\\vskip-.3em%\n";
+	print "\t\\hbox to\\daywidth{\\hskip0.3em\\weekletsty\\hfill\\hbox to\\smallday{S}\\hfil\\hbox to\\smallday{M}\\hfil\\hbox to\\smallday{T}\\hfil\\hbox to\\smallday{W}\\hfil\\hbox to\\smallday{T}\\hfil\\hbox to\\smallday{F}\\hfil\\hbox to\\smallday{S}\\hfill}%\n";
 	print "\t\\hbox to\\daywidth{\\hfil\\usebox{\\month$nums[$tmonth+2]}\\hfil}%\n";
 	print "} % end the second thumbnail vbox\n";
 	print "} % end the thumbnail hbox\n";
-	print "\t\\hskip-2\\daywidth\\vbox to1.2\\dayheight{\\vfill%\n";
+	print "\t\\hskip-2\\daywidth\\vbox to1.35\\dayheight{\\vfill%\n";
 	print "\t\t\\hfill\\weektitlsty\\ldots $dozplthree\\ $fmonths[$dayplthree[1]-1]%\n";
 	print "\t}%\n";
 	print "}% end the top bar hbox for odd pages\n";
 	print "}{% if even, week title\n";
 	print "\\hbox to\\linewidth{%\n";
-	print "\t\\vbox to1.2\\dayheight{\\vfill%\n";
+	print "\t\\vbox to1.35\\dayheight{\\vfill%\n";
 	print "\t\t\\weektitlsty $dozday\\ $fmonths[$month-1] to\\ldots%\n";
 	print "\t}\\hskip-2\\daywidth%\n";
 	print "\\hbox to\\daywidth{\\hfill% the thumbnail hbox\n";
-	print "\t\\vbox to1.2\\dayheight{%\n";
+	print "\t\\vbox to1.35\\dayheight{%\n";
 	$thumbyear = get_tyear($tmonth);
 	print "\t\\hbox to\\daywidth{\\hfil\\thumbtitsty $tmonths[$tmonth] $thumbyear\\hfil}%\n";
+	print "\t\\vskip-.3em%\n";
+	print "\t\\hbox to\\daywidth{\\hskip0.3em\\weekletsty\\hfill\\hbox to\\smallday{S}\\hfil\\hbox to\\smallday{M}\\hfil\\hbox to\\smallday{T}\\hfil\\hbox to\\smallday{W}\\hfil\\hbox to\\smallday{T}\\hfil\\hbox to\\smallday{F}\\hfil\\hbox to\\smallday{S}\\hfill}%\n";
 	print "\t\\hbox to\\daywidth{\\hfil\\usebox{\\month$nums[$tmonth]}\\hfil}%\n";
 	print "} % end the first thumbnail vbox\n";
-	print "\\hskip-0in\\vbox to1.2\\dayheight{%\n";
+	print "\\hskip-0in\\vbox to1.35\\dayheight{%\n";
 	$thumbyear = get_tyear($tmonth+1);
 	print "\t\\hbox to\\daywidth{\\hfil\\thumbtitsty $tmonths[$tmonth+1] $thumbyear\\hfil}%\n";
+	print "\t\\vskip-.3em%\n";
+	print "\t\\hbox to\\daywidth{\\hskip0.3em\\weekletsty\\hfill\\hbox to\\smallday{S}\\hfil\\hbox to\\smallday{M}\\hfil\\hbox to\\smallday{T}\\hfil\\hbox to\\smallday{W}\\hfil\\hbox to\\smallday{T}\\hfil\\hbox to\\smallday{F}\\hfil\\hbox to\\smallday{S}\\hfill}%\n";
 	print "\t\\hbox to\\daywidth{\\hfil\\usebox{\\month$nums[$tmonth+1]}\\hfil}%\n";
 	print "} % end the second thumbnail vbox\n";
 	print "} % end the thumbnail hbox\n";
@@ -1006,11 +1104,11 @@ sub main()
 	$dateplus =~ s/\\x/X/g;
 	$dateplus =~ s/\\e/E/g;
 
-	$callist = qx(./dozcal -lt -d$datemin);
-	$callist .= qx(./dozcal -lt -d$date);
-	$callist .= qx(./dozcal -lt -d$dateplus);
+#	$callist = qx(./dozcal -lt -d$datemin);
+#	$callist .= qx(./dozcal -lt -d$date);
+#	$callist .= qx(./dozcal -lt -d$dateplus);
 	@callist = split(/\n/,$callist);
-	preamble();
+	preamble(dec_int($opt_d));
 	$calyear = dec_int($date);
 	small_monthlies($calyear);
 	large_monthlies($calyear);
