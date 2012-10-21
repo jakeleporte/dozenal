@@ -804,8 +804,9 @@ sub get_event($$$$$)
 	my $day = $_[2];
 	my $ophr = $_[3];
 	my $opmn = $_[4];
+	my @newarray = grep(/$year\/[0]*$month\/[0]*$day:/,@callist);
 
-	foreach my $var (@callist) {
+	foreach my $var (@newarray) {
 		if ($var =~ /$year\/[0]*$month\/[0]*$day:/) {
 			if ($var =~ /[0]*$ophr;$opmn/) { 
 				$var =~ /[0]*$ophr;$opmn[^a-zA-Z]*(.*)%.*%/;
@@ -1005,7 +1006,7 @@ sub buildweek($$$)
 		} else {
 			if ($pmn eq "90" & $phr eq "13") {
 				print "\\begin{tcolorbox}[boxrule=2pt,arc=0pt,%\n";
-				print "\twidth=.318\\weeklydayboxwid,height=2\\baselineskip,%\n";
+				print "\twidth=.319\\weeklydayboxwid,height=2\\baselineskip,%\n";
 				print "\tcolback=gray,coltext=white,%\n";
 				print "\tbefore={\\hskip0em}]%\n";
 				print "\t\\vskip-0.25em\\hbox to.318\\weeklydayboxwid{%\n";
@@ -1041,15 +1042,15 @@ sub buildweek($$$)
 	if ((&day($daypltwo[1],$daypltwo[2],$daypltwo[0]) eq "SAT") && 
 		($#satevs > 0)) {
 		my $numslots = 38;
-		print "\\begin{textblock}{1}(2.38,10.63)%\n";
+		print "\\begin{textblock}{1}(2.42,11.12)%\n";
 		print "\t\\vbox to38\\baselineskip{%\n";
 		for (my $l = 0; $l <= $#satevs; $l++) {
-			print "\t\t\\vbox to\\baselineskip{\\vss\\hbox{$satevs[$l]\\hfil}\\vss}%\n";
+			print "\t\t\\vbox to0.9\\baselineskip{\\vss\\hbox{$satevs[$l]\\hfil}\\vss}%\n";
 		}
 		print "}\\end{textblock}%\n";
 	}
 	if (&day($dayplthree[1],$dayplthree[2],$dayplthree[0]) eq "SUN") {
-		print "\\begin{textblock}{1}(2.38,49.33)%\n";
+		print "\\begin{textblock}{1}(2.42,49.33)%\n";
 		print "\t\\vbox to16\\baselineskip{%\n";
 		for (my $l = 0; $l <= $#sunevs; $l++) {
 			print "\t\t\\vbox to\\baselineskip{\\vss\\hbox{$sunevs[$l]\\hfil}\\vss}%\n";
@@ -1236,7 +1237,11 @@ sub main()
 	$dateplus =~ s/\\e/E/g;
 
 #	$callist = qx(./dozcal -lt -d$datemin);
-#	$callist .= qx(./dozcal -lt -d$date);
+	$callist .= qx(./dozcal -lt -d"Nov $datemin");
+	$callist .= qx(./dozcal -lt -d"Dec $datemin");
+	$callist .= qx(./dozcal -lt -d$date);
+	$callist .= qx(./dozcal -lt -d"Jan $dateplus");
+	$callist .= qx(./dozcal -lt -d"Feb $dateplus");
 #	$callist .= qx(./dozcal -lt -d$dateplus);
 	@callist = split(/\n/,$callist);
 	preamble(dec_int($opt_d));
