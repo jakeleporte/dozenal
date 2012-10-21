@@ -381,6 +381,30 @@ sub parse_daynames($)
 	my $flag = 0;
 	my $monthname = "";
 
+# new code
+	if (($temp =~ /[f|F]irst/) || ($temp =~ /[s|S]econd/) ||
+		($temp =~ /[t|T]hird/) || ($temp =~ /[f|F]ourth/)) {
+		my $i = 0;
+		foreach my $var (@months) {
+			last if grep(/$var/,$temp);
+			$i++;
+		}
+		$monthname = $months[$i];
+		$i = 0;
+		foreach my $var (@weekdays) {
+			last if grep(/$var/,$temp);
+			$i++;
+		}
+		$weekday = $weekdays[$i];
+		$flag = 1;
+		# insert code here to figure out year
+		while (lc(&day($month,$day,$year)) !~ lc($weekday)) {
+			$day++;
+		}
+		# now push appropriate date after checking for first,
+		# second, third, or fourth
+	}
+# new code
 	while ($temp =~ /--/) {
 		($first,$last)=($temp=~/([A-Z][a-z]+day)--([A-Z][a-z]+day)/);
 		$temp =~ s/$first--$last//;
