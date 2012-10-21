@@ -945,7 +945,7 @@ sub buildweek($$$)
 	print "\\rule{\\linewidth}{2pt}\n";
 	for (my $i = 1; $i <= (14*4); $i++) {
 		my $event;
-		my $dozyear = doz_int($thisyear);
+		my $dozyear = doz_int($year);
 		my $dozmonth = doz_int($month);
 		my $zday = $dozday;
 		$zday =~ s/\\x/X/g;
