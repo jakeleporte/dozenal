@@ -48,6 +48,7 @@ sub preamble($)
 		\\usepackage{lscape}
 		\\def\\Biggie{\\fontsize{17pt}{19pt}\\selectfont}
 		\\def\\yearlytitsty{\\fontsize{18pt}{18pt}\\selectfont\\bfseries}
+		\\def\\timesty{\\fontsize{10pt}{12pt}\\selectfont}
 		\\def\\copypagesty{\\fontsize{12pt}{12pt}\\selectfont}
 		\\def\\monthsty#1{\\fontsize{36pt}{40pt}\\textsc{#1}}
 		\\def\\weektitlsty{\\fontsize{24pt}{24pt}\\selectfont\\scshape}
@@ -99,7 +100,7 @@ END
 	$_[0] = doz_int($_[0]);
 	print "\\textsc{$_[0]}%\n";
 	print "\\vfill%\n";
-	print "\\fontsize{12pt}{12pt}\\selectfont%\n";
+	print "\\fontsize{10pt}{12pt}\\selectfont%\n";
 	print "\\textbf{WITH}\\vskip1em%\n";
 	print "\\fontsize{30pt}{30pt}\\selectfont%\n";
 	print "\\textsc{Yearly, Monthly,}\\vskip1em%\n";
@@ -991,7 +992,7 @@ sub buildweek($$$)
 		$phr = "0".$phr if $phr =~ /^\\/;
 		print "\\vss\n";
 		print "\\nointerlineskip\\vbox to0pt{%\n";
-		print "\t\\vskip3pt\\hskip3pt$phr;$pmn\\vss%\n";
+		print "\t\\vskip3pt\\hskip3pt\\timesty $phr;$pmn\\vss%\n";
 		print "\t\\rule{2pt}{\\baselineskip}%\n";
 		print "\t\\hskip6ex\\rule{2pt}{\\baselineskip}%\n";
 		$event = get_event($dozyear,$dozmonth,$zday,$ophr,$opmn);
@@ -1102,8 +1103,8 @@ sub copypage($)
 	my $year = doz_int($_[0]);
 	print <<ENDCOPYPAGE
 \\def\\sfrac#1#2{\\leavevmode\\kern.1em
-	\\raise.5ex\\hbox{\\footnotesize #1}\\kern-.1em
-	/\\kern-.15em\\lower.25ex\\hbox{\\footnotesize #2}}
+	\\raise.5ex\\hbox{\\fontsize{8pt}{8pt}\\selectfont #1}\\kern-.1em
+	/\\kern-.15em\\lower.25ex\\hbox{\\fontsize{8pt}{8pt}\\selectfont #2}}
 \\vspace*{\\stretch{1}}
 
 \\noindent\\copypagesty \\emph{Dozenal} numeration is a
@@ -1146,11 +1147,12 @@ Goodman III.  All rights reserved.\\hspace{\\stretch{1}}
 
 \\vskip 1em
 
-\\noindent\\small This document may be copied and distributed
-freely, subject to the Creative Commons Attribution-Share
-Alike 3.0 United States License, available at
+\\noindent\\fontsize{9pt}{9pt}\\selectfont This document may
+be copied and distributed freely, subject to the Creative
+Commons Attribution-Share Alike 3.0 United States License,
+available at
 \\url{http://www.creativecommons.org/licenses/by-sa/3.0/us/}.
-\\hspace{\\stretch{1}}\\normalsize
+\\hspace{\\stretch{1}}\\fontsize{12pt}{12pt}\\selectfont
 \\newpage
 ENDCOPYPAGE
 }
