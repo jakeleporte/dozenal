@@ -1,35 +1,38 @@
-Staff Meeting	Wednesday	12;00		event
-Louise's Birthday	1E April			2special
-Work Meeting	Thursdays in March	12;00, 12;60		event
-Work Meeting	Thursdays of March	12;00-- 12;60		event
-Other Work Meeting	Fridays of March	12;00-- 12;60		event
-Tues Work Meeting	Tuesdays in March	13;00		event
-Wed Work Meeting	Wednesdays in March	12;00		event
-Special Work Meeting	 Saturdays in March	10;00		event
-Early Work Meeting	 Saturdays in March	7;00		event
-Extra Special Work Meeting	 Saturdays in March	9;00		event
-Late Work Meeting	 Saturdays in March	13;00		event
-Special Sunday Work Meeting	 Sundays in March	10;00		event
-Early Sunday Work Meeting	 Sundays in March	7;00		event
-Extra Special Sunday Work Meeting	 Sundays in March	9;00		event
-Late Sunday Work Meeting	 Sundays in March	13;00		event
-Vacation	14--19 March 11E8			1special
-Other Vacation	14 May --19 July 11E8			1special
-Something Else	Tuesdays in March,Thursdays in April			event
-Something Silly	Tuesdays,Thursdays			event
-Still Other Vacation	1X Nov 11E8 --19 Feb 11E9			1special
-More Meetings	5/6/11E7 -- 6/2/11E7			event
-More Meetings	5-6-11E7 -- 6-2-11E7			event
-Still More Meetings	11E7-10-18 -- 11E7-10-26		11E7-E-18	event
-Meetings Galore!	11E7-0X-26 -- 11E7-E-18		11E7-E-11, 11E7-E-12, 11E7-E-14--11E7-E-18	event
-Fun Stuff!	Wednesday--Friday in October			event
-More Fun Stuff!	Thursday in October,Friday in November			event
-Testing for Jan	Tuesdays of January	3;00		event
-Leapyear Test	Wednesdays in February			event
-Leapyear Test 2	Wednesdays			event
-Leapyear Test 3	Wednesdays in February 11E7	14;00		event
-Fill a Day	Mondays in April	8;00		event
-More for the Day	1E Apr 11E8	10;00--11;00		event
+#Staff Meeting	Wednesday	12;00		event
+#Louise's Birthday	1E April			2special
+#Work Meeting	Thursdays in March	12;00, 12;60		event
+#Work Meeting	Thursdays of March	12;00-- 12;60		event
+#Other Work Meeting	Fridays of March	12;00-- 12;60		event
+#Tues Work Meeting	Tuesdays in March	13;00		event
+#Wed Work Meeting	Wednesdays in March	12;00		event
+#Special Work Meeting	 Saturdays in March	10;00		event
+#Early Work Meeting	 Saturdays in March	7;00		event
+#Extra Special Work Meeting	 Saturdays in March	9;00		event
+#Late Work Meeting	 Saturdays in March	13;00		event
+#Special Sunday Work Meeting	 Sundays in March	10;00		event
+#Early Sunday Work Meeting	 Sundays in March	7;00		event
+#Extra Special Sunday Work Meeting	 Sundays in March	9;00		event
+#Late Sunday Work Meeting	 Sundays in March	13;00		event
+#Vacation	14--19 March 11E8			1special
+#Other Vacation	14 May --19 July 11E8			1special
+#Something Else	Tuesdays in March,Thursdays in April			event
+#Something Silly	Tuesdays,Thursdays			event
+#Still Other Vacation	1X Nov 11E8 --19 Feb 11E9			1special
+#More Meetings	5/6/11E7 -- 6/2/11E7			event
+#More Meetings	5-6-11E7 -- 6-2-11E7			event
+#Still More Meetings	11E7-10-18 -- 11E7-10-26		11E7-E-18	event
+#Meetings Galore!	11E7-0X-26 -- 11E7-E-18		11E7-E-11, 11E7-E-12, 11E7-E-14--11E7-E-18	event
+#Fun Stuff!	Wednesday--Friday in October			event
+#More Fun Stuff!	Thursday in October,Friday in November			event
+#Testing for Jan	Tuesdays of January	3;00		event
+#Leapyear Test	Wednesdays in February			event
+#Leapyear Test 2	Wednesdays			event
+#Leapyear Test 3	Wednesdays in February 11E7	14;00		event
+#Fill a Day	Mondays in April	8;00		event
+#More for the Day	1E Apr 11E8	10;00--11;00		event
+#Intermittent	Second Thursday in April	13;00		event
+Intermittent Again	First Sunday in April	13;00		event
+Yearly Intermittent	Third Tuesdays	12;00		event
 %DATEFORM:	 %d %B %Y
 #%FORM_TEXT 1special "%n \n *** %d ***\n"
 #%FORM_TEXT event "%#20d\n%@-20t%_20n\n"

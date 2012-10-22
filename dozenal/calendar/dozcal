@@ -380,16 +380,27 @@ sub parse_daynames($)
 	my $weekday;
 	my $flag = 0;
 	my $monthname = "";
+	my $tmpwday = "";
 
-# new code
 	if (($temp =~ /[f|F]irst/) || ($temp =~ /[s|S]econd/) ||
-		($temp =~ /[t|T]hird/) || ($temp =~ /[f|F]ourth/)) {
+		($temp =~ /[t|T]hird/) || ($temp =~ /[f|F]ourth/) || 
+		($temp =~ /[f|F]ifth/)) {
 		my $i = 0;
 		foreach my $var (@months) {
 			last if grep(/$var/,$temp);
 			$i++;
 		}
 		$monthname = $months[$i];
+		my $firstmon;
+		my $lastmon;
+		if ($i == 13) {
+			$firstmon = 1;
+			$lastmon = 12;
+		} else {
+			$month = $i+1;
+			$firstmon = $month;
+			$lastmon = $month;
+		}
 		$i = 0;
 		foreach my $var (@weekdays) {
 			last if grep(/$var/,$temp);
@@ -397,14 +408,33 @@ sub parse_daynames($)
 		}
 		$weekday = $weekdays[$i];
 		$flag = 1;
-		# insert code here to figure out year
-		while (lc(&day($month,$day,$year)) !~ lc($weekday)) {
-			$day++;
+		if ($temp =~ /([\dXE]{4,4})/) {
+			$year = dec_int($1);
+		} else {
+			$year = $t->year;
 		}
-		# now push appropriate date after checking for first,
-		# second, third, or fourth
+		while ($firstmon <= $lastmon) {
+			$day = 1;
+			$tmpwday = lc(&day($firstmon,$day,$year));
+			while (lc($weekday) !~ /$tmpwday/) {
+				$day++;
+				$tmpwday = lc(&day($firstmon,$day,$year));
+			}
+			if ($temp =~ /[f|F]irst/) {
+				push(@range,julday($year,$firstmon,$day));
+			} elsif ($temp =~ /[s|S]econd/) {
+				push(@range,julday($year,$firstmon,$day+7));
+			} elsif ($temp =~ /[t|T]hird/) {
+				push(@range,julday($year,$firstmon,$day+14));
+			} elsif ($temp =~ /[f|F]ourth/) {
+				push(@range,julday($year,$firstmon,$day+21));
+			} elsif ($temp =~ /[f|F]ifth/) {
+				push(@range,julday($year,$firstmon,$day+28));
+			}
+			++$firstmon;
+		}
+		$temp = "";
 	}
-# new code
 	while ($temp =~ /--/) {
 		($first,$last)=($temp=~/([A-Z][a-z]+day)--([A-Z][a-z]+day)/);
 		$temp =~ s/$first--$last//;
