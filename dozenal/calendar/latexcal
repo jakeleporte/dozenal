@@ -33,8 +33,10 @@ sub preamble($)
 		\\usepackage{lmodern} \\normalfont
 		\\DeclareFontShape{T1}{lmr}{bx}{sc} { <-> ssub * cmr/bx/sc }{}
 		\\usepackage{array}
+		\\usepackage{lscape}
 		\\usepackage{calc}
 		\\usepackage{tcolorbox}
+		\\usepackage{booktabs}
 		\\usepackage{ifthen}
 		\\usepackage{graphicx}
 		\\usepackage{textcomp}
@@ -47,7 +49,8 @@ sub preamble($)
 		\\usepackage[paperwidth=8.5in,paperheight=11in,width=7.5in,height=10.5in,bottom=0.25in]{geometry}
 		\\usepackage{lscape}
 		\\def\\Biggie{\\fontsize{17pt}{19pt}\\selectfont}
-		\\def\\yearlytitsty{\\fontsize{18pt}{18pt}\\selectfont\\bfseries}
+		\\def\\yearlytitsty{\\fontsize{18pt}{18pt}\\selectfont\\bfseries}A
+		\\def\\tabheadsty{\\bfseries\\scshape}
 		\\def\\timesty{\\fontsize{10pt}{12pt}\\selectfont}
 		\\def\\copypagesty{\\fontsize{12pt}{12pt}\\selectfont}
 		\\def\\monthsty#1{\\fontsize{36pt}{40pt}\\textsc{#1}}
@@ -1091,6 +1094,88 @@ sub weeklies($)
 	}
 }
 
+# insert the "other useful data"
+
+sub closingdata()
+{
+	print <<ENDTGMTABLE
+\\renewcommand\\tabcolsep{.2em}
+\\hbox to\\linewidth{%
+	\\hfil\\Biggie\\scshape Basic TGM (Tim, Grafut, Maz)\\hfil}
+\\hbox to\\textwidth{\\hfil%
+\\vbox{%
+	\\hbox to.49\\textwidth{\\hfil%
+	\\begin{tabular}{llll}
+		\\multicolumn{4}{c}{\\tabheadsty Length, Area, Volume} \\\\
+		Grafut & {} & 0;\\e783 ft & 0;366\\e\\ m \\\\
+		Gravinch & \$_1\$Gf & 0;\\e783 in & 2;569\\x cm \\\\
+		Gravyard & 3 Gf & 0;\\e783 yd & 0;\\x789 m \\\\
+		Gravmile & 3 \$^3\$Gf & 0;\\e51\\x\\ mi & 1;6488 km \\\\
+		Gravklick & 2 \$^3\$Gf & 0;7752 mi & 1;0319 km \\\\
+		Surf & {} & 0;\\e362 ft\$^2\$ & 0;1070 m\$^2\$ \\\\
+		QuadquaSurf & \$^4\$Sf & 0;5461 acres & 0;2213 ha \\\\
+		Volm & {} & 6;9\\e47 gal & 21;\\x254 L \\\\
+		Pintvol & 3 \$_2\$Vm & 1;17\\x9 pt & 0;6567 L \\\\
+		Cupvol & 1;6 \$_2\$Vm & 1;17\\x9 cp & 0;3293 L \\\\
+		Supvol & \$_3\$Vm & 1;0182 tbs & 12;\\e624 mL \\\\
+		Sipvol & 4 \$_4\$Vm & 1;0182 tsp & 4;\\e\\x09 mL \\\\
+	\\end{tabular}\\hfil%
+	}%
+\\vfil}%
+\\hfil
+\\vbox{%
+	\\hbox to.49\\textwidth{\\hfil%
+	\\begin{tabular}{llll}
+	\\multicolumn{4}{c}{\\tabheadsty Time, Motion, and Frequency} \\\\
+	Tim & {} & {} & 0;21 s \\\\
+	Tick & Tm & {} & 0;21 s \\\\
+	Unctic & \$^1\$Tm & {} & 2;1 s \\\\
+	Bictic & \$^2\$Tm & {} & 21 s \\\\
+	Block & \$^3\$Tm & 5 min & 210 s \\\\
+	Hour & \$^4\$Tm & 1 hr & 50 min \\\\
+	TriciaTim & \$_3\$Tm & {} & 0;1257 ms \\\\
+	Vlos & {} & 3;9874 mph & 6;16\\x\\x\\ kph \\\\
+	Speed Lim.\ & 15 Vl & 54;9248 mph & 88;2946 kph \\\\
+	St.\ Grav.\ & 1 Gee & 28;2280 ft/s\$^2\$ & 9;9879 m/s\$^2\$ \\\\
+	Freq & \\sfrac{1}{Tm} & {} & 5;9153 Hz \\\\
+	{} & 5 \$_3\$Fq & {} & 1 RPM \\\\
+	\\end{tabular}
+	\\hfil}%
+\\vfil}%
+\\hfil}%
+\\hbox to\\textwidth{\\hfil%
+\\vbox{%
+	\\hbox to.49\\textwidth{\\hfil%
+	\\begin{tabular}{llll}
+		\\multicolumn{4}{c}{\\tabheadsty Mass, Force, and Density}\\\\
+		Maz & {} & 48;\\e\\x72 lb & 21;\\x254 kg \\\\
+		BiquaMaz & \$^2\$Mz & 4;130\\e\\ ton & 3;8804 t \\\\
+		Oumz & 2 \$_3\$Mz & 1;07\\e8 oz & 25;\\e048 g \\\\
+		Poundz/Kilg & 3 \$_2\$Mz & 16;\\e\\e64 oz & 0;6567 kg \\\\
+		Denz & {} & 52;5146 lb/ft\$^3\$ & 6\\e3;\\e7\\e7 kg/\$m^3\$ \\\\
+		Mag & {} & 108\\x;2\\e62 pdl & 191;7151 N \\\\
+		{} & {} & 49;0154 lbf & 21;\\x38\\x\\ kgf \\\\
+		Prem & {} & 0;506\\e\\ lbf/in\$^2\$ & 1818;6\\e\\e0 Pa \\\\
+		Atmoz & 2\\e\\ Pm & 12;8836 lbf/in\$^2\$ & 4\\x900;4916 Pa \\\\
+		{} & {} & 25;\\e89 inHg & 535;56\\e\\ mmHg \\\\
+		Pov & {} & 0;6\\e45 hp & 2\\e\\e;\\x\\x08 W \\\\
+	\\end{tabular}\\hfil%
+	}%
+\\vfil}%
+\\hfil
+\\vbox{%
+	\\hbox to.49\\textwidth{\\hfil%
+	\\begin{tabular}{llll}
+	\\multicolumn{4}{c}{\\tabheadsty Temperature and Electricity} \\\\
+	\\end{tabular}
+	\\hfil}%
+\\vfil}%
+\\hfil}%
+ENDTGMTABLE
+}
+
+# finish the document
+
 sub finish()
 {
 	print "\\end{document}\n";
@@ -1253,6 +1338,7 @@ sub main()
 	small_monthlies($calyear);
 	large_monthlies($calyear);
 	weeklies($calyear);
+	closingdata();
 	finish();
 }
 
