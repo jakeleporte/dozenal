@@ -1099,13 +1099,25 @@ sub weeklies($)
 sub closingdata()
 {
 	print <<ENDTGMTABLE
-\\renewcommand\\tabcolsep{.2em}
 \\hbox to\\linewidth{%
 	\\hfil\\Biggie\\scshape Basic TGM (Tim, Grafut, Maz)\\hfil}
-\\hbox to\\textwidth{\\hfil%
+
+\\vskip1em
+\\noindent\\textsc{TGM is a system of measure} named for its
+three primary units:  the Tim (the unit of time), the Grafut
+(the unit of length), and the Maz (the unit of mass).  The
+system is consistently dozenal and covers all fields of
+human endeavor.  Designed to be easy and convenient both for
+the layman and for the scientist, TGM unites in itself the
+unique virtues of traditional systems, like the foot-pound
+system of the English-speaking world, and of SI and other
+French metric derivatives.
+\\vfil
+\\renewcommand\\tabcolsep{.4em}
+\\hbox to\\textwidth{%
 \\vbox{%
-	\\hbox to.49\\textwidth{\\hfil%
-	\\begin{tabular}{llll}
+	\\hbox to.49\\textwidth{%
+	\\begin{tabular}{llrr}
 		\\multicolumn{4}{c}{\\tabheadsty Length, Area, Volume} \\\\
 		Grafut & {} & 0;\\e783 ft & 0;366\\e\\ m \\\\
 		Gravinch & \$_1\$Gf & 0;\\e783 in & 2;569\\x cm \\\\
@@ -1113,19 +1125,19 @@ sub closingdata()
 		Gravmile & 3 \$^3\$Gf & 0;\\e51\\x\\ mi & 1;6488 km \\\\
 		Gravklick & 2 \$^3\$Gf & 0;7752 mi & 1;0319 km \\\\
 		Surf & {} & 0;\\e362 ft\$^2\$ & 0;1070 m\$^2\$ \\\\
-		QuadquaSurf & \$^4\$Sf & 0;5461 acres & 0;2213 ha \\\\
+		{} & \$^4\$Sf & 0;5461 acres & 0;2213 ha \\\\
 		Volm & {} & 6;9\\e47 gal & 21;\\x254 L \\\\
 		Pintvol & 3 \$_2\$Vm & 1;17\\x9 pt & 0;6567 L \\\\
 		Cupvol & 1;6 \$_2\$Vm & 1;17\\x9 cp & 0;3293 L \\\\
 		Supvol & \$_3\$Vm & 1;0182 tbs & 12;\\e624 mL \\\\
 		Sipvol & 4 \$_4\$Vm & 1;0182 tsp & 4;\\e\\x09 mL \\\\
-	\\end{tabular}\\hfil%
-	}%
+	\\end{tabular}%
+	\\hfil}%
 \\vfil}%
-\\hfil
+\\hfill
 \\vbox{%
 	\\hbox to.49\\textwidth{\\hfil%
-	\\begin{tabular}{llll}
+	\\begin{tabular}{llrr}
 	\\multicolumn{4}{c}{\\tabheadsty Time, Motion, and Frequency} \\\\
 	Tim & {} & {} & 0;21 s \\\\
 	Tick & Tm & {} & 0;21 s \\\\
@@ -1133,44 +1145,57 @@ sub closingdata()
 	Bictic & \$^2\$Tm & {} & 21 s \\\\
 	Block & \$^3\$Tm & 5 min & 210 s \\\\
 	Hour & \$^4\$Tm & 1 hr & 50 min \\\\
-	TriciaTim & \$_3\$Tm & {} & 0;1257 ms \\\\
-	Vlos & {} & 3;9874 mph & 6;16\\x\\x\\ kph \\\\
-	Speed Lim.\ & 15 Vl & 54;9248 mph & 88;2946 kph \\\\
+	{} & \$_3\$Tm & {} & 0;1257 ms \\\\ Vlos & {} & 3;9874 mph & 6;16\\x\\x\\ kph \\\\
+	Sp\. Lim.\ & 15 Vl & 54;9248 mph & 88;2946 kph \\\\
 	St.\ Grav.\ & 1 Gee & 28;2280 ft/s\$^2\$ & 9;9879 m/s\$^2\$ \\\\
 	Freq & \\sfrac{1}{Tm} & {} & 5;9153 Hz \\\\
 	{} & 5 \$_3\$Fq & {} & 1 RPM \\\\
 	\\end{tabular}
-	\\hfil}%
+	}%
 \\vfil}%
-\\hfil}%
-\\hbox to\\textwidth{\\hfil%
+}%
+\\vskip2em
+\\hbox to\\textwidth{%
 \\vbox{%
-	\\hbox to.49\\textwidth{\\hfil%
-	\\begin{tabular}{llll}
+	\\hbox to.49\\textwidth{%
+	\\begin{tabular}{llrr}
 		\\multicolumn{4}{c}{\\tabheadsty Mass, Force, and Density}\\\\
 		Maz & {} & 48;\\e\\x72 lb & 21;\\x254 kg \\\\
-		BiquaMaz & \$^2\$Mz & 4;130\\e\\ ton & 3;8804 t \\\\
+		{} & \$^2\$Mz & 4;130\\e\\ ton & 3;8804 t \\\\
 		Oumz & 2 \$_3\$Mz & 1;07\\e8 oz & 25;\\e048 g \\\\
-		Poundz/Kilg & 3 \$_2\$Mz & 16;\\e\\e64 oz & 0;6567 kg \\\\
-		Denz & {} & 52;5146 lb/ft\$^3\$ & 6\\e3;\\e7\\e7 kg/\$m^3\$ \\\\
+		Poundz & 3 \$_2\$Mz & 16;\\e\\e64 oz & 0;6567 kg \\\\
+		Denz & {} & 52;5146 lb/ft\$^3\$ & 6\\e3;\\e7\\e7 kg/m\$^3\$ \\\\
 		Mag & {} & 108\\x;2\\e62 pdl & 191;7151 N \\\\
 		{} & {} & 49;0154 lbf & 21;\\x38\\x\\ kgf \\\\
+		Werg & {} & 47;37\\x7 lbf\$\\cdot\$ft & 62;\\e96\\e N\$\\cdot\$m \\\\
 		Prem & {} & 0;506\\e\\ lbf/in\$^2\$ & 1818;6\\e\\e0 Pa \\\\
 		Atmoz & 2\\e\\ Pm & 12;8836 lbf/in\$^2\$ & 4\\x900;4916 Pa \\\\
 		{} & {} & 25;\\e89 inHg & 535;56\\e\\ mmHg \\\\
 		Pov & {} & 0;6\\e45 hp & 2\\e\\e;\\x\\x08 W \\\\
-	\\end{tabular}\\hfil%
-	}%
-\\vfil}%
-\\hfil
-\\vbox{%
-	\\hbox to.49\\textwidth{\\hfil%
-	\\begin{tabular}{llll}
-	\\multicolumn{4}{c}{\\tabheadsty Temperature and Electricity} \\\\
-	\\end{tabular}
+	\\end{tabular}%
 	\\hfil}%
 \\vfil}%
-\\hfil}%
+\\hfill
+\\vbox{%
+	\\hbox to.49\\textwidth{\\hfil%
+	\\begin{tabular}{llrr}
+	\\multicolumn{4}{c}{\\tabheadsty Temp., Elec., and Chemistry} \\\\
+	Calg & {} & 0;0021 \$^\\circ\$F & 0;0012 K \\\\
+	Decigree & \$^2\$Cg & 0;21 \$^\\circ\$F & 0.1 K \\\\
+	Tregree & \$^3\$Cg & 2;1 \$^\\circ\$F & 1;2497 K \\\\
+	Kur & {} & Current & 0;5\\e47 A \\\\
+	{} & {} & 6 \$_6\$Kr & 0;\\e\\e53 \$\\mu\$A \\\\
+	Pel & {} & Elec.\ Pot.\ & 607;3167 V \\\\
+	{} & {} & \$_3\$Pl & 0;6073 V \\\\
+	{} & {} & 2 \$_2\$Pl & 10;1263 V \\\\
+	Og & {} & Resistance & 1025;6860 \$\\Omega\$ \\\\
+	Quel & {} & Elec.\ Quant.\ & 0;1048 C \\\\
+	{} & {} & \$^1\$Ql & 1;0487 C \\\\
+	Molz & {} & {} & 21;\\x254 kmol \\\\
+	\\end{tabular}
+	}%
+\\vfil}%
+}%
 ENDTGMTABLE
 }
 
