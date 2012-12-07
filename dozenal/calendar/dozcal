@@ -12,8 +12,7 @@ use Time::Piece;
 #use List::MoreUtils;
 use Date::Day;
 use Date::Easter;
-use Date::Pcalc qw(Add_Delta_Days
-	Date_to_Days leap_year);
+use Date::Pcalc qw(:all);
 use Getopt::Std;
 getopts('f:d:o:thcl');
 our($opt_f,$opt_d,$opt_o,$opt_t,$opt_h,$opt_c,$opt_l);
@@ -166,14 +165,16 @@ sub read_files($)
 sub expand_dates($$)
 {
 	my $matches = 0;			# number of matching days to return
-	my $datestring = $_[0];	# date string
+	my $udatestring = $_[0];# date string
+	my $datestring = lc($_[0]);
 	my $wholeline = $_[1];	# the whole line, including datestring
 	my $hasmonth = 0;			# if there's a month
 	my $haswday = 0;			# if there's a wday
 	my $i;
 	my $j;
+	my $thedate;				# julian day in question
+	my $theday = 1;			# local version of the day
 
-	$datestring = lc($datestring);
 	for ($i = 0; $i <= $#wdays; $i++) {
 		if ($datestring =~ /$wdays[$i]/) {
 			$haswday = 1;
@@ -186,8 +187,78 @@ sub expand_dates($$)
 			last;
 		}
 	}
-#	print "$haswday; $hasmonth\n";
+	my $yeardays = (leap_year(dec_int($year))) ? 366 : 365;
+	if (($haswday == 1) && ($hasmonth == 0)) {
+		$theday+=1 while ($wdays[$i] ne lc(&day(1,$theday,dec_int($year))));
+		for (my $k = $theday; $k <= $yeardays; $k+=7) {
+			my ($themon,$theday) = get_month($k);
+			$thedate = julday(dec_int($year),$themon+1,$theday);
+			my $tmpline = $wholeline;
+			$tmpline =~ s/$udatestring/$thedate/;
+			print "$year - $themon - $theday\n";
+			print "$tmpline\n";
+			push(@calendar,$tmpline);
+		}
+	} elsif (($haswday == 1) && ($hasmonth == 1)) {
+	}
 	#FIXME:  Need to finish this to fill the calendar array
+}
+
+# takes one scalar, yday; returns the month and day of that
+# yday
+
+sub get_month($)
+{
+	my $yday = $_[0];
+	my $mon = 0;
+	my $j = 0;
+	my $theday = 1;
+
+	for (my $i = 1; $i <= $yday; $i++) {
+		$j++;
+		if (($mon == 0) && ($j == 31)) {
+			$mon++; $theday = $j;
+			$j = 0;
+		} elsif (($mon == 1) && ((($j == 28) || ($j == 29)))) {
+			if ((leap_year(dec_int($year))) && ($j == 29)) {
+				$mon++; $theday = $j;
+				$j = 0;
+			} elsif ((!leap_year(dec_int($year))) && ($j == 28)) {
+				$mon++; $theday = $j;
+				$j = 0;
+			}
+		} elsif (($mon == 2) && ($j == 31)) {
+			$mon++; $theday = $j;
+			$j = 0;
+		} elsif (($mon == 3) && ($j == 30)) {
+			$mon++; $theday = $j;
+			$j = 0;
+		} elsif (($mon == 4) && ($j == 31)) {
+			$mon++; $theday = $j;
+			$j = 0;
+		} elsif (($mon == 5) && ($j == 30)) {
+			$mon++; $theday = $j;
+			$j = 0;
+		} elsif (($mon == 6) && ($j == 31)) {
+			$mon++; $theday = $j;
+			$j = 0;
+		} elsif (($mon == 7) && ($j == 31)) {
+			$mon++; $theday = $j;
+			$j = 0;
+		} elsif (($mon == 8) && ($j == 30)) {
+			$mon++; $theday = $j;
+			$j = 0;
+		} elsif (($mon == 9) && ($j == 31)) {
+			$mon++; $theday = $j;
+			$j = 0;
+		} elsif (($mon == 10) && ($j == 30)) {
+			$mon++; $theday = $j;
+			$j = 0;
+		}
+	}
+	$mon-- if ($j == 0);
+	$j = $theday if ($j == 0);
+	return ($mon,$j);
 }
 
 # takes the date requested on command line as scalar;
@@ -207,7 +278,6 @@ sub parse_date($)
 		$date =~ s/$1//;
 	}
 	$date = lc($date);
-	print "$date\n";
 	for(my $i = 0; $i <= $#months; $i++) {
 		$month = doz_int($i+1) if ($date =~ /$months[$i]/);
 	}
@@ -222,11 +292,11 @@ sub main()
 
 	$lines = read_files($opt_f);
 	parse_date($opt_d) if $opt_d;
-	print "$year -- $month -- $day\n";
 	for (my $i = 0; $i < $lines; $i++) {
 		@line = split('\|',$callist[$i]);
 		expand_dates($line[1],$callist[$i]);
 	}
+#	print @calendar;
 }
 
 main();
