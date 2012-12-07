@@ -28,6 +28,8 @@ sub preamble($)
 	$preamble = <<END;
 		\\documentclass{minimal}
 		\\usepackage{dozenal}
+		\\usepackage{lettrine}
+		\\usepackage{xfrac}
 		\\usepackage[absolute,overlay]{textpos}
 		\\usepackage[T1]{fontenc}
 		\\usepackage{lmodern} \\normalfont
@@ -49,7 +51,8 @@ sub preamble($)
 		\\usepackage[paperwidth=8.5in,paperheight=11in,width=7.5in,height=10.5in,bottom=0.25in]{geometry}
 		\\usepackage{lscape}
 		\\def\\Biggie{\\fontsize{17pt}{19pt}\\selectfont}
-		\\def\\yearlytitsty{\\fontsize{18pt}{18pt}\\selectfont\\bfseries}A
+		\\def\\Big{\\fontsize{14pt}{17pt}\\selectfont}
+		\\def\\yearlytitsty{\\fontsize{18pt}{18pt}\\selectfont\\bfseries}
 		\\def\\tabheadsty{\\bfseries\\scshape}
 		\\def\\timesty{\\fontsize{10pt}{12pt}\\selectfont}
 		\\def\\copypagesty{\\fontsize{12pt}{12pt}\\selectfont}
@@ -450,10 +453,10 @@ sub makedaybox($$$$$$)
 				if ($numsty ne "smallnum");
 			print "\\vtop{\\vfill$celltext\\vfill}" 
 				if ($numsty eq "smallnum");
+			print "\\vskip0.3em%\n" if ($numsty eq "smallnum");
 			makecell($daynum+7,$numsty);
 			filldaybox($year,$month,$day) if $numsty ne "smallnum";
-			$celltext =~
-			s/\\smallnum/\\vskip-1.8em\\hbox{\\rule{\\linewidth}{.4pt}}\\vskip-0.2pt\\hskip1.0pt\\extsmall/;
+			$celltext =~ s/\\smallnum/\\vskip-1.8em\\hbox{\\rule{\\linewidth}{.4pt}}\\vskip-0.2pt\\hskip1.0pt\\extsmall/;
 			$celltext =~ s/\\ls/\\shorts/;
 			print "{\\vtop to.3\\$height {$celltext}}" 
 				if ($numsty ne "smallnum");
@@ -1098,20 +1101,38 @@ sub weeklies($)
 
 sub closingdata()
 {
-	print <<ENDTGMTABLE
+	print <<ENDTGMTABLE;
 \\hbox to\\linewidth{%
 	\\hfil\\Biggie\\scshape Basic TGM (Tim, Grafut, Maz)\\hfil}
 
 \\vskip1em
-\\noindent\\textsc{TGM is a system of measure} named for its
-three primary units:  the Tim (the unit of time), the Grafut
-(the unit of length), and the Maz (the unit of mass).  The
-system is consistently dozenal and covers all fields of
+\\noindent\\lettrine{T}{GM is a system of measure} named for
+its three primary units:  the Tim (the unit of time), the
+Grafut (the unit of length), and the Maz (the unit of mass).
+The system is consistently dozenal and covers all fields of
 human endeavor.  Designed to be easy and convenient both for
 the layman and for the scientist, TGM unites in itself the
 unique virtues of traditional systems, like the foot-pound
 system of the English-speaking world, and of SI and other
 French metric derivatives.
+
+\\hskip2em Part of TGM's appeal is its concomitant way of
+writing very large and very small quantities.  While modern
+systems utilize ``scientific notation,'' this is typically
+lengthy and bulky, and cannot be read at a glance (e.g.,
+4.567\$\\times\$10\$^15\$).  TGM encourages users instead to
+simply \\emph{prefix} the power of the dozen, either
+superscripted if it is a positive power, or subscripted if a
+negative.  So the above dozenized becomes \$^{12}\$3;683; a
+very tiny quantity might be \$_{12}\$3;683.  This is at once
+more compact and more readable than the current practice.
+
+\\hskip2em Below, the basic units of the TGM system, along
+with many others of practical size, are displayed with their
+traditional and decimal metric counterparts.  The full,
+detailed system can be obtained from the dozenal societies,
+or from many different places on the Internet.
+
 \\vfil
 \\renewcommand\\tabcolsep{.4em}
 \\hbox to\\textwidth{%
@@ -1196,7 +1217,128 @@ French metric derivatives.
 	}%
 \\vfil}%
 }%
+\\newpage
 ENDTGMTABLE
+	print <<ENDSDNTABLE;
+\\hbox to\\linewidth{%
+	\\hfil\\Biggie\\scshape Systematic Dozenal Nomenclature\\hfil}%
+\\vskip0.5em%
+\\hbox to\\linewidth{%
+	\\hfil\\Big\\scshape At a Glance\\hfil}%
+\\vskip1em
+
+\\lettrine{S}{ystematic Dozenal Nomenclature} (SDN) is a
+system of referring to numbers, similar to what we do in
+decimal with words like ``hundred,'' ``thousand,''
+``million,'' and so forth.  When we count in twelves, we
+can't use these decimal terms; SDN provides a analogous, but
+superior, set of terms for dozenal.  Using the
+internationally recognized and accepted number-word roots
+employed by the International Union of Pure and Applied
+Chemistry (IUPAC), and augmenting them with roots for
+``ten'' and ``eleven,'' SDN is a perfectly rational,
+coherent, and easy-to-learn system, requiring only twelve
+roots, two suffixes, and two particles.
+
+\\vskip1em
+\\hbox to \\linewidth{\\hfil%
+	\\setlength{\\extrarowheight}{0pt}%
+	\\begin{tabular}{ccccc}
+	\\toprule
+	\\multicolumn{5}{c}{Complete Set of SDN Prefixes} \\\\
+	\\midrule
+	Value & Root & Multiplier & Pos.\\ Power & Neg.\\ Power \\\\
+	\\midrule
+	0 & nil & nili & nilqua & nilcia \\\\
+	1 & un & uni & unqua & uncia \\\\
+	2 & bi & bina & biqua & bicia \\\\
+	3 & tri & trina & triqua & tricia \\\\
+	4 & quad & quadra & quadqua & quadcia \\\\
+	5 & pent & penta & pentqua & pentcia \\\\
+	6 & hex & hexa & hexqua & hexcia \\\\
+	7 & sept & septa & septqua & septcia \\\\
+	8 & oct & octa & octqua & octcia \\\\
+	9 & enn & ennea & ennqua & enncia \\\\
+	\\x & dec & deca & decqua & deccia \\\\
+	\\e & lev & leva & levqua & levcia \\\\
+	\\bottomrule
+	\\end{tabular}
+\\hfil}%
+\\vskip1em
+
+The twelve roots are listed in the ``Root'' column; the
+multiplier forms are essentially the same as the roots with
+a vowel inserted, with only ``quadra'' varying even slightly
+beyond that.  The suffixes are ``-qua,'' for positive powers
+of the dozen, and ``-cia,'' for negative powers of the
+dozen.  The particles are ``dit,'' for the so-called
+``decimal'' point, separating the whole numbers from the
+fractional parts (usually written ;, but sometimes '); and
+``per,'' which is used to create fractional words.
+
+\\hskip2em SDN leaves most of our daily language about
+numbers substantially unchanged.  A quadruped is still a
+quadruped, a pentagon is still a pentagon, and so forth.
+These words, and many others, are perfectly regular and
+orthodox SDN.  SDN also, however, greatly expands the reach
+our number words can have.
+
+\\hskip2em The multipliers simply multiply what they are
+attached to by the number they indicate; for example, a
+``tricycle'' is a ``cycle'' (wheel) multiplied by three, and
+a ``hexacycle'' is a ``cycle'' multiplied by six.  These
+roots can be combined, without their multiplier prefixes, to
+form number words they same way that we combine digits to
+form numbers.  
+In other words, use these in order according to
+place notation, the same way that you use digits.  For
+example, for a hypothetical insect with 357 legs:
+
+\\hbox to\\linewidth{\\hfil%
+	\\setlength{\\extrarowheight}{0pt}%
+	\\begin{tabular}{ccc}
+	Three & Five & Seven \\\\
+	3 & 5 & 7 \\\\
+	Tri & Pent & Septa \\\\
+	\\end{tabular}
+\\hfil}
+
+Yielding ``tripentseptaped.''  What we often call an
+``eighteen-wheeler'' (dozenal 16) is a ``dechexacycle''
+(``dec'' + ``hexa'' + ``cycle'' = ``1'' + ``6'' +
+``wheeler'').  Note that the multiplier forms mean
+multiplication, so only use it on the last part;
+``decahexacycle'' would mean ten \\emph{times} six, or five
+dozen, rather than twelve \\emph{plus} six, or one dozen
+six.
+
+\\hskip2em The particles can be used the same way.  Suppose
+you want a word for something that occurs twice a year; that
+is, every half year.  One possibility is
+``nildithexennial,'' remembering that 0;6 (``zero dit six'')
+is dozenal for one half.  ``Per'' is used for fractions
+which don't fit well into uncials.  E.g., \\sfrac{1}{7},
+which in uncials is 0;186\\x35 repeating, can be simply
+``unpersepta.''  In other words, the ``dit'' stands in for
+``;'' and the ``per'' for ``/''.
+
+\\hskip2em Finally, the power prefixes indicate powers of
+the dozen.  We are all familiar with terms like
+``bicentennial,'' and some of us with more difficult terms
+like ``sesquicentennial.''  These are decimal terms; but
+their dozenal analogues are easy.  ``100'' is 10\$^2\$; so
+we use the \\emph{power prefix} with the root for ``two'':
+``bi'' plus ``qua.''  This gives us ``biquennial.''  This
+can be combined with multiplier forms; for example,
+``quadrubiquennial'' means ``quad'' times ``biqua,'' for
+four biqua years.  Similarly for the negative prefixes:  a
+cell 0;00008 Grafut in diameter is 8 \\emph{hexcia}Grafut in
+diameter.
+
+\\hskip2em And this is SDN, a much more robust number
+nomenclature than our current one.
+
+ENDSDNTABLE
 }
 
 # finish the document
@@ -1212,9 +1354,6 @@ sub copypage($)
 {
 	my $year = doz_int($_[0]);
 	print <<ENDCOPYPAGE
-\\def\\sfrac#1#2{\\leavevmode\\kern.1em
-	\\raise.5ex\\hbox{\\fontsize{8pt}{8pt}\\selectfont #1}\\kern-.1em
-	/\\kern-.15em\\lower.25ex\\hbox{\\fontsize{8pt}{8pt}\\selectfont #2}}
 \\vspace*{\\stretch{1}}
 
 \\noindent\\copypagesty \\emph{Dozenal} numeration is a
@@ -1348,13 +1487,11 @@ sub main()
 	$dateplus =~ s/\\x/X/g;
 	$dateplus =~ s/\\e/E/g;
 
-#	$callist = qx(./dozcal -lt -d$datemin);
-	$callist .= qx(./dozcal -lt -d"Nov $datemin");
-	$callist .= qx(./dozcal -lt -d"Dec $datemin");
-	$callist .= qx(./dozcal -lt -d$date);
-	$callist .= qx(./dozcal -lt -d"Jan $dateplus");
-	$callist .= qx(./dozcal -lt -d"Feb $dateplus");
-#	$callist .= qx(./dozcal -lt -d$dateplus);
+	$callist .= qx(./dozcal -f sampdata -lt -d"Nov $datemin");
+	$callist .= qx(./dozcal -f sampdata -lt -d"Dec $datemin");
+	$callist .= qx(./dozcal -lt -f sampdata -d$date);
+	$callist .= qx(./dozcal -f sampdata -lt -d"Jan $dateplus");
+	$callist .= qx(./dozcal -f sampdata -lt -d"Feb $dateplus");
 	@callist = split(/\n/,$callist);
 	preamble(dec_int($opt_d));
 	copypage(dec_int($opt_d));
