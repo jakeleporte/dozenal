@@ -23,6 +23,8 @@ my $SUCCESS = 0;
 my $BAD_INPUT_FILE = 1;
 my $INPUT_FILE_NOT_EXIST = 2;
 my $BAD_OUTPUT_FORMAT = 3;
+my $BAD_MAIN_DATE = 4;
+my $BAD_EXCEPTION_DATE = 5;
 
 # change to dozenal digits; takes the scalar integer,
 # returnst he dozenal digit character
@@ -160,7 +162,8 @@ sub read_files($)
 # takes two scalars, the first is the date string in
 # question, and the second the entire line; expands this
 # into a list of julian days meeting the criteria, plus the
-# remainders of the data lines; returns nothing
+# remainders of the data lines; returns zero if success, one
+# if failure
 
 sub expand_dates($$)
 {
@@ -176,6 +179,7 @@ sub expand_dates($$)
 	my $theday = 1;			# local version of the day
 	my $yeardays;
 	my $theyear;
+	my $success = 1;			# error; set to zero if works
 
 	for ($i = 0; $i <= $#wdays; $i++) {
 		if ($datestring =~ /$wdays[$i]/) {
@@ -204,6 +208,7 @@ sub expand_dates($$)
 			my $tmpline = $wholeline;
 			$tmpline =~ s/$udatestring/$thedate/;
 			push(@calendar,$tmpline);
+			$success = 0;
 		}
 	} elsif (($haswday == 1) && ($hasmonth == 1)) {
 		$theday+=1 while 
@@ -215,6 +220,7 @@ sub expand_dates($$)
 			my $tmpline = $wholeline;
 			$tmpline =~ s/$udatestring/$thedate/;
 			push(@calendar,$tmpline);
+			$success = 0;
 		}
 	} elsif (($hasmonth == 1) && ($haswday == 0)) {
 		if ($datestring =~ /--/) {
@@ -228,13 +234,16 @@ sub expand_dates($$)
 				push(@calendar,$tmpline);
 				$firstdate++;
 			}
+			$success = 0;
 		} else {
 			$thedate = spec_date($datestring);
 			my $tmpline = $wholeline;
 			$tmpline =~ s/$udatestring/$thedate/;
 			push(@calendar,$tmpline);
+			$success = 0;
 		}
 	}
+	return $success;
 }
 
 # takes a date string; returns the julian day associated
@@ -363,6 +372,49 @@ sub remove_exceptions(\@\@)
 	return @goods;
 }
 
+# subtract "2" from all times to make them sortable; takes
+# nothing, receives nothing
+
+sub shrink_time()
+{
+	my $hour;
+	my $bicia;
+	my $newnum;
+
+	for (my $i = 0; $i <= $#calendar; $i++) {
+		($hour,$bicia) = ($calendar[$i][2] =~ 
+			/([\dXE]{1,2});([\dXE]{1,2})/);
+		next if ($hour eq "");
+		$hour = dec_int($hour) - 2;
+		$bicia = dec_int($bicia) - 2;
+		$newnum = $hour.".".$bicia;
+		$calendar[$i][2] = $newnum;
+	}
+}
+
+# adds "2" to all times to make them dozenal again; takes
+# nothing, returns nothing
+
+sub unshrink_time()
+{
+	my $hour;
+	my $bicia;
+	my $newnum;
+
+	for (my $i = 0; $i <= $#calendar; $i++) {
+		($hour,$bicia) = ($calendar[$i][2] =~ 
+			/([\dXE]{1,2})\.([-\dXE]{1,2})/);
+		next if ($hour eq "");
+		$hour += 2; $bicia += 2;
+		$newnum = $hour.";".$bicia;
+		$hour = doz_int($hour); $bicia = doz_int($bicia);
+		$hour = "0".$hour if ($hour =~ /^[\dXE]$/);
+		$bicia = "0".$bicia if ($bicia =~ /^[\dXE]$/);
+		$newnum = $hour.";".$bicia;
+		$calendar[$i][2] = $newnum;
+	}
+}
+
 # we know what this is for
 
 sub main()
@@ -371,27 +423,43 @@ sub main()
 	my @line;				# a line from the data file
 	my @goodlines;			# array of dates
 	my @exceptions;		# array of exceptions
+	my $fault = 0;			# set to one if error
 
 	$lines = read_files($opt_f);
 	parse_date($opt_d) if $opt_d;
 	for (my $i = 0; $i < $lines; $i++) {
 		@line = split('\|',$callist[$i]);
-		expand_dates($line[1],$callist[$i]);
+		$fault = expand_dates($line[1],$callist[$i]);
+		if ($fault == 1) {
+			chomp($callist[$i]);
+			print STDERR "dozcal:  error:  the following line's ";
+			print STDERR "main date is malformed:\n\t \"$callist[$i]\"";
+			exit $BAD_MAIN_DATE;
+		}
 	} # next, do the exceptions
 	@goodlines = @calendar;
 	@calendar = ();
 	for (my $i = 0; $i < $lines; $i++) {
 		@line = split('\|',$callist[$i]);
-		expand_dates($line[3],$callist[$i]);
+		$fault = expand_dates($line[3],$callist[$i]);
+		if (($fault == 1) && ($callist[$i] != "")) {
+			chomp($callist[$i]);
+			print STDERR "dozcal:  error:  the following line's ";
+			print STDERR "exception date is malformed:\n\t \"$callist[$i]\"";
+			exit $BAD_EXCEPTION_DATE;
+		} elsif (($fault == 1) && ($callist[$i] == "")) {
+			$fault = 0;
+		}
 	}
 	@goodlines = remove_exceptions(@goodlines,@calendar);
 	@calendar = ();
 	for (my $i = 0; $i <= $#goodlines; $i++) {
 		push @{$calendar[$i]},split('\|',$goodlines[$i]);
 	}
-	@calendar = sort { $a->[1] <=> $b->[1] || $a->[3] cmp
-		$b->[3] } @calendar;
-	#FIXME:  need to split field 3 and decimalize for sorting
+	shrink_time();
+	@calendar = sort { $a->[1] <=> $b->[1] || $a->[2] <=>
+		$b->[2] || $a->[4] cmp $b->[4] } @calendar;
+	unshrink_time();
 	for (my $i = 0; $i <= $#calendar; $i++) {
 		for (my $j = 0; $j < 5; $j++) {
 			print $calendar[$i][$j];
