@@ -23,8 +23,8 @@
 ##Fill a Day|Mondays in April|8;00||event
 ##More for the Day|1E Apr 11E8|10;00--11;00||event
 Exceptions Tests|Fridays in Sept 11E7|E;00|14 Sept 11E7|event
-Times Tests|Fridays in Sept 11E7|1X;00|14 Sept 11E7|2event
-Eventtype Tests|Fridays in Sept 11E7|1X;00|14 Sept 11E7|1event
+Times Tests|Fridays in Sept 11E7|1X;00|14 Sept 11E7|1event
+Eventtype Tests|Fridays in Sept 11E7|1X;00|14 Sept 11E7|event
 Louise's Birthday|1E April|||2special
 ##%DATEFORM:| %d %B %Y
 ##%FORM_TEXT 1special "%n \n *** %d ***\n"

@@ -120,7 +120,8 @@ sub jultogreg($)
 }
 
 # define @calendar; this array eats the contents of our
-# data file
+# data file; also define a variety of globally useful
+# variables
 
 my $calfile;
 my @calendar;
@@ -132,6 +133,11 @@ my $currdate = localtime;
 my $year = doz_int($currdate->year);
 my $month = -1;
 my $day = -1;
+
+# define the default date format variable; this can be
+# changed by command line or by config file
+
+my $date_format = "%d %b %Y";
 
 # reads the files; takes a scalar list of files; returns
 # number of lines read if success, otherwise dies returning
@@ -461,8 +467,15 @@ sub main()
 		$b->[2] || $a->[4] cmp $b->[4] } @calendar;
 	unshrink_time();
 	for (my $i = 0; $i <= $#calendar; $i++) {
+		my ($theyear,$themon,$theday) = jultogreg($calendar[$i][1]);
+		$theyear = doz_int($theyear); $themon = doz_int($themon);
+		$theday = doz_int($theday);
+		my $thedate = qx( dozdate "$date_format" -d"$theyear-$themon-$theday" );
+		chomp($thedate);
+		$calendar[$i][1] = $thedate;
 		for (my $j = 0; $j < 5; $j++) {
-			print $calendar[$i][$j];
+			print "$calendar[$i][$j]";
+			print "\t" if $j != 4;
 		}
 	}
 }
