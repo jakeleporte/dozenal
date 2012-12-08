@@ -235,7 +235,6 @@ sub expand_dates($$)
 			push(@calendar,$tmpline);
 		}
 	}
-	#FIXME:  Need to finish this to fill the calendar array
 }
 
 # takes a date string; returns the julian day associated
@@ -386,7 +385,13 @@ sub main()
 		expand_dates($line[3],$callist[$i]);
 	}
 	@goodlines = remove_exceptions(@goodlines,@calendar);
-	print @goodlines;
+	@calendar = ();
+	for (my $i = 0; $i <= $#goodlines; $i++) {
+		push(@calendar,split('\|',$goodlines[$i]));
+	}
+#	@calendar = sort { $a->[1] <=> $b->[1] || $a->[3] cmp
+#		$b->[3] } @calendar; #FIXME
+	print @calendar;
 }
 
 main();

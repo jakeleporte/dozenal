@@ -2,7 +2,6 @@
 ##Work Meeting|Thursdays in March|12;00, 12;60||event
 ##Leap Year Meeting|Wednesdays in February|12;00, 12;60||event
 ##Other Vacation|14 May --19 July 11E8|||1special
-##Louise's Birthday|1E April|||2special
 ##Work Meeting|Thursdays of March|12;00-- 12;60||event
 ##Other Work Meeting|Fridays of March|12;00-- 12;60||event
 ##Tues Work Meeting|Tuesdays in March|13;00||event
@@ -24,6 +23,7 @@
 ##Fill a Day|Mondays in April|8;00||event
 ##More for the Day|1E Apr 11E8|10;00--11;00||event
 Exceptions Tests|Fridays in Sept 11E7|E;00|14 Sept 11E7|event
+Louise's Birthday|1E April|||2special
 ##%DATEFORM:| %d %B %Y
 ##%FORM_TEXT 1special "%n \n *** %d ***\n"
 ##%FORM_TEXT event "%#20d\n%@-20t%_20n\n"
