@@ -387,11 +387,16 @@ sub main()
 	@goodlines = remove_exceptions(@goodlines,@calendar);
 	@calendar = ();
 	for (my $i = 0; $i <= $#goodlines; $i++) {
-		push(@calendar,split('\|',$goodlines[$i]));
+		push @{$calendar[$i]},split('\|',$goodlines[$i]);
 	}
-#	@calendar = sort { $a->[1] <=> $b->[1] || $a->[3] cmp
-#		$b->[3] } @calendar; #FIXME
-	print @calendar;
+	@calendar = sort { $a->[1] <=> $b->[1] || $a->[3] cmp
+		$b->[3] } @calendar;
+	#FIXME:  need to split field 3 and decimalize for sorting
+	for (my $i = 0; $i <= $#calendar; $i++) {
+		for (my $j = 0; $j < 5; $j++) {
+			print $calendar[$i][$j];
+		}
+	}
 }
 
 main();
