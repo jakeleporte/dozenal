@@ -160,8 +160,7 @@ sub read_files($)
 # takes two scalars, the first is the date string in
 # question, and the second the entire line; expands this
 # into a list of julian days meeting the criteria, plus the
-# remainders of the data lines; return the number of
-# matching days
+# remainders of the data lines; returns nothing
 
 sub expand_dates($$)
 {
@@ -175,42 +174,95 @@ sub expand_dates($$)
 	my $j;
 	my $thedate;				# julian day in question
 	my $theday = 1;			# local version of the day
+	my $yeardays;
+	my $theyear;
 
 	for ($i = 0; $i <= $#wdays; $i++) {
 		if ($datestring =~ /$wdays[$i]/) {
 			$haswday = 1;
-			for ($j = 0; $j <= $#months; $j++) {
-				if ($datestring =~ /$months[$j]/) {
-					$hasmonth = 1;
-					last;
-				}
-			}
 			last;
 		}
 	}
-	my $yeardays = (leap_year(dec_int($year))) ? 366 : 365;
+	for ($j = 0; $j <= $#months; $j++) {
+		if ($datestring =~ /$months[$j]/) {
+			$hasmonth = 1;
+			last;
+		}
+	}
+	if ($datestring =~ /([\dxe]{4,4})/) {
+		$theyear = uc($1);
+	} else {
+		$theyear = $year;
+	}
+	$yeardays = (leap_year(dec_int($theyear))) ? 366 : 365;
 	if (($haswday == 1) && ($hasmonth == 0)) {
-		$theday+=1 while ($wdays[$i] ne lc(&day(1,$theday,dec_int($year))));
+		$theday+=1 while ($wdays[$i] ne 
+			lc(&day(1,$theday,dec_int($theyear))));
 		for (my $k = $theday; $k <= $yeardays; $k+=7) {
 			my ($themon,$theday) = get_month($k);
-			$thedate = julday(dec_int($year),$themon+1,$theday);
+			$thedate = julday(dec_int($theyear),$themon+1,$theday);
 			my $tmpline = $wholeline;
 			$tmpline =~ s/$udatestring/$thedate/;
 			push(@calendar,$tmpline);
 		}
 	} elsif (($haswday == 1) && ($hasmonth == 1)) {
 		$theday+=1 while 
-			($wdays[$i] ne lc(&day($j+1,$theday,dec_int($year))));
+			($wdays[$i] ne lc(&day($j+1,$theday,dec_int($theyear))));
 		my $numdays = $monnums[$j];
-		$numdays++ if (leap_year(dec_int($year)) && ($j == 1));
+		$numdays++ if (leap_year(dec_int($theyear)) && ($j == 1));
 		for (my $k = $theday; $k <= $numdays; $k+=7) {
-			$thedate = julday(dec_int($year),$j+1,$k);
+			$thedate = julday(dec_int($theyear),$j+1,$k);
+			my $tmpline = $wholeline;
+			$tmpline =~ s/$udatestring/$thedate/;
+			push(@calendar,$tmpline);
+		}
+	} elsif (($hasmonth == 1) && ($haswday == 0)) {
+		if ($datestring =~ /--/) {
+			my $firstdate; my $lastdate;
+			($firstdate,$lastdate) = ($datestring =~ /(.*)--(.*)/);
+			$firstdate = spec_date($firstdate);
+			$lastdate = spec_date($lastdate);
+			while ($firstdate <= $lastdate) {
+				my $tmpline = $wholeline;
+				$tmpline =~ s/$udatestring/$firstdate/;
+				push(@calendar,$tmpline);
+				$firstdate++;
+			}
+		} else {
+			$thedate = spec_date($datestring);
 			my $tmpline = $wholeline;
 			$tmpline =~ s/$udatestring/$thedate/;
 			push(@calendar,$tmpline);
 		}
 	}
 	#FIXME:  Need to finish this to fill the calendar array
+}
+
+# takes a date string; returns the julian day associated
+# therewith
+
+sub spec_date($)
+{
+	my $date = $_[0];
+	my $theyear;
+	my $theday;
+	my $themon;
+
+	if ($date =~ /([\dxe]{4,4})/) {
+		$theyear = uc($1);
+	} else {
+		$theyear = $year;
+	}
+	if ($date =~ /([\dxe]{1,2})/) {
+		$theday = uc($1);
+	} else {
+		$theday = 1;
+	}
+	for (my $i = 0; $i <= $#months; $i++) {
+		$themon = $i if ($date =~ /$months[$i]/);
+		last if ($date =~ /$months[$i]/);
+	}
+	return julday(dec_int($theyear),$themon+1,dec_int($theday));
 }
 
 # takes one scalar, yday; returns the month and day of that
@@ -292,20 +344,49 @@ sub parse_date($)
 	}
 }
 
+# remove exceptions from the calendar results; takes the
+# good array and the exception array, returns nothing
+
+sub remove_exceptions(\@\@)
+{
+	my @excepts = @{$_[1]};
+	my @goods = @{$_[0]};
+	my @line;
+
+	foreach my $var (@excepts) {
+		@line = split('\|',$var);
+		for (my $i = 0; $i <= $#goods; $i++) {
+			if (($goods[$i] =~ /$line[3]/) && ($goods[$i] =~ /$line[0]/)) {
+				splice(@goods,$i,1);
+			}
+		}
+	}
+	return @goods;
+}
+
 # we know what this is for
 
 sub main()
 {
 	my $lines;				# number of lines read from files
 	my @line;				# a line from the data file
+	my @goodlines;			# array of dates
+	my @exceptions;		# array of exceptions
 
 	$lines = read_files($opt_f);
 	parse_date($opt_d) if $opt_d;
 	for (my $i = 0; $i < $lines; $i++) {
 		@line = split('\|',$callist[$i]);
 		expand_dates($line[1],$callist[$i]);
+	} # next, do the exceptions
+	@goodlines = @calendar;
+	@calendar = ();
+	for (my $i = 0; $i < $lines; $i++) {
+		@line = split('\|',$callist[$i]);
+		expand_dates($line[3],$callist[$i]);
 	}
-	print @calendar;
+	@goodlines = remove_exceptions(@goodlines,@calendar);
+	print @goodlines;
 }
 
 main();
