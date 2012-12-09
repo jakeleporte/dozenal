@@ -26,7 +26,8 @@ Exceptions Tests|Fridays in Sept 11E7|E;00|14 Sept 11E7|event
 Times Tests|Fridays in Sept 11E7|1X;00|14 Sept 11E7|1event
 Eventtype Tests|Fridays in Sept 11E7|1X;00|14 Sept 11E7|event
 Louise's Birthday|1E April|||2special
-##%DATEFORM:| %d %B %Y
+%DATEFORM:	%d %B %Y
+#%DDDATEFORM:  %d %b %Y
 ##%FORM_TEXT 1special "%n \n *** %d ***\n"
 ##%FORM_TEXT event "%#20d\n%@-20t%_20n\n"
 ##%FORM_LATEX event "\\textbf{%d} %20t & %-20n"
@@ -63,7 +64,7 @@ Louise's Birthday|1E April|||2special
 #St. Francis de Sales Bishop, Confessor, and Doctor of the Church, III class|25 January|||1special
 #St. Martina Virgin and Martyr, III class|26 January|||1special
 #St. John Bosco Confessor, III class|27 January|||1special
-#St. Ignatius Bishop and Martyr, III class|1 |||1special
+#St. Ignatius Bishop and Martyr, III class|1 February|||1special
 #On the Purification of the Blessed Virgin Mary, II class|2 February|||1special
 #Commemoration of St. Blase Bishop and Martyr, Comm|3 February|||1special
 #St. Andrew Corsini Bishop and Confessor, III class|4 February|||1special
@@ -390,9 +391,9 @@ Louise's Birthday|1E April|||2special
 #Feria|1X December|||1special
 #Feria|1E December|||1special
 #Vigil, I class|20 December|||1special
-##On the Nativity of our Lord Jesus Christ, I class with an octave. In the second Mass, Commemoration of St. Anastasia Martyr|21 December |||1special
+#On the Nativity of our Lord Jesus Christ, I class with an octave. In the second Mass, Commemoration of St. Anastasia Martyr|21 December |||1special
 ##St. Stephen Protomartyr, II class; II day within the octave of the Nativity of the Lord |December 22|||1special
-##December 23: III day within the octave of the Nativity of the Lord; St. John Apostle and Evangelist, II class||||1special
+##December 23: III day within the octave of the Nativity of the Lord; St. John Apostle and Evangelist, II class|December 23|||1special
 ##The Holy Innocents, II class|December 24: IV day within the octave of the Nativity of the Lord|||1special
 ##Of the V day within the octave of the Nativity of the Lord, II class, Commemoration of St. Thomas Bishop and Martyr|25 December|||1special
 ##Of the VI day within the Octave of the Nativity, II class|26 December|||1special

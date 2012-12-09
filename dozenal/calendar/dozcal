@@ -25,6 +25,7 @@ my $INPUT_FILE_NOT_EXIST = 2;
 my $BAD_OUTPUT_FORMAT = 3;
 my $BAD_MAIN_DATE = 4;
 my $BAD_EXCEPTION_DATE = 5;
+my $BAD_CONFIGFILE_OPTION = 6;
 
 # change to dozenal digits; takes the scalar integer,
 # returnst he dozenal digit character
@@ -139,6 +140,24 @@ my $day = -1;
 
 my $date_format = "%d %b %Y";
 
+# configure options from the config file; takes a scalar,
+# returns nothing
+
+sub config_opts($)
+{
+	my $option = $_[0];
+
+	chomp($option);
+	if ($option =~ /^%DATEFORM:\s*(.*)$/) {
+		$date_format = $1;
+	} else {
+		print STDERR "dozcal:  error:  dozcal does not ";
+		print STDERR "recognize the configure option ";
+		print STDERR "\n\t\"$option\"\n";
+		exit $BAD_CONFIGFILE_OPTION;
+	}
+}
+
 # reads the files; takes a scalar list of files; returns
 # number of lines read if success, otherwise dies returning
 # error code
@@ -158,6 +177,10 @@ sub read_files($)
 		} else {
 			open($calfile,"<","$filearray[$i]") || die $!;
 			while (<$calfile>) {
+				if ($_ =~ /^%/) {
+					config_opts($_);
+					next;
+				}
 				$callist[$j++] = $_ if ($_ !~ /^#/);
 			}
 		}
@@ -470,7 +493,8 @@ sub main()
 		my ($theyear,$themon,$theday) = jultogreg($calendar[$i][1]);
 		$theyear = doz_int($theyear); $themon = doz_int($themon);
 		$theday = doz_int($theday);
-		my $thedate = qx( dozdate "$date_format" -d"$theyear-$themon-$theday" );
+		my $thedate = 
+			qx( dozdate "$date_format" -d"$theyear-$themon-$theday" );
 		chomp($thedate);
 		$calendar[$i][1] = $thedate;
 		for (my $j = 0; $j < 5; $j++) {
