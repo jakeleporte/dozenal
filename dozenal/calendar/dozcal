@@ -444,6 +444,27 @@ sub unshrink_time()
 	}
 }
 
+# configures the output for plain text results; takes no
+# arguments, returns nothing
+
+sub text_output()
+{
+	my $lastdate = -1;	# keeps track of prior date
+
+	for (my $i = 0; $i <= $#calendar; $i++) {
+		if ($calendar[$i][1] ne $lastdate) {
+			print "$calendar[$i][1]\n";
+			$lastdate = $calendar[$i][1];
+		}
+		if ($calendar[$i][2] ne '') {
+			print "\t$calendar[$i][2]:\t";
+		} else {
+			print "\t     \t";
+		}
+		print "$calendar[$i][0]\n";
+	}
+}
+
 # we know what this is for
 
 sub main()
@@ -497,11 +518,8 @@ sub main()
 			qx( dozdate "$date_format" -d"$theyear-$themon-$theday" );
 		chomp($thedate);
 		$calendar[$i][1] = $thedate;
-		for (my $j = 0; $j < 5; $j++) {
-			print "$calendar[$i][$j]";
-			print "\t" if $j != 4;
-		}
 	}
+	text_output() if ($opt_o eq 'basic');
 }
 
 main();
