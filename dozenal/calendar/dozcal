@@ -360,25 +360,50 @@ sub get_month($)
 }
 
 # takes the date requested on command line as scalar;
-# modifies global date variables if necessary; returns 0 if
-# success, 1 if failure
+# modifies global date variables if necessary; returns the
+# start and end julian dates of the requested period
 
 sub parse_date($)
 {
 	my $date = $_[0];
+	my $theday;
+	my $themon = -1;
+	my $theyear;
+	my $startdate;
+	my $enddate;
+	my $numdays;
 
 	if ($date =~ /([\dXE]{4,4})/) {
-		$year = $1;
+		$year = $theyear = $1;
 		$date =~ s/$1//;
 	}
 	if ($date =~ /([\dXE]{1,2})/) {
-		$day = $1;
+		$theday = $1;
 		$date =~ s/$1//;
 	}
 	$date = lc($date);
 	for(my $i = 0; $i <= $#months; $i++) {
-		$month = doz_int($i+1) if ($date =~ /$months[$i]/);
+		$themon = doz_int($i+1) if ($date =~ /$months[$i]/);
 	}
+	if (($themon == -1) && ($theday eq "")) {
+		$startdate = julday(dec_int($theyear),1,1);
+		$enddate = julday(dec_int($theyear),12,31);
+	} elsif (($theday eq "") && ($themon != -1)) {
+		$startdate = julday(dec_int($theyear),$themon,1);
+		$numdays = $monnums[$month-1];
+		$numdays++ if (($themon == 2) && (leap_year(dec_int($theyear))));
+		$enddate = julday(dec_int($theyear),$themon,$numdays);
+	} elsif (($theday ne "") && ($themon != -1)) {
+		$startdate = julday(dec_int($theyear),$themon,dec_int($theday));
+		$enddate = $startdate;
+	} else {
+		print STDERR "dozcal:  error:  date string \"$date\" ";
+		print STDERR "is not understood; must include at least \n";
+		print STDERR "four-digit year; if month is included, ";
+		print STDERR "must be alphabetic with at least three \n";
+		print STDERR "letters\n";
+	}
+	return ($startdate,$enddate);
 }
 
 # remove exceptions from the calendar results; takes the
@@ -444,10 +469,47 @@ sub unshrink_time()
 	}
 }
 
+# trims the calendar array to include only the requested
+# date range ($opt_d); takes the start and end date in
+# julian days, returns nothing
+
+sub limit_to_date($$)
+{
+	my $startdate = $_[0];
+	my $enddate = $_[1];
+	my $i = 0;
+
+	print "$startdate -- $enddate\n";
+	while ($i <= $#calendar) {
+		if (($calendar[$i][1] < $startdate) || 
+		($calendar[$i][1] > $enddate)) {
+			splice(@calendar,$i,1);
+		} else {
+			$i++;
+		}
+	}
+}
+
 # configures the output for plain text results; takes no
-# arguments, returns nothing
+# arguments, returns nothinga
 
 sub text_output()
+{
+	for (my $i = 0; $i <= $#calendar; $i++) {
+		print "$calendar[$i][1]:  ";
+		if ($calendar[$i][2] ne "") {
+			print "$calendar[$i][2]:  ";
+		} else {
+			print "        ";
+		}
+		print "$calendar[$i][0]\n";
+	}
+}
+
+# configures the output for basic format plain text results;
+# takes no arguments, returns nothing
+
+sub basic_output()
 {
 	my $lastdate = -1;	# keeps track of prior date
 
@@ -474,9 +536,12 @@ sub main()
 	my @goodlines;			# array of dates
 	my @exceptions;		# array of exceptions
 	my $fault = 0;			# set to one if error
+	my $startdate = 0;	# if date range is requested
+	my $enddate = 0;		# if date range is requested
 
 	$lines = read_files($opt_f);
-	parse_date($opt_d) if $opt_d;
+	($startdate,$enddate) = parse_date($opt_d) if $opt_d;
+	$enddate = 99999999 if ($enddate == 0);
 	for (my $i = 0; $i < $lines; $i++) {
 		@line = split('\|',$callist[$i]);
 		$fault = expand_dates($line[1],$callist[$i]);
@@ -506,6 +571,7 @@ sub main()
 	for (my $i = 0; $i <= $#goodlines; $i++) {
 		push @{$calendar[$i]},split('\|',$goodlines[$i]);
 	}
+	limit_to_date($startdate,$enddate);
 	shrink_time();
 	@calendar = sort { $a->[1] <=> $b->[1] || $a->[2] <=>
 		$b->[2] || $a->[4] cmp $b->[4] } @calendar;
@@ -519,7 +585,8 @@ sub main()
 		chomp($thedate);
 		$calendar[$i][1] = $thedate;
 	}
-	text_output() if ($opt_o eq 'basic');
+	text_output() if ((!$opt_o) || ($opt_o eq "text"));
+	basic_output() if ($opt_o eq 'basic');
 }
 
 main();
