@@ -1487,11 +1487,11 @@ sub main()
 	$dateplus =~ s/\\x/X/g;
 	$dateplus =~ s/\\e/E/g;
 
-	$callist .= qx(./dozcal -f sampdata -lt -d"Nov $datemin");
-	$callist .= qx(./dozcal -f sampdata -lt -d"Dec $datemin");
-	$callist .= qx(./dozcal -lt -f sampdata -d$date);
-	$callist .= qx(./dozcal -f sampdata -lt -d"Jan $dateplus");
-	$callist .= qx(./dozcal -f sampdata -lt -d"Feb $dateplus");
+	$callist .= qx(./dozcal -f sampdata,saints_1962 -lt -d"Nov $datemin");
+	$callist .= qx(./dozcal -f sampdata,saints_1962 -lt -d"Dec $datemin");
+	$callist .= qx(./dozcal -lt -f sampdata,saints_1962 -d$date);
+	$callist .= qx(./dozcal -f sampdata,saints_1962 -lt -d"Jan $dateplus");
+	$callist .= qx(./dozcal -f sampdata,saints_1962 -lt -d"Feb $dateplus");
 	@callist = split(/\n/,$callist);
 	preamble(dec_int($opt_d));
 	copypage(dec_int($opt_d));

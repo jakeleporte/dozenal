@@ -383,14 +383,14 @@ sub parse_date($)
 	}
 	$date = lc($date);
 	for(my $i = 0; $i <= $#months; $i++) {
-		$themon = doz_int($i+1) if ($date =~ /$months[$i]/);
+		$themon = $i+1 if ($date =~ /$months[$i]/);
 	}
 	if (($themon == -1) && ($theday eq "")) {
 		$startdate = julday(dec_int($theyear),1,1);
 		$enddate = julday(dec_int($theyear),12,31);
 	} elsif (($theday eq "") && ($themon != -1)) {
 		$startdate = julday(dec_int($theyear),$themon,1);
-		$numdays = $monnums[$month-1];
+		$numdays = $monnums[$themon-1];
 		$numdays++ if (($themon == 2) && (leap_year(dec_int($theyear))));
 		$enddate = julday(dec_int($theyear),$themon,$numdays);
 	} elsif (($theday ne "") && ($themon != -1)) {
@@ -479,7 +479,6 @@ sub limit_to_date($$)
 	my $enddate = $_[1];
 	my $i = 0;
 
-	print "$startdate -- $enddate\n";
 	while ($i <= $#calendar) {
 		if (($calendar[$i][1] < $startdate) || 
 		($calendar[$i][1] > $enddate)) {
@@ -502,7 +501,13 @@ sub text_output()
 		} else {
 			print "        ";
 		}
-		print "$calendar[$i][0]\n";
+		print "$calendar[$i][0]";
+		if ($opt_t) {
+			my $type = $calendar[$i][4];
+			chomp $type;
+			print " %$type% ";
+		}
+		print "\n";
 	}
 }
 
@@ -525,6 +530,12 @@ sub basic_output()
 		}
 		print "$calendar[$i][0]\n";
 	}
+}
+
+# format for HTML output
+
+sub html_output()
+{
 }
 
 # we know what this is for
@@ -576,6 +587,7 @@ sub main()
 	@calendar = sort { $a->[1] <=> $b->[1] || $a->[2] <=>
 		$b->[2] || $a->[4] cmp $b->[4] } @calendar;
 	unshrink_time();
+	$date_format = "%Y/%m/%d" if ($opt_l);
 	for (my $i = 0; $i <= $#calendar; $i++) {
 		my ($theyear,$themon,$theday) = jultogreg($calendar[$i][1]);
 		$theyear = doz_int($theyear); $themon = doz_int($themon);
@@ -587,6 +599,7 @@ sub main()
 	}
 	text_output() if ((!$opt_o) || ($opt_o eq "text"));
 	basic_output() if ($opt_o eq 'basic');
+	html_output() if ($opt_o eq 'html');
 }
 
 main();
