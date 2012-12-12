@@ -743,7 +743,11 @@ sub html_output()
 	print "}\n";
 	print ".heading {\n";
 	print "\tfont-weight:  bold;\n";
-	print "\tfont-size:  120%;\n";
+	print "\tfont-size:  140%;\n";
+	print "\tcolor:  black;\n";
+	print "\tbackground-color:  gray;\n";
+	print "\twidth:  100%;\n";
+	print "\ttext-align:  center;\n";
 	print "}\n";
 	print ".hanger {\n";
 	print "\tpadding-left:  1em;\n";
@@ -758,7 +762,7 @@ sub html_output()
 		print "<tr>\n";
 		$k = 0;
 		print "<td></td>\n" while ($k++ != $j);
-		print "<td><center><span class=\"heading\">$calendar[0][1]</span></center>\n";
+		print "<td><div class=\"heading\">$calendar[0][1]</div>\n";
 		$lastdate = $calendar[0][1];
 		for ($i = 0; $i <= $#calendar; $i++) {
 			if ($calendar[$i][1] eq $lastdate) {
@@ -768,7 +772,7 @@ sub html_output()
 			} else {
 				$j++;
 				print "</tr><tr>\n" if ((($j % 7) == 0) && ($j != 0));
-				print "<td><center><span class=\"heading\">$calendar[$i][1]</span></center>\n";
+				print "<td><div class=\"heading\">$calendar[$i][1]</div>\n";
 				print "<div class=\"hanger\">\n";
 				print "$calendar[$i][2]:  \n" if $calendar[$i][2] ne "";
 				print "$calendar[$i][0]</div>\n";
