@@ -665,7 +665,7 @@ character "%".  So, for example, to change the default
 format of the date to list a full, rather than abbreviated,
 month, simply put this line in your file:
 
-	#DATEFORM:  %d %B %Y
+	%DATEFORM:  %d %B %Y
 
 Since dozcal is really a wrapper around dozdate, you can use
 any valid dozdate format string for this.
@@ -726,6 +726,45 @@ ENDHELP
 
 sub html_output()
 {
+	my $weekday;
+	my $i; my $j = 0; my $k;
+	my $lastdate;
+
+	print "<html><body>\n";
+	print "<style>\n";
+	print "table {\n";
+	print "\tborder:  2px;\n";
+	print "\ttable-layout:  fixed;\n";
+	print "}\n";
+	print "td {\n";
+	print "\twidth:  14%;\n";
+	print "\tvertical-align:  top;\n";
+	print "\tfont-size:  80%;\n";
+	print "}\n";
+	print "</style>\n";
+	if (!$opt_w) {
+		print "<table border=\"2px\">\n";
+		print "<tr><th colspan=\"7\">Calendar</th></tr>\n";
+		$weekday = lc(qx( dozdate -d"$calendar[0][1]" "%a"));
+		$j++ while ($weekday !~ /$wdays[$j]/);
+		print "<tr>\n";
+		$k = 0;
+		print "<td></td>\n" while ($k++ != $j);
+		print "<td><center><strong>$calendar[0][1]</strong></center>\n";
+		$lastdate = $calendar[0][1];
+		for ($i = 0; $i <= $#calendar; $i++) {
+			if ($calendar[$i][1] eq $lastdate) {
+				print "$calendar[$i][0]<br />\n";
+			} else {
+				$j++;
+				print "</tr><tr>\n" if ((($j % 7) == 0) && ($j != 0));
+				print "<td><center><strong>$calendar[$i][1]</strong></center>\n";
+				print "$calendar[$i][0]<br />\n";
+				$lastdate = $calendar[$i][1];
+			}
+		}
+		print "</table></html>";
+	}
 }
 
 # we know what this is for
@@ -790,7 +829,7 @@ sub main()
 		chomp($thedate);
 		$calendar[$i][1] = $thedate;
 	}
-	text_output() if ((!$opt_o) || ($opt_o eq "text"));
+	text_output() if ((!$opt_o) || ($opt_o eq 'text'));
 	basic_output() if ($opt_o eq 'basic');
 	html_output() if ($opt_o eq 'html');
 }
