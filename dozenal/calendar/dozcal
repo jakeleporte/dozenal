@@ -4,6 +4,28 @@
 # of St. Hadrian, Martyr, and it is humbly dedicated to them
 # for their prayers, and to the Sacred Heart of Jesus for
 # His mercy.
+#
+# The main function for the decimal-to-dozenal convert.
+#
+# (C) Copyright 2012  Donald P. Goodman III
+#
+# This file is part of dozcal and the dozenal suite.
+#
+# dozcal is free software:  you can redistribute it and/or
+# modify it under the terms of the GNU General Public
+# License as published by the Free Software Foundation,
+# either version 3 of the License, or (at your option) any
+# later version.
+#
+# dozcal is distributed in the hope that it will be
+# useful, but WITHOUT ANY WARRANTY; without even the
+# implied warranty of MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE.  See the GNU General Public License
+# for more details.
+#
+# You should have received a copy of the GNU General Public
+# License along with dozcal.  If not, see
+# <http://www.gnu.org/licenses/>.
 
 use strict;
 use POSIX;
@@ -14,9 +36,10 @@ use Date::Day;
 use Date::Easter;
 use Date::Pcalc qw(:all);
 use Getopt::Std;
-getopts('f:d:o:thcl');
-our($opt_f,$opt_d,$opt_o,$opt_t,$opt_h,$opt_c,$opt_l);
+getopts('f:d:o:thwls:');
+our($opt_f,$opt_d,$opt_o,$opt_t,$opt_h,$opt_w,$opt_l,$opt_s);
 
+my $INFIN = 999999999;
 # define our exit codes
 
 my $SUCCESS = 0;
@@ -26,6 +49,7 @@ my $BAD_OUTPUT_FORMAT = 3;
 my $BAD_MAIN_DATE = 4;
 my $BAD_EXCEPTION_DATE = 5;
 my $BAD_CONFIGFILE_OPTION = 6;
+my $BAD_DATE_FOR_WEEKLY = 7;
 
 # change to dozenal digits; takes the scalar integer,
 # returnst he dozenal digit character
@@ -532,6 +556,172 @@ sub basic_output()
 	}
 }
 
+# produce weekly output; just takes the first day of the
+# requested date range and returns that week; takes
+# startdate and enddate, returns the new startdate and
+# enddate
+
+sub weekly_output($$)
+{
+	my $start = $_[0]; my $end = $_[1];
+	my $theyear; my $themon; my $theday;
+	my $weekday = -1;
+	my $i; my $j;
+	my $startweek = 0;	# to start week on Sunday
+	my $distance;			# distance to start of week
+
+	if ($opt_s) {
+		for ($j = 0; $j <= $#wdays; $j++) {
+			last if (lc($opt_s) =~ /$wdays[$j]/);
+		}
+		$startweek = $j;
+	}
+	if ($start != $end) {
+		print STDERR "dozcal:  error:  when using the \"-w\" ";
+		print STDERR "option, an individual date must be \n";
+		print STDERR "requested; e.g., \"-d\'1E Apr 11E8\'\"\n";
+		exit $BAD_DATE_FOR_WEEKLY;
+	}
+	($theyear,$themon,$theday) = jultogreg($start);
+	$weekday = lc(&day($themon,$theday,$theyear));
+	for ($j = 0; $j <= $#wdays; $j++) {
+		last if ($weekday =~ /$wdays[$j]/);
+	}
+	$start = $start - ($j + (7 - $startweek)) if ($startweek > $j);
+	$start = $start - ($j - $startweek) if ($startweek < $j);
+	return ($start,$start+7);
+}
+
+# the help function; exits successfully
+
+sub help_func()
+{
+	print <<ENDHELP;
+dozcal v1.0, part of the dozenal suite.
+
+Copyright (C) 2010, 2011  Donald P. Goodman III
+
+License GPLv3+:  GNU GPL version 3 or later
+(<http://gnu.org/licenses/gpl.html>).  This is free
+software: you are free to change and redistribute it.  There
+is NO WARRANTY, to the extent permitted by law.
+
+dozcal is designed to facilitate the keeping of calendars in
+dozenal.
+
+DATA FILE
+
+The data file(s) are what are read into memory by dozcal to
+populate the calendar.  These can be as many as are desired,
+listed to dozcal in a comma-separated list.  E.g.:
+
+	dozcal -f "oct_11E8,nov_11E8,dec_11E8"
+
+The final results will be sorted and ordered without regard
+to what file they came from.
+
+The format of the data file is quite simple; each line is an
+entry for the calendar, and it consists of fields separated
+by the pipe character ("|").  The fields are defined as
+follows:
+
+	Name | Date(s) | Time(s) | Exceptions | Type
+
+The name is simply what you'd write into a calendar; e.g.,
+"staff meeting" or "workout."  The date(s) are the dates on
+which you wish these things to be listed; more on that later
+in the section "DATE FORMATS".  The time is, of course, the
+time on the date this will be happening.  "Exceptions" are
+those exceptions to t date given in field 2; e.g., if you
+want something listed on all Wednesdays in September, but
+not one particular Wednesday, that exception would be listed
+here.
+
+Finally, the type.  This is a largely arbitrary string used
+primarily for ordering results if the date and time are
+otherwise the same; this information could also be used for
+formatting the results by a different script.  It is often
+wise to use a simple word---"meeting," "event," or
+similar---and prefix to it a digit---"1meeting,"
+"2meeting"---for ordering purposes.  So if you have three
+events at the same date and time, like so:
+
+	Staff Meeting (event)
+	Job Picnic (2event)
+	Workout (1event)
+
+They would be ordered according to this "type" field, like
+so:
+
+	Workout (1event)
+	Job Picnic (2event)
+	Staff Meeting (event)
+
+"1" comes before "2," which comes before "e."  This is
+standard ASCII-text ordering.
+
+Options can be specified in lines which begin with the
+character "%".  So, for example, to change the default
+format of the date to list a full, rather than abbreviated,
+month, simply put this line in your file:
+
+	#DATEFORM:  %d %B %Y
+
+Since dozcal is really a wrapper around dozdate, you can use
+any valid dozdate format string for this.
+
+DATE FORMATS
+
+Dates can be provided to dozcal in a number of ways, always
+with the "-d" option on the command line:
+
+	*  Weekdays.  These can be listed by themselves, in which
+	case dozcal will assume that it means all of those
+	weekdays in the year; or with a month, in which case
+	dozcal only expands this to those weekdays in a given
+	month.  
+	*  Months.  You can ask dozcal to give you an entire
+	month at a time.  You must list a year with it so that
+	dozcal knows what you mean.
+	*  Years.  You can tell dozcal to give you an entire
+	year's worth of results at once.
+	*  Specific dates.  You can tell dozcal to give you just
+	the results  for a specific date.  If you do this,  you
+	can also use the "-w" option, possibly with the "-s"
+	option, for which see below.
+
+OPTIONS
+	-f	The files that will be read from for data
+		information; multiple files can be listed in a
+		comma-separated list.  Take the file(s) as an
+		argument.
+	-d	The dates you want returned to you.  See above, "DATE
+		FORMATS," for more details.  Takes the requested date
+		string as an argument.
+	-t	Outputs the last column of a data line, the "type"
+		field, surrounded by "%" characters in the output.
+		Useful when dozcals' output is going to be filtered by
+		another program and can use that information for
+		formatting or other tasks.
+	-l	LaTeX formatting; prepares the output for use with
+		latexcal, a helper script which builds a professional
+		and beautifully typeset calendar in LaTeX.
+	-w	Weekly; gives as output the entire week which includes
+		the requested date, rather than only the date itself.
+		This can only be used in conjunction with a specific
+		date given with the "-d" option.
+	-s	Starting day; tells dozcal which day it should
+		consider the start  of the week.  Only works if done
+		in conjunction with the "-w" option.  (dozcal really
+		has no concept of the week unless "-w" is given.)  Use
+		a string containing at least the first three letters
+		of the weekday you want to be the start of the week.
+		Defaults to Sunday.
+
+ENDHELP
+	exit 0;
+}
+
 # format for HTML output
 
 sub html_output()
@@ -550,9 +740,12 @@ sub main()
 	my $startdate = 0;	# if date range is requested
 	my $enddate = 0;		# if date range is requested
 
+	help_func() if ($opt_h);
 	$lines = read_files($opt_f);
 	($startdate,$enddate) = parse_date($opt_d) if $opt_d;
-	$enddate = 99999999 if ($enddate == 0);
+	$enddate = $INFIN if ($enddate == 0);
+	($startdate,$enddate) = weekly_output($startdate,$enddate) 
+		if ($opt_w);
 	for (my $i = 0; $i < $lines; $i++) {
 		@line = split('\|',$callist[$i]);
 		$fault = expand_dates($line[1],$callist[$i]);
