@@ -90,7 +90,7 @@ int main(int argc, char *argv[])
 			fileflag = 1;
 			break;
 		case 'v':
-			printf("dozdate v2.0\n");
+			printf("dozdate v2.1\n");
 			printf("Copyright (C) 2011  Donald P. Goodman III\n");
 			printf("License GPLv3+:  GNU GPL version 3 or "
 			"later <http://gnu.org/licenses/gpl.html>\n");
@@ -156,7 +156,7 @@ int main(int argc, char *argv[])
 	strcpy(buffer2,format);
 	if (fileflag == 0) {
 		tgmify(buffer,thetime);
-		breakup(buffer,thetime);
+		breakup(buffer,thetime,usesymm);
 		if (thetime->tm_yday > 31)
 			dectoirv(buffer,thetime);
 		if ((usesymm == NEITHER) || (usesymm == IN))
@@ -173,7 +173,7 @@ int main(int argc, char *argv[])
 				process_date(dateline,thetime,usesymm);
 				get_symmdate(thetime,&usesymm);
 				tgmify(buffer,thetime);
-				breakup(buffer,thetime);
+				breakup(buffer,thetime,usesymm);
 				if (thetime->tm_yday > 31)
 					dectoirv(buffer,thetime);
 				if ((usesymm == NEITHER) || (usesymm == IN))
@@ -197,7 +197,7 @@ int main(int argc, char *argv[])
 
 /* after TGM units have been handled, takes out the regular
  * date units and handles them one by one */
-int breakup(char *s, struct tm *thetime)
+int breakup(char *s, struct tm *thetime, int usesymm)
 {
 	int i, j, k;
 	char tmp[SIZE];
@@ -210,7 +210,8 @@ int breakup(char *s, struct tm *thetime)
 				tmp[j] = s[i];
 			tmp[j++] = s[i];
 			tmp[j] = '\0';
-			if ((tmp[j-1] == 'b') && (thetime->tm_yday >= 364))
+			if ((tmp[j-1] == 'b') && (thetime->tm_yday >= 364)
+				&& (usesymm > 0))
 				thetime->tm_mon = 0;
 			strftime(tmp2,SIZE,tmp,thetime);
 			tokenize(tmp2);
