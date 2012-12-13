@@ -50,6 +50,7 @@ my $BAD_MAIN_DATE = 4;
 my $BAD_EXCEPTION_DATE = 5;
 my $BAD_CONFIGFILE_OPTION = 6;
 my $BAD_DATE_FOR_WEEKLY = 7;
+my $BAD_WDAY_NAME = 8;
 
 # change to dozenal digits; takes the scalar integer,
 # returnst he dozenal digit character
@@ -556,6 +557,24 @@ sub basic_output()
 	}
 }
 
+# get requested first day of week; takes no arguments,
+# returns the number of that day
+
+sub get_first_wday()
+{
+	my $j;
+
+	for ($j = 0; $j <= $#wdays; $j++) {
+		last if (lc($opt_s) =~ /$wdays[$j]/);
+	}
+	if ($j > 6) {
+		print STDERR "error:  dozcal:  $opt_s is not ";
+		print STDERR "a valid weekday name\n";
+		exit $BAD_WDAY_NAME;
+	}
+	return $j;
+}
+
 # produce weekly output; just takes the first day of the
 # requested date range and returns that week; takes
 # startdate and enddate, returns the new startdate and
@@ -570,12 +589,7 @@ sub weekly_output($$)
 	my $startweek = 0;	# to start week on Sunday
 	my $distance;			# distance to start of week
 
-	if ($opt_s) {
-		for ($j = 0; $j <= $#wdays; $j++) {
-			last if (lc($opt_s) =~ /$wdays[$j]/);
-		}
-		$startweek = $j;
-	}
+	$startweek = get_first_wday() if ($opt_s);
 	if ($start != $end) {
 		print STDERR "dozcal:  error:  when using the \"-w\" ";
 		print STDERR "option, an individual date must be \n";
@@ -590,6 +604,26 @@ sub weekly_output($$)
 	$start = $start - ($j + (7 - $startweek)) if ($startweek > $j);
 	$start = $start - ($j - $startweek) if ($startweek < $j);
 	return ($start,$start+7);
+}
+
+# fills up the dates in the array which don't have anything;
+# this makes it easier to produce formatted calendars; not
+# called by default in plain text; takes no arguments,
+# returns nothing
+
+sub fill_up()
+{
+	my @newarray = ();
+	my $pastdate = $calendar[0][1];
+
+	foreach my $var (@calendar) {
+		while (($var->[1] - $pastdate) > 1) {
+			push(@newarray,[("",++$pastdate,"","","blank")]);
+		}
+		push(@newarray,$var);
+		$pastdate = $var->[1];
+	}
+	@calendar = @newarray;
 }
 
 # the help function; exits successfully
@@ -703,6 +737,18 @@ OPTIONS
 		Useful when dozcals' output is going to be filtered by
 		another program and can use that information for
 		formatting or other tasks.
+	-o	Output format; tells dozcal how you'd like your output
+		to be displayed for you.  Possible settings are:
+		-text	This is the default; it's a simple list of
+			dates in the file which meet the criteria
+			given.  No argument gives text output.
+		-basic	Gives a slightly fancier list, with calendar
+			entries on the same date grouped together.
+		-html	Gives HTML output.  Precise output varies
+			depending on the requested date range.  If a
+			whole month is requested, that is displayed,
+			with the week starting on the day given by
+			"-s."
 	-l	LaTeX formatting; prepares the output for use with
 		latexcal, a helper script which builds a professional
 		and beautifully typeset calendar in LaTeX.
@@ -711,12 +757,12 @@ OPTIONS
 		This can only be used in conjunction with a specific
 		date given with the "-d" option.
 	-s	Starting day; tells dozcal which day it should
-		consider the start  of the week.  Only works if done
-		in conjunction with the "-w" option.  (dozcal really
-		has no concept of the week unless "-w" is given.)  Use
-		a string containing at least the first three letters
-		of the weekday you want to be the start of the week.
-		Defaults to Sunday.
+		consider the start  of the week.  This is used in a
+		variety of places, most especially in conjunction with
+		the "-w" option and when HTML output is requested for
+		a given month.  Use a string containing at least the
+		first three letters of the weekday you want to be the
+		start of the week.  Defaults to Sunday.
 
 ENDHELP
 	exit 0;
@@ -727,7 +773,7 @@ ENDHELP
 sub html_output()
 {
 	my $weekday;
-	my $i; my $j = 0; my $k;
+	my $i = 0; my $j = 0; my $k; my $l;
 	my $lastdate;
 
 	print "<html><body>\n";
@@ -760,8 +806,27 @@ sub html_output()
 		$weekday = lc(qx( dozdate -d"$calendar[0][1]" "%a"));
 		$j++ while ($weekday !~ /$wdays[$j]/);
 		print "<tr>\n";
-		$k = 0;
-		print "<td></td>\n" while ($k++ != $j);
+		$k = get_first_wday() if ($opt_s);
+		$k = 0 if (!$opt_s);
+		$l = $k;
+		for ($i = 0; $i <= 6; $i++) {
+			print "\t<th>$wdays[$l++]</th>\n";
+			$l = 0 if ($l == 7);
+		}
+		print "</tr>\n";
+		$l = 0;
+		if ($k < $j) {
+			while ($k++ != $j) {
+				print "<td></td>\n";
+				$l++;
+			}
+		} elsif ($k > $j) {
+			$k -= 7;
+			while ($k++ != $j){
+				print "<td></td>\n";
+				$l++;
+			}
+		}
 		print "<td><div class=\"heading\">$calendar[0][1]</div>\n";
 		$lastdate = $calendar[0][1];
 		for ($i = 0; $i <= $#calendar; $i++) {
@@ -770,8 +835,8 @@ sub html_output()
 				print "$calendar[$i][2]:  \n" if $calendar[$i][2] ne "";
 				print "$calendar[$i][0]</div>\n";
 			} else {
-				$j++;
-				print "</tr><tr>\n" if ((($j % 7) == 0) && ($j != 0));
+				$l++;
+				print "</tr><tr>\n" if ((($l % 7) == 0) && ($l != 0));
 				print "<td><div class=\"heading\">$calendar[$i][1]</div>\n";
 				print "<div class=\"hanger\">\n";
 				print "$calendar[$i][2]:  \n" if $calendar[$i][2] ne "";
@@ -831,6 +896,7 @@ sub main()
 		push @{$calendar[$i]},split('\|',$goodlines[$i]);
 	}
 	limit_to_date($startdate,$enddate);
+	fill_up() if ($opt_o eq 'html');
 	shrink_time();
 	@calendar = sort { $a->[1] <=> $b->[1] || $a->[2] <=>
 		$b->[2] || $a->[4] cmp $b->[4] } @calendar;
