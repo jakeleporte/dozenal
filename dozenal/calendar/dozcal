@@ -265,12 +265,36 @@ sub expand_dates($$)
 			$success = 0;
 		}
 	} elsif (($haswday == 1) && ($hasmonth == 1)) {
-		$theday+=1 while 
-			($wdays[$i] ne lc(&day($j+1,$theday,dec_int($theyear))));
-		my $numdays = $monnums[$j];
-		$numdays++ if (leap_year(dec_int($theyear)) && ($j == 1));
-		for (my $k = $theday; $k <= $numdays; $k+=7) {
-			$thedate = julday(dec_int($theyear),$j+1,$k);
+		if (($datestring !~ /first/) && ($datestring !~ /second/) &&
+			($datestring !~ /third/) && ($datestring !~ /fourth/) &&
+			($datestring !~ /fifth/) && ($datestring !~ /last/)) {
+			$theday+=1 while 
+				($wdays[$i] ne lc(&day($j+1,$theday,dec_int($theyear))));
+			my $numdays = $monnums[$j];
+			$numdays++ if (leap_year(dec_int($theyear)) && ($j == 1));
+			for (my $k = $theday; $k <= $numdays; $k+=7) {
+				$thedate = julday(dec_int($theyear),$j+1,$k);
+				my $tmpline = $wholeline;
+				$tmpline =~ s/$udatestring/$thedate/;
+				push(@calendar,$tmpline);
+				$success = 0;
+			}
+		} else {
+			my $nextday;
+			$nextday = 0 if ($datestring =~ /last/);
+			$nextday = 0 if ($datestring =~ /first/);
+			$nextday = 1 if ($datestring =~ /second/);
+			$nextday = 2 if ($datestring =~ /third/);
+			$nextday = 3 if ($datestring =~ /fourth/);
+			$nextday = 4 if ($datestring =~ /fifth/);
+			$theday+=1 while 
+				($wdays[$i] ne lc(&day($j+1,$theday,dec_int($theyear))));
+			if ($datestring =~ /last/) {
+				$theday = $monnums[$j] + 1;
+				$theday-=1 while
+					($wdays[$i] ne lc(&day($j+1,$theday,dec_int($theyear))));
+			}
+			$thedate = julday(dec_int($theyear),$j+1,$theday+(7*$nextday));
 			my $tmpline = $wholeline;
 			$tmpline =~ s/$udatestring/$thedate/;
 			push(@calendar,$tmpline);
@@ -603,7 +627,7 @@ sub weekly_output($$)
 	}
 	$start = $start - ($j + (7 - $startweek)) if ($startweek > $j);
 	$start = $start - ($j - $startweek) if ($startweek < $j);
-	return ($start,$start+7);
+	return ($start,$start+6);
 }
 
 # fills up the dates in the array which don't have anything;
@@ -800,52 +824,50 @@ sub html_output()
 	print "\ttext-indent:  -1em;\n";
 	print "}\n";
 	print "</style>\n";
-	if (!$opt_w) {
-		print "<table border=\"2px\">\n";
-		print "<tr><th colspan=\"7\">Calendar</th></tr>\n";
-		$weekday = lc(qx( dozdate -d"$calendar[0][1]" "%a"));
-		$j++ while ($weekday !~ /$wdays[$j]/);
-		print "<tr>\n";
-		$k = get_first_wday() if ($opt_s);
-		$k = 0 if (!$opt_s);
-		$l = $k;
-		for ($i = 0; $i <= 6; $i++) {
-			print "\t<th>$wdays[$l++]</th>\n";
-			$l = 0 if ($l == 7);
-		}
-		print "</tr>\n";
-		$l = 0;
-		if ($k < $j) {
-			while ($k++ != $j) {
-				print "<td></td>\n";
-				$l++;
-			}
-		} elsif ($k > $j) {
-			$k -= 7;
-			while ($k++ != $j){
-				print "<td></td>\n";
-				$l++;
-			}
-		}
-		print "<td><div class=\"heading\">$calendar[0][1]</div>\n";
-		$lastdate = $calendar[0][1];
-		for ($i = 0; $i <= $#calendar; $i++) {
-			if ($calendar[$i][1] eq $lastdate) {
-				print "<div class=\"hanger\">\n";
-				print "$calendar[$i][2]:  \n" if $calendar[$i][2] ne "";
-				print "$calendar[$i][0]</div>\n";
-			} else {
-				$l++;
-				print "</tr><tr>\n" if ((($l % 7) == 0) && ($l != 0));
-				print "<td><div class=\"heading\">$calendar[$i][1]</div>\n";
-				print "<div class=\"hanger\">\n";
-				print "$calendar[$i][2]:  \n" if $calendar[$i][2] ne "";
-				print "$calendar[$i][0]</div>\n";
-				$lastdate = $calendar[$i][1];
-			}
-		}
-		print "</table></html>";
+	print "<table border=\"2px\">\n";
+	print "<tr><th colspan=\"7\">Calendar</th></tr>\n";
+	$weekday = lc(qx( dozdate -d"$calendar[0][1]" "%a"));
+	$j++ while ($weekday !~ /$wdays[$j]/);
+	print "<tr>\n";
+	$k = get_first_wday() if ($opt_s);
+	$k = 0 if (!$opt_s);
+	$l = $k;
+	for ($i = 0; $i <= 6; $i++) {
+		print "\t<th>$wdays[$l++]</th>\n";
+		$l = 0 if ($l == 7);
 	}
+	print "</tr>\n";
+	$l = 0;
+	if ($k < $j) {
+		while ($k++ != $j) {
+			print "<td></td>\n";
+			$l++;
+		}
+	} elsif ($k > $j) {
+		$k -= 7;
+		while ($k++ != $j){
+			print "<td></td>\n";
+			$l++;
+		}
+	}
+	print "<td><div class=\"heading\">$calendar[0][1]</div>\n";
+	$lastdate = $calendar[0][1];
+	for ($i = 0; $i <= $#calendar; $i++) {
+		if ($calendar[$i][1] eq $lastdate) {
+			print "<div class=\"hanger\">\n";
+			print "$calendar[$i][2]:  \n" if $calendar[$i][2] ne "";
+			print "$calendar[$i][0]</div>\n";
+		} else {
+			$l++;
+			print "</tr><tr>\n" if ((($l % 7) == 0) && ($l != 0));
+			print "<td><div class=\"heading\">$calendar[$i][1]</div>\n";
+			print "<div class=\"hanger\">\n";
+			print "$calendar[$i][2]:  \n" if $calendar[$i][2] ne "";
+			print "$calendar[$i][0]</div>\n";
+			$lastdate = $calendar[$i][1];
+		}
+	}
+	print "</table></html>";
 }
 
 # we know what this is for
