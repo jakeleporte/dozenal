@@ -31,13 +31,15 @@ use strict;
 use POSIX;
 use String::Escape qw (unbackslash backslash);
 use Time::Piece;
+use Time::Local 'timelocal_nocheck';
 #use List::MoreUtils;
 use Date::Day;
 use Date::Easter;
 use Date::Pcalc qw(:all);
+use Astro::MoonPhase;
 use Getopt::Std;
-getopts('f:d:o:thwls:');
-our($opt_f,$opt_d,$opt_o,$opt_t,$opt_h,$opt_w,$opt_l,$opt_s);
+getopts('f:d:o:thwls:r:a:');
+our($opt_f,$opt_d,$opt_o,$opt_t,$opt_h,$opt_w,$opt_l,$opt_s,$opt_r,$opt_a);
 
 my $INFIN = 999999999;
 # define our exit codes
@@ -134,7 +136,9 @@ sub amod($$)
 
 sub julday($$$)
 {
-	return 1721423.5 + Date_to_Days($_[0],$_[1],$_[2]) + 1;
+#	print STDERR "$_[0] - $_[1] - $_[2]\n";
+	my $juldate = 1721423.5 + Date_to_Days($_[0],$_[1],$_[2]) + 1;
+	return $juldate;
 }
 
 # convert julian date back to gregorian date; takes the
@@ -142,6 +146,7 @@ sub julday($$$)
 
 sub jultogreg($)
 {
+#	print STDERR "$_[0]\n";
 	return Add_Delta_Days(1,1,1,$_[0] - 1721423.5 - 2);
 }
 
@@ -229,6 +234,7 @@ sub expand_dates($$)
 	my $haswday = 0;			# if there's a wday
 	my $i;
 	my $j;
+	my $k;
 	my $thedate;				# julian day in question
 	my $theday = 1;			# local version of the day
 	my $yeardays;
@@ -254,14 +260,43 @@ sub expand_dates($$)
 	}
 	$yeardays = (leap_year(dec_int($theyear))) ? 366 : 365;
 	if (($haswday == 1) && ($hasmonth == 0)) {
-		$theday+=1 while ($wdays[$i] ne 
-			lc(&day(1,$theday,dec_int($theyear))));
-		for (my $k = $theday; $k <= $yeardays; $k+=7) {
-			my ($themon,$theday) = get_month($k);
-			$thedate = julday(dec_int($theyear),$themon+1,$theday);
-			my $tmpline = $wholeline;
-			$tmpline =~ s/$udatestring/$thedate/;
-			push(@calendar,$tmpline);
+		if (($datestring !~ /first/) && ($datestring !~ /second/) &&
+			($datestring !~ /third/) && ($datestring !~ /fourth/) &&
+			($datestring !~ /fifth/) && ($datestring !~ /last/)) {
+			$theday+=1 while ($wdays[$i] ne 
+				lc(&day(1,$theday,dec_int($theyear))));
+			for (my $k = $theday; $k <= $yeardays; $k+=7) {
+				my ($themon,$theday) = get_month($k);
+				$thedate = julday(dec_int($theyear),$themon+1,$theday);
+				my $tmpline = $wholeline;
+				$tmpline =~ s/$udatestring/$thedate/;
+				push(@calendar,$tmpline);
+				$success = 0;
+			}
+		} else {
+			my $nextday;
+			$nextday = 0 if ($datestring =~ /last/);
+			$nextday = 0 if ($datestring =~ /first/);
+			$nextday = 1 if ($datestring =~ /second/);
+			$nextday = 2 if ($datestring =~ /third/);
+			$nextday = 3 if ($datestring =~ /fourth/);
+			$nextday = 4 if ($datestring =~ /fifth/);
+			for ($k = 0; $k <= 11; $k++) {
+				$theday+=1 while 
+					($wdays[$i] ne lc(&day($k+1,$theday,dec_int($theyear)))) && 
+					($theday <= $monnums[$k]);
+				if ($datestring =~ /last/) {
+					$theday = $monnums[$k];
+					$theday-=1 while
+						($wdays[$i] ne lc(&day($k+1,$theday,dec_int($theyear))))
+						&& ($theday <= $monnums[$k]);
+				}
+				$thedate = julday(dec_int($theyear),$k+1,$theday+(7*$nextday));
+				my $tmpline = $wholeline;
+				$tmpline =~ s/$udatestring/$thedate/;
+				push(@calendar,$tmpline);
+				$theday = 1;
+			}
 			$success = 0;
 		}
 	} elsif (($haswday == 1) && ($hasmonth == 1)) {
@@ -288,11 +323,13 @@ sub expand_dates($$)
 			$nextday = 3 if ($datestring =~ /fourth/);
 			$nextday = 4 if ($datestring =~ /fifth/);
 			$theday+=1 while 
-				($wdays[$i] ne lc(&day($j+1,$theday,dec_int($theyear))));
+				($wdays[$i] ne lc(&day($j+1,$theday,dec_int($theyear))))
+				&& ($theday <= $monnums[$j]);
 			if ($datestring =~ /last/) {
-				$theday = $monnums[$j] + 1;
+				$theday = $monnums[$j];
 				$theday-=1 while
-					($wdays[$i] ne lc(&day($j+1,$theday,dec_int($theyear))));
+					($wdays[$i] ne lc(&day($j+1,$theday,dec_int($theyear))))
+					&& ($theday <= $monnums[$j]);
 			}
 			$thedate = julday(dec_int($theyear),$j+1,$theday+(7*$nextday));
 			my $tmpline = $wholeline;
@@ -456,7 +493,8 @@ sub parse_date($)
 }
 
 # remove exceptions from the calendar results; takes the
-# good array and the exception array, returns nothing
+# good array and the exception array, returns the array of
+# non-excepted dates
 
 sub remove_exceptions(\@\@)
 {
@@ -870,6 +908,66 @@ sub html_output()
 	print "</table></html>";
 }
 
+# inserts the phases of the moon; takes the array and the
+# start and stop dates concerned, returns the array
+
+sub moon_phase(\@$$)
+{
+	my @goods = @{$_[0]};
+	my $phase;
+	my @times;
+	my $startsecs;
+	my $endsecs;
+	my @name = ("New Moon", "First Quarter", "Full Moon", "Last Quarter");
+	my $theyear; my $themon; my $theday; my $sec; my $min; my $hour;
+	my $thedate;
+
+	($theyear,$themon,$theday) = jultogreg($_[1]);
+	$startsecs = timelocal_nocheck(0,0,0,$theday,$themon-1,$theyear);
+	($theyear,$themon,$theday) = jultogreg($_[2]);
+	$endsecs = timelocal_nocheck(0,0,0,$theday,$themon-1,$theyear);
+	($phase, @times) = phaselist($startsecs,$endsecs);
+	while (@times) {
+		($sec,$min,$hour,$theday,$themon,$theyear) =
+			localtime(scalar localtime shift @times);
+		$theyear += 1900;
+		$thedate = julday($theyear,$themon+1,$theday);
+		push(@goods,"$name[$phase]|$thedate|||1event");
+		$phase = ($phase + 1) % 4;
+	}
+	return @goods;
+}
+
+# inserts the generic Christian moveable feasts; most
+# particularly Easter, Pentecost, Ascension, and such;
+# Western versions; takes and returns array
+
+sub christian_west(\@)
+{
+	my $themon;
+	my $theday;
+	my $theyear;
+	my $thedate;
+	my @goods = @{$_[0]};
+
+	if ($opt_d =~ /([\dXE]{4,4})/) {
+		$theyear = $1;
+	} else {
+		$theyear = $year;
+	}
+	($themon,$theday) = gregorian_easter(dec_int(uc$theyear));
+	$thedate = julday(dec_int($theyear),$themon,$theday);
+	$thedate -= 46;
+	push(@goods,"Ash Wednesday|$thedate|||0event");
+	$thedate += 46;
+	push(@goods,"Easter|$thedate|||0event");
+	$thedate += 39;
+	push(@goods,"Ascension|$thedate|||0event");
+	$thedate += 10;
+	push(@goods,"Pentecost|$thedate|||0event");
+	return @goods;
+}
+
 # we know what this is for
 
 sub main()
@@ -913,6 +1011,9 @@ sub main()
 		}
 	}
 	@goodlines = remove_exceptions(@goodlines,@calendar);
+	@goodlines = christian_west(@goodlines) if ($opt_r =~ /chr.*west/);
+	@goodlines = moon_phase(@goodlines,$startdate,$enddate) 
+		if ($opt_a =~ /moon/);
 	@calendar = ();
 	for (my $i = 0; $i <= $#goodlines; $i++) {
 		push @{$calendar[$i]},split('\|',$goodlines[$i]);

@@ -3,6 +3,9 @@ Intermittent Test|Third Monday in February|8;00||event
 Other Intermittent Test|Second Thursday in February|8;00||event
 Leapyear Intermittent Test|Last Wednesday in February|8;00||event
 Final Intermittent Test|Last Monday in February|8;00||event
+Yearly Intermittent Test|First Fridays|9;00||event
+Second Yearly Intermittent Test|Last Monday|9;00||event
+Last Monday in Sept|last Monday in September|9;00||event
 Work Meeting|Thursdays in March|12;00, 12;60||event
 Leap Year Meeting|Wednesdays in February|12;00, 12;60||event
 Other Vacation|14 May 11E8 --19 July 11E8|||1special
