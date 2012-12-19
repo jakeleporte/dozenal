@@ -825,6 +825,43 @@ OPTIONS
 		a given month.  Use a string containing at least the
 		first three letters of the weekday you want to be the
 		start of the week.  Defaults to Sunday.
+	-r	Religious holidays.  The arguments to this flag come
+		in strings.  A string containing "chr" will trigger
+		Christian holidays, for example; containing "west" as
+		well as "chr" will trigger generic Western Christian
+		holidays (e.g., Western Easter, Ascension Thursday,
+		Pentecost, and so forth), which containing "east" will
+		trigger Eastern Christian calculations (a different
+		date for Easter, for example).  These strings can be
+		combined if you want the results from more than one.
+		The following strings are accepted:
+			"chr"	Christian holidays; must come *before* the
+				qualifier, such as "west" or "east".
+				"west"	Western Christian moving holidays.
+				"east"	Eastern Christian moving holidays.
+			"jew"	Jewish holidays, mostly as one would expect;
+				Hanukkah, Passover, and so forth.
+	-n	National holidays.  The arguments to this flag come in
+		strings.  The following strings are accepted:
+			"usa"	American national holidays.
+			"uk"	National holidays in the United Kingdom.
+				This (perhaps controversially) includes the
+				national holidays of all the constituent nations
+				of the UK.  If this displeases you, select the
+				nation you want particularly.
+			"eng"	English national holidays.
+			"welsh"	Welsh national holidays.
+			"scot"	Scottish national holidays.
+			"nire"	Northern Irish national holidays.
+			"ire"	Irish holidays.
+			"can"	Canadian national holidays.
+			"que"	Quebecois national holidays.
+			"mex"	Mexican national holidays.
+	-a	Astronomical dates.  The arguments to this flag come
+		in strings.  The following strings are accepted:
+			"moon"	The phases of the moon; lists four, the
+				new, first quarter, full, and last quarter.
+				Only by day, not by time.
 
 ENDHELP
 	exit 0;
