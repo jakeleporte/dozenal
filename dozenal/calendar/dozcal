@@ -32,14 +32,18 @@ use POSIX;
 use String::Escape qw (unbackslash backslash);
 use Time::Piece;
 use Time::Local 'timelocal_nocheck';
-#use List::MoreUtils;
+use DateTime::TimeZone;
 use Date::Day;
 use Date::Easter;
 use Date::Pcalc qw(:all);
 use Astro::MoonPhase;
+use Astro::Sunrise;
+use LWP::Simple;
+use JSON qw( decode_json );
+use Geo::Coder::OSM;
 use Getopt::Std;
-getopts('f:d:o:thwls:r:a:');
-our($opt_f,$opt_d,$opt_o,$opt_t,$opt_h,$opt_w,$opt_l,$opt_s,$opt_r,$opt_a);
+getopts('f:d:o:thwls:r:a:g:n:');
+our($opt_z,$opt_g,$opt_n,$opt_f,$opt_d,$opt_o,$opt_t,$opt_h,$opt_w,$opt_l,$opt_s,$opt_r,$opt_a);
 
 my $INFIN = 999999999;
 # define our exit codes
@@ -53,6 +57,8 @@ my $BAD_EXCEPTION_DATE = 5;
 my $BAD_CONFIGFILE_OPTION = 6;
 my $BAD_DATE_FOR_WEEKLY = 7;
 my $BAD_WDAY_NAME = 8;
+my $NEED_LATITUDE = 9;
+my $BAD_TIMEZONE = 10;
 
 # change to dozenal digits; takes the scalar integer,
 # returnst he dozenal digit character
@@ -544,7 +550,7 @@ sub unshrink_time()
 
 	for (my $i = 0; $i <= $#calendar; $i++) {
 		($hour,$bicia) = ($calendar[$i][2] =~ 
-			/([\dXE]{1,2})\.([-\dXE]{1,2})/);
+			/([\dXE]{1,2})\.([-\dXE]{1,3})/);
 		next if ($hour eq "");
 		$hour += 2; $bicia += 2;
 		$newnum = $hour.";".$bicia;
@@ -862,7 +868,29 @@ OPTIONS
 			"moon"	The phases of the moon; lists four, the
 				new, first quarter, full, and last quarter.
 				Only by day, not by time.
-
+			"sunrise"	The time of sunrise and sunset at a
+				given latitude.  Requires that latitude be given
+				with the "-g" option.
+	-g	Geographical data; since this is used chiefly for
+		astronomical data, latitude and longitude is what's
+		required.  Give this in the form LONG:LAT; e.g.,
+		"15;474:82;760".  This argument is necessary for the
+		"-a sunrise" options.  Latitude and longitude can be
+		given in the customary degrees (0--260), or in TGM Pis
+		(0--1); if degrees are used, as above, prefix them
+		with a "d"; e.g., "d15;474:d82;760".  If a number of
+		this sort is not provided, dozcal reads the argument
+		and sends it to Open Street Maps for analysis; it uses
+		those results as a location if it's valid, throws an
+		error and dies if it's not.  E.g.:
+			-g "Martinsville, VA"
+		This will ask Open Street Maps for the latitude and
+		longitude of Martinsville, Virginia.
+	-z	Timezone; useful for determining the times of sunrise
+		and sunset.  If not provided, dozcal will attempt to
+		get the local timezone, along with daylight savings
+		time, from the local system time; if it can't do this,
+		it will die.
 ENDHELP
 	exit 0;
 }
@@ -945,12 +973,27 @@ sub html_output()
 	print "</table></html>";
 }
 
+# attempt to get latitude and longitude from Open Street
+# Maps if a non-numerical figure is given for $opt_g; takes
+# the $opt_g argument, returns longitude and latitude
+
+sub osm_latlong($)
+{
+	my $geocoder = Geo::Coder::OSM->new();
+	my $location;
+	$location = $geocoder->geocode(location=>$opt_g);
+#	print STDERR "$location->{lon}, $location->{lat}";
+	return ($location->{lon}, $location->{lat});
+}
+
 # inserts the phases of the moon; takes the array and the
 # start and stop dates concerned, returns the array
 
-sub moon_phase(\@$$)
+sub astronomical(\@$$)
 {
 	my @goods = @{$_[0]};
+	my $thestart = $_[1];
+	my $theend = $_[2];
 	my $phase;
 	my @times;
 	my $startsecs;
@@ -958,19 +1001,91 @@ sub moon_phase(\@$$)
 	my @name = ("New Moon", "First Quarter", "Full Moon", "Last Quarter");
 	my $theyear; my $themon; my $theday; my $sec; my $min; my $hour;
 	my $thedate;
+	my $lat; my $long; my $tz; my $isdst;
 
 	($theyear,$themon,$theday) = jultogreg($_[1]);
 	$startsecs = timelocal_nocheck(0,0,0,$theday,$themon-1,$theyear);
 	($theyear,$themon,$theday) = jultogreg($_[2]);
 	$endsecs = timelocal_nocheck(0,0,0,$theday,$themon-1,$theyear);
-	($phase, @times) = phaselist($startsecs,$endsecs);
-	while (@times) {
-		($sec,$min,$hour,$theday,$themon,$theyear) =
-			localtime(scalar localtime shift @times);
-		$theyear += 1900;
-		$thedate = julday($theyear,$themon+1,$theday);
-		push(@goods,"$name[$phase]|$thedate|||1event");
-		$phase = ($phase + 1) % 4;
+	if ($opt_a =~ /moon/) {
+		($phase, @times) = phaselist($startsecs,$endsecs);
+		while (@times) {
+			($sec,$min,$hour,$theday,$themon,$theyear) =
+				localtime(scalar localtime shift @times);
+			$theyear += 1900;
+			$thedate = julday($theyear,$themon+1,$theday);
+			push(@goods,"$name[$phase]|$thedate|||1event");
+			$phase = ($phase + 1) % 4;
+		}
+	}
+	if ($opt_a =~ /sun/) {
+		if (!$opt_z) {
+			$tz = strftime("%Z",localtime());
+			if ($tz eq "") {
+				print STDERR "dozcal:  error:  unable to ";
+				print STDERR "determine local timezone; please \n";
+				print STDERR "specify explicitly with \"-z\"\n";
+				exit $BAD_TIMEZONE;
+			}
+			my $dt = new DateTime(
+				year => $theyear,
+				month => $themon,
+				day => $theday,
+				time_zone => $tz
+			);
+			my $dst = DateTime::TimeZone->new(name => 'local');
+			$isdst = 1 if ($dst->is_dst_for_datetime($dt));
+			$tz = strftime("%z",localtime());
+			$tz =~ s/0+$//;
+			print STDERR "dozcal:  warning:  no timezone given; ";
+			print STDERR "using local timezone, \"$tz\", \n";
+			print STDERR "modified for daylight savings time if ";
+			print STDERR "necessary\n";
+		}
+		if (!$opt_g) {
+			print STDERR "dozcal:  error:  calculating the time ";
+			print STDERR "of sunrise and sunset requires the \n";
+			print STDERR "latitude be given with the \"-g\" option.\n";
+			exit $NEED_LATITUDE;
+		} else {
+			if ($opt_g =~ /([-\dXE;]+):([-\dXE;]+)/) {
+				$long = qx(dec \"$1\");
+				$lat = qx(dec \"$2\");
+			} else {
+				($long, $lat) = osm_latlong($opt_g);
+				if (($long eq "") or ($lat eq "")) {
+					print STDERR "dozcal:  error:  unable to ";
+					print STDERR "determine latitude and longitude; ";
+					print STDERR "please\nspecify explicitly ";
+					print STDERR "with \"-g\"\n";
+					exit $NEED_LATITUDE;
+				}
+			}
+		}
+		if (($opt_a =~ /rise/) || ($opt_a =~ /set/)) {
+			my $sunrise; my $sunset; my $currdate = $thestart;
+			while ($currdate <= $theend) {
+				($theyear,$themon,$theday) = jultogreg($currdate);
+				$themon--;
+				($sunrise, $sunset) = 
+					sunrise($theyear,$themon+1,$theday,$long,$lat,$tz,$isdst,
+					-0.833,4);
+				$thedate = julday($theyear,$themon+1,$theday);
+				my $risemin; my $risesec;
+				my $setmin; my $setsec;
+				($risemin,$risesec) = ($sunrise =~ /(\d+):(\d+)/);
+				($setmin,$setsec) = ($sunset =~ /(\d+):(\d+)/);
+				$sunrise = qx(doz $risemin).":".qx(doz $risesec);
+				$sunset = qx(doz $setmin).":".qx(doz $setsec);
+				$sunrise =~ s/\n//; $sunset =~ s/\n//;
+				$sunrise = qx(dozdate "\@s" -d"$sunrise");
+				$sunset = qx(dozdate "\@s" -d"$sunset");
+				chomp($sunrise); chomp($sunset);
+				push(@goods,"Sunrise|$currdate|$sunrise||1event");
+				push(@goods,"Sunset|$currdate|$sunset||1event");
+				$currdate++;
+			}
+		}
 	}
 	return @goods;
 }
@@ -979,7 +1094,7 @@ sub moon_phase(\@$$)
 # particularly Easter, Pentecost, Ascension, and such;
 # Western versions; takes and returns array
 
-sub christian_west(\@)
+sub religious(\@)
 {
 	my $themon;
 	my $theday;
@@ -992,18 +1107,22 @@ sub christian_west(\@)
 	} else {
 		$theyear = $year;
 	}
-	($themon,$theday) = gregorian_easter(dec_int(uc$theyear));
-	$thedate = julday(dec_int($theyear),$themon,$theday);
-	$thedate -= 46;
-	push(@goods,"Ash Wednesday|$thedate|||0event");
-	$thedate += 46;
-	push(@goods,"Easter|$thedate|||0event");
-	$thedate += 39;
-	push(@goods,"Ascension|$thedate|||0event");
-	$thedate += 10;
-	push(@goods,"Pentecost|$thedate|||0event");
+	if (($opt_r =~ /chr/) && ($opt_r =~ /west/)) {
+		($themon,$theday) = gregorian_easter(dec_int(uc$theyear));
+		$thedate = julday(dec_int($theyear),$themon,$theday);
+		$thedate -= 46;
+		push(@goods,"Ash Wednesday|$thedate|||0event");
+		$thedate += 46;
+		push(@goods,"Easter|$thedate|||0event");
+		$thedate += 39;
+		push(@goods,"Ascension|$thedate|||0event");
+		$thedate += 10;
+		push(@goods,"Pentecost|$thedate|||0event");
+	}
 	return @goods;
 }
+
+# national holidays
 
 # we know what this is for
 
@@ -1048,9 +1167,8 @@ sub main()
 		}
 	}
 	@goodlines = remove_exceptions(@goodlines,@calendar);
-	@goodlines = christian_west(@goodlines) if ($opt_r =~ /chr.*west/);
-	@goodlines = moon_phase(@goodlines,$startdate,$enddate) 
-		if ($opt_a =~ /moon/);
+	@goodlines = religious(@goodlines) if ($opt_r);
+	@goodlines = astronomical(@goodlines,$startdate,$enddate) if ($opt_a);
 	@calendar = ();
 	for (my $i = 0; $i <= $#goodlines; $i++) {
 		push @{$calendar[$i]},split('\|',$goodlines[$i]);

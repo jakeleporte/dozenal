@@ -1120,8 +1120,8 @@ French metric derivatives.
 writing very large and very small quantities.  While modern
 systems utilize ``scientific notation,'' this is typically
 lengthy and bulky, and cannot be read at a glance (e.g.,
-4.567\$\\times\$10\$^15\$).  TGM encourages users instead to
-simply \\emph{prefix} the power of the dozen, either
+4.567\$\\times\$10\$^{15}\$).  TGM encourages users instead
+to simply \\emph{prefix} the power of the dozen, either
 superscripted if it is a positive power, or subscripted if a
 negative.  So the above dozenized becomes \$^{12}\$3;683; a
 very tiny quantity might be \$_{12}\$3;683.  This is at once
