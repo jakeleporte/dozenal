@@ -857,15 +857,18 @@ OPTIONS
 				This (perhaps controversially) includes the
 				national holidays of all the constituent nations
 				of the UK.  If this displeases you, select the
-				nation you want particularly.
+				nation you want particularly.  Note that
+				selecting "uk" simply aggregates all the
+				holidays of the constitutents nations; this
+				results in many duplicates.
 			"eng"	English national holidays.
 			"welsh"	Welsh national holidays.
 			"scot"	Scottish national holidays.
 			"nire"	Northern Irish national holidays.
 			"ire"	Irish holidays.
 			"can"	Canadian national holidays.
-			"que"	Quebecois national holidays.
-			"mex"	Mexican national holidays.
+			"aus"	Australian national holidays.
+			"nz"	New Zealand national holidays.
 	-a	Astronomical dates.  The arguments to this flag come
 		in strings.  The following strings are accepted:
 			"moon"	The phases of the moon; lists four, the
@@ -1041,7 +1044,7 @@ sub astronomical(\@$$)
 				time_zone => $tz
 			);
 			my $dst = DateTime::TimeZone->new(name => 'local');
-			$isdst = 1 if ($dst->is_dst_for_datetime($dt));
+			$isdst = 0 if ($dst->is_dst_for_datetime($dt));
 			$tz = strftime("%z",localtime());
 			$tz =~ s/0+$//;
 			print STDERR "dozcal:  warning:  no timezone given; ";
@@ -1076,7 +1079,7 @@ sub astronomical(\@$$)
 				$themon--;
 				($sunrise, $sunset) = 
 					sunrise($theyear,$themon+1,$theday,$long,$lat,$tz,$isdst,
-					-0.833,4);
+					-0.833);
 				$thedate = julday($theyear,$themon+1,$theday);
 				my $risemin; my $risesec;
 				my $setmin; my $setsec;
@@ -1117,11 +1120,13 @@ sub religious(\@)
 		$theyear = $year;
 	}
 	if (($opt_r =~ /chr/) && ($opt_r =~ /west/)) {
-		($themon,$theday) = gregorian_easter(dec_int(uc$theyear));
+		($themon,$theday) = gregorian_easter(dec_int($theyear));
 		$thedate = julday(dec_int($theyear),$themon,$theday);
 		$thedate -= 46;
 		push(@goods,"Ash Wednesday|$thedate|||0event");
-		$thedate += 46;
+		$thedate += 44;
+		push(@goods,"Good Friday|$thedate|||0event");
+		$thedate += 2;
 		push(@goods,"Easter|$thedate|||0event");
 		$thedate += 39;
 		push(@goods,"Ascension|$thedate|||0event");
@@ -1144,6 +1149,9 @@ sub national(\@$$)
 		$theyear = dec_int($1);
 	} else {
 		$theyear = $year;
+	}
+	if ($opt_n =~ /uk/) {
+		$opt_n =~ s/uk/eng,scot,wales,nire/;
 	}
 	if ($opt_n =~ /usa/) {
 		$thedate = julday($theyear,1,1);
@@ -1187,6 +1195,197 @@ sub national(\@$$)
 		$theday+=1 while (&day(11,$theday,$theyear) ne "THU");
 		$thedate = julday($theyear,11,$theday+21);
 		push(@goods,"Thanksgiving (US)|$thedate|||1event");
+	}
+	if ($opt_n =~ /eng/) {
+		$thedate = julday($theyear,1,1);
+		push(@goods,"New Year's Day (Eng)|$thedate|||1event");
+		$theday = 1;
+		$theday+=1 while (&day(5,$theday,$theyear) ne "MON");
+		$thedate = julday($theyear,5,$theday);
+		push(@goods,"May Day (Eng)|$thedate|||1event");
+		$theday = 31;
+		$theday-=1 while (&day(5,$theday,$theyear) ne "MON");
+		$thedate = julday($theyear,5,$theday);
+		push(@goods,"Spring Bank Holiday (Eng)|$thedate|||1event");
+		$theday = 31;
+		$theday-=1 while (&day(8,$theday,$theyear) ne "MON");
+		$thedate = julday($theyear,8,$theday);
+		push(@goods,"Late Summer Bank Holiday (Eng)|$thedate|||1event");
+		$thedate = julday($theyear,12,25);
+		push(@goods,"Christmas Day (Eng)|$thedate|||1event");
+		$thedate = julday($theyear,12,26);
+		push(@goods,"Boxing Day (Eng)|$thedate|||1event");
+		($themon,$theday) = gregorian_easter($theyear);
+		$thedate = julday($theyear,$themon,$theday);
+		$thedate -= 2;
+		push(@goods,"Good Friday (Eng)|$thedate|||1event");
+		$thedate += 3;
+		push(@goods,"Easter Monday (Eng)|$thedate|||1event");
+	}
+	if ($opt_n =~ /scot/) {
+		$thedate = julday($theyear,1,1);
+		push(@goods,"New Year's Day (Scot)|$thedate|||1event");
+		$thedate = julday($theyear,1,2);
+		push(@goods,"2 January (Scot)|$thedate|||1event");
+		$theday = 1;
+		$theday+=1 while (&day(5,$theday,$theyear) ne "MON");
+		$thedate = julday($theyear,5,$theday);
+		push(@goods,"May Day (Scot)|$thedate|||1event");
+		$theday = 1;
+		$theday+=1 while (&day(8,$theday,$theyear) ne "MON");
+		$thedate = julday($theyear,8,$theday);
+		push(@goods,"Summer Bank Holiday (Scot)|$thedate|||1event");
+		$thedate = julday($theyear,11,30);
+		push(@goods,"St Andrew's Day (Scot)|$thedate|||1event");
+		$thedate = julday($theyear,12,25);
+		push(@goods,"Christmas Day (Scot)|$thedate|||1event");
+		$thedate = julday($theyear,12,26);
+		push(@goods,"Boxing Day (Scot)|$thedate|||1event");
+	}
+	if ($opt_n =~ /wales/) {
+		$thedate = julday($theyear,1,1);
+		push(@goods,"New Year's Day (Wales)|$thedate|||1event");
+		$theday = 1;
+		$theday+=1 while (&day(5,$theday,$theyear) ne "MON");
+		$thedate = julday($theyear,5,$theday);
+		push(@goods,"May Day (Wales)|$thedate|||1event");
+		$theday = 31;
+		$theday-=1 while (&day(5,$theday,$theyear) ne "MON");
+		$thedate = julday($theyear,5,$theday);
+		push(@goods,"Spring Bank Holiday (Wales)|$thedate|||1event");
+		$theday = 31;
+		$theday-=1 while (&day(8,$theday,$theyear) ne "MON");
+		$thedate = julday($theyear,8,$theday);
+		push(@goods,"Late Summer Bank Holiday (Wales)|$thedate|||1event");
+		$thedate = julday($theyear,12,25);
+		push(@goods,"Christmas Day (Wales)|$thedate|||1event");
+		$thedate = julday($theyear,12,26);
+		push(@goods,"Boxing Day (Wales)|$thedate|||1event");
+		($themon,$theday) = gregorian_easter($theyear);
+		$thedate = julday($theyear,$themon,$theday);
+		$thedate -= 2;
+		push(@goods,"Good Friday (Wales)|$thedate|||1event");
+		$thedate += 3;
+		push(@goods,"Easter Monday (Wales)|$thedate|||1event");
+	}
+	if ($opt_n =~ /nire/) {
+		$thedate = julday($theyear,1,1);
+		push(@goods,"New Year's Day (N. Ire.)|$thedate|||1event");
+		$thedate = julday($theyear,3,17);
+		push(@goods,"St Patrick's Day (N. Ire.)|$thedate|||1event");
+		$theday = 1;
+		$theday+=1 while (&day(5,$theday,$theyear) ne "MON");
+		$thedate = julday($theyear,5,$theday);
+		push(@goods,"May Day (N. Ire.)|$thedate|||1event");
+		$theday = 31;
+		$theday-=1 while (&day(5,$theday,$theyear) ne "MON");
+		$thedate = julday($theyear,5,$theday);
+		push(@goods,"Spring Bank Holiday (N. Ire.)|$thedate|||1event");
+		$thedate = julday($theyear,7,12);
+		push(@goods,"The Twelfth (N. Ire.)|$thedate|||1event");
+		$theday = 31;
+		$theday-=1 while (&day(8,$theday,$theyear) ne "MON");
+		$thedate = julday($theyear,8,$theday);
+		push(@goods,"Late Summer Bank Holiday (N. Ire.)|$thedate|||1event");
+		$thedate = julday($theyear,12,25);
+		push(@goods,"Christmas Day (N. Ire.)|$thedate|||1event");
+		$thedate = julday($theyear,12,26);
+		push(@goods,"Boxing Day (N. Ire.)|$thedate|||1event");
+		($themon,$theday) = gregorian_easter($theyear);
+		$thedate = julday($theyear,$themon,$theday);
+		$thedate -= 2;
+		push(@goods,"Good Friday (N. Ire.)|$thedate|||1event");
+		$thedate += 3;
+		push(@goods,"Easter Monday (N. Ire.)|$thedate|||1event");
+	}
+	if ($opt_n =~ /(?<!n)ire/) {
+		$thedate = julday($theyear,1,1);
+		push(@goods,"New Year's Day (Ire)|$thedate|||1event");
+		$thedate = julday($theyear,3,17);
+		push(@goods,"St Patrick's Day (Ire)|$thedate|||1event");
+		$theday = 1;
+		$theday+=1 while (&day(5,$theday,$theyear) ne "MON");
+		$thedate = julday($theyear,5,$theday);
+		push(@goods,"May Day (Ire)|$thedate|||1event");
+		($themon,$theday) = gregorian_easter($theyear);
+		$thedate = julday($theyear,$themon,$theday) + 1;
+		push(@goods,"Easter Monday (Ire)|$thedate|||1event");
+		$theday = 1;
+		$theday+=1 while (&day(6,$theday,$theyear) ne "MON");
+		$thedate = julday($theyear,6,$theday);
+		push(@goods,"June Holiday (Ire)|$thedate|||1event");
+		$theday = 1;
+		$theday+=1 while (&day(8,$theday,$theyear) ne "MON");
+		$thedate = julday($theyear,8,$theday);
+		push(@goods,"August Holiday (Ire)|$thedate|||1event");
+		$theday = 31;
+		$theday-=1 while (&day(10,$theday,$theyear) ne "MON");
+		$thedate = julday($theyear,10,$theday);
+		push(@goods,"October Holiday (Ire)|$thedate|||1event");
+		$thedate = julday($theyear,12,25);
+		push(@goods,"Christmas Day (Ire)|$thedate|||1event");
+		$thedate = julday($theyear,12,26);
+		push(@goods,"St. Stephen's Day (Ire)|$thedate|||1event");
+	}
+	if ($opt_n =~ /can/) {
+		$thedate = julday($theyear,1,1);
+		push(@goods,"New Year's Day (Can)|$thedate|||1event");
+		($themon,$theday) = gregorian_easter($theyear);
+		$thedate = julday($theyear,$themon,$theday);
+		$thedate -= 2;
+		push(@goods,"Good Friday (Can)|$thedate|||1event");
+		$theday = 1;
+		$theday+=1 while (&day(9,$theday,$theyear) ne "MON");
+		$thedate = julday($theyear,9,$theday);
+		push(@goods,"Labour Day (Can)|$thedate|||1event");
+		$thedate = julday($theyear,12,25);
+		push(@goods,"Christmas Day (Can)|$thedate|||1event");
+	}
+	if ($opt_n =~ /aus/) {
+		$thedate = julday($theyear,1,26);
+		push(@goods,"Australia Day (Aus)|$thedate|||1event");
+		$thedate = julday($theyear,4,25);
+		push(@goods,"Anzac Day (Aus)|$thedate|||1event");
+		$thedate = julday($theyear,1,1);
+		push(@goods,"New Year's Day (Aus)|$thedate|||1event");
+		($themon,$theday) = gregorian_easter($theyear);
+		$thedate = julday($theyear,$themon,$theday);
+		$thedate -= 2;
+		push(@goods,"Good Friday (Aus)|$thedate|||1event");
+		$thedate += 3;
+		push(@goods,"Easter Monday (Aus)|$thedate|||1event");
+		$thedate = julday($theyear,12,25);
+		push(@goods,"Christmas Day (Aus)|$thedate|||1event");
+		$thedate = julday($theyear,12,26);
+		push(@goods,"Boxing Day (Aus)|$thedate|||1event");
+	}
+	if ($opt_n =~ /nz/) {
+		$thedate = julday($theyear,1,1);
+		push(@goods,"New Year's Day (NZ)|$thedate|||1event");
+		$thedate = julday($theyear,1,2);
+		push(@goods,"2 January (NZ)|$thedate|||1event");
+		$thedate = julday($theyear,2,6);
+		push(@goods,"Waitangi (NZ)|$thedate|||1event");
+		$thedate = julday($theyear,4,25);
+		push(@goods,"Anzac (NZ)|$thedate|||1event");
+		($themon,$theday) = gregorian_easter($theyear);
+		$thedate = julday($theyear,$themon,$theday);
+		$thedate -= 2;
+		push(@goods,"Good Friday (NZ)|$thedate|||1event");
+		$thedate += 3;
+		push(@goods,"Easter Monday (NZ)|$thedate|||1event");
+		$theday = 1;
+		$theday+=1 while (&day(6,$theday,$theyear) ne "MON");
+		$thedate = julday($theyear,6,$theday);
+		push(@goods,"Queen's Birthday (NZ)|$thedate|||1event");
+		$theday = 1;
+		$theday+=1 while (&day(10,$theday,$theyear) ne "MON");
+		$thedate = julday($theyear,10,$theday+21);
+		push(@goods,"Labour Day (NZ)|$thedate|||1event");
+		$thedate = julday($theyear,12,25);
+		push(@goods,"Christmas Day (NZ)|$thedate|||1event");
+		$thedate = julday($theyear,12,26);
+		push(@goods,"Boxing Day (NZ)|$thedate|||1event");
 	}
 	return @goods;
 }
