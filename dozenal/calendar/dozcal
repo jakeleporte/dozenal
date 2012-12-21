@@ -1097,6 +1097,25 @@ sub astronomical(\@$$)
 			}
 		}
 		if ($opt_a =~ /season/) {
+			my $time; my $quarter; my $desc; my $rise;
+			my $sun = Astro::Coord::ECI::Sun->new();
+			my $sta = Astro::Coord::ECI->universal(time())->
+				geodetic(deg2rad($lat),deg2rad($long),0);
+			$desc = timelocal_nocheck(1,1,1,1,0,$theyear) - 2592000;
+			my ($sec,$min,$hour,$theday,$themon,$theyear) = localtime($desc);
+			my @almanac = $sun->almanac($sta,$desc);
+			for (my $i = 0; $i <= 3; $i++) {
+				($time,$quarter,$desc) = $sun->next_quarter();
+				my ($sec,$min,$hour,$theday,$themon,$theyear) = 
+					localtime($time);
+#				print STDERR "$theday - $themon - $theyear --- $desc\n";
+				my $name;
+				$name = "Equinox" if (($quarter == 0) || ($quarter == 2));
+				$name = "Solstice" if (($quarter == 1) || ($quarter == 3));
+#				print STDERR "$theday - $themon - $theyear --- $name\n";
+				$thedate = julday($theyear+1900,$themon+1,$theday);
+				push(@goods,"$name|$thedate|||1event");
+			}
 		}
 	}
 	return @goods;
