@@ -38,6 +38,9 @@ use Date::Easter;
 use Date::Pcalc qw(:all);
 use Astro::MoonPhase;
 use Astro::Sunrise;
+use Astro::Coord::ECI;
+use Astro::Coord::ECI::Sun;
+use Astro::Coord::ECI::Utils qw {deg2rad};
 use LWP::Simple;
 use JSON qw( decode_json );
 use Geo::Coder::OSM;
@@ -871,6 +874,10 @@ OPTIONS
 			"sunrise"	The time of sunrise and sunset at a
 				given latitude.  Requires that latitude be given
 				with the "-g" option.
+			"season"	The dates of the "official" changes of
+				season; that is, the dates of the vernal and
+				autumnal equinoxes and the summer and winter
+				solstices.
 	-g	Geographical data; since this is used chiefly for
 		astronomical data, latitude and longitude is what's
 		required.  Give this in the form LONG:LAT; e.g.,
@@ -1029,7 +1036,7 @@ sub astronomical(\@$$)
 			}
 			my $dt = new DateTime(
 				year => $theyear,
-				month => $themon,
+				month => $themon + 1,
 				day => $theday,
 				time_zone => $tz
 			);
@@ -1086,6 +1093,8 @@ sub astronomical(\@$$)
 				$currdate++;
 			}
 		}
+		if ($opt_a =~ /season/) {
+		}
 	}
 	return @goods;
 }
@@ -1123,6 +1132,64 @@ sub religious(\@)
 }
 
 # national holidays
+
+sub national(\@$$)
+{
+	my @goods = @{$_[0]};
+	my $thestart = $_[1];
+	my $theend = $_[2];
+	my $thedate; my $theyear; my $themon; my $theday;
+
+	if ($opt_d =~ /([\dXE]{4,4})/) {
+		$theyear = dec_int($1);
+	} else {
+		$theyear = $year;
+	}
+	if ($opt_n =~ /usa/) {
+		$thedate = julday($theyear,1,1);
+		push(@goods,"New Year's Day (US)|$thedate|||1event");
+		$thedate = julday($theyear,7,4);
+		push(@goods,"Independence Day (US)|$thedate|||1event");
+		$thedate = julday($theyear,11,11);
+		push(@goods,"Veterans' Day (US)|$thedate|||1event");
+		$thedate = julday($theyear,12,25);
+		push(@goods,"Christmas (US)|$thedate|||1event");
+		$themon = 0; $theday = 1; my $i = 0;
+		$theday+=1 while (&day(1,$theday,$theyear) ne "MON");
+		$thedate = julday($theyear,1,$theday+14);
+		push(@goods,"Martin Luther King, Jr.  (US)|$thedate|||1event");
+		if ((($theyear-1) % 4) == 0) {
+			if (&day(1,20,$theyear) ne "SUN") {
+				$thedate = julday($theyear,1,20);
+				push(@goods,"Inauguration Day (US)|$thedate|||1event");
+			} else {
+				$thedate = julday($theyear,1,21);
+				push(@goods,"Inauguration Day (US)|$thedate|||1event");
+			}
+		}
+		$theday = 1;
+		$theday+=1 while (&day(2,$theday,$theyear) ne "MON");
+		$thedate = julday($theyear,2,$theday+14);
+		push(@goods,"Presidents' Day (US)|$thedate|||1event");
+		$theday = 31;
+		$theday-=1 while (&day(5,$theday,$theyear) ne "MON");
+		$thedate = julday($theyear,5,$theday);
+		push(@goods,"Memorial Day (US)|$thedate|||1event");
+		$theday = 1;
+		$theday+=1 while (&day(9,$theday,$theyear) ne "MON");
+		$thedate = julday($theyear,9,$theday);
+		push(@goods,"Labor Day (US)|$thedate|||1event");
+		$theday = 1;
+		$theday+=1 while (&day(10,$theday,$theyear) ne "MON");
+		$thedate = julday($theyear,10,$theday+7);
+		push(@goods,"Columbus Day (US)|$thedate|||1event");
+		$theday = 1;
+		$theday+=1 while (&day(11,$theday,$theyear) ne "THU");
+		$thedate = julday($theyear,11,$theday+21);
+		push(@goods,"Thanksgiving (US)|$thedate|||1event");
+	}
+	return @goods;
+}
 
 # we know what this is for
 
@@ -1169,6 +1236,7 @@ sub main()
 	@goodlines = remove_exceptions(@goodlines,@calendar);
 	@goodlines = religious(@goodlines) if ($opt_r);
 	@goodlines = astronomical(@goodlines,$startdate,$enddate) if ($opt_a);
+	@goodlines = national(@goodlines,$startdate,$enddate) if ($opt_n);
 	@calendar = ();
 	for (my $i = 0; $i <= $#goodlines; $i++) {
 		push @{$calendar[$i]},split('\|',$goodlines[$i]);
