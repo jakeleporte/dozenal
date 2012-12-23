@@ -45,7 +45,7 @@ use LWP::Simple;
 use JSON qw( decode_json );
 use Geo::Coder::OSM;
 use Getopt::Std;
-getopts('f:d:o:thwls:r:a:g:n:');
+getopts('f:d:o:thwls:r:a:g:n:z:');
 our($opt_z,$opt_g,$opt_n,$opt_f,$opt_d,$opt_o,$opt_t,$opt_h,$opt_w,$opt_l,$opt_s,$opt_r,$opt_a);
 
 my $INFIN = 999999999;
@@ -189,6 +189,18 @@ sub config_opts($)
 	chomp($option);
 	if ($option =~ /^%DATEFORM:\s*(.*)$/) {
 		$date_format = $1;
+	} elsif ($option =~ /^%GEOGRAPHY:\s*(.*)$/) {
+		$opt_g = $1 if (!$opt_g);
+	} elsif ($option =~ /^%NATIONAL:\s*(.*)$/) {
+		$opt_n = $1 if (!$opt_n);
+	} elsif ($option =~ /^%ASTRONOMY:\s*(.*)$/) {
+		$opt_a = $1 if (!$opt_a);
+	} elsif ($option =~ /^%STARTDAY:\s*(.*)$/) {
+		$opt_s = $1 if (!$opt_s);
+	} elsif ($option =~ /^%TIMEZONE:\s*(.*)$/) {
+		$opt_z = $1 if (!$opt_z);
+	} elsif ($option =~ /^%RELIGIOUS:\s*(.*)$/) {
+		$opt_r = $1 if (!$opt_r);
 	} else {
 		print STDERR "dozcal:  error:  dozcal does not ";
 		print STDERR "recognize the configure option ";
@@ -775,6 +787,13 @@ month, simply put this line in your file:
 Since dozcal is really a wrapper around dozdate, you can use
 any valid dozdate format string for this.
 
+Many of the command-line options have corresponding data
+file equivalents.  If you give more than one data file
+command for a given option, the last given will control; if
+you give data file commands and the corresponding command
+line option, the command line option will control.  The data
+file string are given with the description of the option.
+
 DATE FORMATS
 
 Dates can be provided to dozcal in a number of ways, always
@@ -862,13 +881,15 @@ OPTIONS
 				holidays of the constitutents nations; this
 				results in many duplicates.
 			"eng"	English national holidays.
-			"welsh"	Welsh national holidays.
+			"wales"	Welsh national holidays.
 			"scot"	Scottish national holidays.
 			"nire"	Northern Irish national holidays.
 			"ire"	Irish holidays.
 			"can"	Canadian national holidays.
 			"aus"	Australian national holidays.
 			"nz"	New Zealand national holidays.
+		The data file equivalent of this option is "%NATIONAL: "; 
+		e.g. "%NATIONAL:  wales".
 	-a	Astronomical dates.  The arguments to this flag come
 		in strings.  The following strings are accepted:
 			"moon"	The phases of the moon; lists four, the
@@ -881,6 +902,8 @@ OPTIONS
 				season; that is, the dates of the vernal and
 				autumnal equinoxes and the summer and winter
 				solstices.
+		The data file equivalent of this option is simply 
+		"%ASTRONOMY:  "; e.g., "%ASTRONOMY:  sunrise".
 	-g	Geographical data; since this is used chiefly for
 		astronomical data, latitude and longitude is what's
 		required.  Give this in the form LONG:LAT; e.g.,
@@ -895,12 +918,14 @@ OPTIONS
 		error and dies if it's not.  E.g.:
 			-g "Martinsville, VA"
 		This will ask Open Street Maps for the latitude and
-		longitude of Martinsville, Virginia.
+		longitude of Martinsville, Virginia.  The data file
+		equivalent of "%GEOGRAPHY:  ".
 	-z	Timezone; useful for determining the times of sunrise
 		and sunset.  If not provided, dozcal will attempt to
 		get the local timezone, along with daylight savings
 		time, from the local system time; if it can't do this,
-		it will die.
+		it will die.  Data file:  "%TIMEZONE:  ".  This has to
+		be given as a UTC offset; e.g., "-05" for American EST.
 ENDHELP
 	exit 0;
 }
@@ -1051,6 +1076,9 @@ sub astronomical(\@$$)
 			print STDERR "using local timezone, \"$tz\", \n";
 			print STDERR "modified for daylight savings time if ";
 			print STDERR "necessary\n";
+		} else {
+			$tz = $opt_z;
+			$tz =~ s/0+$//;
 		}
 		if (!$opt_g) {
 			print STDERR "dozcal:  error:  calculating the time ";

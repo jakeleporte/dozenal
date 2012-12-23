@@ -34,6 +34,12 @@ Exceptions Tests|Fridays in Sept 11E7|E;00|14 Sept 11E7|event
 Eventtype Tests|Fridays in Sept 11E7|1X;00|14 Sept 11E7|event
 Louise's Birthday|1E April|||2special
 #%DATEFORM:	%d %B %Y
+%GEOGRAPHY:  Washington, DC
+%NATIONAL:  nz,eng
+%ASTRONOMY:  sunrise,moon
+%STARTDAY:  Mon
+%TIMEZONE:  -0500
+%RELIGIOUS:  chrwest
 #%DDDATEFORM:  %d %b %Y
 ##%FORM_TEXT 1special "%n \n *** %d ***\n"
 ##%FORM_TEXT event "%#20d\n%@-20t%_20n\n"
