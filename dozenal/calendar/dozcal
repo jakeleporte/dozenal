@@ -45,8 +45,8 @@ use LWP::Simple;
 use JSON qw( decode_json );
 use Geo::Coder::OSM;
 use Getopt::Std;
-getopts('f:d:o:thwls:r:a:g:n:z:');
-our($opt_z,$opt_g,$opt_n,$opt_f,$opt_d,$opt_o,$opt_t,$opt_h,$opt_w,$opt_l,$opt_s,$opt_r,$opt_a);
+getopts('f:d:o:m:thwls:r:a:g:n:z:');
+our($opt_m,$opt_z,$opt_g,$opt_n,$opt_f,$opt_d,$opt_o,$opt_t,$opt_h,$opt_w,$opt_l,$opt_s,$opt_r,$opt_a);
 
 my $INFIN = 999999999;
 # define our exit codes
@@ -841,7 +841,11 @@ OPTIONS
 			"-s."
 	-l	LaTeX formatting; prepares the output for use with
 		latexcal, a helper script which builds a professional
-		and beautifully typeset calendar in LaTeX.
+		and beautifully typeset calendar in LaTeX.  Note that,
+		if you specify another format in the data file, it
+		will be ignored when this option is chosen; however,
+		if you specify another format on the command line, it
+		will override this option.
 	-w	Weekly; gives as output the entire week which includes
 		the requested date, rather than only the date itself.
 		This can only be used in conjunction with a specific
@@ -926,6 +930,12 @@ OPTIONS
 		time, from the local system time; if it can't do this,
 		it will die.  Data file:  "%TIMEZONE:  ".  This has to
 		be given as a UTC offset; e.g., "-05" for American EST.
+	-m	Date format; choose this letter because "f", "o", and
+		"r" were already taken.  This governs the manner in
+		which the date itself will be presented; it's a format
+		string identical to that which would be used for
+		dozdate (for which see the man page).  Data file:
+		"%DATEFORM".
 ENDHELP
 	exit 0;
 }
@@ -1414,7 +1424,7 @@ sub national(\@$$)
 		$thedate = julday($theyear,2,6);
 		push(@goods,"Waitangi (NZ)|$thedate|||1event");
 		$thedate = julday($theyear,4,25);
-		push(@goods,"Anzac (NZ)|$thedate|||1event");
+		push(@goods,"Anzac Day (NZ)|$thedate|||1event");
 		($themon,$theday) = gregorian_easter($theyear);
 		$thedate = julday($theyear,$themon,$theday);
 		$thedate -= 2;
@@ -1494,6 +1504,7 @@ sub main()
 		$b->[2] || $a->[4] cmp $b->[4] } @calendar;
 	unshrink_time();
 	$date_format = "%Y/%m/%d" if ($opt_l);
+	$date_format = "$opt_m" if ($opt_m);
 	for (my $i = 0; $i <= $#calendar; $i++) {
 		my ($theyear,$themon,$theday) = jultogreg($calendar[$i][1]);
 		$theyear = doz_int($theyear); $themon = doz_int($themon);
