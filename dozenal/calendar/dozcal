@@ -36,6 +36,9 @@ use DateTime::TimeZone;
 use Date::Day;
 use Date::Easter;
 use Date::Pcalc qw(:all);
+use Date::Passover;
+use Date::GoldenNumber;
+use Date::Convert;
 use Astro::MoonPhase;
 use Astro::Sunrise;
 use Astro::Coord::ECI;
@@ -872,7 +875,13 @@ OPTIONS
 				"west"	Western Christian moving holidays.
 				"east"	Eastern Christian moving holidays.
 			"jew"	Jewish holidays, mostly as one would expect;
-				Hanukkah, Passover, and so forth.
+				Hanukkah, Passover, and so forth.  These are
+				listed in what I (possibly wrongly) understand
+				to be the customary manner on Hebrew calendars:
+				although technically the holidays begin the
+				evening prior, they are listed on the first full
+				day.  If I'm reliably informed that I'm wrong
+				about this, I'll change it.
 	-n	National holidays.  The arguments to this flag come in
 		strings.  The following strings are accepted:
 			"usa"	American national holidays.
@@ -1189,6 +1198,34 @@ sub religious(\@)
 		push(@goods,"Ascension|$thedate|||0event");
 		$thedate += 10;
 		push(@goods,"Pentecost|$thedate|||0event");
+	}
+	if ($opt_r =~ /jew/) {
+		($themon,$theday) = roshhashanah(dec_int($theyear));
+		$thedate = julday(dec_int($theyear),$themon,$theday);
+		push(@goods,"Rosh Hashanah|$thedate|||0event");
+		$thedate += 1;
+		push(@goods,"Rosh Hashanah|$thedate|||0event");
+		$thedate += 8;
+		push(@goods,"Yom Kippur|$thedate|||0event");
+		my $testdate = $thedate;
+		($themon,$theday) = passover(dec_int($theyear));
+		$thedate = julday(dec_int($theyear),$themon,$theday);
+		for (my $i = 0; $i <= 7; $i++) {
+			push(@goods,"Passover|$thedate|||0event");
+			$thedate++;
+		}
+		($theyear,$themon,$theday) = jultogreg($testdate);
+		my $dt = new Date::Convert::Hebrew($theyear+3761,9,25);
+		my @date = $dt->date;
+		convert Date::Convert::Gregorian $dt;
+		$theyear = $dt->year;
+		$themon = $dt->month;
+		$theday = $dt->day;
+		$thedate = julday($theyear,$themon,$theday);
+		for (my $i = 0; $i < 8; $i++) {
+			push(@goods,"Hanukkah|$thedate|||0event");
+			$thedate++;
+		}
 	}
 	return @goods;
 }
