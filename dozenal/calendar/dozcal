@@ -29,6 +29,7 @@
 
 use strict;
 use POSIX;
+use Desktop::Notify;
 use String::Escape qw (unbackslash backslash);
 use Time::Piece;
 use Time::Local 'timelocal_nocheck';
@@ -1198,6 +1199,63 @@ sub religious(\@)
 		push(@goods,"Ascension|$thedate|||0event");
 		$thedate += 10;
 		push(@goods,"Pentecost|$thedate|||0event");
+	}
+	if (($opt_r =~ /chr/) && ($opt_r =~ /east/)) {
+		($themon,$theday) = orthodox_easter(dec_int($theyear));
+		$thedate = julday(dec_int($theyear),$themon,$theday);
+		push(@goods,"Easter (Orthodox)|$thedate|||0event");
+		$thedate -= 48;
+		push(@goods,"Clean Monday (Orthodox)|$thedate|||0event");
+		$thedate += 5;
+		push(@goods,"St. Theodore Saturday (Orthodox)|$thedate|||0event");
+		$thedate += 1;
+		push(@goods,"Feast of Orthodoxy (Orthodox)|$thedate|||0event");
+		$thedate += 7;
+		push(@goods,"St. Gregory Palamas (Orthodox)|$thedate|||0event");
+		$thedate += 7;
+		push(@goods,"Veneration of the Cross (Orthodox)|$thedate|||0event");
+		$thedate += 7;
+		push(@goods,"St. John Climacus (Orthodox)|$thedate|||0event");
+		$thedate += 6;
+		push(@goods,"Saturday of the Akathist (Orthodox)|$thedate|||0event");
+		$thedate += 1;
+		push(@goods,"St. Mary of Egypt (Orthodox)|$thedate|||0event");
+		$thedate += 5;
+		push(@goods,"End of Great Lent at Vespers (Orthodox)|$thedate|||0event");
+		$thedate += 2;
+		push(@goods,"Palm Sunday (Orthodox)|$thedate|||0event");
+		$thedate += 1;
+		push(@goods,"Holy and Great Monday (Orthodox)|$thedate|||0event");
+		$thedate += 1;
+		push(@goods,"Holy and Great Tuesday (Orthodox)|$thedate|||0event");
+		$thedate += 1;
+		push(@goods,"Holy and Great Wednesday (Orthodox)|$thedate|||0event");
+		$thedate += 1;
+		push(@goods,"Holy and Great Thursday (Orthodox)|$thedate|||0event");
+		$thedate += 1;
+		push(@goods,"Holy and Great Friday (Orthodox)|$thedate|||0event");
+		$thedate += 1;
+		push(@goods,"Holy and Great Saturday (Orthodox)|$thedate|||0event");
+		$thedate -= 48;
+		push(@goods,"Cheesefare (Orthodox)|$thedate|||0event");
+		$thedate -= 7;
+		push(@goods,"Meatfare (Orthodox)|$thedate|||0event");
+		$thedate -= 7;
+		push(@goods,"Prodigal Son (Orthodox)|$thedate|||0event");
+		$thedate -= 7;
+		push(@goods,"Publican & Pharisee (Orthodox)|$thedate|||0event");
+		$thedate -= 7;
+		push(@goods,"Zacchaeus Sunday (Orthodox)|$thedate|||0event");
+		$thedate += 116;
+		push(@goods,"Ascension (Orthodox)|$thedate|||0event");
+		$thedate -= 15;
+		push(@goods,"Midfeast (Orthodox)|$thedate|||0event");
+		$thedate += 25;
+		push(@goods,"Pentecost (Orthodox)|$thedate|||0event");
+		$thedate = julday(dec_int($theyear),12,25);
+		push(@goods,"Christmas (Greek Orthodox)|$thedate|||0event");
+		$thedate = julday(dec_int($theyear),1,6);
+		push(@goods,"Epiphany (Orthodox)|$thedate|||0event");
 	}
 	if ($opt_r =~ /jew/) {
 		($themon,$theday) = roshhashanah(dec_int($theyear));
