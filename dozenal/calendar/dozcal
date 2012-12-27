@@ -1308,25 +1308,63 @@ sub religious(\@)
 		$thedate += 7;
 		push(@goods,"Eth Sun. after Pentecost (RC)|$thedate|||0event");
 		$thedate += 7;
-		push(@goods,"10th Sun. after Pentecost (RC)|$thedate|||0event");
-		$thedate += 7;
-		push(@goods,"11th Sun. after Pentecost (RC)|$thedate|||0event");
-		$thedate += 7;
-		push(@goods,"12th Sun. after Pentecost (RC)|$thedate|||0event");
-		$thedate += 7;
-		push(@goods,"13th Sun. after Pentecost (RC)|$thedate|||0event");
-		$thedate += 7;
-		push(@goods,"14th Sun. after Pentecost (RC)|$thedate|||0event");
-		$thedate += 7;
-		push(@goods,"15th Sun. after Pentecost (RC)|$thedate|||0event");
-		$thedate += 7;
-		push(@goods,"16th Sun. after Pentecost (RC)|$thedate|||0event");
-		$thedate += 7;
-		push(@goods,"17th Sun. after Pentecost (RC)|$thedate|||0event");
-		$thedate += 7;
-		push(@goods,"18th Sun. after Pentecost (RC)|$thedate|||0event");
-		$thedate += 7;
-		push(@goods,"19th Sun. after Pentecost (RC)|$thedate|||0event");
+		my $elvsun = $thedate;
+#		push(@goods,"10th Sun. after Pentecost (RC)|$thedate|||0event");
+#		$thedate += 7;
+#		push(@goods,"11th Sun. after Pentecost (RC)|$thedate|||0event");
+#		$thedate += 7;
+#		push(@goods,"12th Sun. after Pentecost (RC)|$thedate|||0event");
+#		$thedate += 7;
+#		push(@goods,"13th Sun. after Pentecost (RC)|$thedate|||0event");
+#		$thedate += 7;
+#		push(@goods,"14th Sun. after Pentecost (RC)|$thedate|||0event");
+#		$thedate += 7;
+#		push(@goods,"15th Sun. after Pentecost (RC)|$thedate|||0event");
+#		$thedate += 7;
+#		push(@goods,"16th Sun. after Pentecost (RC)|$thedate|||0event");
+#		$thedate += 7;
+#		push(@goods,"17th Sun. after Pentecost (RC)|$thedate|||0event");
+#		$thedate += 7;
+#		push(@goods,"18th Sun. after Pentecost (RC)|$thedate|||0event");
+#		$thedate += 7;
+#		push(@goods,"19th Sun. after Pentecost (RC)|$thedate|||0event");
+#		$thedate += 7;
+#		push(@goods,"1Xth Sun. after Pentecost (RC)|$thedate|||0event");
+#		$thedate += 7;
+#		push(@goods,"1Eth Sun. after Pentecost (RC)|$thedate|||0event");
+#		$thedate += 7;
+#		push(@goods,"20th Sun. after Pentecost (RC)|$thedate|||0event");
+		$themon = 10; $theday = 31;
+		$theday-- while (&day($themon,$theday,dec_int($theyear)) ne "SUN");
+		$thedate = julday(dec_int($theyear),$themon,$theday);
+		my $ctk = $thedate;
+		$themon = 9; $theday = 14;
+		$theday++ while (&day($themon,$theday,dec_int($theyear)) ne "SUN");
+		$thedate = julday(dec_int($theyear),$themon,$theday+3);
+		push(@goods,"Ember Wednesday (RC)|$thedate|||0event");
+		$thedate += 2;
+		push(@goods,"Ember Friday (RC)|$thedate|||0event");
+		$thedate += 1;
+		push(@goods,"Ember Saturday (RC)|$thedate|||0event");
+		$themon = 12; $theday = 25;
+		$theday-- while (&day($themon,$theday,dec_int($theyear)) ne "SUN");
+		$thedate = julday(dec_int($theyear),$themon,$theday);
+		$thedate -= 21;
+		my $firstadv = $thedate;
+		$thedate = $elvsun;
+		my $number = 12;
+		while ($thedate <= $firstadv) {
+			if (($thedate != $ctk) && ($thedate != $firstadv)) {
+				my $doznum = doz_int($number);
+				push(@goods,"${doznum}th Sun. after Pentecost (RC)|$thedate|||0event");
+			} elsif ($thedate == $firstadv) {
+				push(@goods,"1st Sun. of Advent (RC)|$thedate|||0event");
+			} elsif ($thedate == $ctk) {
+				push(@goods,"Christ the King (RC)|$thedate|||0event");
+			}
+			$thedate += 7;
+			$number += 1;
+		}
 		#FIXME
 	}
 	if (($opt_r =~ /chr/) && ($opt_r =~ /east/)) {
