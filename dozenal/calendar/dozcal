@@ -1204,6 +1204,7 @@ sub religious(\@)
 		($themon,$theday) = gregorian_easter(dec_int($theyear));
 		$thedate = julday(dec_int($theyear),$themon,$theday);
 		$thedate -= 63;
+		my $thesept = $thedate;
 		push(@goods,"Septuagesima (RC)|$thedate|||0event");
 		$thedate += 7;
 		push(@goods,"Sexagesima (RC)|$thedate|||0event");
@@ -1364,6 +1365,56 @@ sub religious(\@)
 			}
 			$thedate += 7;
 			$number += 1;
+		}
+		$thedate = $firstadv + 7;
+		push(@goods,"2nd Sun. of Advent (RC)|$thedate|||0event");
+		$thedate += 7;
+		push(@goods,"3rd Sun. of Advent (RC)|$thedate|||0event");
+		$thedate += 7;
+		push(@goods,"4th Sun. of Advent (RC)|$thedate|||0event");
+		$thedate += 7;
+		($theyear,$themon,$theday) = jultogreg($thedate);
+		if (($themon == 12) && ($theday == 25)) {
+			$thedate += 5;
+			push(@goods,"Sun. in Oct. of Christmas, Observed (RC)|$thedate|||0event");
+			$thedate += 2;
+			push(@goods,"Oct. of Christmas (RC)|$thedate|||0event");
+		} else {
+			push(@goods,"Sun. in Oct. of Christmas (RC)|$thedate|||0event");
+		}
+		$thedate = julday($theyear,1,1);
+		push(@goods,"The Circumcision of Christ (RC)|$thedate|||0event");
+		my $thenum = 1;
+		$thedate++ while (&day(1,++$thenum,$theyear) ne "SUN");
+		if ($thenum >= 6) {
+			$thedate = julday($theyear,1,2);
+		} else {
+			$thedate = julday($theyear,1,$thenum);
+		}
+		push(@goods,"Most Holy Name of Jesus (RC)|$thedate|||0event");
+		$thedate = julday($theyear,1,6);
+		push(@goods,"Epiphany (RC)|$thedate|||0event");
+		$thenum = 6;
+		$thedate++ while (&day(1,++$thenum,$theyear) ne "SUN");
+		$thedate++;
+		push(@goods,"Holy Family (RC)|$thedate|||0event");
+		$thenum = 2;
+		$thedate += 7;
+		while ($thedate < $thesept) {
+			push(@goods,"2nd Sun. after Epiphany|$thedate|||0event") 
+				if ($thenum == 2);
+			push(@goods,"3rd Sun. after Epiphany|$thedate|||0event") 
+				if ($thenum == 3);
+			push(@goods,"4th Sun. after Epiphany|$thedate|||0event") 
+				if ($thenum == 4);
+			push(@goods,"5th Sun. after Epiphany|$thedate|||0event") 
+				if ($thenum == 5);
+			push(@goods,"6th Sun. after Epiphany|$thedate|||0event") 
+				if ($thenum == 6);
+			push(@goods,"7th Sun. after Epiphany|$thedate|||0event") 
+				if ($thenum == 7);
+			$thenum += 1;
+			$thedate += 7;
 		}
 		#FIXME
 	}
