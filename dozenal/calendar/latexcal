@@ -1487,21 +1487,32 @@ sub main()
 	$dateplus =~ s/\\x/X/g;
 	$dateplus =~ s/\\e/E/g;
 
+	print STDERR "Compiling Nov $datemin...\n";
 	$callist .= qx(./dozcal -f sampdata,saints_1962 -lt -d"Nov $datemin");
+	print STDERR "Compiling Dec $datemin...\n";
 	$callist .= qx(./dozcal -f sampdata,saints_1962 -lt -d"Dec $datemin");
+	print STDERR "Compiling Jan-Dec $date...\n";
 	$callist .= qx(./dozcal -lt -f sampdata,saints_1962 -d$date);
+	print STDERR "Compiling Jan $dateplus...\n";
 	$callist .= qx(./dozcal -f sampdata,saints_1962 -lt -d"Jan $dateplus");
+	print STDERR "Compiling Feb $dateplus...\n";
 	$callist .= qx(./dozcal -f sampdata,saints_1962 -lt -d"Feb $dateplus");
 	@callist = split(/\n/,$callist);
+	print STDERR "Putting together the frontmatter...\n";
 	preamble(dec_int($opt_d));
 	copypage(dec_int($opt_d));
 	yearlypage(dec_int($opt_d));
 	$calyear = dec_int($date);
+	print STDERR "Assembling the small monthlies...\n";
 	small_monthlies($calyear);
+	print STDERR "Assembling the large monthlies...\n";
 	large_monthlies($calyear);
+	print STDERR "Assembling the weeklies...\n";
 	weeklies($calyear);
+	print STDERR "Assembling the backmatter...\n";
 	closingdata();
 	finish();
+	print STDERR "Done!\n";
 }
 
 main();

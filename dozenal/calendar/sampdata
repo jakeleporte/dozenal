@@ -34,8 +34,10 @@ Exceptions Tests|Fridays in Sept 11E7|E;00|14 Sept 11E7|event
 Eventtype Tests|Fridays in Sept 11E7|1X;00|14 Sept 11E7|event
 Louise's Birthday|1E April|||2special
 #%DATEFORM:	%d %B %Y
-%GEOGRAPHY:  Washington, DC
-%NATIONAL:  nz,eng
+#%GEOGRAPHY:  Washington, DC
+#%GEOGRAPHY:  d-65;04:32.X8
+%GEOGRAPHY:  -5;175:2;713
+%NATIONAL:  nz,eng,usa
 %ASTRONOMY:  sunrise,moon
 %STARTDAY:  Mon
 %TIMEZONE:  -0500

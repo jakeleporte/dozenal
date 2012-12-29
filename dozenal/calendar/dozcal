@@ -30,6 +30,10 @@
 use strict;
 use POSIX;
 use Desktop::Notify;
+use Email::MIME;
+use Email::Sender::Simple qw(sendmail try_to_sendmail);
+use Email::Simple;
+use Email::Simple::Creator;
 use String::Escape qw (unbackslash backslash);
 use Time::Piece;
 use Time::Local 'timelocal_nocheck';
@@ -38,6 +42,7 @@ use Date::Day;
 use Date::Easter;
 use Date::Pcalc qw(:all);
 use Date::Passover;
+use Calendar::Hijri;
 use Date::GoldenNumber;
 use Date::Convert;
 use Astro::MoonPhase;
@@ -49,10 +54,11 @@ use LWP::Simple;
 use JSON qw( decode_json );
 use Geo::Coder::OSM;
 use Getopt::Std;
-getopts('f:d:o:m:thwls:r:a:g:n:z:');
-our($opt_m,$opt_z,$opt_g,$opt_n,$opt_f,$opt_d,$opt_o,$opt_t,$opt_h,$opt_w,$opt_l,$opt_s,$opt_r,$opt_a);
+getopts('f:d:o:m:thwls:r:a:g:n:z:M:');
+our($opt_M,$opt_m,$opt_z,$opt_g,$opt_n,$opt_f,$opt_d,$opt_o,$opt_t,$opt_h,$opt_w,$opt_l,$opt_s,$opt_r,$opt_a);
 
 my $INFIN = 999999999;
+
 # define our exit codes
 
 my $SUCCESS = 0;
@@ -66,6 +72,7 @@ my $BAD_DATE_FOR_WEEKLY = 7;
 my $BAD_WDAY_NAME = 8;
 my $NEED_LATITUDE = 9;
 my $BAD_TIMEZONE = 10;
+my $NEED_EMAIL_ADDRESS = 11;
 
 # change to dozenal digits; takes the scalar integer,
 # returnst he dozenal digit character
@@ -177,6 +184,7 @@ my $currdate = localtime;
 my $year = doz_int($currdate->year);
 my $month = -1;
 my $day = -1;
+my $output = "";
 
 # define the default date format variable; this can be
 # changed by command line or by config file
@@ -607,19 +615,19 @@ sub limit_to_date($$)
 sub text_output()
 {
 	for (my $i = 0; $i <= $#calendar; $i++) {
-		print "$calendar[$i][1]:  ";
+		$output .=  "$calendar[$i][1]:  ";
 		if ($calendar[$i][2] ne "") {
-			print "$calendar[$i][2]:  ";
+			$output .=  "$calendar[$i][2]:  ";
 		} else {
-			print "        ";
+			$output .=  "        ";
 		}
-		print "$calendar[$i][0]";
+		$output .=  "$calendar[$i][0]";
 		if ($opt_t) {
 			my $type = $calendar[$i][4];
 			chomp $type;
-			print " %$type% ";
+			$output .=  " %$type% ";
 		}
-		print "\n";
+		$output .=  "\n";
 	}
 }
 
@@ -632,15 +640,15 @@ sub basic_output()
 
 	for (my $i = 0; $i <= $#calendar; $i++) {
 		if ($calendar[$i][1] ne $lastdate) {
-			print "$calendar[$i][1]\n";
+			$output .= "$calendar[$i][1]\n";
 			$lastdate = $calendar[$i][1];
 		}
 		if ($calendar[$i][2] ne '') {
-			print "\t$calendar[$i][2]:\t";
+			$output .= "\t$calendar[$i][2]:\t";
 		} else {
-			print "\t     \t";
+			$output .= "\t     \t";
 		}
-		print "$calendar[$i][0]\n";
+		$output .= "$calendar[$i][0]\n";
 	}
 }
 
@@ -874,7 +882,43 @@ OPTIONS
 			"chr"	Christian holidays; must come *before* the
 				qualifier, such as "west" or "east".
 				"west"	Western Christian moving holidays.
+					These are generic and common to most Western
+					Christians; specifically, Ash Wednesday, Good
+					Friday, Easter, Ascension, and Pentecost.
 				"east"	Eastern Christian moving holidays.
+					Essentially this means "Orthodox moving
+					holidays."  The Greek Orthodox disagree with
+					other Orthodox about the date of Christmas;
+					this puts in the Greek Orthodox Christmas
+					(the same as Western Christmas).  Includes
+					Easter, the important dates of Great Lent,
+					important days preceding Great Lent,
+					Christmas, and the Epiphany.
+			"rc"	A fairly complete listing of the moveable
+				feasts of the Roman Catholic calendar.  Does
+				*not* require a "chr" to work, though of course
+				Roman Catholics are Christians.  Implements the
+				liturgical calendar of 1962, because that's the
+				one I know.  Includes all the dates of Advent
+				and the Christmas season; Septuagesima,
+				Sexagesima, and Quinquegesima; Ash Wednesday;
+				the important days of Lent; Easter and the
+				Easter season through Pentecost; all the Sundays
+				of the year; Christ the King; and Corpus
+				Christi.  Does the right thing with the Feast of
+				the Holy Name (the Sunday between the
+				Circumcision and the Epiphany; or, if there
+				isn't one, 2 January).  Does *not* produce a
+				useable liturgical calendar; particularly,
+				almost all of the fixed feasts are completely
+				ignored.  A complete and accurate liturgical
+				calendar could pretty easily be implemented in a
+				dozcal script; but I considered that beyond the
+				scope of the core.  Note that this option is
+				much more complete than the others, principly
+				because it's the one I personally follow and
+				thus am most interested in; extensions for the
+				others are welcome.
 			"jew"	Jewish holidays, mostly as one would expect;
 				Hanukkah, Passover, and so forth.  These are
 				listed in what I (possibly wrongly) understand
@@ -883,6 +927,11 @@ OPTIONS
 				evening prior, they are listed on the first full
 				day.  If I'm reliably informed that I'm wrong
 				about this, I'll change it.
+			"isl"	Islamic holidays.  The same information about
+				dates beginning in the evening of the preceding day
+				for the Jewish holidays applies to these, as
+				well.  Includes Ramadan; Eid al-Fitr; and Eid
+				al-Asha.
 	-n	National holidays.  The arguments to this flag come in
 		strings.  The following strings are accepted:
 			"usa"	American national holidays.
@@ -923,13 +972,19 @@ OPTIONS
 		required.  Give this in the form LONG:LAT; e.g.,
 		"15;474:82;760".  This argument is necessary for the
 		"-a sunrise" options.  Latitude and longitude can be
-		given in the customary degrees (0--260), or in TGM Pis
-		(0--1); if degrees are used, as above, prefix them
-		with a "d"; e.g., "d15;474:d82;760".  If a number of
-		this sort is not provided, dozcal reads the argument
-		and sends it to Open Street Maps for analysis; it uses
-		those results as a location if it's valid, throws an
-		error and dies if it's not.  E.g.:
+		given in the customary degrees (0--260), or in TGM
+		unciaPis (0--1); if degrees are used, as above, prefix
+		with a "d"; e.g., "d15;474:82;760".  Note that angular
+		measurements are expected in *uncia*Pis; that is, Pis
+		divided by twelve.  Giving the measurements in Pis
+		will result in wildly inaccurate results.  However,
+		since this is a simple matter of moving the uncial
+		point, this is no difficulty.
+		
+		If a number of this sort is not provided, dozcal reads
+		the argument and sends it to Open Street Maps for
+		analysis; it uses those results as a location if it's
+		valid, throws an error and dies if it's not.  E.g.:
 			-g "Martinsville, VA"
 		This will ask Open Street Maps for the latitude and
 		longitude of Martinsville, Virginia.  The data file
@@ -946,6 +1001,11 @@ OPTIONS
 		string identical to that which would be used for
 		dozdate (for which see the man page).  Data file:
 		"%DATEFORM".
+	-M	Send email to the stated address with your results.
+		All this does is put the output into a mail message
+		and try to send it off; so if you ask for HTML output,
+		it will obediently send it.  Takes as an argument the
+		address to which it should be sent.
 ENDHELP
 	exit 0;
 }
@@ -958,74 +1018,74 @@ sub html_output()
 	my $i = 0; my $j = 0; my $k; my $l;
 	my $lastdate;
 
-	print "<html><body>\n";
-	print "<style>\n";
-	print "table {\n";
-	print "\tborder:  2px;\n";
-	print "\ttable-layout:  fixed;\n";
-	print "}\n";
-	print "td {\n";
-	print "\twidth:  14%;\n";
-	print "\tvertical-align:  top;\n";
-	print "\tfont-size:  70%;\n";
-	print "}\n";
-	print ".heading {\n";
-	print "\tfont-weight:  bold;\n";
-	print "\tfont-size:  140%;\n";
-	print "\tcolor:  black;\n";
-	print "\tbackground-color:  gray;\n";
-	print "\twidth:  100%;\n";
-	print "\ttext-align:  center;\n";
-	print "}\n";
-	print ".hanger {\n";
-	print "\tpadding-left:  1em;\n";
-	print "\ttext-indent:  -1em;\n";
-	print "}\n";
-	print "</style>\n";
-	print "<table border=\"2px\">\n";
-	print "<tr><th colspan=\"7\">Calendar</th></tr>\n";
+	$output .= "<html><body>\n";
+	$output .= "<style>\n";
+	$output .= "table {\n";
+	$output .= "\tborder:  2px;\n";
+	$output .= "\ttable-layout:  fixed;\n";
+	$output .= "}\n";
+	$output .= "td {\n";
+	$output .= "\twidth:  14%;\n";
+	$output .= "\tvertical-align:  top;\n";
+	$output .= "\tfont-size:  70%;\n";
+	$output .= "}\n";
+	$output .= ".heading {\n";
+	$output .= "\tfont-weight:  bold;\n";
+	$output .= "\tfont-size:  140%;\n";
+	$output .= "\tcolor:  black;\n";
+	$output .= "\tbackground-color:  gray;\n";
+	$output .= "\twidth:  100%;\n";
+	$output .= "\ttext-align:  center;\n";
+	$output .= "}\n";
+	$output .= ".hanger {\n";
+	$output .= "\tpadding-left:  1em;\n";
+	$output .= "\ttext-indent:  -1em;\n";
+	$output .= "}\n";
+	$output .= "</style>\n";
+	$output .= "<table border=\"2px\">\n";
+	$output .= "<tr><th colspan=\"7\">Calendar</th></tr>\n";
 	$weekday = lc(qx( dozdate -d"$calendar[0][1]" "%a"));
 	$j++ while ($weekday !~ /$wdays[$j]/);
-	print "<tr>\n";
+	$output .= "<tr>\n";
 	$k = get_first_wday() if ($opt_s);
 	$k = 0 if (!$opt_s);
 	$l = $k;
 	for ($i = 0; $i <= 6; $i++) {
-		print "\t<th>$wdays[$l++]</th>\n";
+		$output .= "\t<th>$wdays[$l++]</th>\n";
 		$l = 0 if ($l == 7);
 	}
-	print "</tr>\n";
+	$output .= "</tr>\n";
 	$l = 0;
 	if ($k < $j) {
 		while ($k++ != $j) {
-			print "<td></td>\n";
+			$output .= "<td></td>\n";
 			$l++;
 		}
 	} elsif ($k > $j) {
 		$k -= 7;
 		while ($k++ != $j){
-			print "<td></td>\n";
+			$output .= "<td></td>\n";
 			$l++;
 		}
 	}
-	print "<td><div class=\"heading\">$calendar[0][1]</div>\n";
+	$output .= "<td><div class=\"heading\">$calendar[0][1]</div>\n";
 	$lastdate = $calendar[0][1];
 	for ($i = 0; $i <= $#calendar; $i++) {
 		if ($calendar[$i][1] eq $lastdate) {
-			print "<div class=\"hanger\">\n";
-			print "$calendar[$i][2]:  \n" if $calendar[$i][2] ne "";
-			print "$calendar[$i][0]</div>\n";
+			$output .= "<div class=\"hanger\">\n";
+			$output .= "$calendar[$i][2]:  \n" if $calendar[$i][2] ne "";
+			$output .= "$calendar[$i][0]</div>\n";
 		} else {
 			$l++;
-			print "</tr><tr>\n" if ((($l % 7) == 0) && ($l != 0));
-			print "<td><div class=\"heading\">$calendar[$i][1]</div>\n";
-			print "<div class=\"hanger\">\n";
-			print "$calendar[$i][2]:  \n" if $calendar[$i][2] ne "";
-			print "$calendar[$i][0]</div>\n";
+			$output .= "</tr><tr>\n" if ((($l % 7) == 0) && ($l != 0));
+			$output .= "<td><div class=\"heading\">$calendar[$i][1]</div>\n";
+			$output .= "<div class=\"hanger\">\n";
+			$output .= "$calendar[$i][2]:  \n" if $calendar[$i][2] ne "";
+			$output .= "$calendar[$i][0]</div>\n";
 			$lastdate = $calendar[$i][1];
 		}
 	}
-	print "</table></html>";
+	$output .= "</table></html>";
 }
 
 # attempt to get latitude and longitude from Open Street
@@ -1107,8 +1167,19 @@ sub astronomical(\@$$)
 			exit $NEED_LATITUDE;
 		} else {
 			if ($opt_g =~ /([-\dXE;]+):([-\dXE;]+)/) {
-				$long = qx(dec \"$1\");
-				$lat = qx(dec \"$2\");
+				if ($opt_g =~ /^d/) {
+					$opt_g =~ /([-\dXE;]+):([-\dXE;]+)/;
+					$long = qx(dec \"$1\");
+					$lat = qx(dec \"$2\");
+				} else {
+					$opt_g =~ /([-\dXE;]+):([-\dXE;]+)/;
+					$long = qx(dec "$1") / 12;
+					$long = qx(doz "$long");
+					$long = qx(dozdc " $long pi * =" | tgmconv -irad -odeg | dec);
+					$lat = qx(dec "$2") / 12;
+					$lat = qx(doz "$lat");
+					$lat = qx(dozdc " $lat pi * =" | tgmconv -irad -odeg | dec);
+				}
 			} else {
 				($long, $lat) = osm_latlong($opt_g);
 				if (($long eq "") or ($lat eq "")) {
@@ -1201,6 +1272,11 @@ sub religious(\@)
 		push(@goods,"Pentecost|$thedate|||0event");
 	}
 	if ($opt_r =~ /rc/) {
+		if ($opt_d =~ /([\dXE]{4,4})/) {
+			$theyear = $1;
+		} else {
+			$theyear = $year;
+		}
 		($themon,$theday) = gregorian_easter(dec_int($theyear));
 		$thedate = julday(dec_int($theyear),$themon,$theday);
 		$thedate -= 63;
@@ -1369,8 +1445,14 @@ sub religious(\@)
 		$thedate = $firstadv + 7;
 		push(@goods,"2nd Sun. of Advent (RC)|$thedate|||0event");
 		$thedate += 7;
-		push(@goods,"3rd Sun. of Advent (RC)|$thedate|||0event");
-		$thedate += 7;
+		push(@goods,"3rd Sun. of Advent; Gaudete Sun. (RC)|$thedate|||0event");
+		$thedate += 3;
+		push(@goods,"Ember Wednesday (RC)|$thedate|||0event");
+		$thedate += 2;
+		push(@goods,"Ember Friday (RC)|$thedate|||0event");
+		$thedate += 1;
+		push(@goods,"Ember Saturday (RC)|$thedate|||0event");
+		$thedate += 1;
 		push(@goods,"4th Sun. of Advent (RC)|$thedate|||0event");
 		$thedate += 7;
 		($theyear,$themon,$theday) = jultogreg($thedate);
@@ -1419,6 +1501,11 @@ sub religious(\@)
 		#FIXME
 	}
 	if (($opt_r =~ /chr/) && ($opt_r =~ /east/)) {
+		if ($opt_d =~ /([\dXE]{4,4})/) {
+			$theyear = $1;
+		} else {
+			$theyear = $year;
+		}
 		($themon,$theday) = orthodox_easter(dec_int($theyear));
 		$thedate = julday(dec_int($theyear),$themon,$theday);
 		push(@goods,"Easter (Orthodox)|$thedate|||0event");
@@ -1476,6 +1563,11 @@ sub religious(\@)
 		push(@goods,"Epiphany (Orthodox)|$thedate|||0event");
 	}
 	if ($opt_r =~ /jew/) {
+		if ($opt_d =~ /([\dXE]{4,4})/) {
+			$theyear = $1;
+		} else {
+			$theyear = $year;
+		}
 		($themon,$theday) = roshhashanah(dec_int($theyear));
 		$thedate = julday(dec_int($theyear),$themon,$theday);
 		push(@goods,"Rosh Hashanah|$thedate|||0event");
@@ -1501,6 +1593,31 @@ sub religious(\@)
 		for (my $i = 0; $i < 8; $i++) {
 			push(@goods,"Hanukkah|$thedate|||0event");
 			$thedate++;
+		}
+	}
+	if ($opt_r =~ /isl/) {
+		if ($opt_d =~ /([\dXE]{4,4})/) {
+			$theyear = $1;
+		} else {
+			$theyear = $year;
+		}
+		my $islamyear = dec_int($theyear) - 579;
+		my $calendar = Calendar::Hijri->new($islamyear,9,1);
+		my $numdays = $calendar->days_in_month($islamyear,9);
+		for (my $i = 1; $i <= $numdays; $i++) {
+			my $calendar = Calendar::Hijri->new($islamyear,9,$i);
+			$calendar->get_calendar();
+			my ($yyyy,$mm,$dd) = $calendar->to_gregorian();
+			$thedate = julday($yyyy,$mm,$dd);
+			push(@goods,"Ramadan (Islam)|$thedate|||0event");
+		}
+		push(@goods,"Eid al-Fitr (Islam)|$thedate|||0event");
+		for (my $i = 10; $i <= 12; $i++) {
+			my $calendar = Calendar::Hijri->new($islamyear,12,$i);
+			$calendar->get_calendar();
+			my ($yyyy,$mm,$dd) = $calendar->to_gregorian();
+			$thedate = julday($yyyy,$mm,$dd);
+			push(@goods,"Eid al-Adha (Islam)|$thedate|||0event");
 		}
 	}
 	return @goods;
@@ -1565,6 +1682,31 @@ sub national(\@$$)
 		$theday+=1 while (&day(11,$theday,$theyear) ne "THU");
 		$thedate = julday($theyear,11,$theday+21);
 		push(@goods,"Thanksgiving (US)|$thedate|||1event");
+		$theday = 1;
+		$theday+=1 while (&day(5,$theday,$theyear) ne "SUN");
+		$theday += 7;
+		$thedate = julday($theyear,5,$theday);
+		push(@goods,"Mother's Day (US)|$thedate|||1event");
+		$theday = 1;
+		$theday+=1 while (&day(6,$theday,$theyear) ne "SUN");
+		$theday += 14;
+		$thedate = julday($theyear,6,$theday);
+		push(@goods,"Father's Day (US)|$thedate|||1event");
+		$thedate = julday($theyear,6,14);
+		push(@goods,"Flag Day (US)|$thedate|||1event");
+		$thedate = julday($theyear,9,11);
+		push(@goods,"Patriot Day (US)|$thedate|||1event");
+		$thedate = julday($theyear,9,17);
+		push(@goods,"Constitution Day (US)|$thedate|||1event");
+		if (($theyear % 2) == 0) {
+			$theday = 1;
+			$theday+=1 while (&day(11,$theday,$theyear) ne "MON");
+			$theday+=1;
+			$thedate = julday($theyear,11,$theday);
+			push(@goods,"Election Day (US)|$thedate|||1event");
+		}
+		$thedate = julday($theyear,10,31);
+		push(@goods,"Halloween (US)|$thedate|||1event");
 	}
 	if ($opt_n =~ /eng/) {
 		$thedate = julday($theyear,1,1);
@@ -1760,6 +1902,31 @@ sub national(\@$$)
 	return @goods;
 }
 
+# send the email; takes no arguments, returns nothing
+
+sub email_output()
+{
+	if ($opt_M !~ /@/) {
+		print STDERR "dozcal:  error:  when requesting mail ";
+		print STDERR "with the \"-M\" option, you must \n";
+		print STDERR "give the email address desired\n";
+		exit $NEED_EMAIL_ADDRESS;
+	}
+	my $message = Email::Simple->create(
+		header => [
+			From => "$opt_M",
+			To => "$opt_M",
+			Subject => "Calendar for \"$opt_d\"",
+		],
+		attributes => {
+			encoding => 'quoted-printable',
+			charset => 'UTF-8',
+		},
+		body => "$output",
+	);
+	sendmail($message) || die "$!";
+}
+
 # we know what this is for
 
 sub main()
@@ -1830,6 +1997,8 @@ sub main()
 	text_output() if ((!$opt_o) || ($opt_o eq 'text'));
 	basic_output() if ($opt_o eq 'basic');
 	html_output() if ($opt_o eq 'html');
+	print $output if (!$opt_M);
+	email_output() if ($opt_M);
 }
 
 main();
