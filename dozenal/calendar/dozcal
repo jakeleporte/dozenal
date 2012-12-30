@@ -30,10 +30,6 @@
 use strict;
 use POSIX;
 use Desktop::Notify;
-use Email::MIME;
-use Email::Sender::Simple qw(sendmail try_to_sendmail);
-use Email::Simple;
-use Email::Simple::Creator;
 use String::Escape qw (unbackslash backslash);
 use Time::Piece;
 use Time::Local 'timelocal_nocheck';
@@ -260,8 +256,6 @@ sub read_files($)
 sub expand_dates($$)
 {
 	my $matches = 0;			# number of matching days to return
-	my $udatestring = $_[0];# date string
-	my $datestring = lc($_[0]);
 	my $wholeline = $_[1];	# the whole line, including datestring
 	my $hasmonth = 0;			# if there's a month
 	my $haswday = 0;			# if there's a wday
@@ -273,123 +267,134 @@ sub expand_dates($$)
 	my $yeardays;
 	my $theyear;
 	my $success = 1;			# error; set to zero if works
+	my $origstr = $_[0];		# full original string
 
-	for ($i = 0; $i <= $#wdays; $i++) {
-		if ($datestring =~ /$wdays[$i]/) {
-			$haswday = 1;
-			last;
-		}
-	}
-	for ($j = 0; $j <= $#months; $j++) {
-		if ($datestring =~ /$months[$j]/) {
-			$hasmonth = 1;
-			last;
-		}
-	}
-	if ($datestring =~ /([\dxe]{4,4})/) {
-		$theyear = uc($1);
-	} else {
-		$theyear = $year;
-	}
-	$yeardays = (leap_year(dec_int($theyear))) ? 366 : 365;
-	if (($haswday == 1) && ($hasmonth == 0)) {
-		if (($datestring !~ /first/) && ($datestring !~ /second/) &&
-			($datestring !~ /third/) && ($datestring !~ /fourth/) &&
-			($datestring !~ /fifth/) && ($datestring !~ /last/)) {
-			$theday+=1 while ($wdays[$i] ne 
-				lc(&day(1,$theday,dec_int($theyear))));
-			for (my $k = $theday; $k <= $yeardays; $k+=7) {
-				my ($themon,$theday) = get_month($k);
-				$thedate = julday(dec_int($theyear),$themon+1,$theday);
-				my $tmpline = $wholeline;
-				$tmpline =~ s/$udatestring/$thedate/;
-				push(@calendar,$tmpline);
-				$success = 0;
+	$origstr =~ s/$/,/;
+	while ($origstr =~ /(.*?),/) {
+		my $udatestring = $1;
+		my $datestring = lc($udatestring);
+		for ($i = 0; $i <= $#wdays; $i++) {
+			if ($datestring =~ /$wdays[$i]/) {
+				$haswday = 1;
+				last;
 			}
+		}
+		for ($j = 0; $j <= $#months; $j++) {
+			if ($datestring =~ /$months[$j]/) {
+				$hasmonth = 1;
+				last;
+			}
+		}
+		if ($datestring =~ /([\dxe]{4,4})/) {
+			$theyear = uc($1);
 		} else {
-			my $nextday;
-			$nextday = 0 if ($datestring =~ /last/);
-			$nextday = 0 if ($datestring =~ /first/);
-			$nextday = 1 if ($datestring =~ /second/);
-			$nextday = 2 if ($datestring =~ /third/);
-			$nextday = 3 if ($datestring =~ /fourth/);
-			$nextday = 4 if ($datestring =~ /fifth/);
-			for ($k = 0; $k <= 11; $k++) {
-				$theday+=1 while 
-					($wdays[$i] ne lc(&day($k+1,$theday,dec_int($theyear)))) && 
-					($theday <= $monnums[$k]);
-				if ($datestring =~ /last/) {
-					$theday = $monnums[$k];
-					$theday-=1 while
-						($wdays[$i] ne lc(&day($k+1,$theday,dec_int($theyear))))
-						&& ($theday <= $monnums[$k]);
+			$theyear = $year;
+		}
+		$yeardays = (leap_year(dec_int($theyear))) ? 366 : 365;
+		if (($haswday == 1) && ($hasmonth == 0)) {
+			if (($datestring !~ /first/) && ($datestring !~ /second/) &&
+				($datestring !~ /third/) && ($datestring !~ /fourth/) &&
+				($datestring !~ /fifth/) && ($datestring !~ /last/)) {
+				$theday+=1 while ($wdays[$i] ne 
+					lc(&day(1,$theday,dec_int($theyear))));
+				for (my $k = $theday; $k <= $yeardays; $k+=7) {
+					my ($themon,$theday) = get_month($k);
+					$thedate = julday(dec_int($theyear),$themon+1,$theday);
+					my $tmpline = $wholeline;
+					$tmpline =~ s/$_[0]/$thedate/;
+					push(@calendar,$tmpline);
+					$success = 0;
 				}
-				$thedate = julday(dec_int($theyear),$k+1,$theday+(7*$nextday));
-				my $tmpline = $wholeline;
-				$tmpline =~ s/$udatestring/$thedate/;
-				push(@calendar,$tmpline);
-				$theday = 1;
-			}
-			$success = 0;
-		}
-	} elsif (($haswday == 1) && ($hasmonth == 1)) {
-		if (($datestring !~ /first/) && ($datestring !~ /second/) &&
-			($datestring !~ /third/) && ($datestring !~ /fourth/) &&
-			($datestring !~ /fifth/) && ($datestring !~ /last/)) {
-			$theday+=1 while 
-				($wdays[$i] ne lc(&day($j+1,$theday,dec_int($theyear))));
-			my $numdays = $monnums[$j];
-			$numdays++ if (leap_year(dec_int($theyear)) && ($j == 1));
-			for (my $k = $theday; $k <= $numdays; $k+=7) {
-				$thedate = julday(dec_int($theyear),$j+1,$k);
-				my $tmpline = $wholeline;
-				$tmpline =~ s/$udatestring/$thedate/;
-				push(@calendar,$tmpline);
+			} else {
+				my $nextday;
+				$nextday = 0 if ($datestring =~ /last/);
+				$nextday = 0 if ($datestring =~ /first/);
+				$nextday = 1 if ($datestring =~ /second/);
+				$nextday = 2 if ($datestring =~ /third/);
+				$nextday = 3 if ($datestring =~ /fourth/);
+				$nextday = 4 if ($datestring =~ /fifth/);
+				for ($k = 0; $k <= 11; $k++) {
+					$theday+=1 while 
+						($wdays[$i] ne lc(&day($k+1,$theday,dec_int($theyear)))) && 
+						($theday <= $monnums[$k]);
+					if ($datestring =~ /last/) {
+						$theday = $monnums[$k];
+						$theday += 1 if ((leap_year(dec_int($theyear)))
+							&& ($j == 1));
+						$theday-=1 while
+							($wdays[$i] ne 
+								lc(&day($k+1,$theday,dec_int($theyear))));
+					}
+					$thedate = julday(dec_int($theyear),$k+1,$theday+(7*$nextday));
+					my $tmpline = $wholeline;
+					$tmpline =~ s/$_[0]/$thedate/;
+					push(@calendar,$tmpline);
+					$theday = 1;
+				}
 				$success = 0;
 			}
-		} else {
-			my $nextday;
-			$nextday = 0 if ($datestring =~ /last/);
-			$nextday = 0 if ($datestring =~ /first/);
-			$nextday = 1 if ($datestring =~ /second/);
-			$nextday = 2 if ($datestring =~ /third/);
-			$nextday = 3 if ($datestring =~ /fourth/);
-			$nextday = 4 if ($datestring =~ /fifth/);
-			$theday+=1 while 
-				($wdays[$i] ne lc(&day($j+1,$theday,dec_int($theyear))))
-				&& ($theday <= $monnums[$j]);
-			if ($datestring =~ /last/) {
-				$theday = $monnums[$j];
-				$theday-=1 while
+		} elsif (($haswday == 1) && ($hasmonth == 1)) {
+			if (($datestring !~ /first/) && ($datestring !~ /second/) &&
+				($datestring !~ /third/) && ($datestring !~ /fourth/) &&
+				($datestring !~ /fifth/) && ($datestring !~ /last/)) {
+				$theday+=1 while 
+					($wdays[$i] ne lc(&day($j+1,$theday,dec_int($theyear))));
+				my $numdays = $monnums[$j];
+				$numdays++ if (leap_year(dec_int($theyear)) && ($j == 1));
+				for (my $k = $theday; $k <= $numdays; $k+=7) {
+					$thedate = julday(dec_int($theyear),$j+1,$k);
+					my $tmpline = $wholeline;
+					$tmpline =~ s/$_[0]/$thedate/;
+					push(@calendar,$tmpline);
+					$success = 0;
+				}
+			} else {
+				my $nextday;
+				$nextday = 0 if ($datestring =~ /last/);
+				$nextday = 0 if ($datestring =~ /first/);
+				$nextday = 1 if ($datestring =~ /second/);
+				$nextday = 2 if ($datestring =~ /third/);
+				$nextday = 3 if ($datestring =~ /fourth/);
+				$nextday = 4 if ($datestring =~ /fifth/);
+				$theday+=1 while 
 					($wdays[$i] ne lc(&day($j+1,$theday,dec_int($theyear))))
 					&& ($theday <= $monnums[$j]);
-			}
-			$thedate = julday(dec_int($theyear),$j+1,$theday+(7*$nextday));
-			my $tmpline = $wholeline;
-			$tmpline =~ s/$udatestring/$thedate/;
-			push(@calendar,$tmpline);
-			$success = 0;
-		}
-	} elsif (($hasmonth == 1) && ($haswday == 0)) {
-		if ($datestring =~ /--/) {
-			my $firstdate; my $lastdate;
-			($firstdate,$lastdate) = ($datestring =~ /(.*)--(.*)/);
-			$firstdate = spec_date($firstdate);
-			$lastdate = spec_date($lastdate);
-			while ($firstdate <= $lastdate) {
+				if ($datestring =~ /last/) {
+					$theday = $monnums[$j];
+					$theday += 1 if ((leap_year(dec_int($theyear)))
+						&& ($j == 1));
+					$theday-=1 while
+						($wdays[$i] ne lc(&day($j+1,$theday,dec_int($theyear))))
+						&& ($theday <= $monnums[$j]);
+				}
+				$thedate = julday(dec_int($theyear),$j+1,$theday+(7*$nextday));
 				my $tmpline = $wholeline;
-				$tmpline =~ s/$udatestring/$firstdate/;
+				$tmpline =~ s/$_[0]/$thedate/;
 				push(@calendar,$tmpline);
-				$firstdate++;
+				$success = 0;
 			}
-			$success = 0;
-		} else {
-			$thedate = spec_date($datestring);
-			my $tmpline = $wholeline;
-			$tmpline =~ s/$udatestring/$thedate/;
-			push(@calendar,$tmpline);
-			$success = 0;
+		} elsif (($hasmonth == 1) && ($haswday == 0)) {
+			if ($datestring =~ /--/) {
+				my $firstdate; my $lastdate;
+				($firstdate,$lastdate) = ($datestring =~ /(.*)--(.*)/);
+				$firstdate = spec_date($firstdate);
+				$lastdate = spec_date($lastdate);
+				while ($firstdate <= $lastdate) {
+					my $tmpline = $wholeline;
+					$tmpline =~ s/$_[0]/$firstdate/;
+					push(@calendar,$tmpline);
+					$firstdate++;
+				}
+				$success = 0;
+			} else {
+				$thedate = spec_date($datestring);
+				my $tmpline = $wholeline;
+				$tmpline =~ s/$_[0]/$thedate/;
+				push(@calendar,$tmpline);
+				$success = 0;
+			}
 		}
+	$origstr =~ s/$udatestring,//;
 	}
 	return $success;
 }
@@ -536,6 +541,7 @@ sub remove_exceptions(\@\@)
 	my @line;
 
 	foreach my $var (@excepts) {
+		print STDERR "$var\n";
 		@line = split('\|',$var);
 		for (my $i = 0; $i <= $#goods; $i++) {
 			if (($goods[$i] =~ /$line[3]/) && ($goods[$i] =~ /$line[0]/)) {
@@ -1001,11 +1007,6 @@ OPTIONS
 		string identical to that which would be used for
 		dozdate (for which see the man page).  Data file:
 		"%DATEFORM".
-	-M	Send email to the stated address with your results.
-		All this does is put the output into a mail message
-		and try to send it off; so if you ask for HTML output,
-		it will obediently send it.  Takes as an argument the
-		address to which it should be sent.
 ENDHELP
 	exit 0;
 }
@@ -1902,31 +1903,6 @@ sub national(\@$$)
 	return @goods;
 }
 
-# send the email; takes no arguments, returns nothing
-
-sub email_output()
-{
-	if ($opt_M !~ /@/) {
-		print STDERR "dozcal:  error:  when requesting mail ";
-		print STDERR "with the \"-M\" option, you must \n";
-		print STDERR "give the email address desired\n";
-		exit $NEED_EMAIL_ADDRESS;
-	}
-	my $message = Email::Simple->create(
-		header => [
-			From => "$opt_M",
-			To => "$opt_M",
-			Subject => "Calendar for \"$opt_d\"",
-		],
-		attributes => {
-			encoding => 'quoted-printable',
-			charset => 'UTF-8',
-		},
-		body => "$output",
-	);
-	sendmail($message) || die "$!";
-}
-
 # we know what this is for
 
 sub main()
@@ -1997,8 +1973,7 @@ sub main()
 	text_output() if ((!$opt_o) || ($opt_o eq 'text'));
 	basic_output() if ($opt_o eq 'basic');
 	html_output() if ($opt_o eq 'html');
-	print $output if (!$opt_M);
-	email_output() if ($opt_M);
+	print $output;
 }
 
 main();
