@@ -541,7 +541,6 @@ sub remove_exceptions(\@\@)
 	my @line;
 
 	foreach my $var (@excepts) {
-		print STDERR "$var\n";
 		@line = split('\|',$var);
 		for (my $i = 0; $i <= $#goods; $i++) {
 			if (($goods[$i] =~ /$line[3]/) && ($goods[$i] =~ /$line[0]/)) {
