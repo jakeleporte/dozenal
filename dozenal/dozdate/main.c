@@ -90,7 +90,7 @@ int main(int argc, char *argv[])
 			fileflag = 1;
 			break;
 		case 'v':
-			printf("dozdate v2.1\n");
+			printf("dozdate v2.2\n");
 			printf("Copyright (C) 2011  Donald P. Goodman III\n");
 			printf("License GPLv3+:  GNU GPL version 3 or "
 			"later <http://gnu.org/licenses/gpl.html>\n");
@@ -159,8 +159,9 @@ int main(int argc, char *argv[])
 		breakup(buffer,thetime,usesymm);
 		if (thetime->tm_yday > 31)
 			dectoirv(buffer,thetime);
-		if ((usesymm == NEITHER) || (usesymm == IN))
+		if ((usesymm == NEITHER) || (usesymm == IN)) {
 			irvtojan(buffer,thetime);
+		}
 		printf("%s\n",buffer);
 	} else {
 		i = 0;
@@ -211,8 +212,9 @@ int breakup(char *s, struct tm *thetime, int usesymm)
 			tmp[j++] = s[i];
 			tmp[j] = '\0';
 			if ((tmp[j-1] == 'b') && (thetime->tm_yday >= 364)
-				&& (usesymm > 0))
+				&& ((usesymm == OUT) || (usesymm == BOTH))) {
 				thetime->tm_mon = 0;
+			}
 			strftime(tmp2,SIZE,tmp,thetime);
 			tokenize(tmp2);
 			dateinsert(s,tmp2,j-1);
