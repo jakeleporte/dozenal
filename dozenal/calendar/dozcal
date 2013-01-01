@@ -29,7 +29,6 @@
 
 use strict;
 use POSIX;
-use Desktop::Notify;
 use String::Escape qw (unbackslash backslash);
 use Time::Piece;
 use Time::Local 'timelocal_nocheck';
