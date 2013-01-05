@@ -16,8 +16,8 @@ my $celltext = "";
 my $numdays;
 my @callist;
 my $calyear;
-getopts('Hbflwd:o:');
-our($opt_d,$opt_l,$opt_w,$opt_o,$opt_f,$opt_b,$opt_H);
+getopts('Hbtflwd:o:');
+our($opt_t,$opt_d,$opt_l,$opt_w,$opt_o,$opt_f,$opt_b,$opt_H);
 
 # sets up the calendar's basic routines; takes the current
 # year (for outputting title page)
@@ -132,7 +132,7 @@ END
 		print "\\normalsize}%\n";
 		print "\\newpage%\n";
 	}
-	if ($opt_l) {
+	if ($opt_l && $opt_t) {
 		print "\\begin{landscape}%\n";
 		print "\\vspace*{\\stretch{1}}%\n";
 		print "\\fontsize{84pt}{84pt}\\selectfont%\n";
@@ -170,20 +170,24 @@ END
 	}
 }
 
-sub facingpage($$$)
+sub facingpage($$$$)
 {
 	my $picture = $_[0];
 	my $quote = $_[1];
 	my $author = $_[2];
+	my $height = $_[3];
 
 	print "\\begin{landscape}%\n";
-	print "\\begin{tabular}{m{.49\\linewidth}m{.49\\linewidth}}%\n";
-	print "\\includegraphics[height=\\textheight]{$picture} &%\n";
+	print "\\renewcommand{\\tabcolsep}{1em}%\n";
+	print "\\vspace*{\\stretch{1}}%\n" if $height ne "\\textheight";
+	print "\\begin{tabular*}{\\textwidth}{>{\\hfil}m{.47\\linewidth}<{\\hfil}m{.47\\linewidth}}%\n";
+	print "\\includegraphics[height=$height]{$picture} &%\n";
 	print "\\fontsize{24pt}{24pt}\\selectfont ";
 	print "\\textit{$quote}\\par\\vskip.5em ";
 	print "\\fontsize{18pt}{18pt}\\selectfont ";
 	print "\\hbox{\\hskip2em\\textsc{$author}}\\\\%\n";
 	print "\\end{tabular}%\n";
+	print "\\vspace*{\\stretch{1}}%\n" if $height ne "\\textheight";
 	print "\\end{landscape}%\n";
 }
 
@@ -740,6 +744,8 @@ sub getblanknums($$$)
 
 # prints an individual large monthly; takes year, month
 
+my $mymon = -1;
+
 sub run_month($$)
 {
 	my $i;
@@ -749,10 +755,66 @@ sub run_month($$)
 	my $boxnum;
 	my $month = $_[1];
 
-	facingpage("andrews_f_emerson.png",
-"I can promise the ones who wish to stretch their minds a bit further that they will not go unrewarded.\\ldots Modern mathematicians generally admit that `the duodecimal system' would be better than our present decimal system.\\ldots [Dozenal] promises to be mathematics' next great step forward --- the adoption of an efficient number system.",
-"F.\ Emerson Andrews")
-		if ($opt_H);
+	if ($opt_H) {
+		facingpage("andrews_f_emerson.png",
+		"I can promise the ones who wish to stretch their
+		minds a bit further that they will not go
+		unrewarded.\\ldots Modern mathematicians generally
+		admit that `the duodecimal system' would be better
+		than our present decimal system.\\ldots [Dozenal]
+		promises to be mathematics' next great step forward
+		--- the adoption of an efficient number system.", "F.\
+		Emerson Andrews","\\textheight") if $mymon == -1;
+		facingpage("beard_ralph.jpg",
+		"Literally, the decimal base is
+		unsatis\\textsc{factor}y because
+		it has \\textsc{not enough factors}.\\ldots [N]o
+		change should be forced, and we urge no mandated
+		change.\\ldots But people of understanding should
+		learn to use duodecimals to facilitate their thinking,
+		their computations and their measurings.\\ldots In any
+		operation, the most advantageous base should be
+		used\\ldots If this were done, duodecimals would
+		progressively earn their way into general
+		popularity.","Ralph Beard","\\textheight") if $mymon == 0;
+		facingpage("logo_shapes_dozenal.mps",
+		"The offspring of the dozen serve us well.  Five or
+		the six possible figures are convex polygons and four
+		of these are essential to engineering and
+		mathematics.\\ldots Need we search any further for a
+		rational, serviceable number-base?  Can there possibly
+		be a better?","Troy, DSGB","0.6\\textheight") if $mymon == 1;
+		facingpage("dozenal_fractions.png","[T]welve is a highly
+		divisible yet compact number; it has more divisors
+		than ten.  This facilitates learning and using
+		arithmetic, and simplifies the natural fractions.",
+		"Michael deVlieger","0.75\\textheight") if $mymon == 2;
+		facingpage("schiffman_jay.jpg","One dozen is the
+		\\emph{initial abundant number}.\\ldots The dozen is
+		\\emph{hypercomposite}.\\ldots The dozen represents
+		the first number which is \\emph{neither a Converse
+		Lagrange Theorem group} (CLT) \\emph{nor
+		supersolvable}.\\ldots One dozen is the first natural
+		number having a \\emph{perfect number of divisors}
+		(six).","Prof.\ Jay Schiffman","0.8\\textheight") if
+		$mymon == 3;
+		facingpage("dozenal_times_tables.png","Because twelve
+		has six divisors, with the smallest four consecutive,
+		it presents a multiplication table featuring brief
+		patterns in the product lines of many numbers.\\ldots
+		[U]sers of duodecimal enjoy two other divisor product
+		lines in the multiplication table.","Michael
+		deVlieger","0.8\\textheight") if $mymon == 4;
+		facingpage("keyb_doz.mps","\\emph{There are twelve
+		equal notes in an octave}.\\ldots [They are]
+		logarithms to base two.  Expressed in dozenal
+		numeration they form a unique system for handling
+		ratios, with simplicities not found in any other
+		system.  The music keyboard was caused to have twelve
+		semitones to the octave by this.","Tom
+		Pendlebury","0.4\\textheight,angle=90") if $mymon == 5;
+		$mymon++;
+	}
 	($startblanks, $endblanks) = opening($_[0],$_[1]);
 	daylist($_[1],$_[0]);
 	$totalboxes = 
