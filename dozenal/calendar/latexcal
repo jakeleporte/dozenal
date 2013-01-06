@@ -813,7 +813,7 @@ sub run_month($$)
 		system.  The music keyboard was caused to have twelve
 		semitones to the octave by this.","Tom
 		Pendlebury","0.4\\textheight,angle=90") if $mymon == 5;
-		facingpage("picture.mps","[Five] is not a multiple of
+		facingpage("pendlebury_only.jpg","[Five] is not a multiple of
 		two or three, so [it] does not normally crop up in
 		calculations unless deliberately or unwittingly put
 		there by us.\\ldots Every third number in counting is
