@@ -842,6 +842,18 @@ sub run_month($$)
 		\\sfrac{1}{2}.\\ldots The decimal set\\ldots involves
 		nine weights rather than seven\\ldots","Troy, DSGB","\\textheight")
 		if $mymon == 7;
+		facingpage("prime_circle.mps",'Hence, the set of
+		natural numbers terminating with 1, 5, 7 or \\e\\ must
+		contain all prime numbers greater than 3, and excludes
+		all odd numbers divisible by 3.   It follows that this
+		is the \\emph{minimum} set to contain \\emph{all}
+		primes greater than 3.  Rearranging the terminal
+		digits as 5, 7 and \\e, 1 shows the set to be of the
+		form:  $(6n\\pm1)$\\ldots The fact [is] that
+		prime-number positions are \\emph{completely}
+		controlled by 6 (itself the product of 2 and 3, and
+		the companion of our dozenal base).',"Don
+		Hammond",'0.65\\textheight') if $mymon == 8;
 		$mymon++;
 	}
 	($startblanks, $endblanks) = opening($_[0],$_[1]);
