@@ -813,6 +813,35 @@ sub run_month($$)
 		system.  The music keyboard was caused to have twelve
 		semitones to the octave by this.","Tom
 		Pendlebury","0.4\\textheight,angle=90") if $mymon == 5;
+		facingpage("picture.mps","[Five] is not a multiple of
+		two or three, so [it] does not normally crop up in
+		calculations unless deliberately or unwittingly put
+		there by us.\\ldots Every third number in counting is
+		a multiple of three, yet this vast category skips
+		every power of ten!  All over the world every day by
+		rounding off to hundred, thousands, etc[.] people are
+		rejecting multiples of three for multiples of five.
+		Simple divisions then give recurring decimals or a
+		rash of fives, and simple ratios become
+		33\\sfrac{1}{3}\\%[,] 12\\sfrac{1}{2}\\%, etc.
+		Unnecessarily awkward expressions all caused by
+		counting in tens.","Tom Pendlebury","\\textheight") if
+		$mymon == 6;
+		facingpage("weights_dozenal.mps","Just as with pure
+		binary, all intermediate weights can be achieved by
+		combining others, so we need only one of each size.
+		[But] [t]here is more.  It will not have gone
+		unobserved that [0;]3[], [0;]6[] and 1[] can be made
+		from combinations of lower values; in fact, if we
+		needed to go only as far as a dozen[], the 1[] weight
+		would be superfluous.  Including the 1[], therefore,
+		allows further weighing up to and including 2\\ldots
+		\\emph{without the need for a 2[] piece}.  If the 2[]
+		is included, the range extends to 4[]
+		\\emph{inclusive}.\\ldots while the binary misses by
+		\\sfrac{1}{2}.\\ldots The decimal set\\ldots involves
+		nine weights rather than seven\\ldots","Troy, DSGB","\\textheight")
+		if $mymon == 7;
 		$mymon++;
 	}
 	($startblanks, $endblanks) = opening($_[0],$_[1]);
