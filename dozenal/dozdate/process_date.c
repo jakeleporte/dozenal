@@ -353,7 +353,7 @@ int ydays_from_date(struct tm *thetime)
 
 	switch (thetime->tm_mon) {
 	case 0:  ydays += 0; break;
-	case 1:  ydays += 30; break;
+	case 1:  ydays += 31; break;
 	case 2:  ydays += 59; break;
 	case 3:  ydays += 90; break;
 	case 4:  ydays += 120; break;
@@ -370,7 +370,7 @@ int ydays_from_date(struct tm *thetime)
 		exit(BAD_MONTH);
 		break;
 	}
-	if (leapyear(0,thetime->tm_year+1900) && thetime->tm_mon >= 1)
+	if ((leapyear(0,thetime->tm_year+1900)) && (thetime->tm_mon > 1))
 		++ydays;
 	return ydays + thetime->tm_mday - 1;
 }
