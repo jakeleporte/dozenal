@@ -39,6 +39,8 @@ sub preamble($)
 		\\usepackage{calc}
 		\\usepackage{tcolorbox}
 		\\usepackage{booktabs}
+		\\usepackage{multicol}
+		\\usepackage{pdfpages}
 		\\usepackage{ifthen}
 		\\usepackage{graphicx}
 		\\usepackage{textcomp}
@@ -185,7 +187,8 @@ sub facingpage($$$$)
 	print "\\fontsize{24pt}{24pt}\\selectfont ";
 	print "\\textit{$quote}\\par\\vskip.5em ";
 	print "\\fontsize{18pt}{18pt}\\selectfont ";
-	print "\\hbox{\\hskip2em\\textsc{$author}}\\\\%\n";
+	print "\\hbox{\\textsc{\\vbox{\\hangafter=0\\hangindent=2em%\n";
+	print "\t$author}}}\\\\%\n";
 	print "\\end{tabular}%\n";
 	print "\\vspace*{\\stretch{1}}%\n" if $height ne "\\textheight";
 	print "\\end{landscape}%\n";
@@ -778,7 +781,7 @@ sub run_month($$)
 		progressively earn their way into general
 		popularity.","Ralph Beard","\\textheight") if $mymon == 0;
 		facingpage("logo_shapes_dozenal.mps",
-		"The offspring of the dozen serve us well.  Five or
+		"The offspring of the dozen serve us well.  Five of
 		the six possible figures are convex polygons and four
 		of these are essential to engineering and
 		mathematics.\\ldots Need we search any further for a
@@ -819,7 +822,7 @@ sub run_month($$)
 		there by us.\\ldots Every third number in counting is
 		a multiple of three, yet this vast category skips
 		every power of ten!  All over the world every day by
-		rounding off to hundred, thousands, etc[.] people are
+		rounding off to hundreds, thousands, etc[.] people are
 		rejecting multiples of three for multiples of five.
 		Simple divisions then give recurring decimals or a
 		rash of fives, and simple ratios become
@@ -854,6 +857,47 @@ sub run_month($$)
 		controlled by 6 (itself the product of 2 and 3, and
 		the companion of our dozenal base).',"Don
 		Hammond",'0.65\\textheight') if $mymon == 8;
+		facingpage("newcansort.mps",'Packing in dozens shows an
+		immediate advantage\\ldots [t]he cost per can (or
+		other object) of cardboard increases by more than
+		\\x\\ per gross (over 7 per cent in decimal terms) by
+		changing from dozens to decimal packing.\\ldots The
+		really decisive example is the two-layer form (allowed
+		by the factorability of the dozen) in which the
+		\\emph{total} enclosure area is less than the
+		requirement for ten.\\ldots [S]uch cans are so much
+		more cheaply packed by the dozen than in tens that a
+		twelve-pack with two empty spaces actually costs less
+		than a ten-pack completely filled!',"Troy,
+		DSGB","\\textheight") if $mymon == 9;
+		facingpage("newpalm1.png",'[We can] count[] on the
+		segments (phalanges) of the fingers.  If one uses the
+		thumb as a pointer, one can easily count to twelve on
+		one hand.','Prof.\ Gene Zirkel',"0.8\\textheight") if
+		$mymon == 10;
+		facingpage("regular_polyhedra-crop.pdf","Of the nine regular
+		polyhedra, fully four of them are built upon the
+		number twelve:  the dodecahedron, the small stellated
+		dodecahedron, the great dodecahedron, and the great
+		stellated dodecahedron.  Two more, the tetrahedron and
+		the cube, are built upon the factors of twelve.  Five
+		only becomes important when it is paired with twelve
+		in the dodecahedron; ten is \\emph{never} important.
+		We must get to the icosahedron, at twenty, before ten
+		plays into the question at all.","","0.85\\textheight") if
+		$mymon == 11;
+		facingpage("digits-crop.pdf",'Let $\\sigma_0(n)$ and
+		$\\sigma_1(n)$ denote the number and sum of the
+		divisors of $n$, respectively (i.e., the zeroth- and
+		first-order divisor functions).  A number $n$ is
+		called sublime if $\\sigma_0(n)$ and $\\sigma_1(n)$ are
+		both perfect numbers.  The only two known sublime
+		numbers are [decimal] 12 and [a decimal number with
+		decimal 76 digits]  It is not known if any odd sublime
+		number exists.','Weisstein, Eric W.  "Sublime Number."
+		From \\textit{MathWorld---A Wolfram Web Resource}.
+		\\url{http://mathworld.wolfram.com/SublimeNumber.html}.',
+		"\\textheight") if $mymon == 12;
 		$mymon++;
 	}
 	($startblanks, $endblanks) = opening($_[0],$_[1]);
@@ -1683,7 +1727,12 @@ sub main()
 	}
 	if ($opt_b) {
 		print STDERR "Assembling the backmatter...\n";
-		closingdata();
+		closingdata() if !$opt_H;
+		if ($opt_H) {
+			print "\\begin{landscape}%\n";
+			print "\\includepdf[offset=4em 0em,delta=0em -4em,noautoscale,scale=0.70,landscape,turn=false,pages=-,nup=1x2]{closing.pdf}%\n";
+			print "\\end{landscape}%\n";
+		}
 	}
 	finish();
 	print STDERR "Done!\n";
