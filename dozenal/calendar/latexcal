@@ -1111,6 +1111,8 @@ sub buildweek($$$)
 	$mydozday =~ s/\\x/X/g;
 	$ydays = qx(dozdate "%j" -d"$mydozday $months[$dayplone[1]-1] $mydozyear");
 	chomp($ydays);
+	$ydays =~ s/E/\\e/g;
+	$ydays =~ s/X/\\x/g;
 	print "\t\\def\\daytwo{Fri, $dozplone\\ $months[$dayplone[1]-1]\\hfil";
 	print "\t\t\\llap{\\ydaysty{$ydays/";
 	(leap_year($year)) ? print "266" : print "265";
@@ -1125,6 +1127,8 @@ sub buildweek($$$)
 	$mydozday =~ s/\\x/X/g;
 	$ydays = qx(dozdate "%j" -d"$mydozday $months[$daypltwo[1]-1] $mydozyear");
 	chomp($ydays);
+	$ydays =~ s/E/\\e/g;
+	$ydays =~ s/X/\\x/g;
 	@dayplthree = dayplone($daypltwo[0],$daypltwo[1],$daypltwo[2]);
 	$dozplthree = doz_int($dayplthree[2]);
 	print "\t\\def\\daythree{Sat, $dozpltwo\\ $months[$daypltwo[1]-1]\\hfil";
@@ -1323,6 +1327,8 @@ sub buildweek($$$)
 				$mydozday =~ s/\\x/X/g;
 				$ydays = qx(dozdate "%j" -d"$mydozday $months[$dayplthree[1]-1] $mydozyear");
 				chomp($ydays);
+				$ydays =~ s/E/\\e/g;
+				$ydays =~ s/X/\\x/g;
 				print "\t\\hfil\\hskip-3em\\weekdaysty Sun, $dozplthree\\ $months[$dayplthree[1]-1]\\hfil\\llap{\\ydaysty{$ydays/";
 				(leap_year($year)) ? print "266" : print "265";
 				print "}\\hskip2.5em}}%\n";
