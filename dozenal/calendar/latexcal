@@ -1325,7 +1325,7 @@ sub buildweek($$$)
 				chomp($ydays);
 				print "\t\\hfil\\hskip-3em\\weekdaysty Sun, $dozplthree\\ $months[$dayplthree[1]-1]\\hfil\\llap{\\ydaysty{$ydays/";
 				(leap_year($year)) ? print "266" : print "265";
-				print "}\\hskip2em}}%\n";
+				print "}\\hskip2.5em}}%\n";
 				print "\\end{tcolorbox}%\n";
 				print "\\hskip-\\thirdskip%\n";
 			} else {
