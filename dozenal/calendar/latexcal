@@ -68,6 +68,7 @@ sub preamble($)
 		\\def\\weekletsty{\\fontsize{8pt}{8pt}\\selectfont}
 		\\def\\daysty{\\centering\\Biggie\\scshape}
 		\\def\\weekdaysty{\\centering\\scshape}
+		\\def\\weeknumsty#1{\\fontsize{9pt}{9pt}\\selectfont\\scshape #1}
 		\\def\\eventsty{\\fontsize{9pt}{9pt}\\itshape}
 		\\def\\numsty{\\fontsize{14pt}{16pt}\\selectfont}
 		\\def\\smallnum{\\fontsize{10pt}{10pt}\\selectfont\\bfseries}
@@ -1091,6 +1092,16 @@ sub buildweek($$$)
 	$dozplthree = doz_int($dayplthree[2]);
 	print "\t\\def\\daythree{Saturday, $dozpltwo\\ $months[$daypltwo[1]-1]}";
 	print "}{%end the ifodd part\n";
+	my $mydozyear = doz_int($year);
+	$mydozyear =~ s/\\e/E/g;
+	$mydozyear =~ s/\\x/X/g;
+	my $mydozday = $dozday;
+	$mydozday =~ s/\\e/E/g;
+	$mydozday =~ s/\\x/X/g;
+	my $weeknum = qx(dozdate "%V" -d"$mydozday $months[$month-1] $mydozyear");
+	chomp($weeknum);
+	$weeknum =~ s/E/\\e/g;
+	$weeknum =~ s/X/\\x/g;
 	print "\t\\def\\dayone{Monday, $dozday\\ $months[$month-1]}";
 	@dayplone = dayplone($year,$month,$day);
 	$dozplone = doz_int($dayplone[2]);
@@ -1153,8 +1164,12 @@ sub buildweek($$$)
 	print "\\begin{tcolorbox}[boxrule=2pt,arc=0pt,%\n";
 	print "\twidth=\\weeklydayboxwid,height=1.5\\baselineskip,%\n";
 	print "\tcolback=gray,coltext=white]%\n";
-	print "\t\\vskip-0.5em\\hskip3ex\\hbox to\\thirdskip{%\n";
-	print "\t\t\\hfil\\weekdaysty\\dayone\\hfil}%\n";
+	print "\t\\vskip-0.5em%\n";
+	print "\t\\hskip-3ex%\n";
+	print "\t\\hbox to3ex{\\hskip2pt\\weeknumsty{$weeknum/44}\\hfil}%\n";
+	print "\t\\hskip3ex%\n";
+	print "\\hbox to\\thirdskip{%\n";
+	print "\\hfil\\weekdaysty\\dayone\\hfil}%\n";
 	print "\t\\hbox to\\thirdskip{\\hfil\\weekdaysty\\daytwo\\hfil}%\n";
 	print "\t\\hbox to\\thirdskip{\\hfil\\weekdaysty\\daythree\\hfil}%\n";
 	print "\\end{tcolorbox}\\nointerlineskip\\vskip-2pt%\n";
