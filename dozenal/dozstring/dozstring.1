@@ -1,0 +1,56 @@
+." +AMDG
+." Process with:
+." groff -man -Tascii dozstring.1
+.TH dozstring 1 "January 2013" Linux "User Manuals"
+.SH NAME
+dozstring \- conversion of string-embedded decimals to dozenals
+.SH SYNOPSIS
+.B dozstring [-nxep] 
+.SH DESCRIPTION
+.B dozstring
+Inhales a string (which is considered any series of bytes
+from start until EOF, including tabs and newlines) from
+standard input, devours any decimal numbers it finds, and
+emits the same string with the same length with the decimal
+numbers converted to dozenal (base twelve), truncated or
+padded as necessary.
+
+This ensures that all strings will be printed the same
+length as they came in.  Originally, this was devised to
+convert index lines in the mutt mail client to be printed in
+dozenal; preserving length was very important for this use
+case.
+.SH OPTIONS
+.IP -x
+Indicates the character the user would like to use for digit
+ten.  Defaults to 'X'.  Multicharacter string arguments will
+be silently truncated.
+.IP -e
+Indicates the character the user would like to use for digit
+eleven.  Defaults to 'E'.  Multicharacter string arguments
+will be silently truncated.
+.IP -p
+Indicates the character the user would like to use to pad
+numbers if necessary; e.g., if the decimal number is "11",
+indicates the character to put to the left of "E" in the
+converted result.  Defaults to '0'; so decimal "11" converts
+to "0E".  Multicharacter string arguments will be silently
+truncated.
+.IP -n
+Add a newline to the output.  Note that if standard input
+ends in a newline, standard output will end with one
+already.  However, if there is no newline in the standard
+input, this option will add one to the output, as the last
+byte.
+.SH COMMENTS
+.SH BUGS
+None known at this time.
+.SH AUTHOR
+Donald P. Goodman III <dgoodmaniii at gmail dot com>
+.SH "SEE ALSO"
+.BR dec (1),
+.BR dozdc (1),
+.BR tgmconv (1),
+.BR dozdate (1),
+.BR dozword (1),
+.BR dozpret (1)
