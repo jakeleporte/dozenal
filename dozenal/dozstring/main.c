@@ -98,13 +98,26 @@ int main(int argc, char *argv[])
 				decimal = atof(decnum);
 				dectodoz(doznum,decimal);
 				for (j = 0; doznum[j] != '\0'; ++j);
-				if (i >= j) {
+				if (i > j) {
 					reverse(doznum);
-					while (j < i) {
+					while (j < i)
 						doznum[j++] = padchar;
-					}
 					doznum[j] = '\0';
 					reverse(doznum);
+				} else if (j > i) {
+					doznum[i-1] = '\0';
+				}
+				if (tenchar != 'X') {
+					for (i = 0; doznum[i] != '\0'; ++i) {
+						if (doznum[i] == 'X')
+							doznum[i] = tenchar;
+					}
+				}
+				if (elvchar != 'E') {
+					for (i = 0; doznum[i] != '\0'; ++i) {
+						if (doznum[i] == 'E')
+							doznum[i] = elvchar;
+					}
 				}
 				printf("%s",doznum);
 				printf("%c",c);

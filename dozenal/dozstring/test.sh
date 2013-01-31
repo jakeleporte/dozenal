@@ -2,4 +2,4 @@
 # +AMDG
 
 cat hello;
-./dozstring < hello;
+./dozstring -xA -eB -p'&' < hello;
