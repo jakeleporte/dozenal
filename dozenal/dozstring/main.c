@@ -48,13 +48,17 @@ int main(int argc, char *argv[])
 	char elvchar = 'E';
 	char padchar = '0';
 	char newline = 0;
+	char starprint = 0;
 	char decnum[MAXLINE];
 	char doznum[MAXLINE];
 	double decimal;
 	int i; int j; int k;
 
-	while ((c = getopt(argc,argv,"nx:e:p:")) != -1) {
+	while ((c = getopt(argc,argv,"snx:e:p:")) != -1) {
 		switch (c) {
+		case 's':
+			starprint = 1;
+			break;
 		case 'n':
 			newline = 1;
 			break;
@@ -94,6 +98,13 @@ int main(int argc, char *argv[])
 			break;
 		default:
 			decnum[i] = '\0';
+			if (c == '*') {
+				printf("%s",decnum);
+				if (starprint == 0)
+					printf("%c",c);
+				i = 0;
+				continue;
+			}
 			if (i > 0) {
 				decimal = atof(decnum);
 				dectodoz(doznum,decimal);

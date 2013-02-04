@@ -20,6 +20,21 @@ length as they came in.  Originally, this was devised to
 convert index lines in the mutt mail client to be printed in
 dozenal; preserving length was very important for this use
 case.
+
+Take note that this method will not do what you want in
+certain cases.  For example, some "numbers" are really
+labels, such as highway numbers; this program will convert
+them all despite this fact.  Only use this program on
+strings that you're sure only contain numbers that you
+actually want converted.
+
+If you really want to use this program on a string with
+numbers that you don't want converted, you'll need to modify
+your string.  Numbers that should *not* be converted should
+be suffixed with a star ('*').  dozstring will
+.I not
+remove this star character, unless it is asked to remove it
+with the '-s' option.
 .SH OPTIONS
 .IP -x
 Indicates the character the user would like to use for digit
@@ -42,6 +57,20 @@ ends in a newline, standard output will end with one
 already.  However, if there is no newline in the standard
 input, this option will add one to the output, as the last
 byte.
+.IP -s
+Remove the star character from unconverted numbers.
+dozstring allows users to suffix numbers which should
+.I not
+be converted into dozenal (e.g., highway numbers, badge
+numbers, and the like) with '*'.  There can be no spaces
+between the number and the '*'.  Normally, the star is left
+in the output to retain the same width of the text.  If this
+option is specified, however, dozstring will remove the
+star.  This means that the output text will not be the same
+width as the input; however, it also means that text can be
+converted en masse without the risk of converting what
+shouldn't be, and without having extraneous characters in
+the output.
 .SH COMMENTS
 .SH BUGS
 None known at this time.
