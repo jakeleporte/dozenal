@@ -33,3 +33,7 @@ cd ../dozdate;
 make;
 make doc;
 make install;
+cd ../dozstring;
+make;
+make doc;
+make install;

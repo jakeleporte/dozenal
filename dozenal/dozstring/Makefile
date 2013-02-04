@@ -5,7 +5,7 @@
 # and to the Sacred Heart of Jesus for His mercy.
 
 dozstring : main.o conv.h conv.o doz.o dec.o
-	gcc -g -lm -o dozdc main.o conv.o doz.o dec.o -o dozstring
+	gcc -g -lm main.o conv.o doz.o dec.o -o dozstring
 
 main.o : main.c conv.h conv.o doz.o dec.o
 	gcc -g -c main.c
@@ -19,14 +19,17 @@ dec.o : conv.o conv.h dec.c
 conv.o : conv.c conv.h
 	gcc -g -c conv.c
 
+doc : dozstring.1
+	rman -fHTML dozstring.1 > dozstring_man.html
+
 prefix = /usr/local
 bindir = /usr/local/bin
 mandir = /usr/local/share/man/man1
 
-install : dozdc dozdc.1
-	cp ./dozdc $(bindir)
-	cp ./dozdc.1 $(mandir)
+install : dozstring dozstring.1
+	cp ./dozstring $(bindir)
+	cp ./dozstring.1 $(mandir)
 
 uninstall :
-	rm $(bindir)/dozdc
-	rm $(mandir)/dozdc.1
+	rm $(bindir)/dozstring
+	rm $(mandir)/dozstring.1
