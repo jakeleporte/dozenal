@@ -19,3 +19,5 @@ cd ../dozpret;
 make uninstall;
 cd ../dozdate;
 make uninstall;
+cd ../dozstring;
+make uninstall;

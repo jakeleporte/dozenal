@@ -71,7 +71,25 @@ width as the input; however, it also means that text can be
 converted en masse without the risk of converting what
 shouldn't be, and without having extraneous characters in
 the output.
-.SH COMMENTS
+.IP -c
+Convert the string which is given as an argument here,
+rather than taking the string from standard input.  This is
+length-limited; the length is probably plenty long enough,
+but if you give dozstring too long a string, it will
+obediently complain and die.  If you really must do the
+string all at once, try giving it to dozstring on standard
+input, which is 
+.I not
+length-limited.  E.g.:  "echo $string | dozstring".
+.SH ERROR CODES
+.IP 1
+Indicates that an option was given which dozstring doesn't
+recognize.
+.IP 2
+Indicates that dozstring was given an explicit string to
+convert with the "-c" option, but that this string was too
+long.  If the string is instead given as standard input,
+dozstring can handle it.
 .SH BUGS
 None known at this time.
 .SH AUTHOR

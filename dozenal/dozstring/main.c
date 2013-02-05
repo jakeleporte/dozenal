@@ -40,6 +40,7 @@
 
 #define MAXLINE 1000
 #define BAD_OPT 1
+#define TOO_LONG 2
 
 int main(int argc, char *argv[])
 {
@@ -51,10 +52,11 @@ int main(int argc, char *argv[])
 	char starprint = 0;
 	char decnum[MAXLINE];
 	char doznum[MAXLINE];
+	char *convstring = NULL;
 	double decimal;
 	int i; int j; int k;
 
-	while ((c = getopt(argc,argv,"snx:e:p:")) != -1) {
+	while ((c = getopt(argc,argv,"c:vsnx:e:p:")) != -1) {
 		switch (c) {
 		case 's':
 			starprint = 1;
@@ -81,6 +83,15 @@ int main(int argc, char *argv[])
 			"WARRANTY, to the extent permitted by law.\n");
 			return 0;
 			break;
+		case 'c':
+			if (strlen(optarg) >= MAXLINE) {
+				fprintf(stderr,"dozstring:  error:  requested "
+				"string to convert is too long\n");
+				exit(TOO_LONG);
+			} else {
+				convstring = optarg;
+			}
+			break;
 		case '?':
 			return BAD_OPT;
 			break;
@@ -89,6 +100,65 @@ int main(int argc, char *argv[])
 		}
 	}
 	i = 0;
+	if (convstring != NULL) {
+		int k = -1;
+/*		for (j = 0; convstring[j] != '\0'; ++j) {*/
+		do {
+			k += 1;
+			c = convstring[k];
+			switch (c) {
+			case '0': case '1': case '2': case '3': case '4':
+			case '5': case '6': case '7': case '8': case '9':
+			case '.':
+				decnum[i++] = c;
+				break;
+			default:
+				decnum[i] = '\0';
+				if (c == '*') {
+					printf("%s",decnum);
+					if (starprint == 0)
+						printf("%c",c);
+					i = 0;
+					continue;
+				}
+				if (i > 0) {
+					decimal = atof(decnum);
+					dectodoz(doznum,decimal);
+					for (j = 0; doznum[j] != '\0'; ++j);
+					if (i > j) {
+						reverse(doznum);
+						while (j < i)
+							doznum[j++] = padchar;
+						doznum[j] = '\0';
+						reverse(doznum);
+					} else if (j > i) {
+						doznum[i-1] = '\0';
+					}
+					if (tenchar != 'X') {
+						for (i = 0; doznum[i] != '\0'; ++i) {
+							if (doznum[i] == 'X')
+								doznum[i] = tenchar;
+						}
+					}
+					if (elvchar != 'E') {
+						for (i = 0; doznum[i] != '\0'; ++i) {
+							if (doznum[i] == 'E')
+								doznum[i] = elvchar;
+						}
+					}
+					printf("%s",doznum);
+					printf("%c",c);
+					i = 0;
+				} else {
+					printf("%c",c);
+				}
+				break;
+			}
+		} while (convstring[k] != '\0');
+		if (newline == 1)
+			printf("\n");
+		return 0;
+	}
 	while ((c = getchar()) != EOF) {
 		switch (c) {
 		case '0': case '1': case '2': case '3': case '4':
