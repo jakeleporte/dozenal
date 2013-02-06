@@ -12,6 +12,7 @@ make install;
 cd ../dec;
 make;
 make doc;
+make gdozdc;
 make install;
 cd ../dozdc;
 make;

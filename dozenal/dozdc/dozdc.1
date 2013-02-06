@@ -17,6 +17,11 @@ notation) calculator which works in dozenal (base-12).  All
 normal arithmetic functions, plus trigonometry, some basic
 constants (pi, euler, phi), logarithms, and other functions.
 Supports variables of arbitrary user-defined names.
+
+There is also a graphical version, gdozdc, written in
+Perl/Tk.  Obviously, this requires a working version of Perl
+and the Tk libraries.  gdozdc is pretty self-explanatory;
+its differences are described below.
 .SH OPTIONS
 .IP -z
 Indicates that those functions which take angles as
@@ -258,6 +263,42 @@ correct result while still allowing the helpful whitespace.
 .SH OTHER COMMANDS
 .IP quit
 Quits the program.  'Nuff said.
+.SH GRAPHICAL VERSION, gdozdc
+gdozdc is the graphical version of dozdc, and it differs in
+some significant points.  Specifically, it's 
+.I infix,
+not postfix; that means that you enter your equations in
+the same way you learned to write them down in school, with
+your binary operators (the ones that take two arguments,
+like the basic arithmetic functions) in between their two
+arguments.  E.g., you write "4 + 5", rather than dozdc's "4
+5 +".
+
+This system is not particularly extensible; that is, it only
+works with binary operators, and it's inherently ambiguous.
+gdozdc therefore offers the usual infix disambiguation
+operators, parentheses, which can be used to group
+operations however might be necessary.  This applies to
+*all* binary operators, even ones where this behavior might
+be surprising; e.g., for arbitrary base logarithms, one
+inputs the base, "logb", then the number; so for the
+logarithm of three to base two, one writes "2 logb 3".
+
+Non-binary operations work as they do in dozdc; that is,
+they are postfix.  This is typical even for modern infix
+calculators.  For example, one writes "5 !" for factorial
+five, and "0;6 sin" for the sine of 0;6.
+
+gdozdc also implements some memory functions.  "CM" means to
+clear memory; "M" means to save the current field to memory
+(this is the whole field, not the result of the operations
+contained in it); "M+" means to replace the current field
+with the contents of the memory; and "M++" means to append
+the contents of the memory to the current field.
+
+Hovering over a button will give the keyboard shortcut in a
+small popup balloon, as well as list it and a brief
+explanation in the lower bar.
 .SH BUGS
 None known at this time.
 .SH AUTHOR

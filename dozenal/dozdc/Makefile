@@ -34,6 +34,10 @@ stack.o : stack.c stack.h
 
 doc : dozdc.1
 	rman -fHTML dozdc.1 > dozdc_man.html
+	cp dozdc.1 gdozdc.1
+
+gdozdc : gdozdc.pl
+	cp gdozdc.pl gdozdc
 
 prefix = /usr/local
 bindir = /usr/local/bin
@@ -41,8 +45,12 @@ mandir = /usr/local/share/man/man1
 
 install : dozdc dozdc.1
 	cp ./dozdc $(bindir)
+	cp ./gdozdc $(bindir)
 	cp ./dozdc.1 $(mandir)
+	cp ./gdozdc.1 $(mandir)
 
 uninstall :
 	rm $(bindir)/dozdc
+	rm $(bindir)/gdozdc
+	rm $(mandir)/dozdc.1
 	rm $(mandir)/dozdc.1
