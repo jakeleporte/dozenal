@@ -38,6 +38,7 @@ doc : dozdc.1
 
 gdozdc : gdozdc.pl
 	cp gdozdc.pl gdozdc
+	chmod 755 gdozdc
 
 prefix = /usr/local
 bindir = /usr/local/bin
@@ -53,4 +54,4 @@ uninstall :
 	rm $(bindir)/dozdc
 	rm $(bindir)/gdozdc
 	rm $(mandir)/dozdc.1
-	rm $(mandir)/dozdc.1
+	rm $(mandir)/gdozdc.1
