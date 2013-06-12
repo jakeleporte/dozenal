@@ -82,7 +82,7 @@ sub dozenize($)
 	}
 }
 
-# convert integers from decmial to dozenal; takes the scalar
+# convert integers from decimal to dozenal; takes the scalar
 # integer, returns the scalar string
 
 sub doz_int($)
@@ -1143,7 +1143,8 @@ sub astronomical(\@$$)
 			}
 			my $dt = new DateTime(
 				year => $theyear,
-				month => $themon + 1,
+#				month => $themon + 1,
+				month => $themon,
 				day => $theday,
 				time_zone => $tz
 			);
