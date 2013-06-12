@@ -1134,7 +1134,7 @@ sub astronomical(\@$$)
 	}
 	if ($opt_a =~ /sun/) {
 		if (!$opt_z) {
-			$tz = strftime("%Z",localtime());
+			$tz = strftime("%z",localtime());
 			if ($tz eq "") {
 				print STDERR "dozcal:  error:  unable to ";
 				print STDERR "determine local timezone; please \n";

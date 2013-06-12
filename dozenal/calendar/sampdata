@@ -36,18 +36,18 @@ Exception List Test|Fridays in Sept 11E7|E;00|14 Sept 11E7, 1E Sept 11E7|event
 Exception Wdays Test|Fridays in Sept 11E7|E;00|Third Friday in Sept|event
 Eventtype Tests|Fridays in Sept 11E7|1X;00|14 Sept 11E7|event
 Louise's Birthday|1E April|||2special
-#%DATEFORM:	%d %B %Y
+%DATEFORM:	%d %B %Y
 #%GEOGRAPHY:  Washington, DC
 #%GEOGRAPHY:  d-65;04:32.X8
 %GEOGRAPHY:  -5;175:2;713
 %NATIONAL:  nz,eng,usa
 %ASTRONOMY:  sunrise,moon
 %STARTDAY:  Mon
-%TIMEZONE:  -0500
+#%TIMEZONE:  -0500
 %RELIGIOUS:  chrwest
-#%DDDATEFORM:  %d %b %Y
-##%FORM_TEXT 1special "%n \n *** %d ***\n"
-##%FORM_TEXT event "%#20d\n%@-20t%_20n\n"
-##%FORM_LATEX event "\\textbf{%d} %20t & %-20n"
-##%FORM_LATEX 1special "\\textbf{%d} \\centering\\textit{%n}"
-##%FORM_LATEX blank "\\textbf{%d}"
+##%DDDATEFORM:  %d %b %Y
+###%FORM_TEXT 1special "%n \n *** %d ***\n"
+###%FORM_TEXT event "%#20d\n%@-20t%_20n\n"
+###%FORM_LATEX event "\\textbf{%d} %20t & %-20n"
+###%FORM_LATEX 1special "\\textbf{%d} \\centering\\textit{%n}"
+###%FORM_LATEX blank "\\textbf{%d}"
