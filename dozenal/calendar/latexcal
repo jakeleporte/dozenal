@@ -1456,7 +1456,7 @@ or from many different places on the Internet.
 	\\begin{tabular}{llrr}
 		\\multicolumn{4}{c}{\\tabheadsty Length, Area, Volume} \\\\
 		Grafut & {} & 0;\\e783 ft & 0;366\\e\\ m \\\\
-		Gravinch & \$_1\$Gf & 0;\\e783 in & 2;569\\x cm \\\\
+		Gravinch & \$_1\$Gf & 0;\\e783 in & 2;569\\x\\ cm \\\\
 		Gravyard & 3 Gf & 0;\\e783 yd & 0;\\x789 m \\\\
 		Gravmile & 3 \$^3\$Gf & 0;\\e51\\x\\ mi & 1;6488 km \\\\
 		Gravklick & 2 \$^3\$Gf & 0;7752 mi & 1;0319 km \\\\
