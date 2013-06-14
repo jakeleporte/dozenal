@@ -1914,6 +1914,10 @@ sub main()
 	my $startdate = 0;	# if date range is requested
 	my $enddate = 0;		# if date range is requested
 
+	if (!$opt_d) {
+		print STDERR "dozcal:  error:  must specify a date or ";
+		print STDERR "date range with -d option\n";
+	}
 	help_func() if ($opt_h);
 	$lines = read_files($opt_f);
 	($startdate,$enddate) = parse_date($opt_d) if $opt_d;
