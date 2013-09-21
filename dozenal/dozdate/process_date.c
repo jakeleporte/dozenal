@@ -653,8 +653,8 @@ int parse_for_weekday(char *s, struct tm *thetime)
 			dayyear += 7;
 	}
 	maxdays = (leapyear(0,thetime->tm_year+1900)) ? 365 : 364;
-	if (!leapyear(0,thetime->tm_year+1900))
-		dayyear -= 1;
+	if (leapyear(0,thetime->tm_year+1900) && (dayyear >= 58))
+		dayyear += 1;
 	dayyear += thetime->tm_yday;
 /*	printf("MAXDAYS:  %d; DAYYEAR:  %d\n",maxdays,dayyear);*/
 	if ((dayyear > (maxdays+1))) {
