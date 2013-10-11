@@ -159,14 +159,14 @@ END
 		print "\t\\hfil\\url{http://www.dozenal.org}\\hfil}%\n";
 		print "}%\n";
 		print "\\newlength{\\logowidth}%\n";
-		print "\\settowidth{\\logowidth}{\\includegraphics[scale=0.7]{new_logo.png}}%%\n";
+		print "\\settowidth{\\logowidth}{\\includegraphics[scale=0.8]{Logo-DSA-2013.png}}%%\n";
 		print "\\makeatletter%\n%\n";
 		print "\\AddToShipoutPicture*{%%\n";
 		print "\\setlength{\\\@tempdimb}{0.24\\paperwidth}%%\n";
 		print "\\setlength{\\\@tempdimc}{0.32\\paperheight}%%\n";
 		print "\\setlength{\\unitlength}{1pt}%%\n";
 		print "\\put(\\strip\@pt\\\@tempdimb,\\strip\@pt\\\@tempdimc){%\n";
-		print "\\hbox{\\transparent{0.2}\\includegraphics[angle=90,scale=3]{new_logo.png}}%\n";
+		print "\\hbox{\\transparent{0.2}\\includegraphics[angle=90,scale=0.8]{Logo-DSA-2013.png}}%\n";
 		print "}%\n";
 		print "}%\n";
 		print "\\makeatother%\n";
@@ -265,8 +265,8 @@ sub doz_int($)
 	$holder = dozenize($holder);
 	$doznum .= $holder;
 	$doznum = scalar reverse($doznum);
-	$doznum =~ s/X/\\x/;
-	$doznum =~ s/E/\\e/;
+	$doznum =~ s/X/\\x/g;
+	$doznum =~ s/E/\\e/g;
 	return $doznum;
 }
 
@@ -1249,7 +1249,7 @@ sub buildweek($$$)
 	print "\\hfil\\weekdaysty\\dayone}%\n";
 	print "\t\\hbox to\\thirdskip{\\hfil\\weekdaysty\\daytwo}%\n";
 	print "\t\\hbox to\\thirdskip{\\hfil\\weekdaysty\\daythree}%\n";
-	print "\\end{tcolorbox}\\nointerlineskip\\vskip-2pt%\n";
+	print "\\end{tcolorbox}\\nointerlineskip\\vskip-4pt%\n";
 # end the weekday name box
 	print "\\rule{\\linewidth}{2pt}\n";
 	for (my $i = 1; $i <= (14*4); $i++) {
@@ -1619,13 +1619,9 @@ example, for a hypothetical insect with 357 legs:
 \\hfil}
 
 Yielding ``tripentseptaped.''  What we often call an
-``eighteen-wheeler'' (dozenal 16) is a ``dechexacycle''
-(``dec'' + ``hexa'' + ``cycle'' = ``1'' + ``6'' +
-``wheeler'').  Note that the multiplier forms mean
-multiplication, so only use it on the last part;
-``decahexacycle'' would mean ten \\emph{times} six, or five
-dozen, rather than twelve \\emph{plus} six, or one dozen
-six.
+``eighteen-wheeler'' (dozenal 16) is a ``unhexacycle''
+(``un'' + ``hexa'' + ``cycle'' = ``1'' + ``6'' +
+``wheeler'').
 
 \\hskip2em The particles can be used the same way.  Suppose
 you want a word for something that occurs twice a year; that
@@ -1647,7 +1643,7 @@ we use the \\emph{power prefix} with the root for ``two'':
 can be combined with multiplier forms; for example,
 ``quadrubiquennial'' means ``quad'' times ``biqua,'' for
 four biqua years.  Similarly for the negative prefixes:  a
-cell 0;00008 Grafut in diameter is 8 \\emph{hexcia}Grafut in
+cell 0;000008 Grafut in diameter is 8 \\emph{hexcia}Grafut in
 diameter.
 
 \\hskip2em And this is SDN, a much more robust number
@@ -1706,7 +1702,7 @@ The Dozenal Society of Great Britain\\linebreak
 
 \\vspace*{\\stretch{1}}
 
-\\noindent\\copypagesty \\textcopyright\\ $year  Donald P.\\
+\\noindent\\copypagesty \\textcopyright\\ $year\\  Donald P.\\
 Goodman III.  All rights reserved.\\hspace{\\stretch{1}}
 
 \\vskip 1em

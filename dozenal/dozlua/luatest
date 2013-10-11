@@ -1,0 +1,4 @@
+function testfunc()
+	return (math.sin(1584) + 0.33333333 - 13 + 39 - 4 * math.sin(40));
+end
+testfunc();
