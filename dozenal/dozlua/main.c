@@ -63,6 +63,17 @@ int main(void)
 	L = luaL_newstate();
 	luaL_openlibs(L);
 
+	/* redirect sdout */
+	FILE *fp;
+	char template[] = "dozlua_XXXXXX";
+	int stdout_bk, fd;
+	stdout_bk = dup(fileno(stdout));
+	if ((fd = mkstemp(template)) == -1)
+		exit(1);
+	fp = fdopen(fd,"rw");
+	fprintf(fp,"Hello, file!");
+	dup2(fd,fileno(stdout));
+	/**/
 	if ((convstr = malloc(sizeof(char)*buffsize)) == NULL) {
 		fprintf(stderr,"dozlua:  insufficient memory\n");
 		exit(1);
@@ -85,26 +96,18 @@ int main(void)
 		lua_pop(L,1);
 		exit(1);
 	}
-	error = luaL_loadstring(L,currstring);
-	if (error) {
-		fprintf(stderr,"%s",lua_tostring(L,-1));
-		lua_pop(L,1);
-		exit(1);
-	} else {
-		printf("No ERROR\n");
-	}
 	lua_getglobal(L,"luadoz");
 	lua_call(L,0,LUA_MULTRET);
+	dup2(stdout_bk,fileno(stdout));
+	/* now deal with the file output */
 	currstring = lua_tostring(L,-1);
-	printf("INDEX:  %d\n",lua_gettop(L));
-	printf("STATUS:  %d\n",lua_status(L));
-	printf("ERROR:  %d\n",error);
-	printf("STRING:  %s\n",currstring);
 	outstr = dozenalize_string(lua_tostring(L,-1));
-/*	printf("%s\n",convstr);
-	printf("%s\n",luastr);
-	printf("%s\n",outstr);*/
-	printf("DOZEN:  %s\n",outstr);
+	for (i = 1; i <= lua_gettop(L); i++) {
+		printf("%s",dozenalize_string(lua_tostring(L,i)));
+	}
+	fflush(stdout);
+	fclose(fp);
+	unlink(template);
 	free(luastr);
 	free(outstr);
 	free(convstr);
@@ -120,9 +123,11 @@ char *dozenalize_string(char *decstr)
 	int i = 0; int j = 0; int k = 0; int l = 0;
 
 	fulllen = strlen(decstr);
-	if ((outstr = malloc(sizeof(char)*fulllen)) == NULL) {
-		fprintf(stderr,"dozlua:  insufficient memory\n");
-		exit(1);
+	if (outstr == NULL) {
+		if ((outstr = malloc(sizeof(char)*fulllen)) == NULL) {
+			fprintf(stderr,"dozlua:  insufficient memory\n");
+			exit(1);
+		}
 	}
 	while (decstr[i] != '\0') {
 		if (isdigit(decstr[i])) {
@@ -175,7 +180,7 @@ char *decimalize_string()
 		exit(1);
 	}
 	while (convstr[i] != '\0') {
-		if (convstr[i] == '/') {
+		if ((convstr[i] == '/') && (convstr[i+1] != ' ')) {
 			while (convstr[++i] != '/')
 				numconv[j++] = convstr[i];
 			numconv[j] = '\0';
