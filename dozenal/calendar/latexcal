@@ -586,7 +586,7 @@ sub nextweeks($$$$$$)
 		if ($numsty eq "smallnum") {
 			print "\\multicolumn{$endblanks}{c}{}\\\\\n";
 		} else {
-			if ($endblanks > 0) {
+			if (($endblanks > 0) && ($endblanks < 7)) {
 				my $monthmin;
 				my $monthplus;
 				if (($month == 12) && ($year < $calyear)) {
@@ -1402,7 +1402,7 @@ sub weeklies($)
 			last if (&day(11,$i,$_[0]-1) eq "MON");
 		}
 	}
-	$firstday = $firstday - (30 - --$i);
+	$firstday = $firstday - $i;#(30 - --$i);
 	$i = 0;
 	$j = 0;
 	for ($j = 0; $j < 434; $j=$j+3) {

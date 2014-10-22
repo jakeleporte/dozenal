@@ -53,7 +53,9 @@ char *outstr;
 
 int main(void)
 {
-	char buff[256];
+	char buff[MAXNUMLEN];
+	double buffer;
+	char dozbuff[MAXNUMLEN];
 	int error;
 	char *currstring;
 	int buffsize = MAXNUMLEN;
@@ -71,7 +73,6 @@ int main(void)
 	if ((fd = mkstemp(template)) == -1)
 		exit(1);
 	fp = fdopen(fd,"rw");
-	fprintf(fp,"Hello, file!");
 	dup2(fd,fileno(stdout));
 	/**/
 	if ((convstr = malloc(sizeof(char)*buffsize)) == NULL) {
@@ -99,9 +100,26 @@ int main(void)
 	lua_getglobal(L,"luadoz");
 	lua_call(L,0,LUA_MULTRET);
 	dup2(stdout_bk,fileno(stdout));
-	/* now deal with the file output */
-	currstring = lua_tostring(L,-1);
-	outstr = dozenalize_string(lua_tostring(L,-1));
+	fseek(fp,0,0);
+	while ((c = getc(fp)) != EOF) {
+		if (c != '*') {
+			printf("%c",c);
+		} else {
+			i = 0;
+			while (((c = getc(fp)) != '*'))
+				buff[i++] = c;
+			buff[i] = '\0';
+			buffer = atof(buff);
+			if (buffer == 0.0) {
+				printf("*%s%c",buff,c);
+			} else {
+				dectodoz(dozbuff,atof(buff));
+				dozbuff[i] = '\0';
+				printf("%s",dozbuff);
+				dozbuff[0] = '\0';
+			}
+		}
+	}
 	for (i = 1; i <= lua_gettop(L); i++) {
 		printf("%s",dozenalize_string(lua_tostring(L,i)));
 	}
