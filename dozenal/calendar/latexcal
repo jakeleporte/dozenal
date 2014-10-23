@@ -803,13 +803,13 @@ sub run_month($$)
 		number having a \\emph{perfect number of divisors}
 		(six).","Prof.\ Jay Schiffman","0.8\\textheight") if
 		$mymon == 3;
-		facingpage("dozenal_times_tables.png","Because twelve
+		facingpage("times_table.mps","Because twelve
 		has six divisors, with the smallest four consecutive,
 		it presents a multiplication table featuring brief
 		patterns in the product lines of many numbers.\\ldots
 		[U]sers of duodecimal enjoy two other divisor product
 		lines in the multiplication table.","Michael
-		deVlieger","0.8\\textheight") if $mymon == 4;
+		deVlieger","0.65\\textheight") if $mymon == 4;
 		facingpage("keyb_doz.mps","\\emph{There are twelve
 		equal notes in an octave}.\\ldots [They are]
 		logarithms to base two.  Expressed in dozenal
