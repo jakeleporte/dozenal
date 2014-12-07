@@ -6,7 +6,7 @@
 
 prefix ?= /usr/local
 bindir ?= $(prefix)/bin
-binmode = 754
+binmode = 755
 dirmode = 755
 CC = gcc
 binobjects = dozword
