@@ -3,27 +3,43 @@
 # Sunday, and it is humbly dedicated to the Immaculate Heart
 # of Mary for her prayers, and to the Sacred Heart of Jesus
 # for His mercy.
+#
+# Changes 12/2014 by Nathan Fisher <nfisher.sr@gmx.com>
 
-dozpret : dozpret.o conv.h conv.o
-	gcc -o dozpret dozpret.o conv.o
+prefix ?= /usr/local
+bindir ?= $(prefix)/bin
+binmode = 754
+dirmode = 755
+IDIR = ../include
+CC = gcc
+objects = dozpret.o conv.h.gch
+binobjects = dozpret
 
-dozpret.o : dozpret.c conv.h conv.o
-	gcc -c dozpret.c conv.h conv.c
+all: bin
 
-conv.o : conv.c conv.h
-	gcc -c conv.c conv.h
+dozpret: dozpret.o ../conv/conv.o
+	$(CC) -I$(IDIR) -o dozpret dozpret.o conv.o
 
-doc : dozpret.1
-	rman -fHTML dozpret.1 > dozpret_man.html
+dozpret.o: dozpret.c ../conv/conv.o
+	$(CC) -I$(IDIR) -c dozpret.c $(IDIR)/conv.h ../conv/conv.c
 
-prefix = /usr/local
-bindir = /usr/local/bin
-mandir = /usr/local/share/man/man1
+../conv/conv.o: ../conv/conv.c $(IDIR)/conv.h
+	$(MAKE) -C ../conv
 
-install : dozpret dozpret.1
-	cp ./dozpret $(bindir)
-	cp ./dozpret.1 $(mandir)
+bin: $(binobjects)
 
-uninstall :
-	rm $(bindir)/dozpret
-	rm $(mandir)/dozpret.1
+installbin: $(binobjects)
+	for obj in $(binobjects) ; do \
+		install -m $(binmode) $${obj} $(bindir) ; done
+
+install: installbin
+
+uninstall:
+	for bin in $(binobjects) ; do \
+		unlink $(bindir)/$${bin} ; done
+
+clean:
+	for obj in $(binobjects) $(objects) ; do \
+		rm -f $${obj} ; done
+
+.PHONY: bin clean install installbin uninstall

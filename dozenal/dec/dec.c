@@ -188,7 +188,7 @@ double fracdec(char *s)
 	int i;
 	double divisor = 1.0;
 
-	for (i=0; *(s+i) != '\0'; ++i) 
+	for (i=0; *(s+i) != '\0'; ++i)
 		divisor *= 12.0;
 	return wholedec(s) / divisor;
 }

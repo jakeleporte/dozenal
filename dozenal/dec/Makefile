@@ -6,30 +6,49 @@
 # and to the Sacred Heart of Jesus for His mercy.
 #
 # Makefile for the decimal to dozenal converter.
+#
+# Changes 12/2014 by Nathan Fisher <nfisher.sr@gmx.com>
 
-dec : main.o conv.h conv.o dec.o
-	gcc -lm -o dec main.o conv.o dec.o
+prefix ?= /usr/local
+bindir ?= $(prefix)/bin
+binmode = 754
+dirmode = 755
+IDIR =../include
+CC = gcc
+binobjects = dec
+objects = main.o dec.o
 
-main.o : conv.h main.c conv.o dec.o
-	gcc -c main.c
+all: bin
 
-conv.o : conv.c conv.h
-	gcc -c conv.c
+dec: main.o ../conv/conv.o dec.o
+	$(CC) -lm -o dec main.o ../conv/conv.o dec.o
 
-dec.o : conv.o conv.h dec.c
-	gcc -c dec.c
+main.o: main.c ../conv/conv.o dec.o
+	$(CC) -I$(IDIR) -c main.c
 
-doc : dec.1
-	rman -fHTML dec.1 > dec_man.html
+../conv/conv.o:
+	$(MAKE) -C ../conv
 
-prefix = /usr/local
-bindir = /usr/local/bin
-mandir = /usr/local/share/man/man1
+dec.o: ../conv/conv.o dec.c
+	$(CC) -I$(IDIR) -c dec.c
 
-install : dec dec.1
-	cp ./dec $(bindir)
-	cp ./dec.1 $(mandir)
+bin: $(binobjects)
 
-uninstall :
-	rm $(bindir)/dec
-	rm $(mandir)/dec.1
+installdirs:
+	install -d -m $(dirmode) $(bindir)
+
+installbin: $(binobjects)
+	for obj in $(binobjects) ; do \
+		install -m $(binmode) $${obj} $(bindir) ; done
+
+install: installdirs installbin
+
+uninstall:
+	for bin in $(binobjects) ; do \
+		unlink $(bindir)/$${bin} ; done
+
+clean:
+	for obj in $(binobjects) $(objects) ; do \
+		rm -f $${obj} ; done
+
+.PHONY: bin clean install installbin uninstall

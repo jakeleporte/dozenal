@@ -3,33 +3,50 @@
 # St. Martina, Virgin and Martyr; and it is humbly dedicated
 # her and to the Immaculate Heart of Mary for their prayers,
 # and to the Sacred Heart of Jesus for His mercy.
+#
+# Changes 12/2014 by Nathan Fisher <nfisher.sr@gmx.com>
 
-dozstring : main.o conv.h conv.o doz.o dec.o
-	gcc -g -lm main.o conv.o doz.o dec.o -o dozstring
+prefix ?= /usr/local
+bindir ?= $(prefix)/bin
+binmode = 754
+dirmode = 755
+IDIR = ../include
+CC = gcc
+objects = main.o
+binobjects = dozstring
 
-main.o : main.c conv.h conv.o doz.o dec.o
-	gcc -g -c main.c
+all: bin
 
-doz.o : conv.c conv.h doz.c dec.o
-	gcc -lm -std=c99 -g -c doz.c
+dozstring : main.o ../doz/doz.o ../dec/dec.o
+	$(CC) -I$(IDIR) -g -lm main.o ../conv/conv.o ../doz/doz.o \
+		../dec/dec.o -o dozstring
 
-dec.o : conv.o conv.h dec.c
-	gcc -g -c dec.c
+main.o : main.c ../conv/conv.o ../doz/doz.o ../dec/dec.o
+	$(CC) -I$(IDIR) -g -c main.c
 
-conv.o : conv.c conv.h
-	gcc -g -c conv.c
+../doz/doz.o: ../conv/conv.o ../doz/doz.c
+	$(MAKE) -C ../doz
 
-doc : dozstring.1
-	rman -fHTML dozstring.1 > dozstring_man.html
+../dec/dec.o: ../conv/conv.o ../dec/dec.c
+	$(MAKE) -C ../dec
 
-prefix = /usr/local
-bindir = /usr/local/bin
-mandir = /usr/local/share/man/man1
+../conv/conv.o: ../conv/conv.c $(IDIR)/conv.h
+	$(MAKE) -C ../conv
 
-install : dozstring dozstring.1
-	cp ./dozstring $(bindir)
-	cp ./dozstring.1 $(mandir)
+bin: $(binobjects)
 
-uninstall :
-	rm $(bindir)/dozstring
-	rm $(mandir)/dozstring.1
+installbin: $(binobjects)
+	for obj in $(binobjects) ; do \
+		install -m $(binmode) $${obj} $(bindir) ; done
+
+install: installbin
+
+uninstall:
+	for bin in $(binobjects) ; do \
+		unlink $(bindir)/$${bin} ; done
+
+clean:
+	for obj in $(binobjects) $(objects) ; do \
+		rm -f $${obj} ; done
+
+.PHONY: bin clean install installbin uninstall

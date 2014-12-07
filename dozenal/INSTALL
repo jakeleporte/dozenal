@@ -1,0 +1,11 @@
+To compile the programs, just type "make". Alternatively, programs can
+be compiled individually by running "make" in their corresponding
+subdirectory.
+
+To install run "make install". To install binaries only (no docs) run
+"make installbin". To install html documentation run "make installhtml".
+The commands can of course be combined as "make install installhtml".
+
+Certain paths can be adjusted at install time by setting variables on the
+command line, as in:
+%make prefix=/usr mandir=/usr/man htmldir=/usr/share/doc/html
