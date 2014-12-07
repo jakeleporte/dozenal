@@ -6,33 +6,49 @@
 # and to the Sacred Heart of Jesus for His mercy.
 #
 # Makefile for the decimal to dozenal converter.
+#
+# Changes 12/2014 by Nathan Fisher <nfisher.sr@gmx.com>
 
-doz : main.o conv.h conv.o doz.o
-	gcc -g -lm -o doz main.o conv.o doz.o dec.o
+prefix ?= /usr/local
+bindir ?= $(prefix)/bin
+binmode = 754
+dirmode = 755
+IDIR =../include
+CC = gcc
+objects = main.o doz.o
+binobjects = doz
 
-main.o : conv.h main.c conv.o doz.o dec.o
-	gcc -g -lm -c main.c
+all: bin
 
-conv.o : conv.c conv.h
-	gcc -g -lm -c conv.c
+doz : $(objects) ../conv/conv.o ../dec/dec.o
+	$(CC) -g -lm -o doz main.o ../conv/conv.o doz.o ../dec/dec.o
 
-doz.o : conv.o conv.h doz.c
-	gcc -g -std=c99 -lm -c doz.c
+main.o : main.c ../conv/conv.o doz.o ../dec/dec.o
+	$(CC) -I$(IDIR) -g -lm -c main.c
 
-dec.o : dec.c conv.h conv.c
-	gcc -g -c dec.c
+../dec/dec.o:
+	$(MAKE) -C ../dec
 
-doc : doz.1
-	rman -fHTML doz.1 > doz_man.html
+../conv/conv.o:
+	$(MAKE) -C ../conv
 
-prefix = /usr/local
-bindir = /usr/local/bin
-mandir = /usr/local/share/man/man1
+doz.o : ../conv/conv.o doz.c
+	$(CC) -I$(IDIR) -g -std=c99 -lm -c doz.c
 
-install : doz doz.1
-	cp ./doz $(bindir)
-	cp ./doz.1 $(mandir)
+bin: $(binobjects)
 
-uninstall :
-	rm $(bindir)/doz
-	rm $(mandir)/doz.1
+installbin: $(binobjects)
+	for obj in $(binobjects)  ; do \
+		install -m $(binmode) $${obj} $(bindir) ; done
+
+install: installbin
+
+uninstall:
+	for bin in $(binobjects) ; do \
+		unlink $(bindir)/$${bin} ; done
+
+clean:
+	for obj in $(binobjects) $(objects) ; do \
+		rm -f $${obj} ; done
+
+.PHONY: bin clean install installbin uninstall

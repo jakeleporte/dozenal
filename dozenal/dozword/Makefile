@@ -4,20 +4,32 @@
 # of Mary for her prayers, and to the Sacred Heart of Jesus
 # for His mercy.
 
-dozword : dozword.c
-	gcc -o dozword dozword.c
+prefix ?= /usr/local
+bindir ?= $(prefix)/bin
+binmode = 754
+dirmode = 755
+CC = gcc
+binobjects = dozword
 
-doc : dozword.1
-	rman -fHTML dozword.1 > dozword_man.html
+all: bin
 
-prefix = /usr/local
-bindir = /usr/local/bin
-mandir = /usr/local/share/man/man1
+dozword: dozword.c
+	$(CC) -o dozword dozword.c
 
-install : dozword dozword.1
-	cp ./dozword $(bindir)
-	cp ./dozword.1 $(mandir)
+bin: $(binobjects)
 
-uninstall :
-	rm $(bindir)/dozword
-	rm $(mandir)/dozword.1
+installbin: $(binobjects)
+	for obj in $(binobjects) ; do \
+		install -m $(binmode) $${obj} $(bindir) ; done
+
+install: installbin
+
+uninstall:
+	for bin in $(binobjects) ; do \
+		unlink $(bindir)/$${bin} ; done
+
+clean:
+	for obj in $(binobjects) $(objects) ; do \
+		rm -f $${obj} ; done
+
+.PHONY: bin clean install installbin uninstall

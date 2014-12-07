@@ -6,39 +6,57 @@
 # and to the Sacred Heart of Jesus for His mercy.
 #
 # Makefile for the decimal to dozenal converter.
+#
+# Changes 12/2014 by Nathan Fisher <nfisher.sr@gmx.com>
 
-dozdate: main.o conv.h conv.o doz.o dec.o
-	gcc -std=c99 -g -lm -o dozdate main.o conv.o doz.o dec.o process_date.o get_symmdate.o
+prefix ?= /usr/local
+bindir ?= $(prefix)/bin
+binmode = 754
+dirmode = 755
+IDIR =../include
+CC = gcc
+objects = main.o get_symmdate.o process_date.o
+binobjects = dozdate
 
-main.o : conv.h main.c conv.o doz.o process_date.o process_date.h get_symmdate.h get_symmdate.o
-	gcc -g -lm -c main.c
+all: bin
 
-get_symmdate.o : get_symmdate.c conv.o get_symmdate.h
-	gcc -g -lm -c get_symmdate.c
+dozdate: $(objects) ../doz/doz.o ../dec/dec.o ../conv/conv.o
+	$(CC) -I$(IDIR) -std=c99 -g -lm -o dozdate main.o ../conv/conv.o \
+		../doz/doz.o ../dec/dec.o process_date.o get_symmdate.o
 
-process_date.o : process_date.c conv.o process_date.h
-	gcc -g -lm -c process_date.c conv.o
+main.o: main.c ../conv/conv.o ../doz/doz.o process_date.o \
+		$(IDIR)/process_date.h $(IDIR)/get_symmdate.h get_symmdate.o
+	$(CC) -I$(IDIR) -g -lm -c main.c
 
-doz.o : conv.o conv.h doz.c
-	gcc -g -std=c99 -lm -c doz.c
+get_symmdate.o: get_symmdate.c ../conv/conv.o $(IDIR)/get_symmdate.h
+	$(CC) -I$(IDIR) -g -lm -c get_symmdate.c
 
-dec.o : conv.o conv.h dec.c
-	gcc -g -c dec.c
+process_date.o: process_date.c ../conv/conv.o $(IDIR)/process_date.h
+	$(CC) -I$(IDIR) -g -lm -c process_date.c ../conv/conv.o
 
-conv.o : conv.c conv.h
-	gcc -g -lm -c conv.c
+../doz/doz.o: ../conv/conv.o ../doz/doz.c
+	$(MAKE) -C ../doz
 
-doc : dozdate.1
-	rman -fHTML dozdate.1 > dozdate_man.html
+../dec/dec.o: ../conv/conv.o ../dec/dec.c
+	$(MAKE) -C ../dec
 
-prefix = /usr/local
-bindir = /usr/local/bin
-mandir = /usr/local/share/man/man1
+../conv/conv.o: ../conv/conv.c $(IDIR)/conv.h
+	$(MAKE) -C ../conv
 
-install : dozdate.1
-	cp ./dozdate $(bindir)
-	cp ./dozdate.1 $(mandir)
+bin: $(binobjects)
 
-uninstall :
-	rm $(bindir)/dozdate
-	rm $(mandir)/dozdate.1
+installbin: $(binobjects)
+	for obj in $(binobjects) ; do \
+		install -m $(binmode) $${obj} $(bindir) ; done
+
+install: installbin
+
+uninstall:
+	for bin in $(binobjects) ; do \
+		unlink $(bindir)/$${bin} ; done
+
+clean:
+	for obj in $(binobjects) $(objects) ; do \
+		rm -f $${obj} ; done
+
+.PHONY: bin clean installbin install uninstall

@@ -1,34 +1,50 @@
 # +AMDG
 
-tgmconv : main.o doz.o dec.o tgm.o conv.h tgmconv.h conv.o
-	gcc -g -lm -o tgmconv main.o tgm.o doz.o dec.o conv.o
+prefix ?= /usr/local
+bindir ?= $(prefix)/bin
+binmode = 754
+dirmode = 755
+IDIR = ../include
+CC = gcc
+objects = main.o tgm.o
+binobjects = tgmconv
 
-main.o : main.c tgmconv.h dec.o doz.o conv.h conv.c
-	gcc -g -c main.c
+all: bin
 
-tgm.o : tgm.c tgmconv.h conv.h conv.c
-	gcc -g -c tgm.c
+tgmconv: main.o ../doz/doz.o ../dec/dec.o tgm.o $(IDIR)/tgmconv.h \
+		../conv/conv.o
+	$(CC) -I$(IDIR) -g -lm -o tgmconv main.o tgm.o ../doz/doz.o \
+		../dec/dec.o ../conv/conv.o
 
-doz.o : doz.c conv.h conv.c
-	gcc -g -lm -std=c99 -c doz.c
+main.o: main.c $(IDIR)/tgmconv.h ../dec/dec.o ../doz/doz.o ../conv/conv.c
+	$(CC) -I$(IDIR) -g -c main.c
 
-dec.o : dec.c conv.h conv.c
-	gcc -g -c dec.c
+tgm.o: tgm.c $(IDIR)/tgmconv.h $(IDIR)/conv.h ../conv/conv.c
+	$(CC) -I$(IDIR) -g -c tgm.c
 
-conv.o : conv.c conv.h
-	gcc -g -c conv.c
+../doz/doz.o: ../doz/doz.c ../conv/conv.o
+	$(MAKE) -C ../doz
 
-doc : tgmconv.1
-	rman -fHTML tgmconv.1 > tgmconv_man.html
+../dec/dec.o: ../dec/dec.c ../conv/conv.o
+	$(MAKE) -C ../dec
 
-prefix = /usr/local
-bindir = /usr/local/bin
-mandir = /usr/local/share/man/man1
+../conv/conv.o: ../conv/conv.c $(IDIR)/conv.h
+	$(MAKE) -C ../conv
 
-install : tgmconv tgmconv.1
-	cp ./tgmconv $(bindir)
-	cp ./tgmconv.1 $(mandir)
+bin: $(binobjects)
 
-uninstall :
-	rm $(bindir)/tgmconv
-	rm $(mandir)/tgmconv.1
+installbin: $(binobjects)
+	for obj in $(binobjects) ; do \
+		install -m $(binmode) $${obj} $(bindir) ; done
+
+install: installbin
+
+uninstall:
+	for bin in $(binobjects) ; do \
+		unlink $(bindir)/$${bin} ; done
+
+clean:
+	for obj in $(binobjects) $(objects) ; do \
+		rm -f $${obj} ; done
+
+.PHONY: bin clean install install_bin uninstall
