@@ -31,8 +31,8 @@ main.o: main.c ../conv/conv.o ../doz/doz.o process_date.o \
 get_symmdate.o: get_symmdate.c ../conv/conv.o $(IDIR)/get_symmdate.h
 	$(CC) -I$(IDIR) -g -lm -c get_symmdate.c
 
-process_date.o: process_date.c ../conv/conv.o $(IDIR)/process_date.h
-	$(CC) -I$(IDIR) -g -lm -c process_date.c ../conv/conv.o
+process_date.o: process_date.c ../conv/conv.c $(IDIR)/process_date.h
+	$(CC) -I$(IDIR) -g -lm -c process_date.c ../conv/conv.c
 
 ../doz/doz.o: ../conv/conv.o ../doz/doz.c
 	$(MAKE) -C ../doz
@@ -56,7 +56,7 @@ uninstall:
 		unlink $(bindir)/$${bin} ; done
 
 clean:
-	for obj in $(binobjects) $(objects) ; do \
+	for obj in $(binobjects) $(objects) conv.o ; do \
 		rm -f $${obj} ; done
 
 .PHONY: bin clean installbin install uninstall
