@@ -41,7 +41,7 @@ htmldoc:
 		groff -mandoc -Thtml $${prog}.1 > $${prog}.html ; done
 
 installdirs:
-	install -d -m $(dirmode) $(mandir)
+	install -d -m $(dirmode) $(mandir)/man1
 
 installhtmldirs:
 	install -d -m $(dirmode) $(htmldir)
