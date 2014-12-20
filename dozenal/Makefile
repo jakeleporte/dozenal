@@ -36,9 +36,10 @@ dozpret \
 dozdate \
 dozstring
 
-all:
-	for dir in $(subdirs) ; do \
-		$(MAKE) -C $${dir} ;done
+all: $(subdirs)
+
+$(subdirs):
+	$(MAKE) -C $@
 
 htmldoc:
 	$(MAKE) -C doc htmldoc
@@ -60,15 +61,17 @@ installdoc:
 install: installbin installdoc
 
 clean:
-	for dir in $(subdirs) doc ; do \
+	for dir in $(subdirs) conv doc ; do \
 		$(MAKE) -C $${dir} clean ; done
+	rm -f ./include/conv.h.gch
 
 uninstall:
 	for dir in $(subdirs) doc ; do \
 		$(MAKE) -C $$(dir) uninstall ; done
 
 .PHONY: \
-subdirs \
+all \
+$(subdirs) \
 installbin \
 installman \
 installhtml \
