@@ -72,6 +72,8 @@ char *ops[] = {
 	"ldexp", /* x * 2^n; binary */
 	"z", /* use zeniPis rather than radians */
 	"dlg", /* dublog */
+	"gcf", /* greatest common factor */
+	"lcm", /* least common multiple */
 };
 
 /* refer to ops[] array to determine what operator to use;
@@ -137,6 +139,39 @@ int commandops(char *s, char *word)
 		return type;
 	}
 	return EOF;
+}
+
+int gcf(double num, double othnum)
+{
+	double quotient;
+	int remainder = -1;
+	int gcf;
+	double large;
+	double small;
+
+	if (num > othnum) {
+		large = num;
+		small = othnum;
+	} else {
+		large = othnum;
+		small = num;
+	}
+	while (remainder != 0) {
+		remainder = (int)large % (int)small;
+		large /= small;
+		large = small;
+		if (remainder != 0)
+			small = remainder;
+	}
+	return small;
+}
+
+int lcm(double num, double othnum)
+{
+	int gcfact;
+	
+	gcfact = gcf(num,othnum);
+	return (int) ((num * othnum) / gcfact);
 }
 
 double operate(int operator, int *places, char *print)
@@ -345,6 +380,12 @@ double operate(int operator, int *places, char *print)
 	case LDEXP:
 		tmp = pop();
 		push(ldexp(pop(),tmp));
+		break;
+	case GCF:
+		push(gcf(pop(),pop()));
+		break;
+	case LCM:
+		push(lcm(pop(),pop()));
 		break;
 	case VAR:
 		break;

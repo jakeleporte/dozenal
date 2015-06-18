@@ -75,3 +75,5 @@
 #define LDEXP 32
 #define ZENIPI 33
 #define DLG 34
+#define GCF 35
+#define LCM 36
