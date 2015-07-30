@@ -171,7 +171,7 @@ int lcm(double num, double othnum)
 	int gcfact;
 	
 	gcfact = gcf(num,othnum);
-	return (int) ((num * othnum) / gcfact);
+	return (int) ((abs(num * othnum)) / gcfact);
 }
 
 double operate(int operator, int *places, char *print)

@@ -1,7 +1,7 @@
 ." +AMDG
 ." Process with:
 ." groff -man -Tascii dozdc.1
-.TH dozdc 1 "January 2010" Linux "User Manuals"
+.TH dozdc 1 "July 2015" Linux "User Manuals"
 .SH NAME
 dozdc \- arbitrary precision dozenal calculator
 .SH SYNOPSIS
@@ -192,6 +192,12 @@ it's negative, it makes it positive.)
 .IP recip
 A unary operator; gives the reciprocal of its single
 argument (that is, one divided by that argument).
+.IP gcf
+A binary operator; gives the "greatest common factor" of its
+two arguments.
+.IP lcm
+A binary operator; gives the "least common multiple" of its
+two arguments.
 .SH CONSTANTS
 dozdc provides a number of constants.  These are the classic
 "transcendental" numbers, or at least a few of them.  Of
@@ -310,3 +316,4 @@ Donald P. Goodman III <dgoodmaniii at gmail dot com>
 .BR dozdate (1),
 .BR dozword (1),
 .BR dozpret (1)
+.BR dozstring (1)

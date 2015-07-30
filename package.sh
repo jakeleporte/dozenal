@@ -5,23 +5,24 @@
 # the Immaculate Heart of Mary for her prayers, and to the
 # Sacred Heart of Jesus for His mercy.
 
-tar -cvvf dozenal_v11E90216_src.tar ./dozenal
+tar -cvvf dozenal_v11EE0726_src.tar ./dozenal
 
-tar -f dozenal_v11E90216_src.tar --wildcards --verbose --delete *.o \
+tar -f dozenal_v11EE0726_src.tar --wildcards --verbose --delete *.o \
 *.html ./dozenal/dozdc/dozdc ./dozenal/doz/doz ./dozenal/dec/dec \
 ./dozenal/tgmconv/tgmconv ./dozenal/dozword/dozword \
 ./dozenal/dozpret/dozpret ./dozenal/dozdate/dozdate \
-./dozenal/dozstring/dozstring
+./dozenal/dozstring/dozstring ./dozenal/calendar/ \
+./dozenal/dozlua
 
-gzip dozenal_v11E90216_src.tar
+gzip dozenal_v11EE0726_src.tar
 
-tar -cvvf dozenal_v11E90216_bin_x86.tar ./dozenal/dozstring/dozstring \
+tar -cvvf dozenal_v11EE0726_bin_x86.tar ./dozenal/dozstring/dozstring \
 ./dozenal/doz/doz ./dozenal/dec/dec ./dozenal/dozdc/dozdc \
 ./dozenal/dozword/dozword ./dozenal/tgmconv/tgmconv \
 ./dozenal/dozpret/dozpret ./dozenal/dozdate/dozdate ./dozenal/doc \
 ./dozenal/COPYING
 
-tar -f dozenal_v11E90216_bin_x86.tar --wildcards --verbose --delete \
+tar -f dozenal_v11EE0726_bin_x86.tar --wildcards --verbose --delete \
 ./dozenal/doc/Makefile
 
-gzip dozenal_v11E90216_bin_x86.tar;
+gzip dozenal_v11EE0726_bin_x86.tar;

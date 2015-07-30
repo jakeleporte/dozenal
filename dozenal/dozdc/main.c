@@ -91,8 +91,8 @@ int main(int argc, char *argv[])
 				operate(ZENIPI,&places,&print);
 				break;
 			case 'v':
-				printf("dozdc v3.1\n");
-				printf("Copyright (C) 2010, 2011  Donald P. Goodman III\n");
+				printf("dozdc v3.2\n");
+				printf("Copyright (C) 2010-2015  Donald P. Goodman III\n");
 				printf("License GPLv3+:  GNU GPL version 3 or "
 				"later <http://gnu.org/licenses/gpl.html>\n");
 				printf("This is free software:  you are free "
