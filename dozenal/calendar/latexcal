@@ -27,7 +27,7 @@ sub preamble($)
 	my $preamble;
 	$preamble = <<END;
 		\\documentclass{minimal}
-		\\usepackage{dozenal}
+		\\usepackage[typeone]{dozenal}
 		\\usepackage{lettrine}
 		\\usepackage{xfrac}
 		\\usepackage[absolute,overlay]{textpos}
@@ -159,14 +159,14 @@ END
 		print "\t\\hfil\\url{http://www.dozenal.org}\\hfil}%\n";
 		print "}%\n";
 		print "\\newlength{\\logowidth}%\n";
-		print "\\settowidth{\\logowidth}{\\includegraphics[scale=0.8]{Logo-DSA-2013.png}}%%\n";
+		print "\\settowidth{\\logowidth}{\\includegraphics[scale=1.0]{DSA_seal.mps}}%%\n";
 		print "\\makeatletter%\n%\n";
 		print "\\AddToShipoutPicture*{%%\n";
 		print "\\setlength{\\\@tempdimb}{0.24\\paperwidth}%%\n";
 		print "\\setlength{\\\@tempdimc}{0.32\\paperheight}%%\n";
 		print "\\setlength{\\unitlength}{1pt}%%\n";
 		print "\\put(\\strip\@pt\\\@tempdimb,\\strip\@pt\\\@tempdimc){%\n";
-		print "\\hbox{\\transparent{0.2}\\includegraphics[angle=90,scale=0.8]{Logo-DSA-2013.png}}%\n";
+		print "\\hbox{\\transparent{0.2}\\includegraphics[angle=90,scale=1.0]{DSA_seal.mps}}%\n";
 		print "}%\n";
 		print "}%\n";
 		print "\\makeatother%\n";
