@@ -31,8 +31,31 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#define EXIT_SUCCESS 0
-#define OPT_REQ_ARG 1
-#define UNREC_OPT 2
-#define INSUFF_MEM 3
-#define BAD_FILE 4
+#include<string.h>
+
+int chomp(char *s)
+{
+	int i; int j = 0;
+
+	for (i = strlen(s) - 1; i != 0; --i) {
+		if (isspace(s[i])) {
+			s[i] = '\0';
+			++j;
+		} else {
+			break;
+		}
+	}
+	return j;
+}
+
+char *front_chomp(char *s)
+{
+	int i; int j = 0;
+	char *t;
+
+	t = s;
+	for (i = 0; isspace(s[i]) && s[i] != '\0'; ++i) {
+			++t;
+	}
+	return t;
+}

@@ -35,16 +35,26 @@
 #include<stdlib.h>
 #include<unistd.h>
 #include<string.h>
+#include<time.h>
+#include<errno.h>
+#include"utility.h"
 #include"errcodes.h"
+#include"event_struct.h"
+
+#define NUM_EVENTS (sizeof(event_list) / sizeof(event_list[0]))
+#define MAXLEN 256
+
+struct event *event_list;
+int recordnums = 0;
 
 int main(int argc, char **argv)
 {
-	char c;
-	char *filename;
+	char c; int i;
+	int numevents = 0;
 
-	if ((filename = malloc(1 * sizeof(char))) == NULL) {
-		fprintf(stderr,"dozcal:  insufficient memory to "
-			"initialize variables\n");
+	if ((event_list = malloc(1 * sizeof(struct event))) == NULL) {
+		fprintf(stderr,"dozcal:  insufficient memory to hold the "
+			"event list\n");
 		exit(INSUFF_MEM);
 	}
 	opterr = 0;
@@ -60,6 +70,9 @@ int main(int argc, char **argv)
 				"to the extent permitted by law.\n");
 			exit(EXIT_SUCCESS);
 			break;
+		case 'f':
+			numevents = process_file(optarg);
+			break;
 		case '?':
 			if ((optopt == 'f') || (optopt == 'd')) {
 				fprintf(stderr,"dozcal:  option \"%c\" requires "
@@ -72,5 +85,54 @@ int main(int argc, char **argv)
 			break;
 		}
 	}
+/*	for (i = 0; i < recordnums; i++) {
+		printf("%d:  %s\n",event_list[i].id,event_list[i].title);
+	}*/
+	free(event_list);
+	return 0;
+}
+
+int process_file(char *s)
+{
+	FILE *fp; char *line = NULL; size_t len = 0; ssize_t read;
+	char buffer[16][MAXLEN];
+	int linesread = 0;
+	int currlineno = 0;
+	char *t;
+	int i;
+
+	if ((fp = fopen(s,"r")) == NULL) {
+		fprintf(stderr,"dozcal:  unable to open file "
+			"\"%s\", with the following error:\n\t%d: "
+			"%s\n",s,errno,strerror(errno));
+		exit(BAD_FILE);
+	}
+	while ((read = getline(&line, &len, fp)) != -1) {
+		chomp(line);
+		if (strlen(line) == 1)
+			continue;
+		if (strstr(line,"[EVENT]") && (linesread != 0)) {
+			strcpy(buffer[currlineno],"%%");
+			proc_rec(buffer,currlineno);
+			currlineno = 0;
+		} else if (!strstr(line,"[EVENT]")) {
+			t = strchr(line,':') + 1;
+			strcpy(buffer[currlineno++],front_chomp(t));
+		}
+		linesread++;
+	}
+	strcpy(buffer[currlineno],"%%");
+	proc_rec(buffer,currlineno);
+	free(line);
+	return 0;
+}
+
+/* expand each file event into a list of events for the struct */
+int proc_rec(char buffer[][MAXLEN],int lines)
+{
+	int i;
+
+	for (i = 0; i <= lines; ++i)
+		printf("%s\n",buffer[i]);
 	return 0;
 }

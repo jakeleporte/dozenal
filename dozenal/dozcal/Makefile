@@ -15,17 +15,26 @@ binmode = 755
 dirmode = 755
 IDIR =../include
 CC = gcc
-objects = main.o
+objects = main.o utility.o proc_date.o
 binobjects = dozcal
 
 all: bin
 
 dozcal: $(objects) ../doz/doz.o ../dec/dec.o ../conv/conv.o
-	$(CC) -I$(IDIR) -std=c99 -g -lm -o dozcal main.o ../conv/conv.o \
-		../doz/doz.o ../dec/dec.o
+	$(CC) -I$(IDIR) -std=c99 -g -lm -o dozcal ../conv/conv.o \
+		../doz/doz.o ../dec/dec.o $(objects)
 
 main.o: main.c ../conv/conv.o ../doz/doz.o 
-	$(CC) -I$(IDIR) -g -lm -c main.c
+	$(CC) -I$(IDIR) -g -lm -c main.c 
+
+proc_date.o:  proc_date.c utility.c ../conv/conv.o ../doz/doz.o ../dec/dec.o
+	$(CC) -I$(IDIR) -g -lm -c proc_date.c utility.c
+
+#process_file.o: process_file.c utility.c ../conv/conv.o ../doz/doz.o ../dec/dec.o
+#	$(CC) -I$(IDIR) -g -lm -c process_file.c utility.c
+
+utility.o: utility.c
+	$(CC) -I$(IDIR) -g -lm -c utility.c
 
 ../doz/doz.o: ../conv/conv.o ../doz/doz.c
 	$(MAKE) -C ../doz

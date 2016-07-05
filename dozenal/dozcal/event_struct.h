@@ -31,8 +31,10 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#define EXIT_SUCCESS 0
-#define OPT_REQ_ARG 1
-#define UNREC_OPT 2
-#define INSUFF_MEM 3
-#define BAD_FILE 4
+struct event {
+	int id;				/* idnum of the event entry */
+	char title[256];	/* title of the event */
+	time_t thisdate;	/* the date; START_TIME rolled in */
+	time_t endtime;	/* if 0, no END_TIME given */
+	char all_day;		/* assume not all-day; 1 if true */
+};

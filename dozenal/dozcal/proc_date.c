@@ -31,8 +31,17 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#define EXIT_SUCCESS 0
-#define OPT_REQ_ARG 1
-#define UNREC_OPT 2
-#define INSUFF_MEM 3
-#define BAD_FILE 4
+#include<time.h>
+
+time_t proc_date(char *s)
+{
+	int i;
+	char year[5];
+	char month[3];
+	char day[3];
+
+	chomp(s);
+	for (i = 0; s[i] != '\0'; ++i) {
+		
+	}
+}

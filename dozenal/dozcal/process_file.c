@@ -31,8 +31,42 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#define EXIT_SUCCESS 0
-#define OPT_REQ_ARG 1
-#define UNREC_OPT 2
-#define INSUFF_MEM 3
-#define BAD_FILE 4
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+#include<errno.h>
+#include"errcodes.h"
+#include"event_struct.h"
+
+#define NUM_EVENTS (sizeof(*event_list) / sizeof(*event_list[0]))
+
+int process_file(char *s,struct event **event_list)
+{
+	FILE *fp; char *line = NULL; size_t len = 0; ssize_t read;
+
+	if ((fp = fopen(s,"r")) == NULL) {
+		fprintf(stderr,"dozcal:  unable to open file "
+			"\"%s\", with the following error:\n\t%d: "
+			"%s\n",s,errno,strerror(errno));
+		exit(BAD_FILE);
+	}
+	while ((read = getline(&line, &len, fp)) != -1) {
+		chomp(line);
+		proc_line(line,event_list);
+	}
+//	free(line);
+	return 0;
+}
+
+int proc_line(char *s,struct event **event_list)
+{
+	static int numevents = 1;
+
+	if (strstr(s,"[EVENT]")) {
+		++numevents;
+		*event_list = realloc(*event_list,(numevents * sizeof(struct event)));
+	}
+//	*event_list = realloc(*event_list,(6 * sizeof(struct event)));
+//	strcpy(event_list[1]->title,"you");
+	return 0;
+}
