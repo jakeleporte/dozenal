@@ -34,7 +34,8 @@ tgmconv \
 dozword \
 dozpret \
 dozdate \
-dozstring
+dozstring \
+dozcal
 
 all: $(subdirs)
 
