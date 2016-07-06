@@ -31,17 +31,45 @@
  * <http://www.gnu.org/licenses/>.
  */
 
+#include<stdio.h>
+#include<stdlib.h>
 #include<time.h>
+#include<regex.h>
+#include"conv.h"
+
+#define MAX_ERR_LENGTH 256
+
+char *datepats[] = {
+	"\\([0-9XE][0-9XE][0-9XE][0-9XE]\\)[-/]\\([0-9XE][0-9XE]\\)[-/]\\([0-9XE][0-9XE]\\)",
+	"\\([0-9XE][0-9XE]\\)[-/]\\([0-9XE][0-9XE]\\)[-/]\\([0-9XE][0-9XE][0-9XE][0-9XE]\\)"
+};
+/*	year-/mo-/da
+	mo/-da-/year */
 
 time_t proc_date(char *s)
 {
-	int i;
-	char year[5];
-	char month[3];
-	char day[3];
+	int i; int result; int errornum;
+	char err[MAX_ERR_LENGTH+1];
+	struct tm *date;
+	regmatch_t pmatch[4]; size_t nmatch = 4;
+	regex_t regone;
+	char holder[5];
 
-	chomp(s);
-	for (i = 0; s[i] != '\0'; ++i) {
-		
+	for (i = 0; i < 2; ++i) {
+		if ((errornum = regcomp(&regone,datepats[i],0)) != 0) {
+			regerror(errornum,&regone,err,MAX_ERR_LENGTH);
+			return -1;
+		}
+		result = regexec(&regone,s,4,pmatch,0);
+		if (result == 0) {
+			printf("Hurray!  |%s|\n",s);
+			sprintf(holder,"%.*s",pmatch[1].rm_eo - pmatch[1].rm_so, 
+				s+pmatch[1].rm_so);
+			printf("|doz%s| = |dec%.0f|\n",holder, doztodec(holder));
+			break;
+		} else {
+			printf("D'oh!  |%s|\n",s);
+		}
 	}
+	regfree(&regone);
 }

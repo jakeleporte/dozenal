@@ -117,7 +117,7 @@ int process_file(char *s)
 			currlineno = 0;
 		} else if (!strstr(line,"[EVENT]")) {
 			t = strchr(line,':') + 1;
-			strcpy(buffer[currlineno++],front_chomp(t));
+			strcpy(buffer[currlineno++],line);
 		}
 		linesread++;
 	}
@@ -132,7 +132,11 @@ int proc_rec(char buffer[][MAXLEN],int lines)
 {
 	int i;
 
-	for (i = 0; i <= lines; ++i)
-		printf("%s\n",buffer[i]);
+	for (i = 0; i <= lines; ++i) {
+//		printf("%s\n",buffer[i]);
+		if (strstr(buffer[i],"START_DATE")) {
+			proc_date(buffer[i]);
+		}
+	}
 	return 0;
 }
