@@ -34,7 +34,7 @@
 struct event {
 	int id;				/* idnum of the event entry */
 	char title[256];	/* title of the event */
-	time_t thisdate;	/* the date */
+	int thisdate;		/* the date */
 	time_t starttime;
 	time_t endtime;
 };

@@ -52,7 +52,7 @@ int main(int argc, char **argv)
 	char c; int i;
 	int numevents = 0;
 
-	if ((event_list = malloc(1 * sizeof(struct event))) == NULL) {
+	if ((event_list = malloc(recordnums++ * sizeof(struct event))) == NULL) {
 		fprintf(stderr,"dozcal:  insufficient memory to hold the "
 			"event list\n");
 		exit(INSUFF_MEM);
@@ -85,9 +85,9 @@ int main(int argc, char **argv)
 			break;
 		}
 	}
-/*	for (i = 0; i < recordnums; i++) {
-		printf("%d:  %s\n",event_list[i].id,event_list[i].title);
-	}*/
+	for (i = 0; i < recordnums-1; i++) {
+		printf("%s: %d\n",event_list[i].title,event_list[i].thisdate);
+	}
 	free(event_list);
 	return 0;
 }
@@ -160,12 +160,17 @@ int proc_rec(char buffer[][MAXLEN],int lines)
 		return 0;
 	startday = (int)startdate / 86400;
 	endday = (int)enddate / 86400;
-	printf("\t%s\t\n",title);
+/*	printf("\t%s\t\n",title);
 	printf("START:\t%d\n",startday);
-	printf("END:\t%d\n",endday);
+	printf("END:\t%d\n",endday);*/
 	for (holder = startday; holder <= endday; ++holder) {
-		if (not_in(holder,exceptions,j-1) == 1) { /*FIXME:  == 0 */
-			printf("\tException:  %d\n",holder);
+		if (not_in(holder,exceptions,j-1) == 0) {
+			//FIXME
+			event_list = realloc(event_list,(recordnums * 
+				sizeof(struct event)));
+			strcpy(event_list[recordnums-1].title,title);
+			event_list[recordnums-1].thisdate = holder;
+			recordnums++;
 		}
 	}
 	return 0;
