@@ -37,12 +37,22 @@
 #include<errno.h>
 #include"errcodes.h"
 #include"event_struct.h"
+#include"utility.h"
 
 #define NUM_EVENTS (sizeof(*event_list) / sizeof(*event_list[0]))
+#define MAXLEN 256
 
-int process_file(char *s,struct event **event_list)
+extern struct event *event_list;
+extern int recordnums;
+
+int process_file(char *s)
 {
 	FILE *fp; char *line = NULL; size_t len = 0; ssize_t read;
+	char buffer[16][MAXLEN];
+	int linesread = 0;
+	int currlineno = 0;
+	char *t;
+	int i;
 
 	if ((fp = fopen(s,"r")) == NULL) {
 		fprintf(stderr,"dozcal:  unable to open file "
@@ -52,21 +62,79 @@ int process_file(char *s,struct event **event_list)
 	}
 	while ((read = getline(&line, &len, fp)) != -1) {
 		chomp(line);
-		proc_line(line,event_list);
+		if (strlen(line) == 1)
+			continue;
+		if (strstr(line,"[EVENT]") && (linesread != 0)) {
+			strcpy(buffer[currlineno],"%%");
+			proc_rec(buffer,currlineno);
+			currlineno = 0;
+		} else if (!strstr(line,"[EVENT]")) {
+			t = strchr(line,':') + 1;
+			strcpy(buffer[currlineno++],line);
+		}
+		linesread++;
 	}
-//	free(line);
+	strcpy(buffer[currlineno],"%%");
+	proc_rec(buffer,currlineno);
+	free(line);
 	return 0;
 }
 
-int proc_line(char *s,struct event **event_list)
+/* expand each file event into a list of events for the struct */
+int proc_rec(char buffer[][MAXLEN],int lines)
 {
-	static int numevents = 1;
+	int i; int holder;
+	char title[256];
+	time_t startdate; int startday;
+	time_t enddate = -1; int endday = -1;
+	int exceptions[256];
+	int j = 0;
+	int starttime = -1; int endtime = -1;
 
-	if (strstr(s,"[EVENT]")) {
-		++numevents;
-		*event_list = realloc(*event_list,(numevents * sizeof(struct event)));
+	for (i = 0; i < 256; ++i)
+		exceptions[i] = -1;
+	for (i = 0; i <= lines; ++i) {
+		if (strstr(buffer[i],"TITLE")) {
+			holder = get_impstr(buffer[i]);
+			strcpy(title,buffer[i]+holder);
+		}
+		if (strstr(buffer[i],"START_DATE")) {
+			startdate = proc_date(buffer[i]);
+		}
+		if (strstr(buffer[i],"END_DATE")) {
+			enddate = proc_date(buffer[i]);
+		}
+		if (strstr(buffer[i],"EXCEPT_DATE")) {
+			exceptions[j++] = (int)proc_date(buffer[i]) / 86400;
+		}
+		if (strstr(buffer[i],"START_TIME")) {
+			starttime = proc_time(buffer[i]);
+		}
+		if (strstr(buffer[i],"END_TIME")) {
+			endtime = proc_time(buffer[i]);
+		}
 	}
-//	*event_list = realloc(*event_list,(6 * sizeof(struct event)));
-//	strcpy(event_list[1]->title,"you");
+	if (enddate == -1)
+		enddate = startdate;
+	if (startdate == -1)
+		return 0;
+	startday = (int)startdate / 86400;
+	endday = (int)enddate / 86400;
+/*	printf("\t%s\t\n",title);
+	printf("START:\t%d\n",startday);
+	printf("END:\t%d\n",endday);*/
+	for (holder = startday; holder <= endday; ++holder) {
+		if (not_in(holder,exceptions,j-1) == 0) {
+			event_list = realloc(event_list,(recordnums * 
+				sizeof(struct event)));
+			event_list[recordnums-1].starttime = -1;
+			event_list[recordnums-1].endtime = -1;
+			strcpy(event_list[recordnums-1].title,title);
+			event_list[recordnums-1].thisdate = holder;
+			event_list[recordnums-1].starttime = starttime;
+			event_list[recordnums-1].endtime = endtime;
+			recordnums++;
+		}
+	}
 	return 0;
 }

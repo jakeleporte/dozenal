@@ -105,3 +105,66 @@ time_t proc_date(char *s)
 	free(date);
 	return returnval;
 }
+
+char *timepats[] = {
+	"\\([0-9XE][0-9XE]\\):\\([0-9XE][0-9XE]\\)",
+	"\\([0-9XE][0-9XE]\\);\\([0-9XE][0-9XE]\\)",
+	"\\([0-9XE][0-9XE]\\);\\([0-9XE][0-9XE][0-9XE][0-9XE]\\)",
+	"\\([0-9XE][0-9XE]\\)\\([0-9XE][0-9XE]\\)",
+};
+
+/* returns number of Tims since midnight, starting at 0 */
+/* -1 if error */
+int proc_time(char *s)
+{
+	int i; int result; int errornum;
+	char err[MAX_ERR_LENGTH+1];
+	regmatch_t pmatch[3]; size_t nmatch = 3;
+	regex_t regone;
+	char holder[5]; int holdnum;
+	const int tims = 20736; /* number of Tims in hr */
+	int hours = -1;
+
+	for (i = 0; i < 4; ++i) {
+		if ((errornum = regcomp(&regone,timepats[i],0)) != 0) {
+			regerror(errornum,&regone,err,MAX_ERR_LENGTH);
+			return -1;
+		}
+		result = regexec(&regone,s,4,pmatch,0);
+		regfree(&regone);
+		if (result == 0) {
+			sprintf(holder,"%.*s",pmatch[1].rm_eo - pmatch[1].rm_so, 
+				s+pmatch[1].rm_so);
+			hours = ((int) doztodec(holder) * tims);
+			switch (i) {
+			case 0:
+				sprintf(holder,"%.*s",pmatch[2].rm_eo - pmatch[2].rm_so, 
+					s+pmatch[2].rm_so);
+				holdnum = atoi(holder);
+				if (holdnum == 30) {
+					hours += 10368;
+				} else if (holdnum == 15) {
+					hours += 5184;
+				} else if (holdnum == 45) {
+					hours += 15552;
+				} else {
+					hours += (int)(holdnum * 345.6);
+				}
+				break;
+			case 1: case 3:
+				sprintf(holder,"%.*s",pmatch[2].rm_eo - pmatch[2].rm_so, 
+					s+pmatch[2].rm_so);
+				holdnum = (int) doztodec(holder);
+				hours += (holdnum * 144);
+				break;
+			case 2:
+				sprintf(holder,"%.*s",pmatch[2].rm_eo - pmatch[2].rm_so, 
+					s+pmatch[2].rm_so);
+				hours += (int)doztodec(holder);
+				break;
+			}
+			break;
+		}
+	}
+	return hours;
+}

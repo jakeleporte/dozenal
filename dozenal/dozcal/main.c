@@ -85,114 +85,12 @@ int main(int argc, char **argv)
 			break;
 		}
 	}
-	for (i = 0; i < recordnums-1; i++) {
-		printf("%s: %d\n",event_list[i].title,event_list[i].thisdate);
+	for (i = 0; i < recordnums-1; i++) { /* FIXME */
+		printf("%s: %d:  %d --- %d\n",
+			event_list[i].title,event_list[i].thisdate,
+			event_list[i].starttime,event_list[i].endtime);
 	}
 	free(event_list);
 	return 0;
 }
 
-int process_file(char *s)
-{
-	FILE *fp; char *line = NULL; size_t len = 0; ssize_t read;
-	char buffer[16][MAXLEN];
-	int linesread = 0;
-	int currlineno = 0;
-	char *t;
-	int i;
-
-	if ((fp = fopen(s,"r")) == NULL) {
-		fprintf(stderr,"dozcal:  unable to open file "
-			"\"%s\", with the following error:\n\t%d: "
-			"%s\n",s,errno,strerror(errno));
-		exit(BAD_FILE);
-	}
-	while ((read = getline(&line, &len, fp)) != -1) {
-		chomp(line);
-		if (strlen(line) == 1)
-			continue;
-		if (strstr(line,"[EVENT]") && (linesread != 0)) {
-			strcpy(buffer[currlineno],"%%");
-			proc_rec(buffer,currlineno);
-			currlineno = 0;
-		} else if (!strstr(line,"[EVENT]")) {
-			t = strchr(line,':') + 1;
-			strcpy(buffer[currlineno++],line);
-		}
-		linesread++;
-	}
-	strcpy(buffer[currlineno],"%%");
-	proc_rec(buffer,currlineno);
-	free(line);
-	return 0;
-}
-
-/* expand each file event into a list of events for the struct */
-int proc_rec(char buffer[][MAXLEN],int lines)
-{
-	int i; int holder;
-	char title[256];
-	time_t startdate; int startday;
-	time_t enddate = -1; int endday = -1;
-	int exceptions[256];
-	int j = 0;
-
-	for (i = 0; i < 256; ++i)
-		exceptions[i] = -1;
-	for (i = 0; i <= lines; ++i) {
-		if (strstr(buffer[i],"TITLE")) {
-			holder = get_impstr(buffer[i]);
-			strcpy(title,buffer[i]+holder);
-		}
-		if (strstr(buffer[i],"START_DATE")) {
-			startdate = proc_date(buffer[i]);
-		}
-		if (strstr(buffer[i],"END_DATE")) {
-			enddate = proc_date(buffer[i]);
-		}
-		if (strstr(buffer[i],"EXCEPT_DATE")) {
-			exceptions[j++] = (int)proc_date(buffer[i]) / 86400;
-		}
-	}
-	if (enddate == -1)
-		enddate = startdate;
-	if (startdate == -1)
-		return 0;
-	startday = (int)startdate / 86400;
-	endday = (int)enddate / 86400;
-/*	printf("\t%s\t\n",title);
-	printf("START:\t%d\n",startday);
-	printf("END:\t%d\n",endday);*/
-	for (holder = startday; holder <= endday; ++holder) {
-		if (not_in(holder,exceptions,j-1) == 0) {
-			//FIXME
-			event_list = realloc(event_list,(recordnums * 
-				sizeof(struct event)));
-			strcpy(event_list[recordnums-1].title,title);
-			event_list[recordnums-1].thisdate = holder;
-			recordnums++;
-		}
-	}
-	return 0;
-}
-
-/* checks if variable is in array; if not, return 0, else 1 */
-int not_in(int date, int exceptions[], int len)
-{
-	int i; int j;
-
-	for (i = 0; i <= len; ++i) {
-		if (date == exceptions[i])
-			return 1;
-	}
-	return 0;
-}
-
-int get_impstr(char *s)
-{
-	char *t;
-
-	t = strchr(s,':') + 1;
-	t = front_chomp(t);
-	return t-s;
-}

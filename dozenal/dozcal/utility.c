@@ -59,3 +59,24 @@ char *front_chomp(char *s)
 	}
 	return t;
 }
+
+/* checks if variable is in array; if not, return 0, else 1 */
+int not_in(int date, int exceptions[], int len)
+{
+	int i; int j;
+
+	for (i = 0; i <= len; ++i) {
+		if (date == exceptions[i])
+			return 1;
+	}
+	return 0;
+}
+
+int get_impstr(char *s)
+{
+	char *t;
+
+	t = strchr(s,':') + 1;
+	t = front_chomp(t);
+	return t-s;
+}
