@@ -34,7 +34,7 @@
 struct event {
 	int id;				/* idnum of the event entry */
 	char title[256];	/* title of the event */
-	time_t thisdate;	/* the date; START_TIME rolled in */
-	time_t endtime;	/* if 0, no END_TIME given */
-	char all_day;		/* assume not all-day; 1 if true */
+	time_t thisdate;	/* the date */
+	time_t starttime;
+	time_t endtime;
 };

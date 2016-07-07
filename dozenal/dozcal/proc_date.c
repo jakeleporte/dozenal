@@ -35,6 +35,7 @@
 #include<stdlib.h>
 #include<time.h>
 #include<regex.h>
+#include<errno.h>
 #include"conv.h"
 
 #define MAX_ERR_LENGTH 256
@@ -46,6 +47,7 @@ char *datepats[] = {
 /*	year-/mo-/da
 	mo/-da-/year */
 
+/* returns time_t of date; -1 if failed */
 time_t proc_date(char *s)
 {
 	int i; int result; int errornum;
@@ -54,22 +56,52 @@ time_t proc_date(char *s)
 	regmatch_t pmatch[4]; size_t nmatch = 4;
 	regex_t regone;
 	char holder[5];
+	time_t returnval;
 
+	date = calloc(1,sizeof(struct tm));
 	for (i = 0; i < 2; ++i) {
 		if ((errornum = regcomp(&regone,datepats[i],0)) != 0) {
 			regerror(errornum,&regone,err,MAX_ERR_LENGTH);
 			return -1;
 		}
 		result = regexec(&regone,s,4,pmatch,0);
+		regfree(&regone);
 		if (result == 0) {
-			printf("Hurray!  |%s|\n",s);
-			sprintf(holder,"%.*s",pmatch[1].rm_eo - pmatch[1].rm_so, 
-				s+pmatch[1].rm_so);
-			printf("|doz%s| = |dec%.0f|\n",holder, doztodec(holder));
+			switch (i) {
+			case 0:
+				sprintf(holder,"%.*s",pmatch[1].rm_eo - pmatch[1].rm_so, 
+					s+pmatch[1].rm_so);
+				date->tm_year = (int)doztodec(holder) - 1900;
+				sprintf(holder,"%.*s",pmatch[2].rm_eo - pmatch[2].rm_so, 
+					s+pmatch[2].rm_so);
+				date->tm_mon = (int)doztodec(holder) - 1;
+				sprintf(holder,"%.*s",pmatch[3].rm_eo - pmatch[3].rm_so, 
+					s+pmatch[3].rm_so);
+				date->tm_mday = (int)doztodec(holder);
+				break;
+			case 1:
+				sprintf(holder,"%.*s",pmatch[1].rm_eo - pmatch[1].rm_so, 
+					s+pmatch[1].rm_so);
+				date->tm_mon = (int)doztodec(holder) - 1;
+				sprintf(holder,"%.*s",pmatch[2].rm_eo - pmatch[2].rm_so, 
+					s+pmatch[2].rm_so);
+				date->tm_mday = (int)doztodec(holder);
+				sprintf(holder,"%.*s",pmatch[3].rm_eo - pmatch[3].rm_so, 
+					s+pmatch[3].rm_so);
+				date->tm_year = (int)doztodec(holder) - 1900;
+				break;
+			}
 			break;
-		} else {
-			printf("D'oh!  |%s|\n",s);
 		}
 	}
-	regfree(&regone);
+	if (result != 0) {
+		free(date);
+		return -1;
+	}
+/*	printf("YEAR:  %d - ",date->tm_year);
+	printf("MON:  %d - ",date->tm_mon);
+	printf("MDAY:  %d\n",date->tm_mday);*/
+	returnval = mktime(date);
+	free(date);
+	return returnval;
 }

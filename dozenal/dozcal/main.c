@@ -130,13 +130,64 @@ int process_file(char *s)
 /* expand each file event into a list of events for the struct */
 int proc_rec(char buffer[][MAXLEN],int lines)
 {
-	int i;
+	int i; int holder;
+	char title[256];
+	time_t startdate; int startday;
+	time_t enddate = -1; int endday = -1;
+	int exceptions[256];
+	int j = 0;
 
+	for (i = 0; i < 256; ++i)
+		exceptions[i] = -1;
 	for (i = 0; i <= lines; ++i) {
-//		printf("%s\n",buffer[i]);
+		if (strstr(buffer[i],"TITLE")) {
+			holder = get_impstr(buffer[i]);
+			strcpy(title,buffer[i]+holder);
+		}
 		if (strstr(buffer[i],"START_DATE")) {
-			proc_date(buffer[i]);
+			startdate = proc_date(buffer[i]);
+		}
+		if (strstr(buffer[i],"END_DATE")) {
+			enddate = proc_date(buffer[i]);
+		}
+		if (strstr(buffer[i],"EXCEPT_DATE")) {
+			exceptions[j++] = (int)proc_date(buffer[i]) / 86400;
+		}
+	}
+	if (enddate == -1)
+		enddate = startdate;
+	if (startdate == -1)
+		return 0;
+	startday = (int)startdate / 86400;
+	endday = (int)enddate / 86400;
+	printf("\t%s\t\n",title);
+	printf("START:\t%d\n",startday);
+	printf("END:\t%d\n",endday);
+	for (holder = startday; holder <= endday; ++holder) {
+		if (not_in(holder,exceptions,j-1) == 1) { /*FIXME:  == 0 */
+			printf("\tException:  %d\n",holder);
 		}
 	}
 	return 0;
+}
+
+/* checks if variable is in array; if not, return 0, else 1 */
+int not_in(int date, int exceptions[], int len)
+{
+	int i; int j;
+
+	for (i = 0; i <= len; ++i) {
+		if (date == exceptions[i])
+			return 1;
+	}
+	return 0;
+}
+
+int get_impstr(char *s)
+{
+	char *t;
+
+	t = strchr(s,':') + 1;
+	t = front_chomp(t);
+	return t-s;
 }
