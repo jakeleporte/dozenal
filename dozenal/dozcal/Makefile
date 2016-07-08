@@ -28,7 +28,7 @@ main.o: main.c ../conv/conv.o ../doz/doz.o ../dec/dec.o ../conv/conv.o
 	$(CC) -I$(IDIR) -g -lm -c main.c ../dec/dec.c ../conv/conv.c
 
 process_file.o: process_file.c utility.c ../conv/conv.o ../doz/doz.o ../dec/dec.o
-	$(CC) -I$(IDIR) -g -lm -c process_file.c utility.o
+	$(CC) -I$(IDIR) -g -lm -c process_file.c utility.o ../dec/dec.c ../conv/conv.c
 
 proc_date.o:  proc_date.c utility.c ../conv/conv.o ../doz/doz.o ../dec/dec.o
 	$(CC) -I$(IDIR) -g -lm -c proc_date.c utility.c ../dec/dec.c ../conv/conv.c

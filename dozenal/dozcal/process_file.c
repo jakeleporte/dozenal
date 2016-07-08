@@ -38,6 +38,7 @@
 #include"errcodes.h"
 #include"event_struct.h"
 #include"utility.h"
+#include"conv.h"
 
 #define NUM_EVENTS (sizeof(*event_list) / sizeof(*event_list[0]))
 #define MAXLEN 256
@@ -90,6 +91,8 @@ int proc_rec(char buffer[][MAXLEN],int lines)
 	int exceptions[256];
 	int j = 0;
 	int starttime = -1; int endtime = -1;
+	int interval = 1;
+	int currinterval;
 
 	for (i = 0; i < 256; ++i)
 		exceptions[i] = -1;
@@ -113,6 +116,10 @@ int proc_rec(char buffer[][MAXLEN],int lines)
 		if (strstr(buffer[i],"END_TIME")) {
 			endtime = proc_time(buffer[i]);
 		}
+		if (strstr(buffer[i],"INTERVAL")) {
+			holder = get_impstr(buffer[i]);
+			interval = (int) doztodec(buffer[i]+holder);
+		}
 	}
 	if (enddate == -1)
 		enddate = startdate;
@@ -123,8 +130,10 @@ int proc_rec(char buffer[][MAXLEN],int lines)
 /*	printf("\t%s\t\n",title);
 	printf("START:\t%d\n",startday);
 	printf("END:\t%d\n",endday);*/
+	currinterval = startday;
 	for (holder = startday; holder <= endday; ++holder) {
-		if (not_in(holder,exceptions,j-1) == 0) {
+		if ((not_in(holder,exceptions,j-1) == 0) &&
+		(currinterval == holder)) {
 			event_list = realloc(event_list,(recordnums * 
 				sizeof(struct event)));
 			event_list[recordnums-1].starttime = -1;
@@ -135,6 +144,8 @@ int proc_rec(char buffer[][MAXLEN],int lines)
 			event_list[recordnums-1].endtime = endtime;
 			recordnums++;
 		}
+		if (currinterval == holder)
+			currinterval += interval;
 	}
 	return 0;
 }
