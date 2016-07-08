@@ -52,14 +52,29 @@ int main(int argc, char **argv)
 {
 	char c; int i;
 	int numevents = 0;
-	int startdate = -1;
-	int enddate = -1;
+	int startdate = -1; int enddate = -1;
+	char *ev_form;
+	const char *def_form = "%d : %s---%c : %e";
+	char *date_form;
+	const char *def_date = "%y-%m-%d";
 
 	if ((event_list = malloc(recordnums++ * sizeof(struct event))) == NULL) {
 		fprintf(stderr,"dozcal:  insufficient memory to hold the "
 			"event list\n");
 		exit(INSUFF_MEM);
 	}
+	if ((ev_form = malloc((strlen(def_form)+1) * sizeof(char))) == NULL) {
+		fprintf(stderr,"dozcal:  insufficient memory to hold the "
+			"event format line\n");
+		exit(INSUFF_MEM);
+	}
+	strcpy(ev_form,def_form);
+	if ((date_form = malloc((strlen(def_date)+1) * sizeof(char))) == NULL) {
+		fprintf(stderr,"dozcal:  insufficient memory to hold the "
+			"event format line\n");
+		exit(INSUFF_MEM);
+	}
+	strcpy(date_form,def_date);
 	opterr = 0;
 	while ((c = getopt(argc,argv,"Vf:s:e:d:")) != -1) {
 		switch(c) {
@@ -100,12 +115,66 @@ int main(int argc, char **argv)
 		enddate = INT_MAX;
 	for (i = 0; i < recordnums-1; ++i) {
 		if ((event_list[i].thisdate >= startdate) &&
-				(event_list[i].thisdate <= enddate)) {
-			printf("%s: %d:  %d --- %d\n",
+		(event_list[i].thisdate <= enddate)) {
+			print_event(ev_form,i,date_form);
+/*			printf("%s: %d:  %d --- %d\n",
 				event_list[i].title,event_list[i].thisdate,
-				event_list[i].starttime,event_list[i].endtime);
+				event_list[i].starttime,event_list[i].endtime);*/
 		}
 	}
 	free(event_list);
+	free(ev_form);
+	free(date_form);
+	return 0;
+}
+
+int dozendig(char c)
+{
+	switch(c) {
+	case '0': case '1': case '2': case '3': case '4': case '5':
+	case '6': case '7': case '8': case '9': case 'X': case 'E':
+		return 1;
+		break;
+	default:
+		return 0;
+		break;
+	}
+}
+
+int print_event(char *s, int index, char *date_format)
+{
+	int i; int j;
+	char holder[6];
+	int len = 256;
+	char *ptr;
+
+	if ((ptr = malloc(256 * sizeof(char))) == NULL) {
+		fprintf(stderr,"dozcal:  insufficient memory to hold the "
+			"event strings\n");
+		exit(INSUFF_MEM);
+	}
+	for (i = 0; s[i] != '\0'; ++i) {
+		if (s[i] == '%') {
+			j = 0; holder[0] = '\0';
+			while (dozendig(s[++i]))
+				holder[j++] = s[i];
+			holder[j] = '\0';
+			if (holder[0] != '\0')
+				len = (int)doztodec(holder);
+			if (s[i] == 'd') {
+				printf("%d",event_list[index].thisdate);
+			} else if (s[i] == 's') {
+				printf("%d",event_list[index].starttime);
+			} else if (s[i] == 'c') {
+				printf("%d",event_list[index].endtime);
+			} else if (s[i] == 'e') {
+				printf("%.*s",len,event_list[index].title);
+			}
+		} else {
+			printf("%c",s[i]);
+		}
+	}
+	printf("\n");
+	free(ptr);
 	return 0;
 }
