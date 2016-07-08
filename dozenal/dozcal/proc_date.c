@@ -36,6 +36,7 @@
 #include<time.h>
 #include<regex.h>
 #include<errno.h>
+#include<string.h>
 #include"conv.h"
 
 #define MAX_ERR_LENGTH 256
@@ -167,4 +168,38 @@ int proc_time(char *s)
 		}
 	}
 	return hours;
+}
+
+int num_to_date(int datenum, char *datestr, char *dateform)
+{
+	time_t unixdate;
+	struct tm *broken;
+	int i; int j; int k; char holder[6];
+	char buffer[256];
+	char doznum[6]; char formdoz[6];
+	int diff;
+	const char *padding="000000000000000000000000000";
+	int padlen;
+
+	datestr[0] = '\0';
+	unixdate = datenum * 86400;
+	broken = localtime(&unixdate);
+	strftime(buffer,255,dateform,broken);
+	for (i = 0; buffer[i] != '\0'; ++i) {
+		j = 0; k = 0;
+		if (isdigit(buffer[i])) {
+			while ((buffer[i] != '\0') && (isdigit(buffer[i])) && (j < 6))
+				holder[j++] = buffer[i++];
+			holder[j] = '\0';
+			dectodoz(doznum,(double)atoi(holder));
+			padlen = strlen(holder) - strlen(doznum);
+			sprintf(formdoz,"%*.*s%s",padlen,padlen,padding,doznum);
+			strcat(datestr,formdoz);
+			--i;
+		} else {
+			datestr[strlen(datestr)+1] = '\0';
+			datestr[strlen(datestr)] = buffer[i];
+		}
+	}
+	return 0;
 }

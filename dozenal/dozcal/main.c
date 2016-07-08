@@ -56,7 +56,7 @@ int main(int argc, char **argv)
 	char *ev_form;
 	const char *def_form = "%d : %s---%c : %e";
 	char *date_form;
-	const char *def_date = "%y-%m-%d";
+	const char *def_date = "%Y-%m-%d";
 
 	if ((event_list = malloc(recordnums++ * sizeof(struct event))) == NULL) {
 		fprintf(stderr,"dozcal:  insufficient memory to hold the "
@@ -97,6 +97,15 @@ int main(int argc, char **argv)
 		case 'e':
 			enddate = proc_date(optarg) / 86400;
 			break;
+		case 'd':
+			if ((date_form = realloc(date_form,(strlen(optarg)+1) * 
+			sizeof(char)))==NULL) {
+				fprintf(stderr,"dozcal:  insufficient memory to hold the "
+					"event format line\n");
+				exit(INSUFF_MEM);
+			}
+			strcpy(date_form,optarg);
+			break;
 		case '?':
 			if ((optopt == 'f') || (optopt == 'd')) {
 				fprintf(stderr,"dozcal:  option \"%c\" requires "
@@ -112,14 +121,11 @@ int main(int argc, char **argv)
 	if (startdate == -1)
 		startdate = 0;
 	if (enddate == -1)
-		enddate = INT_MAX;
+		enddate = INT_MAX - 1;
 	for (i = 0; i < recordnums-1; ++i) {
 		if ((event_list[i].thisdate >= startdate) &&
 		(event_list[i].thisdate <= enddate)) {
 			print_event(ev_form,i,date_form);
-/*			printf("%s: %d:  %d --- %d\n",
-				event_list[i].title,event_list[i].thisdate,
-				event_list[i].starttime,event_list[i].endtime);*/
 		}
 	}
 	free(event_list);
@@ -147,6 +153,7 @@ int print_event(char *s, int index, char *date_format)
 	char holder[6];
 	int len = 256;
 	char *ptr;
+	char datestr[256];
 
 	if ((ptr = malloc(256 * sizeof(char))) == NULL) {
 		fprintf(stderr,"dozcal:  insufficient memory to hold the "
@@ -162,7 +169,8 @@ int print_event(char *s, int index, char *date_format)
 			if (holder[0] != '\0')
 				len = (int)doztodec(holder);
 			if (s[i] == 'd') {
-				printf("%d",event_list[index].thisdate);
+				num_to_date(event_list[index].thisdate,datestr,date_format);
+				printf("%s",datestr);
 			} else if (s[i] == 's') {
 				printf("%d",event_list[index].starttime);
 			} else if (s[i] == 'c') {

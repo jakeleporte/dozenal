@@ -108,7 +108,7 @@ int proc_rec(char buffer[][MAXLEN],int lines)
 			enddate = proc_date(buffer[i]);
 		}
 		if (strstr(buffer[i],"EXCEPT_DATE")) {
-			exceptions[j++] = (int)proc_date(buffer[i]) / 86400;
+			exceptions[j++] = (int)proc_date(buffer[i]) / 86400 + 1;
 		}
 		if (strstr(buffer[i],"START_TIME")) {
 			starttime = proc_time(buffer[i]);
@@ -125,8 +125,8 @@ int proc_rec(char buffer[][MAXLEN],int lines)
 		enddate = startdate;
 	if (startdate == -1)
 		return 0;
-	startday = (int)startdate / 86400;
-	endday = (int)enddate / 86400;
+	startday = (int)startdate / 86400 + 1;
+	endday = (int)enddate / 86400 + 1;
 /*	printf("\t%s\t\n",title);
 	printf("START:\t%d\n",startday);
 	printf("END:\t%d\n",endday);*/
