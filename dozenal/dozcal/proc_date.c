@@ -35,6 +35,8 @@
 #include<stdlib.h>
 #include<time.h>
 #include<regex.h>
+#include<math.h>
+#include<limits.h>
 #include<errno.h>
 #include<string.h>
 #include"conv.h"
@@ -201,5 +203,25 @@ int num_to_date(int datenum, char *datestr, char *dateform)
 			datestr[strlen(datestr)] = buffer[i];
 		}
 	}
+	return 0;
+}
+
+int secs_to_Tims(int time,char *timestr,char *time_format)
+{
+	int i; int j; int k;
+	const int tims = 20736; /* number of Tims in hr */
+	char hours[3]; char timpart[5];
+
+	if (time < 0)
+		return -1;
+	dectodoz(timestr,(double)time);
+	j = 0; k = 0;
+	for (i = 0; timestr[i] != '\0'; ++i) {
+		if (i < 2)
+			hours[j++] = timestr[i];
+		else if (i < 6)
+			timpart[k++] = timestr[i];
+	}
+	hours[j] = '\0'; timpart[k] = '\0'; timestr[0] = '\0';
 	return 0;
 }

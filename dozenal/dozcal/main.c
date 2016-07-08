@@ -40,6 +40,7 @@
 #include<limits.h>
 #include"utility.h"
 #include"errcodes.h"
+#include"conv.h"
 #include"event_struct.h"
 
 #define NUM_EVENTS (sizeof(event_list) / sizeof(event_list[0]))
@@ -54,9 +55,11 @@ int main(int argc, char **argv)
 	int numevents = 0;
 	int startdate = -1; int enddate = -1;
 	char *ev_form;
-	const char *def_form = "%d : %s---%c : %e";
+	const char *def_form = "%-20d : %s---%c : %34e";
 	char *date_form;
 	const char *def_date = "%Y-%m-%d";
+	char *time_form;
+	const char *def_time = "%h;%m";
 
 	if ((event_list = malloc(recordnums++ * sizeof(struct event))) == NULL) {
 		fprintf(stderr,"dozcal:  insufficient memory to hold the "
@@ -71,10 +74,16 @@ int main(int argc, char **argv)
 	strcpy(ev_form,def_form);
 	if ((date_form = malloc((strlen(def_date)+1) * sizeof(char))) == NULL) {
 		fprintf(stderr,"dozcal:  insufficient memory to hold the "
-			"event format line\n");
+			"date format line\n");
 		exit(INSUFF_MEM);
 	}
 	strcpy(date_form,def_date);
+	if ((time_form = malloc((strlen(def_date)+1) * sizeof(char))) == NULL) {
+		fprintf(stderr,"dozcal:  insufficient memory to hold the "
+			"time format line\n");
+		exit(INSUFF_MEM);
+	}
+	strcpy(time_form,def_time);
 	opterr = 0;
 	while ((c = getopt(argc,argv,"Vf:s:e:d:")) != -1) {
 		switch(c) {
@@ -125,12 +134,13 @@ int main(int argc, char **argv)
 	for (i = 0; i < recordnums-1; ++i) {
 		if ((event_list[i].thisdate >= startdate) &&
 		(event_list[i].thisdate <= enddate)) {
-			print_event(ev_form,i,date_form);
+			print_event(ev_form,i,date_form,time_form);
 		}
 	}
 	free(event_list);
 	free(ev_form);
 	free(date_form);
+	free(time_form);
 	return 0;
 }
 
@@ -139,6 +149,7 @@ int dozendig(char c)
 	switch(c) {
 	case '0': case '1': case '2': case '3': case '4': case '5':
 	case '6': case '7': case '8': case '9': case 'X': case 'E':
+	case '-':
 		return 1;
 		break;
 	default:
@@ -147,7 +158,7 @@ int dozendig(char c)
 	}
 }
 
-int print_event(char *s, int index, char *date_format)
+int print_event(char *s, int index, char *date_format, char *time_format)
 {
 	int i; int j;
 	char holder[6];
@@ -162,7 +173,7 @@ int print_event(char *s, int index, char *date_format)
 	}
 	for (i = 0; s[i] != '\0'; ++i) {
 		if (s[i] == '%') {
-			j = 0; holder[0] = '\0';
+			j = 0; holder[0] = '\0'; len = 0;
 			while (dozendig(s[++i]))
 				holder[j++] = s[i];
 			holder[j] = '\0';
@@ -170,13 +181,20 @@ int print_event(char *s, int index, char *date_format)
 				len = (int)doztodec(holder);
 			if (s[i] == 'd') {
 				num_to_date(event_list[index].thisdate,datestr,date_format);
-				printf("%s",datestr);
+				printf("%*s",len,datestr);
+				datestr[0] = '\0';
 			} else if (s[i] == 's') {
-				printf("%d",event_list[index].starttime);
+				secs_to_Tims(event_list[index].starttime,datestr,time_format);
+				printf("%*s",len,datestr);
+//				printf("%d",event_list[index].starttime);
+				datestr[0] = '\0';
 			} else if (s[i] == 'c') {
-				printf("%d",event_list[index].endtime);
+				secs_to_Tims(event_list[index].endtime,datestr,time_format);
+				printf("%*s",len,datestr);
+				datestr[0] = '\0';
+//				printf("%d",event_list[index].endtime);
 			} else if (s[i] == 'e') {
-				printf("%.*s",len,event_list[index].title);
+				printf("%*s",len,event_list[index].title);
 			}
 		} else {
 			printf("%c",s[i]);
