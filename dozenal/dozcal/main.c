@@ -37,6 +37,7 @@
 #include<string.h>
 #include<time.h>
 #include<errno.h>
+#include<limits.h>
 #include"utility.h"
 #include"errcodes.h"
 #include"event_struct.h"
@@ -51,6 +52,8 @@ int main(int argc, char **argv)
 {
 	char c; int i;
 	int numevents = 0;
+	int startdate = -1;
+	int enddate = -1;
 
 	if ((event_list = malloc(recordnums++ * sizeof(struct event))) == NULL) {
 		fprintf(stderr,"dozcal:  insufficient memory to hold the "
@@ -58,7 +61,7 @@ int main(int argc, char **argv)
 		exit(INSUFF_MEM);
 	}
 	opterr = 0;
-	while ((c = getopt(argc,argv,"Vf:d:")) != -1) {
+	while ((c = getopt(argc,argv,"Vf:s:e:d:")) != -1) {
 		switch(c) {
 		case 'V':
 			printf("dozcal v1.0\n");
@@ -73,6 +76,12 @@ int main(int argc, char **argv)
 		case 'f':
 			numevents = process_file(optarg);
 			break;
+		case 's':
+			startdate = proc_date(optarg) / 86400;
+			break;
+		case 'e':
+			enddate = proc_date(optarg) / 86400;
+			break;
 		case '?':
 			if ((optopt == 'f') || (optopt == 'd')) {
 				fprintf(stderr,"dozcal:  option \"%c\" requires "
@@ -85,12 +94,18 @@ int main(int argc, char **argv)
 			break;
 		}
 	}
-	for (i = 0; i < recordnums-1; i++) { /* FIXME */
-		printf("%s: %d:  %d --- %d\n",
-			event_list[i].title,event_list[i].thisdate,
-			event_list[i].starttime,event_list[i].endtime);
+	if (startdate == -1)
+		startdate = 0;
+	if (enddate == -1)
+		enddate = INT_MAX;
+	for (i = 0; i < recordnums-1; ++i) {
+		if ((event_list[i].thisdate >= startdate) &&
+				(event_list[i].thisdate <= enddate)) {
+			printf("%s: %d:  %d --- %d\n",
+				event_list[i].title,event_list[i].thisdate,
+				event_list[i].starttime,event_list[i].endtime);
+		}
 	}
 	free(event_list);
 	return 0;
 }
-
