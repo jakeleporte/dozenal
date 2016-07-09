@@ -127,9 +127,6 @@ int proc_rec(char buffer[][MAXLEN],int lines)
 		return 0;
 	startday = (int)startdate / 86400 + 1;
 	endday = (int)enddate / 86400 + 1;
-/*	printf("\t%s\t\n",title);
-	printf("START:\t%d\n",startday);
-	printf("END:\t%d\n",endday);*/
 	currinterval = startday;
 	for (holder = startday; holder <= endday; ++holder) {
 		if ((not_in(holder,exceptions,j-1) == 0) &&

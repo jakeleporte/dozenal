@@ -48,6 +48,7 @@
 
 struct event *event_list;
 int recordnums = 0;
+int comparator(const void *evone, const void *evtwo);
 
 int main(int argc, char **argv)
 {
@@ -131,7 +132,8 @@ int main(int argc, char **argv)
 		startdate = 0;
 	if (enddate == -1)
 		enddate = INT_MAX - 1;
-	for (i = 0; i < recordnums-1; ++i) {
+	qsort(event_list,recordnums-1,sizeof(struct event),comparator);
+	for (i = (recordnums-2); i >= 0; --i) {
 		if ((event_list[i].thisdate >= startdate) &&
 		(event_list[i].thisdate <= enddate)) {
 			print_event(ev_form,i,date_form,time_form);
@@ -172,13 +174,11 @@ int print_event(char *s, int index, char *date_format, char *time_format)
 			} else if (s[i] == 's') {
 				secs_to_Tims(event_list[index].starttime,datestr,time_format);
 				printf("%*s",len,datestr);
-//				printf("%d",event_list[index].starttime);
 				datestr[0] = '\0';
 			} else if (s[i] == 'c') {
 				secs_to_Tims(event_list[index].endtime,datestr,time_format);
 				printf("%*s",len,datestr);
 				datestr[0] = '\0';
-//				printf("%d",event_list[index].endtime);
 			} else if (s[i] == 'e') {
 				printf("%*s",len,event_list[index].title);
 			}
@@ -189,4 +189,30 @@ int print_event(char *s, int index, char *date_format, char *time_format)
 	printf("\n");
 	free(ptr);
 	return 0;
+}
+
+int comparator(const void *evone, const void *evtwo)
+{
+	int dateone = 0; int datetwo = 0;
+	int timeone = 0; int timetwo = 0;
+
+	const struct event *firstev = (struct event*) evone;
+	const struct event *secev = (struct event*) evtwo;
+	dateone = ((struct event*) evone)->thisdate;
+	datetwo = ((struct event*) evtwo)->thisdate;
+	timeone = ((struct event*) evone)->starttime;
+	timetwo = ((struct event*) evtwo)->starttime;
+	if (dateone > datetwo) {
+		return -1;
+	} else if (dateone < datetwo) {
+		return 1;
+	} else {
+		if (timeone > timetwo) {
+			return -1;
+		} else if (timeone < timetwo) {
+			return 1;
+		} else {
+			return 0;
+		}
+	}
 }
