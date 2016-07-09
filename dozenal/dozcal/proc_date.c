@@ -211,17 +211,48 @@ int secs_to_Tims(int time,char *timestr,char *time_format)
 	int i; int j; int k;
 	const int tims = 20736; /* number of Tims in hr */
 	char hours[3]; char timpart[5];
+	char holder[5]; int len = -1;
+	char buffer[256];
+	const char *padding="000000000000000000000000000";
+	int padlen;
 
 	if (time < 0)
 		return -1;
 	dectodoz(timestr,(double)time);
+	sprintf(buffer,"%*s",6,timestr);
+	for (i = 0; buffer[i] != '\0'; ++i) {
+		if (buffer[i] == ' ')
+			buffer[i] = '0';
+	}
 	j = 0; k = 0;
-	for (i = 0; timestr[i] != '\0'; ++i) {
+	for (i = 0; buffer[i] != '\0'; ++i) {
 		if (i < 2)
-			hours[j++] = timestr[i];
-		else if (i < 6)
-			timpart[k++] = timestr[i];
+			hours[j++] = buffer[i];
+		else
+			timpart[k++] = buffer[i];
 	}
 	hours[j] = '\0'; timpart[k] = '\0'; timestr[0] = '\0';
+	for (i = 0; (i < 256) && (time_format[i] != '\0'); ++i) {
+		j = 0; k = 0; len = -1; holder[0] = '\0'; buffer[0] = '\0';
+		if (time_format[i] == '%') {
+			while (dozendig(time_format[++i]) && (time_format[i] != '\0')) {
+				holder[j++] = time_format[i];
+			}
+			holder[j] = '\0';
+			if (holder[0] != '\0') {
+				len = (int)doztodec(holder);
+			}
+			if (time_format[i] == 'h') {
+				sprintf(buffer,"%*.*s",len,len,hours);
+				strcat(timestr,buffer);
+			} else if (time_format[i] == 'b') {
+				sprintf(buffer,"%*.*s",len,len,timpart);
+				strcat(timestr,buffer);
+			}
+		} else {
+			timestr[strlen(timestr)+1] = '\0';
+			timestr[strlen(timestr)] = time_format[i];
+		}
+	}
 	return 0;
 }

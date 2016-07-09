@@ -59,26 +59,26 @@ int main(int argc, char **argv)
 	char *date_form;
 	const char *def_date = "%Y-%m-%d";
 	char *time_form;
-	const char *def_time = "%h;%m";
+	const char *def_time = "%4h;%2b;%b";
 
 	if ((event_list = malloc(recordnums++ * sizeof(struct event))) == NULL) {
 		fprintf(stderr,"dozcal:  insufficient memory to hold the "
 			"event list\n");
 		exit(INSUFF_MEM);
 	}
-	if ((ev_form = malloc((strlen(def_form)+1) * sizeof(char))) == NULL) {
+	if ((ev_form = malloc(2*(strlen(def_form)+1) * sizeof(char))) == NULL) {
 		fprintf(stderr,"dozcal:  insufficient memory to hold the "
 			"event format line\n");
 		exit(INSUFF_MEM);
 	}
 	strcpy(ev_form,def_form);
-	if ((date_form = malloc((strlen(def_date)+1) * sizeof(char))) == NULL) {
+	if ((date_form = malloc(2*(strlen(def_date)+1)*sizeof(char))) == NULL) {
 		fprintf(stderr,"dozcal:  insufficient memory to hold the "
 			"date format line\n");
 		exit(INSUFF_MEM);
 	}
 	strcpy(date_form,def_date);
-	if ((time_form = malloc((strlen(def_date)+1) * sizeof(char))) == NULL) {
+	if ((time_form = malloc(2*(strlen(def_date)+1)*sizeof(char))) == NULL) {
 		fprintf(stderr,"dozcal:  insufficient memory to hold the "
 			"time format line\n");
 		exit(INSUFF_MEM);
@@ -142,20 +142,6 @@ int main(int argc, char **argv)
 	free(date_form);
 	free(time_form);
 	return 0;
-}
-
-int dozendig(char c)
-{
-	switch(c) {
-	case '0': case '1': case '2': case '3': case '4': case '5':
-	case '6': case '7': case '8': case '9': case 'X': case 'E':
-	case '-':
-		return 1;
-		break;
-	default:
-		return 0;
-		break;
-	}
 }
 
 int print_event(char *s, int index, char *date_format, char *time_format)
