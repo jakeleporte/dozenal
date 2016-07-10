@@ -133,7 +133,7 @@ int main(int argc, char **argv)
 	if (enddate == -1)
 		enddate = INT_MAX - 1;
 	qsort(event_list,recordnums-1,sizeof(struct event),comparator);
-	for (i = (recordnums-2); i >= 0; --i) {
+	for (i = 0; i < (recordnums-1); ++i) {
 		if ((event_list[i].thisdate >= startdate) &&
 		(event_list[i].thisdate <= enddate)) {
 			print_event(ev_form,i,date_form,time_form);
@@ -203,14 +203,14 @@ int comparator(const void *evone, const void *evtwo)
 	timeone = ((struct event*) evone)->starttime;
 	timetwo = ((struct event*) evtwo)->starttime;
 	if (dateone > datetwo) {
-		return -1;
-	} else if (dateone < datetwo) {
 		return 1;
+	} else if (dateone < datetwo) {
+		return -1;
 	} else {
 		if (timeone > timetwo) {
-			return -1;
-		} else if (timeone < timetwo) {
 			return 1;
+		} else if (timeone < timetwo) {
+			return -1;
 		} else {
 			return 0;
 		}
