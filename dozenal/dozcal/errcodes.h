@@ -37,3 +37,4 @@
 #define INSUFF_MEM 3
 #define BAD_FILE 4
 #define BAD_TIME_FORMAT 5
+#define BAD_EV_FORMAT 6

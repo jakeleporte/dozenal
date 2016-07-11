@@ -86,7 +86,7 @@ int main(int argc, char **argv)
 	}
 	strcpy(time_form,def_time);
 	opterr = 0;
-	while ((c = getopt(argc,argv,"Vf:s:e:d:t:")) != -1) {
+	while ((c = getopt(argc,argv,"Vf:s:e:d:t:r:")) != -1) {
 		switch(c) {
 		case 'V':
 			printf("dozcal v1.0\n");
@@ -111,7 +111,7 @@ int main(int argc, char **argv)
 			if ((date_form = realloc(date_form,(strlen(optarg)+1) * 
 			sizeof(char)))==NULL) {
 				fprintf(stderr,"dozcal:  insufficient memory to hold the "
-					"event format line\n");
+					"date format line\n");
 				exit(INSUFF_MEM);
 			}
 			strcpy(date_form,optarg);
@@ -120,10 +120,19 @@ int main(int argc, char **argv)
 			if ((time_form = realloc(time_form,(strlen(optarg)+1) * 
 			sizeof(char)))==NULL) {
 				fprintf(stderr,"dozcal:  insufficient memory to hold the "
-					"event format line\n");
+					"time format line\n");
 				exit(INSUFF_MEM);
 			}
 			strcpy(time_form,optarg);
+			break;
+		case 'r':
+			if ((ev_form = realloc(ev_form,(strlen(optarg)+1) * 
+			sizeof(char)))==NULL) {
+				fprintf(stderr,"dozcal:  insufficient memory to hold the "
+					"event format line\n");
+				exit(INSUFF_MEM);
+			}
+			strcpy(ev_form,optarg);
 			break;
 		case '?':
 			if ((optopt == 'f') || (optopt == 'd')) {
@@ -190,6 +199,11 @@ int print_event(char *s, int index, char *date_format, char *time_format)
 				datestr[0] = '\0';
 			} else if (s[i] == 'e') {
 				printf("%*s",len,event_list[index].title);
+			} else {
+				fprintf(stderr,"dozcal:  unrecognized conversion "
+					"character \"%%%c\" in event form string, "
+					"\"%%%s\"\n",s[i],s);
+				exit(BAD_EV_FORMAT);
 			}
 		} else {
 			printf("%c",s[i]);
