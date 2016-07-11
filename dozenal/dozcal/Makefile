@@ -15,7 +15,7 @@ binmode = 755
 dirmode = 755
 IDIR =../include
 CC = gcc
-objects = main.o utility.o proc_date.o process_file.o moon.o
+objects = main.o utility.o proc_date.o process_file.o moon.o opt_file.o
 binobjects = dozcal
 
 all: bin
@@ -35,6 +35,9 @@ process_file.o: process_file.c utility.c ../conv/conv.o ../doz/doz.o ../dec/dec.
 
 proc_date.o:  proc_date.c utility.c ../conv/conv.o ../doz/doz.o ../dec/dec.o
 	$(CC) -I$(IDIR) -g -lm -c proc_date.c utility.c ../dec/dec.c ../conv/conv.c ../doz/doz.c
+
+opt_file.o: opt_file.c
+	$(CC) -I$(DIR) -g -lm -c opt_file.c
 
 utility.o: utility.c
 	$(CC) -I$(IDIR) -g -lm -c utility.c

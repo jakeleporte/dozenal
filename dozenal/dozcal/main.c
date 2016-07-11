@@ -64,6 +64,8 @@ int main(int argc, char **argv)
 	const char *def_date = "%Y-%m-%d";
 	char *time_form;
 	const char *def_time = "%4h;%2b;%b";
+	char *nat;
+	char *relig;
 
 	if ((event_list = malloc(recordnums++ * sizeof(struct event))) == NULL) {
 		fprintf(stderr,"dozcal:  insufficient memory to hold the "
@@ -88,8 +90,18 @@ int main(int argc, char **argv)
 		exit(INSUFF_MEM);
 	}
 	strcpy(time_form,def_time);
+	if ((nat = malloc(1*sizeof(char))) == NULL) {
+		fprintf(stderr,"dozcal:  insufficient memory to hold the "
+			"national holidays requested\n");
+		exit(INSUFF_MEM);
+	}
+	if ((relig = malloc(1*sizeof(char))) == NULL) {
+		fprintf(stderr,"dozcal:  insufficient memory to hold the "
+			"religious holidays requested\n");
+		exit(INSUFF_MEM);
+	}
 	opterr = 0;
-	while ((c = getopt(argc,argv,"Vmf:s:e:d:t:r:")) != -1) {
+	while ((c = getopt(argc,argv,"Vmf:s:e:d:t:r:c:n:h:")) != -1) {
 		switch(c) {
 		case 'V':
 			printf("dozcal v1.0\n");
@@ -101,8 +113,29 @@ int main(int argc, char **argv)
 				"to the extent permitted by law.\n");
 			exit(EXIT_SUCCESS);
 			break;
+		case 'n':
+			if ((nat = realloc(nat,(strlen(optarg)+1) * 
+			sizeof(char)))==NULL) {
+				fprintf(stderr,"dozcal:  insufficient memory to hold the "
+					"national holidays requested\n");
+				exit(INSUFF_MEM);
+			}
+			strcpy(nat,optarg);
+			break;
+		case 'h':
+			if ((relig = realloc(relig,(strlen(optarg)+1) * 
+			sizeof(char)))==NULL) {
+				fprintf(stderr,"dozcal:  insufficient memory to hold the "
+					"religional holidays requested\n");
+				exit(INSUFF_MEM);
+			}
+			strcpy(relig,optarg);
+			break;
 		case 'f':
 			numevents = process_file(optarg);
+			break;
+		case 'c':
+			proc_options(optarg,&moonphases,nat,relig);
 			break;
 		case 'm':
 			moonphases = 1;
@@ -177,6 +210,8 @@ int main(int argc, char **argv)
 	free(ev_form);
 	free(date_form);
 	free(time_form);
+	free(nat);
+	free(relig);
 	return 0;
 }
 

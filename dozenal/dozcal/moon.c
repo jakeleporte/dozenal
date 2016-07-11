@@ -66,7 +66,6 @@ int get_moonphases(int datenum)
 		strcat(phase_str," (full)");
 	if (phase == 22)
 		strcat(phase_str," (waning half)");
-	strcat(phase_str,"\n");
 	event_list = realloc(event_list,(recordnums * 
 		sizeof(struct event)));
 	event_list[recordnums-1].starttime = -1;
