@@ -53,6 +53,9 @@ int comparator(const void *evone, const void *evtwo);
 int main(int argc, char **argv)
 {
 	char c; int i;
+	int lastdate;
+	int tmpctr;					/* for looping without changing recordnums */
+	int moonphases = 0;		/* if 0, no phases; if 1, yes */
 	int numevents = 0;
 	int startdate = -1; int enddate = -1;
 	char *ev_form;
@@ -86,7 +89,7 @@ int main(int argc, char **argv)
 	}
 	strcpy(time_form,def_time);
 	opterr = 0;
-	while ((c = getopt(argc,argv,"Vf:s:e:d:t:r:")) != -1) {
+	while ((c = getopt(argc,argv,"Vmf:s:e:d:t:r:")) != -1) {
 		switch(c) {
 		case 'V':
 			printf("dozcal v1.0\n");
@@ -100,6 +103,9 @@ int main(int argc, char **argv)
 			break;
 		case 'f':
 			numevents = process_file(optarg);
+			break;
+		case 'm':
+			moonphases = 1;
 			break;
 		case 's':
 			startdate = proc_date(optarg) / 86400;
@@ -151,6 +157,16 @@ int main(int argc, char **argv)
 	if (enddate == -1)
 		enddate = INT_MAX - 1;
 	qsort(event_list,recordnums-1,sizeof(struct event),comparator);
+	if (moonphases == 1) {
+		tmpctr = recordnums-1; lastdate = -1;
+		for (i = 0; i < tmpctr; ++i) {
+			if (lastdate != event_list[i].thisdate) {
+				get_moonphases(event_list[i].thisdate);
+				lastdate = event_list[i].thisdate;
+			}
+		}
+		qsort(event_list,recordnums-1,sizeof(struct event),comparator);
+	}
 	for (i = 0; i < (recordnums-1); ++i) {
 		if ((event_list[i].thisdate >= startdate) &&
 		(event_list[i].thisdate <= enddate)) {

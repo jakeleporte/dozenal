@@ -11,6 +11,7 @@ dozcal \- a command-line dozenal calendar program
 [\fB\-e\fR \fIenddate\fR]
 [\fB\-d\fR \fIdateformat\fR]
 [\fB\-t\fR \fItimeformat\fR]
+[\fB\-r\fR \fIeventformat\fR]
 [\fB\-c\fR \fIconfigfile\fR]
 [\fB\-f\fR \fIinputfile\fR]
 .SH DESCRIPTION
@@ -54,13 +55,37 @@ doesn't support anything else at this time.  Only two
 interpreted sequences are allowed:
 .RS
 .TP 
-%h
+.BR %h
 The hours.
 .TP
-%b
+.BR %b
 Tims.  These are the number of Tims in an hour, so they cap
 off at EEEE.  \fBdozcal\fR will happily display these to
 less than 4 digits, if requested.
+.RE
+.TP
+.BR \-r
+The event format.  Each event in your calendar is printed as
+a separate record; the argument to this option allows you to
+specify its format.  It operates independently of \fB\-d\fR
+and \fB\-t\fR, which will still be formatted as you request.
+It accepts the following conversion strings:
+.RS
+.TP 
+.BR %e
+The event title.
+.TP
+.BR %d
+The event date, formatted as you requested if you've given
+\fBdozcal\fR a date formatting string.
+.TP
+.BR %s
+The event's starting time, formatted as you requested if
+you've given \fBdozcal\fR a time formatting string.
+.TP
+.BR %c
+The event's closing (ending) time, formatted as you requested if
+you've given \fBdozcal\fR a time formatting string.
 .RE
 .SH FILES
 \fBdozcal\fR uses two files primarily:  the data, or library
@@ -69,7 +94,80 @@ run-control, or config file, which contains simple lines to
 control \fBminlib\fR's behavior.
 .SS The Data File
 .PP
+\fBdozcal\fR works with data files that follow a simple but
+specific format.  Each record begins with a line containing
+the string \fI[EVENT]\fR and ends either at the end of the
+file or at the next line containing \fI[EVENT]\fR; blank
+lines are ignored.
+.PP
+Within each event, you must specify at least a \fITITLE\fR
+and a \fISTART_DATE\fR.  The following are recognized
+fields:
+.RS
+.TP
+.BR TITLE:
+Gives the title of the event; e.g., "Meeting with Roy" or
+"Traffic Court".
+.TP
+.BR START_DATE:
+The date on which the event occurs.  It is called start-date
+because many events recur on the calendar, but this one
+serves as either the only event or the first of a recurring
+event.
+.TP
+.BR END_DATE:
+The last date of the event, and (if you've specified an
+\fIINTERVAL\fR for this event) the last day that
+\fBdozcal\fR will check to see if a recurrence should occur.
+.TP
+.BR INTERVAL:
+The number of days' interval for a recurring date.  That is,
+starting at the \fISTART_DATE\fR, how many days should
+\fBdozcal\fR skip before placing the event on the calendar
+again?  To make a weekly event, for example, say
+\fIINTERVAL:  7\fR.  If you say \fIINTERVAL:  1\fR, the
+event will occur every day (in which case, you may as well
+not specify an interval, because \fBdozcal\fR will assume
+you mean every day until the \fIEND_DATE\fR unless you tell
+it otherwise).
+.TP
+.BR EXCEPT_DATE:
+In a recurring event, \fIdon't\fR add an event on this date,
+even if it otherwise qualifies.  You can have as many of
+these as you'd like.
+.TP
+.BR START_TIME:
+The time you'd like this to start.  This can be specified in
+either our normal dozenal-sexagesimal time (two dozen hours
+in a day, five dozen minutes in an hour), or in TGM (two
+dozen hours in a day, divided into 10000 Tims each).
+\fBdozcal\fR will interpret the time as dozenal-sexagesimal
+if you use a colon (\fI:\fR) to separate the hours from
+minutes; if you use a semicolon (\fI;\fR), or no
+punctuation, it will interpret the time as hours and Tims.
+.TP
+.BR END_TIME:
+The obvious corrollary of \fISTART_TIME\fR.
+.RE
+.PP
 An example record:
+.RS
+[EVENT]
+.br
+START_DATE:  1200-0X-27
+.br
+END_DATE:  1200-0E-0X
+.br
+START_TIME:  0X00
+.br
+END_TIME:  1E30
+.br
+EXCEPT_DATE:  1200-0E-04
+.br
+EXCEPT_DATE:  1200-0E-05
+.br
+TITLE:  My Test Event #1
+.RE
 .SH ERRORS
 .PP
 \fBdozcal\fR emits fairly specific error codes when things
@@ -99,6 +197,11 @@ specific error.
 .BR 5
 You've given a conversion character in your time format
 (perhaps with the \fB\-t\fR option) that \fBdozcal\fR
+doesn't recognize.
+.TP
+.BR 6
+You've given a conversion character in your event format
+(perhaps with the \fB\-r\fR option) that \fBdozcal\fR
 doesn't recognize.
 .SH BUGS
 None known at this time.
