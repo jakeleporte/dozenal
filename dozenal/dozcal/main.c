@@ -56,7 +56,7 @@ int main(int argc, char **argv)
 	int numevents = 0;
 	int startdate = -1; int enddate = -1;
 	char *ev_form;
-	const char *def_form = "%-20d : %s---%c : %34e";
+	const char *def_form = "%-20d : %10s---%10c : %34e";
 	char *date_form;
 	const char *def_date = "%Y-%m-%d";
 	char *time_form;
@@ -86,7 +86,7 @@ int main(int argc, char **argv)
 	}
 	strcpy(time_form,def_time);
 	opterr = 0;
-	while ((c = getopt(argc,argv,"Vf:s:e:d:")) != -1) {
+	while ((c = getopt(argc,argv,"Vf:s:e:d:t:")) != -1) {
 		switch(c) {
 		case 'V':
 			printf("dozcal v1.0\n");
@@ -115,6 +115,15 @@ int main(int argc, char **argv)
 				exit(INSUFF_MEM);
 			}
 			strcpy(date_form,optarg);
+			break;
+		case 't':
+			if ((time_form = realloc(time_form,(strlen(optarg)+1) * 
+			sizeof(char)))==NULL) {
+				fprintf(stderr,"dozcal:  insufficient memory to hold the "
+					"event format line\n");
+				exit(INSUFF_MEM);
+			}
+			strcpy(time_form,optarg);
 			break;
 		case '?':
 			if ((optopt == 'f') || (optopt == 'd')) {

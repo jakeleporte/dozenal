@@ -1,0 +1,108 @@
+." +AMDG
+." Process with:
+." groff -man -Tascii dozcal.1
+.TH dozcal 1 "August 2016" dgoodmaniii dozcal
+.SH NAME
+dozcal \- a command-line dozenal calendar program
+.SH SYNOPSIS
+.B dozcal
+[\fB\-V\fR]
+[\fB\-s\fR \fIstartdate\fR]
+[\fB\-e\fR \fIenddate\fR]
+[\fB\-d\fR \fIdateformat\fR]
+[\fB\-t\fR \fItimeformat\fR]
+[\fB\-c\fR \fIconfigfile\fR]
+[\fB\-f\fR \fIinputfile\fR]
+.SH DESCRIPTION
+.B dozcal
+A text-based calendar program which operates using dozenal
+dates and times.  Uses a simple plain-text file format.
+Multiple files can be specified on the command line.  Date
+formats and time formats can also be specified on the
+command line.  All can further be specified in a
+configuration file, which is also plain-text and easily
+understandable.
+.SH OPTIONS
+.TP
+.BR \-V
+Print version and licensing information, then exit
+successfully.
+.TP
+.BR \-s
+The first date that you want results from.  If this is not
+specified, \fBdozcal\fR will return all results from its earliest
+date.
+.TP
+.BR \-e
+The last date that you want results from.  Combined with
+\fB\-s\fR, you can restrict the range of results you'll
+receive.  If this isn't specified, \fBdozcal\fR will return
+results from the start date until it runs out.
+.TP
+.BR \-d
+The date format.  These are specified identically to those
+of the standard Unix \fBdate\fR command; please see the
+documentation for that for more details.  (Note that this
+does \fInot\fR include the \fBdozdate\fR extensions,
+beginning with \fI@\fR rather than \fI%\fR; they're not
+necessary for this problem domain.)
+.TP
+.BR \-t
+The time format.  Much simpler than date format,
+\fBdozcal\fR assumes the use of hours and Tims for time, and
+doesn't support anything else at this time.  Only two
+interpreted sequences are allowed:
+.RS
+.TP 
+%h
+The hours.
+.TP
+%b
+Tims.  These are the number of Tims in an hour, so they cap
+off at EEEE.  \fBdozcal\fR will happily display these to
+less than 4 digits, if requested.
+.RE
+.SH FILES
+\fBdozcal\fR uses two files primarily:  the data, or library
+file, which has the actual library information in it, and a
+run-control, or config file, which contains simple lines to
+control \fBminlib\fR's behavior.
+.SS The Data File
+.PP
+An example record:
+.SH ERRORS
+.PP
+\fBdozcal\fR emits fairly specific error codes when things
+go wrong.  Successful completion is returned to the
+environment as \fI0\fR.
+.TP
+.BR 1
+You supplied \fBdozcal\fR an option which requires an
+argument, but didn't send it an argument.  E.g., you said
+\fB\-s\fR, but didn't say what you wanted the starting date
+of your results to be.
+.TP
+.BR 2
+You gave \fBdozcal\fR an option that it doesn't recognize.
+.TP
+.BR 3
+There's insufficient memory for somethinng that \fBdozcal\fR
+needs to do; see the error message emitted to see what
+exactly it was.
+.TP
+.BR 4
+\fBdozcal\fR is trying to open a file you gave it (perhaps
+with \fB\-f\fR or \fB\-c\fR), but is running into problems.
+\fBdozcal\fR will print an error message detailing the
+specific error.
+.TP
+.BR 5
+You've given a conversion character in your time format
+(perhaps with the \fB\-t\fR option) that \fBdozcal\fR
+doesn't recognize.
+.SH BUGS
+None known at this time.
+.SH AUTHOR
+Donald P. Goodman III <dgoodmaniii at gmail dot com>
+.SH SEE ALSO
+pdfinfo

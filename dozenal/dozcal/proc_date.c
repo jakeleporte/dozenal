@@ -40,6 +40,7 @@
 #include<errno.h>
 #include<string.h>
 #include"conv.h"
+#include"errcodes.h"
 
 #define MAX_ERR_LENGTH 256
 
@@ -101,9 +102,6 @@ time_t proc_date(char *s)
 		free(date);
 		return -1;
 	}
-/*	printf("YEAR:  %d - ",date->tm_year);
-	printf("MON:  %d - ",date->tm_mon);
-	printf("MDAY:  %d\n",date->tm_mday);*/
 	returnval = mktime(date);
 	free(date);
 	return returnval;
@@ -248,6 +246,11 @@ int secs_to_Tims(int time,char *timestr,char *time_format)
 			} else if (time_format[i] == 'b') {
 				sprintf(buffer,"%*.*s",len,len,timpart);
 				strcat(timestr,buffer);
+			} else {
+				fprintf(stderr,"dozcal:  unknown conversion "
+					"character \"%%%c\" in time format string, "
+					"\"%s\"\n",time_format[i],time_format);
+				exit(BAD_TIME_FORMAT);
 			}
 		} else {
 			timestr[strlen(timestr)+1] = '\0';

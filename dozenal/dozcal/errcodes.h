@@ -36,3 +36,4 @@
 #define UNREC_OPT 2
 #define INSUFF_MEM 3
 #define BAD_FILE 4
+#define BAD_TIME_FORMAT 5
