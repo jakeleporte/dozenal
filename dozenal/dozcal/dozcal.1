@@ -7,7 +7,8 @@ dozcal \- a command-line dozenal calendar program
 .SH SYNOPSIS
 .B dozcal
 [\fB\-V\fR]
-[\fB\-m\fR \fIargument\fR]
+[\fB\-m\fR \fIfull|major\fR]
+[\fB\-h\fR \fIreligious\fR]
 [\fB\-s\fR \fIstartdate\fR]
 [\fB\-e\fR \fIenddate\fR]
 [\fB\-d\fR \fIdateformat\fR]
@@ -38,6 +39,27 @@ phase of the moon for all days in your date range; or
 "new", "first quarter", "full", and "last quarter").  In
 either case, the age of the moon in days is printed as its
 phase, which some text for the major phases.
+.TP
+.BR \-h
+Include religious holidays.  This takes a single string as
+an argument, and the contents of the string determine which
+holidays will be added.  The holidays are added for the year
+before your current year, the current year, and the year
+after.
+.RS
+.TP
+.BR west
+Include Western Christian holidays.  This includes a subset
+of Western Christian holidays:  Ash Wednesday, Palm Sunday,
+Good Friday, Easter, the Ascension, Pentecost, and
+Christmas.
+.TP
+.BR east
+Include Eastern Christian holidays.  This includes a subset
+of Eastern Christian holidays:  Clean Monday, Lazarus
+Saturday, Palm Sunday, Easter, Mid-Pentecost, the Ascension,
+Pentecost, and Christmas.
+.RE
 .TP
 .BR \-s
 The first date that you want results from.  If this is not

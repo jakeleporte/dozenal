@@ -212,6 +212,8 @@ int main(int argc, char **argv)
 	if (strlen(relig) > 0) {
 		if (strstr(relig,"west")) {
 			west_holidays(event_list[0].thisdate);
+		} if (strstr(relig,"east")) {
+			east_holidays(event_list[0].thisdate);
 		}
 		qsort(event_list,recordnums-1,sizeof(struct event),comparator);
 	}

@@ -52,6 +52,9 @@ int west_holidays(int datenum)
 	add_to_event("Easter (Western)",easter);
 	add_to_event("Easter (Western)",easterlast);
 	add_to_event("Easter (Western)",easternext);
+	add_to_event("Palm Sunday (Western)",easter-7);
+	add_to_event("Palm Sunday (Western)",easterlast-7);
+	add_to_event("Palm Sunday (Western)",easternext-7);
 	add_to_event("Ash Wednesday",easter-46);
 	add_to_event("Ash Wednesday",easterlast-46);
 	add_to_event("Ash Wednesday",easternext-46);
@@ -73,6 +76,59 @@ int west_holidays(int datenum)
 	date->tm_year -= 1;
 	datesecs = mktime(date);
 	add_to_event("Christmas",datesecs / 86400);
+	return 0;
+}
+
+int east_holidays(int datenum)
+{
+	time_t datesecs;
+	struct tm *date;
+	int easter; int easterlast; int easternext;
+
+	datesecs = datenum * 86400;
+	date = localtime(&datesecs);
+	easter = orth_easter(date->tm_year + 1900);
+	easterlast = orth_easter(date->tm_year + 1899);
+	easternext = orth_easter(date->tm_year + 1902);
+	add_to_event("Easter (Eastern)",easter);
+	add_to_event("Easter (Eastern)",easterlast);
+	add_to_event("Easter (Eastern)",easternext);
+	add_to_event("Clean Monday (Eastern)",easter-48);
+	add_to_event("Clean Monday (Eastern)",easterlast-48);
+	add_to_event("Clean Monday (Eastern)",easternext-48);
+	add_to_event("Palm Sunday (Eastern)",easter-7);
+	add_to_event("Palm Sunday (Eastern)",easterlast-7);
+	add_to_event("Palm Sunday (Eastern)",easternext-7);
+	add_to_event("Lazarus Saturday (Eastern)",easter-8);
+	add_to_event("Lazarus Saturday (Eastern)",easterlast-8);
+	add_to_event("Lazarus Saturday (Eastern)",easternext-8);
+	add_to_event("Mid-Pentecost (Eastern)",easter+24);
+	add_to_event("Mid-Pentecost (Eastern)",easterlast+24);
+	add_to_event("Mid-Pentecost (Eastern)",easternext+24);
+	add_to_event("Ascension Day (Eastern)",easter+39);
+	add_to_event("Ascension Day (Eastern)",easterlast+39);
+	add_to_event("Ascension Day (Eastern)",easternext+39);
+	add_to_event("Pentecost (Eastern)",easter+49);
+	add_to_event("Pentecost (Eastern)",easterlast+49);
+	add_to_event("Pentecost (Eastern)",easternext+49);
+	date->tm_mon = 0; date->tm_mday = 6;
+	datesecs = mktime(date);
+	add_to_event("Christmas (Eastern)",datesecs / 86400);
+	date->tm_year -= 1;
+	datesecs = mktime(date);
+	add_to_event("Christmas (Eastern)",datesecs / 86400);
+	date->tm_year -= 1;
+	datesecs = mktime(date);
+	add_to_event("Christmas (Eastern)",datesecs / 86400);
+	date->tm_mon = 11; date->tm_mday = 25; date->tm_year += 2;
+	datesecs = mktime(date);
+	add_to_event("Christmas (Greek)",datesecs / 86400);
+	date->tm_year -= 1;
+	datesecs = mktime(date);
+	add_to_event("Christmas (Greek)",datesecs / 86400);
+	date->tm_year -= 1;
+	datesecs = mktime(date);
+	add_to_event("Christmas (Greek)",datesecs / 86400);
 	return 0;
 }
 
@@ -104,5 +160,29 @@ int date_easter(int year)
 	thedate->tm_mday = day;
 	eastersecs = mktime(thedate);
 	easterday = (eastersecs / 86400);
+	return easterday;
+}
+
+int orth_easter(int year)
+{
+	int a, b, c, d, e, month, day;
+	time_t eastersecs;
+	time_t buffer = 0;
+	int easterday;
+	struct tm *thedate;
+
+	thedate = localtime(&buffer);
+	a = year % 4;
+	b = year % 7;
+	c = year % 19;
+	d = ((19 * c) + 15) % 30;
+	e = ((2 * a) + (4 * b) - d + 34) % 7;
+	month = floor((d + e + 114) / 31);
+	day = ((d + e + 114) % 31) + 1;
+	thedate->tm_year = year - 1900;
+	thedate->tm_mon = month - 1;
+	thedate->tm_mday = day;
+	eastersecs = mktime(thedate);
+	easterday = (eastersecs / 86400) + 13;
 	return easterday;
 }
