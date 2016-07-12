@@ -7,7 +7,7 @@ dozcal \- a command-line dozenal calendar program
 .SH SYNOPSIS
 .B dozcal
 [\fB\-V\fR]
-[\fB\-m\fR]
+[\fB\-m\fR \fIargument\fR]
 [\fB\-s\fR \fIstartdate\fR]
 [\fB\-e\fR \fIenddate\fR]
 [\fB\-d\fR \fIdateformat\fR]
@@ -31,9 +31,13 @@ Print version and licensing information, then exit
 successfully.
 .TP
 .BR \-m
-Include the phases of the moon in your output.  This will
-print the phases of the moon for any date that you've got
-something on already.
+Include the phases of the moon in your output.  This must
+take one of two arguments:  "all", which will print the
+phase of the moon for all days in your date range; or
+"major", which will only print the major phases (i.e.,
+"new", "first quarter", "full", and "last quarter").  In
+either case, the age of the moon in days is printed as its
+phase, which some text for the major phases.
 .TP
 .BR \-s
 The first date that you want results from.  If this is not

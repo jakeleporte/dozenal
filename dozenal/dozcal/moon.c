@@ -42,7 +42,7 @@
 extern struct event *event_list;
 extern int recordnums;
 
-int get_moonphases(int datenum)
+int get_moonphases(int datenum, int moonphases)
 {
 	int julday;
 	int phase;
@@ -60,19 +60,22 @@ int get_moonphases(int datenum)
 	strcat(phase_str,phasenum);
 	if (phase == 0)
 		strcat(phase_str," (new)");
-	if (phase == 7)
-		strcat(phase_str," (waxing half)");
+	if (phase == 8)
+		strcat(phase_str," (first quarter)");
 	if (phase == 15)
 		strcat(phase_str," (full)");
 	if (phase == 22)
-		strcat(phase_str," (waning half)");
-	event_list = realloc(event_list,(recordnums * 
-		sizeof(struct event)));
-	event_list[recordnums-1].starttime = -1;
-	event_list[recordnums-1].endtime = -1;
-	strcpy(event_list[recordnums-1].title,phase_str);
-	event_list[recordnums-1].thisdate = datenum;
-	recordnums++;
+		strcat(phase_str," (last quarter)");
+	if ((moonphases == 1) || ((moonphases == 2) && ((phase == 0) 
+	|| (phase == 8) || (phase == 15) || (phase == 22)))) {
+		event_list = realloc(event_list,(recordnums * 
+			sizeof(struct event)));
+		event_list[recordnums-1].starttime = -1;
+		event_list[recordnums-1].endtime = -1;
+		strcpy(event_list[recordnums-1].title,phase_str);
+		event_list[recordnums-1].thisdate = datenum;
+		recordnums++;
+	}
 	return 0;
 }
 

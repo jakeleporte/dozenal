@@ -38,3 +38,4 @@
 #define BAD_FILE 4
 #define BAD_TIME_FORMAT 5
 #define BAD_EV_FORMAT 6
+#define BAD_MOON_PHASE 7

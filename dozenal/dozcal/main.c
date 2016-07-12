@@ -53,7 +53,6 @@ int comparator(const void *evone, const void *evtwo);
 int main(int argc, char **argv)
 {
 	char c; int i;
-	int lastdate;
 	int tmpctr;					/* for looping without changing recordnums */
 	int moonphases = 0;		/* if 0, no phases; if 1, yes */
 	int numevents = 0;
@@ -101,7 +100,7 @@ int main(int argc, char **argv)
 		exit(INSUFF_MEM);
 	}
 	opterr = 0;
-	while ((c = getopt(argc,argv,"Vmf:s:e:d:t:r:c:n:h:")) != -1) {
+	while ((c = getopt(argc,argv,"Vm:f:s:e:d:t:r:c:n:h:")) != -1) {
 		switch(c) {
 		case 'V':
 			printf("dozcal v1.0\n");
@@ -138,7 +137,16 @@ int main(int argc, char **argv)
 			proc_options(optarg,&moonphases,nat,relig);
 			break;
 		case 'm':
-			moonphases = 1;
+			if (strstr(optarg,"all")) {
+				moonphases = 1;
+			} else if (strstr(optarg,"major")) {
+				moonphases = 2;
+			} else {
+				fprintf(stderr,"dozcal:  unrecognized argument "
+					"\"%s\" for option \"-m\"; possible values "
+					"are \"all\" and \"major\"\n",optarg);
+				exit(BAD_MOON_PHASE);
+			}
 			break;
 		case 's':
 			startdate = proc_date(optarg) / 86400;
@@ -174,7 +182,9 @@ int main(int argc, char **argv)
 			strcpy(ev_form,optarg);
 			break;
 		case '?':
-			if ((optopt == 'f') || (optopt == 'd')) {
+			if ((optopt == 'f') || (optopt == 'd')
+			|| (optopt == 'm') || (optopt == 'c')
+			|| (optopt == 't') || (optopt == 'r')) {
 				fprintf(stderr,"dozcal:  option \"%c\" requires "
 					"an argument\n",optopt);
 				exit(OPT_REQ_ARG);
@@ -190,13 +200,10 @@ int main(int argc, char **argv)
 	if (enddate == -1)
 		enddate = INT_MAX - 1;
 	qsort(event_list,recordnums-1,sizeof(struct event),comparator);
-	if (moonphases == 1) {
-		tmpctr = recordnums-1; lastdate = -1;
-		for (i = 0; i < tmpctr; ++i) {
-			if (lastdate != event_list[i].thisdate) {
-				get_moonphases(event_list[i].thisdate);
-				lastdate = event_list[i].thisdate;
-			}
+	if (moonphases > 0) {
+		tmpctr = event_list[recordnums-2].thisdate;
+		for (i = event_list[0].thisdate; i <= tmpctr; ++i) {
+			get_moonphases(i,moonphases);
 		}
 		qsort(event_list,recordnums-1,sizeof(struct event),comparator);
 	}
