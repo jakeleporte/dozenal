@@ -31,16 +31,60 @@
  * <http://www.gnu.org/licenses/>.
  */
 
+#include<stdio.h>
 #include<math.h>
 #include<time.h>
+
+extern struct event *event_list;
+extern int recordnums;
+
+int west_holidays(int datenum)
+{
+	time_t datesecs;
+	struct tm *date;
+	int easter; int easterlast; int easternext;
+
+	datesecs = datenum * 86400;
+	date = localtime(&datesecs);
+	easter = date_easter(date->tm_year + 1900);
+	easterlast = date_easter(date->tm_year + 1899);
+	easternext = date_easter(date->tm_year + 1902);
+	add_to_event("Easter (Western)",easter);
+	add_to_event("Easter (Western)",easterlast);
+	add_to_event("Easter (Western)",easternext);
+	add_to_event("Ash Wednesday",easter-46);
+	add_to_event("Ash Wednesday",easterlast-46);
+	add_to_event("Ash Wednesday",easternext-46);
+	add_to_event("Good Friday",easter-2);
+	add_to_event("Good Friday",easterlast-2);
+	add_to_event("Good Friday",easternext-2);
+	add_to_event("Ascension Day",easter+39);
+	add_to_event("Ascension Day",easterlast+39);
+	add_to_event("Ascension Day",easternext+39);
+	add_to_event("Pentecost",easter+49);
+	add_to_event("Pentecost",easterlast+49);
+	add_to_event("Pentecost",easternext+49);
+	date->tm_mon = 11; date->tm_mday = 25;
+	datesecs = mktime(date);
+	add_to_event("Christmas",datesecs / 86400);
+	date->tm_year -= 1;
+	datesecs = mktime(date);
+	add_to_event("Christmas",datesecs / 86400);
+	date->tm_year -= 1;
+	datesecs = mktime(date);
+	add_to_event("Christmas",datesecs / 86400);
+	return 0;
+}
 
 int date_easter(int year)
 {
 	int a, b, c, d, e, f, g, h, i, k, l, m, month, day;
 	int easterday;
-	struct tm *easter;
+	struct tm *thedate;
 	time_t eastersecs;
+	time_t buffer = 0;
 
+	thedate = localtime(&buffer);
 	a = year % 19;
 	b = floor(year / 100);
 	c = year % 100;
@@ -55,10 +99,10 @@ int date_easter(int year)
 	m = floor((a + (11 * h) + (22 * l)) / 451);
 	month = floor((h + l - (7 * m) + 114) / 31);
 	day = ((h + l - (7 * m) + 114) % 31) + 1;
-	easter->tm_year = year - 1900;
-	easter->tm_mon = month - 1;
-	easter->tm_mday = day;
-	eastersecs = mktime(easter);
+	thedate->tm_year = year - 1900;
+	thedate->tm_mon = month - 1;
+	thedate->tm_mday = day;
+	eastersecs = mktime(thedate);
 	easterday = (eastersecs / 86400);
 	return easterday;
 }

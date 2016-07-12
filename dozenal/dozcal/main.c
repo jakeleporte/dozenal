@@ -94,11 +94,13 @@ int main(int argc, char **argv)
 			"national holidays requested\n");
 		exit(INSUFF_MEM);
 	}
+	nat[0] = '\0';
 	if ((relig = malloc(1*sizeof(char))) == NULL) {
 		fprintf(stderr,"dozcal:  insufficient memory to hold the "
 			"religious holidays requested\n");
 		exit(INSUFF_MEM);
 	}
+	relig[0] = '\0';
 	opterr = 0;
 	while ((c = getopt(argc,argv,"Vm:f:s:e:d:t:r:c:n:h:")) != -1) {
 		switch(c) {
@@ -204,6 +206,12 @@ int main(int argc, char **argv)
 		tmpctr = event_list[recordnums-2].thisdate;
 		for (i = event_list[0].thisdate; i <= tmpctr; ++i) {
 			get_moonphases(i,moonphases);
+		}
+		qsort(event_list,recordnums-1,sizeof(struct event),comparator);
+	}
+	if (strlen(relig) > 0) {
+		if (strstr(relig,"west")) {
+			west_holidays(event_list[0].thisdate);
 		}
 		qsort(event_list,recordnums-1,sizeof(struct event),comparator);
 	}

@@ -31,7 +31,12 @@
  * <http://www.gnu.org/licenses/>.
  */
 
+#include<stdlib.h>
 #include<string.h>
+#include"event_struct.h"
+
+extern struct event *event_list;
+extern int recordnums;
 
 int chomp(char *s)
 {
@@ -93,4 +98,15 @@ int dozendig(char c)
 		return 0;
 		break;
 	}
+}
+
+int add_to_event(char *title, int datenum)
+{
+	event_list = realloc(event_list,(recordnums * 
+		sizeof(struct event)));
+	event_list[recordnums-1].starttime = -1;
+	event_list[recordnums-1].endtime = -1;
+	strcpy(event_list[recordnums-1].title,title);
+	event_list[recordnums-1].thisdate = datenum;
+	recordnums++;
 }
