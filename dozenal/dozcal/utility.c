@@ -33,6 +33,7 @@
 
 #include<stdlib.h>
 #include<string.h>
+#include<time.h>
 #include"event_struct.h"
 
 extern struct event *event_list;
@@ -109,4 +110,66 @@ int add_to_event(char *title, int datenum)
 	strcpy(event_list[recordnums-1].title,title);
 	event_list[recordnums-1].thisdate = datenum;
 	recordnums++;
+}
+
+int get_weekday(int datenum)
+{
+	time_t datesecs;
+	struct tm *date;
+
+	datesecs = datenum * 86400;
+	date = localtime(&datesecs);
+	return date->tm_wday;
+}
+
+int wday_of_month(int datenum, int wday, int num)
+{
+	time_t datesecs;
+	struct tm *date;
+	int i;
+
+	datesecs = datenum * 86400;
+	date = localtime(&datesecs);
+	date->tm_mday = 1; mktime(date);
+	for (i = 0; date->tm_wday != wday; ++i) {
+		date->tm_mday++;
+		mktime(date);
+	}
+	for (i = 1; i < num; ++i)
+		date->tm_mday += 7;
+	mktime(date);
+	return get_datenum(date);
+}
+
+int last_wday_of_month(int datenum, int wday)
+{
+	time_t datesecs;
+	struct tm *date;
+	int i;
+	int holder;
+
+	datesecs = datenum * 86400;
+	date = localtime(&datesecs);
+	holder = date->tm_mon;
+	for (i = 27; date->tm_mon == holder; ++i) {
+		date->tm_mday++;
+		mktime(date);
+	}
+	date->tm_mday--;
+	mktime(date);
+	for (i = date->tm_mday; date->tm_wday != wday; --i) {
+		date->tm_mday--;
+		mktime(date);
+	}
+	mktime(date);
+	return get_datenum(date);
+}
+
+int get_datenum(struct tm *date)
+{
+	time_t rawtime;
+
+	mktime(date);
+	rawtime = mktime(date);
+	return rawtime / 86400;
 }

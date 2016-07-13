@@ -217,6 +217,10 @@ int main(int argc, char **argv)
 		}
 		qsort(event_list,recordnums-1,sizeof(struct event),comparator);
 	}
+	if (strlen(nat) > 0) {
+		nat_holidays(nat, event_list[0].thisdate);
+		qsort(event_list,recordnums-1,sizeof(struct event),comparator);
+	}
 	for (i = 0; i < (recordnums-1); ++i) {
 		if ((event_list[i].thisdate >= startdate) &&
 		(event_list[i].thisdate <= enddate)) {

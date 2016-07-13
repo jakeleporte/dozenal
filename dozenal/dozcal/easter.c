@@ -40,12 +40,12 @@ extern int recordnums;
 
 int west_holidays(int datenum)
 {
-	time_t datesecs;
+	time_t datesecs; time_t rawtime;
 	struct tm *date;
 	int easter; int easterlast; int easternext;
 
-	datesecs = datenum * 86400;
-	date = localtime(&datesecs);
+	time(&rawtime);
+	date = localtime(&rawtime);
 	easter = date_easter(date->tm_year + 1900);
 	easterlast = date_easter(date->tm_year + 1899);
 	easternext = date_easter(date->tm_year + 1902);
@@ -81,12 +81,12 @@ int west_holidays(int datenum)
 
 int east_holidays(int datenum)
 {
-	time_t datesecs;
+	time_t datesecs; time_t rawtime;
 	struct tm *date;
 	int easter; int easterlast; int easternext;
 
-	datesecs = datenum * 86400;
-	date = localtime(&datesecs);
+	time(&rawtime);
+	date = localtime(&rawtime);
 	easter = orth_easter(date->tm_year + 1900);
 	easterlast = orth_easter(date->tm_year + 1899);
 	easternext = orth_easter(date->tm_year + 1902);
