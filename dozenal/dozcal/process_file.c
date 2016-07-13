@@ -108,7 +108,7 @@ int proc_rec(char buffer[][MAXLEN],int lines)
 			enddate = proc_date(buffer[i]);
 		}
 		if (strstr(buffer[i],"EXCEPT_DATE")) {
-			exceptions[j++] = (int)proc_date(buffer[i]) / 86400 + 1;
+			exceptions[j++] = mkdaynum(proc_date(buffer[i])) + 1;
 		}
 		if (strstr(buffer[i],"START_TIME")) {
 			starttime = proc_time(buffer[i]);
@@ -125,8 +125,8 @@ int proc_rec(char buffer[][MAXLEN],int lines)
 		enddate = startdate;
 	if (startdate == -1)
 		return 0;
-	startday = (int)startdate / 86400 + 1;
-	endday = (int)enddate / 86400 + 1;
+	startday = mkdaynum(startdate) + 1;
+	endday = mkdaynum(enddate) + 1;
 	currinterval = startday;
 	for (holder = startday; holder <= endday; ++holder) {
 		if ((not_in(holder,exceptions,j-1) == 0) &&

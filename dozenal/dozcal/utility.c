@@ -34,6 +34,7 @@
 #include<stdlib.h>
 #include<string.h>
 #include<time.h>
+#include<math.h>
 #include"event_struct.h"
 
 extern struct event *event_list;
@@ -171,5 +172,13 @@ int get_datenum(struct tm *date)
 
 	mktime(date);
 	rawtime = mktime(date);
-	return rawtime / 86400;
+	return mkdaynum(rawtime);
+}
+
+int mkdaynum(time_t datenum)
+{
+	double holder;
+
+	holder = (double) datenum / 86400;
+	return lround(holder);
 }

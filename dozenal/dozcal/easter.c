@@ -69,13 +69,13 @@ int west_holidays(int datenum)
 	add_to_event("Pentecost",easternext+49);
 	date->tm_mon = 11; date->tm_mday = 25;
 	datesecs = mktime(date);
-	add_to_event("Christmas",datesecs / 86400);
+	add_to_event("Christmas",mkdaynum(datesecs));
 	date->tm_year -= 1;
 	datesecs = mktime(date);
-	add_to_event("Christmas",datesecs / 86400);
+	add_to_event("Christmas",mkdaynum(datesecs));
 	date->tm_year -= 1;
 	datesecs = mktime(date);
-	add_to_event("Christmas",datesecs / 86400);
+	add_to_event("Christmas",mkdaynum(datesecs));
 	return 0;
 }
 
@@ -113,22 +113,22 @@ int east_holidays(int datenum)
 	add_to_event("Pentecost (Eastern)",easternext+49);
 	date->tm_mon = 0; date->tm_mday = 6;
 	datesecs = mktime(date);
-	add_to_event("Christmas (Eastern)",datesecs / 86400);
+	add_to_event("Christmas (Eastern)",mkdaynum(datesecs));
 	date->tm_year -= 1;
 	datesecs = mktime(date);
-	add_to_event("Christmas (Eastern)",datesecs / 86400);
+	add_to_event("Christmas (Eastern)",mkdaynum(datesecs));
 	date->tm_year -= 1;
 	datesecs = mktime(date);
-	add_to_event("Christmas (Eastern)",datesecs / 86400);
+	add_to_event("Christmas (Eastern)",mkdaynum(datesecs));
 	date->tm_mon = 11; date->tm_mday = 25; date->tm_year += 2;
 	datesecs = mktime(date);
-	add_to_event("Christmas (Greek)",datesecs / 86400);
+	add_to_event("Christmas (Greek)",mkdaynum(datesecs));
 	date->tm_year -= 1;
 	datesecs = mktime(date);
-	add_to_event("Christmas (Greek)",datesecs / 86400);
+	add_to_event("Christmas (Greek)",mkdaynum(datesecs));
 	date->tm_year -= 1;
 	datesecs = mktime(date);
-	add_to_event("Christmas (Greek)",datesecs / 86400);
+	add_to_event("Christmas (Greek)",mkdaynum(datesecs));
 	return 0;
 }
 
@@ -159,7 +159,7 @@ int date_easter(int year)
 	thedate->tm_mon = month - 1;
 	thedate->tm_mday = day;
 	eastersecs = mktime(thedate);
-	easterday = (eastersecs / 86400);
+	easterday = mkdaynum(eastersecs);
 	return easterday;
 }
 
@@ -183,6 +183,6 @@ int orth_easter(int year)
 	thedate->tm_mon = month - 1;
 	thedate->tm_mday = day;
 	eastersecs = mktime(thedate);
-	easterday = (eastersecs / 86400) + 13;
+	easterday = mkdaynum(eastersecs) + 13;
 	return easterday;
 }

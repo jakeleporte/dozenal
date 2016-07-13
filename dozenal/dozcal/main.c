@@ -151,10 +151,10 @@ int main(int argc, char **argv)
 			}
 			break;
 		case 's':
-			startdate = proc_date(optarg) / 86400;
+			startdate = mkdaynum(proc_date(optarg));
 			break;
 		case 'e':
-			enddate = proc_date(optarg) / 86400;
+			enddate = mkdaynum(proc_date(optarg));
 			break;
 		case 'd':
 			if ((date_form = realloc(date_form,(strlen(optarg)+1) * 
