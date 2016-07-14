@@ -16,13 +16,13 @@ dirmode = 755
 IDIR =../include
 CC = gcc
 objects = main.o utility.o proc_date.o process_file.o moon.o opt_file.o \
-	easter.o nat_holidays.o
+	easter.o nat_holidays.o jewish_date.o
 binobjects = dozcal
 
 all: bin
 
 dozcal: $(objects) ../doz/doz.o ../dec/dec.o ../conv/conv.o
-	$(CC) -I$(IDIR) -std=c99 -g -lm -o dozcal ../conv/conv.o \
+	$(CC) -I$(IDIR) -std=c99 -g -lm -lhdate -o dozcal ../conv/conv.o \
 		../doz/doz.o ../dec/dec.o $(objects)
 
 main.o: main.c ../conv/conv.o ../doz/doz.o ../dec/dec.o ../conv/conv.o
@@ -30,6 +30,9 @@ main.o: main.c ../conv/conv.o ../doz/doz.o ../dec/dec.o ../conv/conv.o
 
 moon.o: moon.c
 	$(CC) -I$(IDIR) -g -lm -c moon.c
+
+jewish_date.o: jewish_date.c
+	$(CC) -I$(IDIR) -g -lm -lhdate -c jewish_date.c
 
 nat_holidays.o: nat_holidays.c
 	$(CC) -I$(IDIR) -g -lm -c nat_holidays.c
