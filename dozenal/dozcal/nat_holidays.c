@@ -46,16 +46,182 @@ int nat_holidays(char *s, int datenum)
 	} if (strstr(s,"uk")) {
 	} if (strstr(s,"eng")) {
 		england_holidays(datenum);
-	} if (strstr(s,"wales")) {
+	} if (strstr(s,"wales") || strstr(s,"welsh")) {
 		wales_holidays(datenum);
 	} if (strstr(s,"scot")) {
 		scot_holidays(datenum);
 	} if (strstr(s,"nire")) {
 		nire_holidays(datenum);
 	} if (strstr(s,"rire")) {
+		rire_holidays(datenum);
 	} if (strstr(s,"austral")) {
+		austral_holidays(datenum);
 	} if (strstr(s,"nz") || strstr(s,"kiwi")) {
+		nz_holidays(datenum);
 	}
+	return 0;
+}
+
+int nz_holidays(int datenum)
+{
+	time_t datesecs; time_t rawtime;
+	struct tm *date;
+	int holiday;
+
+	datesecs = datenum * 86400;
+	time(&rawtime);
+	date = localtime(&rawtime);
+	date->tm_mon = 0; date->tm_mday = 1; mktime(date);
+	holiday = mkdaynum(mktime(date));
+	add_to_event("New Year's Day (New Zealand)",holiday);
+	date->tm_year -= 1;
+	holiday = mkdaynum(mktime(date));
+	add_to_event("New Year's Day (New Zealand)",holiday);
+	date->tm_year += 2;
+	holiday = mkdaynum(mktime(date));
+	add_to_event("New Year's Day (New Zealand)",holiday);
+	date->tm_year -= 1; date->tm_mon = 0; date->tm_mday = 2; mktime(date);
+	holiday = mkdaynum(mktime(date));
+	add_to_event("Day after New Year's Day (New Zealand)",holiday);
+	date->tm_year -= 1;
+	holiday = mkdaynum(mktime(date));
+	add_to_event("Day after New Year's Day (New Zealand)",holiday);
+	date->tm_year += 2;
+	holiday = mkdaynum(mktime(date));
+	add_to_event("Day after New Year's Day (New Zealand)",holiday);
+	date->tm_year -= 1; date->tm_mon = 1; date->tm_mday = 6;
+	holiday = mkdaynum(mktime(date));
+	add_to_event("Waitangi Day (New Zealand)",holiday);
+	date->tm_year -= 1;
+	holiday = mkdaynum(mktime(date));
+	add_to_event("Waitangi Day (New Zealand)",holiday);
+	date->tm_year += 2;
+	holiday = mkdaynum(mktime(date));
+	add_to_event("Waitangi Day (New Zealand)",holiday);
+	date->tm_year -= 1;
+	holiday = date_easter(date->tm_year + 1900) - 2;
+	add_to_event("Good Friday (New Zealand)",holiday);
+	holiday = date_easter(date->tm_year + 1900) + 1;
+	add_to_event("Easter Monday (New Zealand)",holiday);
+	date->tm_year -= 1;
+	holiday = date_easter(date->tm_year + 1900) - 2;
+	add_to_event("Good Friday (New Zealand)",holiday);
+	holiday = date_easter(date->tm_year + 1900) + 1;
+	add_to_event("Easter Monday (New Zealand)",holiday);
+	date->tm_year += 2;
+	holiday = date_easter(date->tm_year + 1900) - 2;
+	add_to_event("Good Friday (New Zealand)",holiday);
+	holiday = date_easter(date->tm_year + 1900) + 1;
+	add_to_event("Easter Monday (New Zealand)",holiday);
+	date->tm_year -= 1; date->tm_mon = 3; date->tm_mday = 25;
+	holiday = mkdaynum(mktime(date));
+	add_to_event("Anzac Day (New Zealand)",holiday);
+	date->tm_year -= 1;
+	holiday = mkdaynum(mktime(date));
+	add_to_event("Anzac Day (New Zealand)",holiday);
+	date->tm_year += 2;
+	holiday = mkdaynum(mktime(date));
+	add_to_event("Anzac Day (New Zealand)",holiday);
+	date->tm_year -= 1; date->tm_mon = 5;
+	holiday = wday_of_month(mkdaynum(mktime(date)), 1, 1);
+	add_to_event("Queen's Birthday (New Zealand)",holiday);
+	date->tm_year -= 1; date->tm_mon = 5;
+	holiday = wday_of_month(mkdaynum(mktime(date)), 1, 1);
+	add_to_event("Queen's Birthday (New Zealand)",holiday);
+	date->tm_year += 2; date->tm_mon = 5;
+	holiday = wday_of_month(mkdaynum(mktime(date)), 1, 1);
+	add_to_event("Queen's Birthday (New Zealand)",holiday);
+	date->tm_year -= 1; date->tm_mon = 9;
+	holiday = wday_of_month(mkdaynum(mktime(date)), 1, 4);
+	add_to_event("Labour Day (New Zealand)",holiday);
+	date->tm_year -= 1;
+	holiday = wday_of_month(mkdaynum(mktime(date)), 1, 4);
+	add_to_event("Labour Day (New Zealand)",holiday);
+	date->tm_year += 2;
+	holiday = wday_of_month(mkdaynum(mktime(date)), 1, 4);
+	add_to_event("Labour Day (New Zealand)",holiday);
+	date->tm_year -= 1; date->tm_mon = 11; date->tm_mday = 25;
+	holiday = mkdaynum(mktime(date));
+	add_to_event("Christmas Day (New Zealand)",mkdaynum(mktime(date)));
+	date->tm_year -= 1;
+	add_to_event("Christmas Day (New Zealand)",mkdaynum(mktime(date)));
+	date->tm_year += 2;
+	add_to_event("Christmas Day (New Zealand)",mkdaynum(mktime(date)));
+	date->tm_year -= 1; date->tm_mon = 11; date->tm_mday = 26;
+	add_to_event("Boxing Day (New Zealand)",mkdaynum(mktime(date)));
+	date->tm_year -= 1;
+	add_to_event("Boxing Day (New Zealand)",mkdaynum(mktime(date)));
+	date->tm_year += 2;
+	add_to_event("Boxing Day (New Zealand)",mkdaynum(mktime(date)));
+
+	return 0;
+}
+
+int austral_holidays(int datenum)
+{
+	time_t datesecs; time_t rawtime;
+	struct tm *date;
+	int holiday;
+
+	datesecs = datenum * 86400;
+	time(&rawtime);
+	date = localtime(&rawtime);
+	date->tm_mon = 0; date->tm_mday = 1; mktime(date);
+	holiday = mkdaynum(mktime(date));
+	add_to_event("New Year's Day (Australia)",holiday);
+	date->tm_year -= 1;
+	holiday = mkdaynum(mktime(date));
+	add_to_event("New Year's Day (Australia)",holiday);
+	date->tm_year += 2;
+	holiday = mkdaynum(mktime(date));
+	add_to_event("New Year's Day (Australia)",holiday);
+	date->tm_year -= 1;
+	date->tm_mon = 0; date->tm_mday = 26; mktime(date);
+	holiday = mkdaynum(mktime(date));
+	add_to_event("Australia Day (Australia)",holiday);
+	date->tm_year -= 1;
+	holiday = mkdaynum(mktime(date));
+	add_to_event("Australia Day (Australia)",holiday);
+	date->tm_year += 2;
+	holiday = mkdaynum(mktime(date));
+	add_to_event("Australia Day (Australia)",holiday);
+	date->tm_year -= 1;
+	holiday = date_easter(date->tm_year + 1900) - 2;
+	add_to_event("Good Friday (Australia)",holiday);
+	date->tm_year -= 1;
+	holiday = date_easter(date->tm_year + 1900) - 2;
+	add_to_event("Good Friday (Australia)",holiday);
+	date->tm_year += 2;
+	holiday = date_easter(date->tm_year + 1900) - 2;
+	add_to_event("Good Friday (Australia)",holiday);
+	date->tm_year -= 1;
+	holiday = date_easter(date->tm_year + 1900) + 1;
+	add_to_event("Easter Monday (Australia)",holiday);
+	date->tm_year -= 1;
+	holiday = date_easter(date->tm_year + 1900) + 1;
+	add_to_event("Easter Monday (Australia)",holiday);
+	date->tm_year += 2;
+	holiday = date_easter(date->tm_year + 1900) + 1;
+	add_to_event("Easter Monday (Australia)",holiday);
+	date->tm_year -= 1; date->tm_mon = 3; date->tm_mday = 25;
+	holiday = mkdaynum(mktime(date));
+	add_to_event("ANZAC Day (Australia)",holiday);
+	date->tm_year -= 1;
+	holiday = mkdaynum(mktime(date));
+	add_to_event("ANZAC Day (Australia)",holiday);
+	date->tm_year += 2;
+	holiday = mkdaynum(mktime(date));
+	add_to_event("ANZAC Day (Australia)",holiday);
+	date->tm_year -= 1; date->tm_mon = 11; date->tm_mday = 25;
+	holiday = mkdaynum(mktime(date));
+	add_to_event("Christmas Day (Australia)",holiday);
+	date->tm_year -= 1;
+	holiday = mkdaynum(mktime(date));
+	add_to_event("Christmas Day (Australia)",holiday);
+	date->tm_year += 2;
+	holiday = mkdaynum(mktime(date));
+	add_to_event("Christmas Day (Australia)",holiday);
+	date->tm_year -= 1;
 	return 0;
 }
 
@@ -382,6 +548,99 @@ int scot_holidays(int datenum)
 	add_to_event("St. Andrew's Day (Scotland)",get_datenum(date));
 	date->tm_year += 2;
 	add_to_event("St. Andrew's Day (Scotland)",get_datenum(date));
+	date->tm_year -= 1;
+	return 0;
+}
+
+int rire_holidays(int datenum)
+{
+	time_t datesecs; time_t rawtime;
+	struct tm *date;
+	int holiday;
+
+	datesecs = datenum * 86400;
+	time(&rawtime);
+	date = localtime(&rawtime);
+	date->tm_mon = 0; date->tm_mday = 1; mktime(date);
+	holiday = mkdaynum(mktime(date));
+	add_to_event("New Year's Day (Ireland)",holiday);
+	date->tm_year -= 1;
+	holiday = get_datenum(date);
+	add_to_event("New Year's Day (Ireland)",holiday);
+	date->tm_year += 2;
+	holiday = get_datenum(date);
+	add_to_event("New Year's Day (Ireland)",holiday);
+	date->tm_year -= 1;
+	holiday = date_easter(date->tm_year + 1900) + 1;
+	add_to_event("Easter Monday (Ireland)",holiday);
+	date->tm_year -= 1;
+	holiday = date_easter(date->tm_year + 1900) + 1;
+	add_to_event("Easter Monday (Ireland)",holiday);
+	date->tm_year += 2;
+	holiday = date_easter(date->tm_year + 1900) + 1;
+	add_to_event("Easter Monday (Ireland)",holiday);
+	date->tm_year -= 1; date->tm_mon = 2; date->tm_mday = 17;
+	add_to_event("St. Patrick's Day (Ireland)",get_datenum(date));
+	date->tm_year -= 1;
+	add_to_event("St. Patrick's Day (Ireland)",get_datenum(date));
+	date->tm_year += 2;
+	add_to_event("St. Patrick's Day (Ireland)",get_datenum(date));
+	date->tm_year -= 1; date->tm_mon = 4;
+	holiday = wday_of_month(get_datenum(date), 1, 1);
+	add_to_event("May Day (Ireland)",get_datenum(date));
+	date->tm_year -= 1;
+	holiday = wday_of_month(get_datenum(date), 1, 1);
+	add_to_event("May Day (Ireland)",get_datenum(date));
+	date->tm_year += 2;
+	holiday = wday_of_month(get_datenum(date), 1, 1);
+	add_to_event("May Day (Ireland)",get_datenum(date));
+	date->tm_year -= 1; date->tm_mon = 5;
+	holiday = wday_of_month(get_datenum(date), 1, 1);
+	add_to_event("June Holiday (Ireland)",get_datenum(date));
+	date->tm_mon -= 1;
+	holiday = wday_of_month(get_datenum(date), 1, 1);
+	add_to_event("June Holiday (Ireland)",get_datenum(date));
+	date->tm_mon += 2;
+	holiday = wday_of_month(get_datenum(date), 1, 1);
+	add_to_event("June Holiday (Ireland)",get_datenum(date));
+	date->tm_mon -= 1; date->tm_mon = 7;
+	holiday = wday_of_month(get_datenum(date), 1, 1);
+	add_to_event("August Holiday (Ireland)",get_datenum(date));
+	date->tm_mon -= 1;
+	holiday = wday_of_month(get_datenum(date), 1, 1);
+	add_to_event("August Holiday (Ireland)",get_datenum(date));
+	date->tm_mon += 2;
+	holiday = wday_of_month(get_datenum(date), 1, 1);
+	add_to_event("August Holiday (Ireland)",get_datenum(date));
+	date->tm_mon -= 1; date->tm_mon = 9;
+	holiday = last_wday_of_month(get_datenum(date), 1);
+	add_to_event("October Holiday (Ireland)",get_datenum(date));
+	date->tm_mon -= 1;
+	holiday = last_wday_of_month(get_datenum(date), 1);
+	add_to_event("October Holiday (Ireland)",get_datenum(date));
+	date->tm_mon += 2;
+	holiday = last_wday_of_month(get_datenum(date), 1);
+	add_to_event("October Holiday (Ireland)",get_datenum(date));
+	date->tm_mon -= 1; date->tm_mon = 11; date->tm_mday = 25;
+	// FFFF
+	date->tm_year -= 1; date->tm_mon = 11; date->tm_mday = 25;
+	holiday = mkdaynum(mktime(date));
+	add_to_event("Christmas (Ireland)",holiday);
+	date->tm_year -= 1;
+	holiday = mkdaynum(mktime(date));
+	add_to_event("Christmas (Ireland)",holiday);
+	date->tm_year += 2;
+	holiday = mkdaynum(mktime(date));
+	add_to_event("Christmas (Ireland)",holiday);
+	date->tm_mon -= 1; date->tm_mon = 11; date->tm_mday = 26;
+	holiday = mkdaynum(mktime(date));
+	add_to_event("St. Stephen's Day (Ireland)",holiday);
+	date->tm_year -= 1;
+	holiday = mkdaynum(mktime(date));
+	add_to_event("St. Stephen's Day (Ireland)",holiday);
+	date->tm_year += 2;
+	holiday = mkdaynum(mktime(date));
+	add_to_event("St. Stephen's Day (Ireland)",holiday);
 	date->tm_year -= 1;
 	return 0;
 }
