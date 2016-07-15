@@ -65,11 +65,13 @@ int process_file(char *s)
 		chomp(line);
 		if (strlen(line) == 1)
 			continue;
-		if (strstr(line,"[EVENT]") && (linesread != 0)) {
+		if ((strstr(line,"[EVENT]") || strstr(line,"[TODO]"))) {
 			strcpy(buffer[currlineno],"%%");
-			proc_rec(buffer,currlineno);
+			if (linesread != 0)
+				proc_rec(buffer,currlineno);
 			currlineno = 0;
-		} else if (!strstr(line,"[EVENT]")) {
+			strcpy(buffer[currlineno++],"EVENT");
+		} else if (!strstr(line,"[EVENT]") && !strstr(line,"[TODO]")) {
 			t = strchr(line,':') + 1;
 			strcpy(buffer[currlineno++],line);
 		}
@@ -131,6 +133,7 @@ int proc_rec(char buffer[][MAXLEN],int lines)
 	for (holder = startday; holder <= endday; ++holder) {
 		if ((not_in(holder,exceptions,j-1) == 0) &&
 		(currinterval == holder)) {
+		if (strstr(buffer[0],"EVENT")) {
 			event_list = realloc(event_list,(recordnums * 
 				sizeof(struct event)));
 			event_list[recordnums-1].starttime = -1;
@@ -140,6 +143,7 @@ int proc_rec(char buffer[][MAXLEN],int lines)
 			event_list[recordnums-1].starttime = starttime;
 			event_list[recordnums-1].endtime = endtime;
 			recordnums++;
+		}
 		}
 		if (currinterval == holder)
 			currinterval += interval;

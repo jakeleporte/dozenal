@@ -32,9 +32,25 @@
  */
 
 struct event {
-	int id;				/* idnum of the event entry */
-	char title[256];	/* title of the event */
-	int thisdate;		/* the date */
-	int starttime;
-	int endtime;
+	int id;					/* idnum of the event entry */
+	char title[256];		/* title of the event */
+	int thisdate;			/* the date */
+	int starttime;			/* starting time, in Tims from midnight */
+	int endtime;			/* ending time, in Tims from midnight */
+	char location[256];	/* the location of the event */
+	int relatedto;			/* idnum of other events or todos */
+	char evclass[16];		/* e.g., "private" */
+	char categories[256];/* categories event fits into; e.g., "business" */
+	char transp;			/* '0' if opaque, 1 if transp */
+};
+
+struct todo {
+	char item[256];
+	char todoclass[16];
+	int duedate;
+	int duetime;
+	int priority;			/* higher numbers have higher priority */
+	char location[256];
+	char completed;		/* '0' if not completed, 1 if completed */
+	char pergross;			/* 0-144 completed amount */
 };
