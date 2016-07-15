@@ -202,13 +202,6 @@ int main(int argc, char **argv)
 	if (enddate == -1)
 		enddate = INT_MAX - 1;
 	qsort(event_list,recordnums-1,sizeof(struct event),comparator);
-	if (moonphases > 0) {
-		tmpctr = event_list[recordnums-2].thisdate;
-		for (i = event_list[0].thisdate; i <= tmpctr; ++i) {
-			get_moonphases(i,moonphases);
-		}
-		qsort(event_list,recordnums-1,sizeof(struct event),comparator);
-	}
 	if (strlen(relig) > 0) {
 		if (strstr(relig,"west")) {
 			west_holidays(event_list[0].thisdate);
@@ -216,11 +209,20 @@ int main(int argc, char **argv)
 			east_holidays(event_list[0].thisdate);
 		} if (strstr(relig,"jew")) {
 			jew_holidays(event_list[0].thisdate);
+		} if (strstr(relig,"isl")) {
+			islamic_holidays(event_list[0].thisdate);
 		}
 		qsort(event_list,recordnums-1,sizeof(struct event),comparator);
 	}
 	if (strlen(nat) > 0) {
 		nat_holidays(nat, event_list[0].thisdate);
+		qsort(event_list,recordnums-1,sizeof(struct event),comparator);
+	}
+	if (moonphases > 0) {
+		tmpctr = event_list[recordnums-2].thisdate;
+		for (i = event_list[0].thisdate; i <= tmpctr; ++i) {
+			get_moonphases(i,moonphases);
+		}
 		qsort(event_list,recordnums-1,sizeof(struct event),comparator);
 	}
 	for (i = 0; i < (recordnums-1); ++i) {

@@ -622,8 +622,6 @@ int rire_holidays(int datenum)
 	holiday = last_wday_of_month(get_datenum(date), 1);
 	add_to_event("October Holiday (Ireland)",get_datenum(date));
 	date->tm_mon -= 1; date->tm_mon = 11; date->tm_mday = 25;
-	// FFFF
-	date->tm_year -= 1; date->tm_mon = 11; date->tm_mday = 25;
 	holiday = mkdaynum(mktime(date));
 	add_to_event("Christmas (Ireland)",holiday);
 	date->tm_year -= 1;
@@ -632,7 +630,7 @@ int rire_holidays(int datenum)
 	date->tm_year += 2;
 	holiday = mkdaynum(mktime(date));
 	add_to_event("Christmas (Ireland)",holiday);
-	date->tm_mon -= 1; date->tm_mon = 11; date->tm_mday = 26;
+	date->tm_year -= 1; date->tm_mon = 11; date->tm_mday = 26;
 	holiday = mkdaynum(mktime(date));
 	add_to_event("St. Stephen's Day (Ireland)",holiday);
 	date->tm_year -= 1;

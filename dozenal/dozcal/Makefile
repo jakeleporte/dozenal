@@ -16,7 +16,7 @@ dirmode = 755
 IDIR =../include
 CC = gcc
 objects = main.o utility.o proc_date.o process_file.o moon.o opt_file.o \
-	easter.o nat_holidays.o jewish_date.o
+	easter.o nat_holidays.o jewish_date.o islamic.o
 binobjects = dozcal
 
 all: bin
@@ -33,6 +33,9 @@ moon.o: moon.c
 
 jewish_date.o: jewish_date.c
 	$(CC) -I$(IDIR) -g -lm -lhdate -c jewish_date.c
+
+islamic.o: islamic.c
+	$(CC) -I$(IDIR) -g -lm -c islamic.c
 
 nat_holidays.o: nat_holidays.c
 	$(CC) -I$(IDIR) -g -lm -c nat_holidays.c
