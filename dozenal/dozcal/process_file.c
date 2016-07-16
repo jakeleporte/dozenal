@@ -45,6 +45,8 @@
 
 extern struct event *event_list;
 extern int recordnums;
+extern struct todo *todo_list;
+extern int todonums;
 
 int process_file(char *s)
 {
@@ -70,7 +72,10 @@ int process_file(char *s)
 			if (linesread != 0)
 				proc_rec(buffer,currlineno);
 			currlineno = 0;
-			strcpy(buffer[currlineno++],"EVENT");
+			if (strstr(line,"[EVENT]"))
+				strcpy(buffer[currlineno++],"EVENT");
+			if (strstr(line,"[TODO]"))
+				strcpy(buffer[currlineno++],"TODO");
 		} else if (!strstr(line,"[EVENT]") && !strstr(line,"[TODO]")) {
 			t = strchr(line,':') + 1;
 			strcpy(buffer[currlineno++],line);
@@ -89,12 +94,16 @@ int proc_rec(char buffer[][MAXLEN],int lines)
 	int i; int holder;
 	char title[256];
 	time_t startdate; int startday;
+	time_t duetime;
 	time_t enddate = -1; int endday = -1;
 	int exceptions[256];
 	int j = 0;
 	int starttime = -1; int endtime = -1;
 	int interval = 1;
 	int currinterval;
+	int priority = 0;
+	int compflag = 0;
+	int pergross = 0;
 
 	for (i = 0; i < 256; ++i)
 		exceptions[i] = -1;
@@ -102,25 +111,31 @@ int proc_rec(char buffer[][MAXLEN],int lines)
 		if (strstr(buffer[i],"TITLE")) {
 			holder = get_impstr(buffer[i]);
 			strcpy(title,buffer[i]+holder);
-		}
-		if (strstr(buffer[i],"START_DATE")) {
+		} if (strstr(buffer[i],"START_DATE")) {
 			startdate = proc_date(buffer[i]);
-		}
-		if (strstr(buffer[i],"END_DATE")) {
+		} if (strstr(buffer[i],"END_DATE")) {
 			enddate = proc_date(buffer[i]);
-		}
-		if (strstr(buffer[i],"EXCEPT_DATE")) {
+		} if (strstr(buffer[i],"EXCEPT_DATE")) {
 			exceptions[j++] = mkdaynum(proc_date(buffer[i])) + 1;
-		}
-		if (strstr(buffer[i],"START_TIME")) {
+		} if (strstr(buffer[i],"START_TIME")) {
 			starttime = proc_time(buffer[i]);
-		}
-		if (strstr(buffer[i],"END_TIME")) {
+		} if (strstr(buffer[i],"END_TIME")) {
 			endtime = proc_time(buffer[i]);
-		}
-		if (strstr(buffer[i],"INTERVAL")) {
+		} if (strstr(buffer[i],"INTERVAL")) {
 			holder = get_impstr(buffer[i]);
 			interval = (int) doztodec(buffer[i]+holder);
+		} if (strstr(buffer[i],"PRIORITY")) {
+			holder = get_impstr(buffer[i]);
+			priority = (int) doztodec(buffer[i]+holder);
+		} if (strstr(buffer[i],"DUE_DATE")) {
+			startdate = proc_date(buffer[i]);
+		} if (strstr(buffer[i],"DUE_TIME")) {
+			starttime = proc_time(buffer[i]);
+		} if (strstr(buffer[i],"COMPLETED")) {
+			compflag = atoi(buffer[i]+get_impstr(buffer[i]));
+		} if (strstr(buffer[i],"PERGROSS")) {
+			holder = get_impstr(buffer[i]);
+			pergross = (int) doztodec(buffer[i]+holder);
 		}
 	}
 	if (enddate == -1)
@@ -133,17 +148,29 @@ int proc_rec(char buffer[][MAXLEN],int lines)
 	for (holder = startday; holder <= endday; ++holder) {
 		if ((not_in(holder,exceptions,j-1) == 0) &&
 		(currinterval == holder)) {
-		if (strstr(buffer[0],"EVENT")) {
-			event_list = realloc(event_list,(recordnums * 
-				sizeof(struct event)));
-			event_list[recordnums-1].starttime = -1;
-			event_list[recordnums-1].endtime = -1;
-			strcpy(event_list[recordnums-1].title,title);
-			event_list[recordnums-1].thisdate = holder;
-			event_list[recordnums-1].starttime = starttime;
-			event_list[recordnums-1].endtime = endtime;
-			recordnums++;
-		}
+			if (strstr(buffer[0],"EVENT")) {
+				event_list = realloc(event_list,(recordnums * 
+					sizeof(struct event)));
+				event_list[recordnums-1].starttime = -1;
+				event_list[recordnums-1].endtime = -1;
+				strcpy(event_list[recordnums-1].title,title);
+				event_list[recordnums-1].thisdate = holder;
+				event_list[recordnums-1].starttime = starttime;
+				event_list[recordnums-1].endtime = endtime;
+				recordnums++;
+			} if (strstr(buffer[0],"TODO")) {
+				todo_list = realloc(todo_list,(todonums *
+					sizeof(struct todo)));
+				todo_list[todonums-1].duedate = -1;
+				todo_list[todonums-1].duetime = -1;
+				strcpy(todo_list[todonums-1].item,title);
+				todo_list[todonums-1].duedate = holder;
+				todo_list[todonums-1].duetime = starttime;
+				todo_list[todonums-1].priority = priority;
+				todo_list[todonums-1].completed = compflag;
+				todo_list[todonums-1].pergross = pergross;
+				todonums++;
+			}
 		}
 		if (currinterval == holder)
 			currinterval += interval;

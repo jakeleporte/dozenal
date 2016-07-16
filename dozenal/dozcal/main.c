@@ -48,6 +48,8 @@
 
 struct event *event_list;
 int recordnums = 0;
+struct todo *todo_list;
+int todonums = 0;
 int comparator(const void *evone, const void *evtwo);
 
 int main(int argc, char **argv)
@@ -71,6 +73,8 @@ int main(int argc, char **argv)
 	char cwd[] = "~";
 	int preflen = -1;
 	int confflag = 0;
+	int ifevent = 1;
+	int iftodo = 0;
 
 	home = getenv("HOME");
 	if (home != NULL) {
@@ -93,6 +97,11 @@ int main(int argc, char **argv)
 	if ((event_list = malloc(recordnums++ * sizeof(struct event))) == NULL) {
 		fprintf(stderr,"dozcal:  insufficient memory to hold the "
 			"event list\n");
+		exit(INSUFF_MEM);
+	}
+	if ((todo_list = malloc(todonums++ * sizeof(struct todo))) == NULL) {
+		fprintf(stderr,"dozcal:  insufficient memory to hold the "
+			"todo list\n");
 		exit(INSUFF_MEM);
 	}
 	if ((ev_form = malloc(2*(strlen(def_form)+1) * sizeof(char))) == NULL) {
@@ -126,7 +135,7 @@ int main(int argc, char **argv)
 	}
 	relig[0] = '\0';
 	opterr = 0;
-	while ((c = getopt(argc,argv,"Vm:f:s:e:d:t:r:c:n:h:")) != -1) {
+	while ((c = getopt(argc,argv,"VETm:f:s:e:d:t:r:c:n:h:")) != -1) {
 		switch(c) {
 		case 'V':
 			printf("dozcal v1.0\n");
@@ -137,6 +146,12 @@ int main(int argc, char **argv)
 				"and redistribute it.  There is NO WARRANTY, "
 				"to the extent permitted by law.\n");
 			exit(EXIT_SUCCESS);
+			break;
+		case 'E':
+			ifevent = 0;
+			break;
+		case 'T':
+			iftodo = 1;
 			break;
 		case 'n':
 			if ((nat = realloc(nat,(strlen(optarg)+1) * 
@@ -255,13 +270,25 @@ int main(int argc, char **argv)
 		}
 		qsort(event_list,recordnums-1,sizeof(struct event),comparator);
 	}
-	for (i = 0; i < (recordnums-1); ++i) {
-		if ((event_list[i].thisdate >= startdate) &&
-		(event_list[i].thisdate <= enddate)) {
-			print_event(ev_form,i,date_form,time_form);
+	if (ifevent == 1) {
+		for (i = 0; i < (recordnums-1); ++i) {
+			if ((event_list[i].thisdate >= startdate) &&
+			(event_list[i].thisdate <= enddate)) {
+				print_event(ev_form,i,date_form,time_form);
+			}
+		}
+	}
+	if (iftodo == 1) {
+		for (i = 0; i < (todonums-1); ++i) {
+			if ((todo_list[i].duedate >= startdate) &&
+			(todo_list[i].duedate <= enddate)) {
+//				print_event(ev_form,i,date_form,time_form);
+				printf("%s --- %d\n",todo_list[i].item,todo_list[i].duedate);
+			}
 		}
 	}
 	free(event_list);
+	free(todo_list);
 	free(ev_form);
 	free(date_form);
 	free(time_form);

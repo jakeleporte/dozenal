@@ -7,6 +7,8 @@ dozcal \- a command-line dozenal calendar program
 .SH SYNOPSIS
 .B dozcal
 [\fB\-V\fR]
+[\fB\-E\fR]
+[\fB\-T\fR]
 [\fB\-m\fR \fIfull|major\fR]
 [\fB\-h\fR \fIreligious\fR]
 [\fB\-n\fR \fInational\fR]
@@ -32,6 +34,15 @@ understandable.
 .BR \-V
 Print version and licensing information, then exit
 successfully.
+.TP
+.BR \-E
+Do \fInot\fR print events.  Events are printed by default,
+so this flag turns event printing \fIoff\fR.
+.TP
+.BR \-T
+Print todos.  Unlike the \fB\-E\fR flag, this turns printing
+of todos \fIon\fR, because printing of todos is off by
+default.
 .TP
 .BR "\-m [all|major]"
 Include the phases of the moon in your output.  This must
