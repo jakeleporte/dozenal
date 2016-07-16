@@ -9,6 +9,7 @@ dozcal \- a command-line dozenal calendar program
 [\fB\-V\fR]
 [\fB\-m\fR \fIfull|major\fR]
 [\fB\-h\fR \fIreligious\fR]
+[\fB\-n\fR \fInational\fR]
 [\fB\-s\fR \fIstartdate\fR]
 [\fB\-e\fR \fIenddate\fR]
 [\fB\-d\fR \fIdateformat\fR]
@@ -22,7 +23,8 @@ A text-based calendar program which operates using dozenal
 dates and times.  Uses a simple plain-text file format.
 Multiple files can be specified on the command line.  Date
 formats and time formats can also be specified on the
-command line.  All can further be specified in a
+command line.  There are options to display religious and
+natioanl holidays.  All can further be specified in a
 configuration file, which is also plain-text and easily
 understandable.
 .SH OPTIONS
@@ -31,21 +33,23 @@ understandable.
 Print version and licensing information, then exit
 successfully.
 .TP
-.BR \-m
+.BR "\-m [all|major]"
 Include the phases of the moon in your output.  This must
 take one of two arguments:  "all", which will print the
 phase of the moon for all days in your date range; or
 "major", which will only print the major phases (i.e.,
 "new", "first quarter", "full", and "last quarter").  In
 either case, the age of the moon in days is printed as its
-phase, which some text for the major phases.
+phase, with some text for the major phases.
 .TP
-.BR \-h
+.BR "\-h [holiday string]"
 Include religious holidays.  This takes a single string as
 an argument, and the contents of the string determine which
 holidays will be added.  The holidays are added for the year
 before your current year, the current year, and the year
-after.
+after.  These strings may be concatenated however you wish
+and in whatever order; e.g., "westjew" and "jew, west" will
+give the same result.
 .RS
 .TP
 .BR west
@@ -78,13 +82,15 @@ precisely this reason).  Includes Ramadan, Eid Al-Fitr, and
 Eid Al-Adha.
 .RE
 .TP
-.BR \-n
-Include national holidays in your results.  Supported
-national holidays are the United States ("usa"), the United
-Kingdom ("uk"), England ("eng"), Scotland ("scot"), Wales
-("wales"), Northern Ireland ("nire"), the Republic of
-Ireland ("rire"), Australia ("austral"), and New Zealand
-("nz" or "kiwi").
+.BR "\-n [national holiday string]"
+Include national holidays in your results.  Takes a string
+as its argument; the contents of the string determines which
+national holidays will be added.  These can be added in
+whatever order, and they may or not be separated by other
+text; e.g., "eng,rire" is the same as "engrire".  The
+holidays will be added for your current year, the previous
+year, and the next year.  Supported
+national holidays are:
 .RS
 .TP
 .BR usa
@@ -95,20 +101,72 @@ falls on Washington's birthday), Memorial Day, Independence
 Day, Labor Day, Columbus Day, Veterans Day, Thanksgiving
 Day, and Christmas Day.  It also includes election day,
 though this is not a federal holiday.
-.RE
 .TP
-.BR \-s
+.BR uk
+This option is equivalent to adding \fBend\fR,
+\fBwales\fR, \fBscot\fR, and \fBnire\fR.  Since most of
+these holidays are shared, this will result in many
+duplicates.
+.TP
+.BR eng
+English national holidays.  Includes New Year's Day,
+Christmas, Boxing Day, Easter Monday, the Spring Bank
+Holiday, and the Late Summer Bank Holiday.
+.TP
+.BR wales
+Welsh national holidays.  These are the same as English
+national holidays.  St. David's Day \fIis\fR included,
+as it's not an official Welsh holiday, even though it's
+observed throughout most of Wales with considerable fanfare.
+.TP
+.BR scot
+Scottish national holidays.  Includes New Year's Day,
+Christmas, Boxing Day, Labour Day (May Day), Good Friday,
+Spring Holiday, Summer Holiday, and St. Andrew's Day.
+.TP
+.BR nire
+Northern Irish national holidays.  These are the same as
+English and Welsh national holidays, with the additional of
+St. Patrick's Day and the day of the Battle of the Boyne, or
+Orangemen's Day.
+.TP
+.BR rire
+National holidays of the Republic of Ireland.  Includes New
+Year's Day, Easter Monday, St. Patrick's Day, May Day, June
+Holiday, August Holiday, October Holiday, Christmas, and St.
+Stephen's Day.
+.TP
+.BR austral
+Australian national holidays.  Includes New Year's Day,
+Australia Day, Good Friday, Easter Monday, Anzac Day, and
+Christmas Day.
+.TP
+.BR "nz|kiwi"
+New Zealand's national holidays.  Includes New Year's Day,
+the day after New Year's Day, Waitangi Day, Good Friday,
+Easter Monday, Labour Day, Anzac Day, the Queen's Birthday,
+Christmas, and Boxing Day.
+.RE
+Countries with their holidays not included:  this is not
+meant as a slight, I'm just most familiar with these
+Anglophone countries and built them in for no other reason.
+We hope to add facilities for easily including new
+programmable holidays that will hopefully resolve this
+issue.  Otherwise, such holidays must be included in an
+input data file.
+.TP
+.BR "\-s [startdate]"
 The first date that you want results from.  If this is not
 specified, \fBdozcal\fR will return all results from its earliest
 date.
 .TP
-.BR \-e
+.BR "\-e [enddate]"
 The last date that you want results from.  Combined with
 \fB\-s\fR, you can restrict the range of results you'll
 receive.  If this isn't specified, \fBdozcal\fR will return
 results from the start date until it runs out.
 .TP
-.BR \-d
+.BR "\-d [date format string]"
 The date format.  These are specified identically to those
 of the standard Unix \fBdate\fR command; please see the
 documentation for that for more details.  (Note that this
@@ -116,7 +174,7 @@ does \fInot\fR include the \fBdozdate\fR extensions,
 beginning with \fI@\fR rather than \fI%\fR; they're not
 necessary for this problem domain.)
 .TP
-.BR \-t
+.BR "\-t [time format string]"
 The time format.  Much simpler than date format,
 \fBdozcal\fR assumes the use of hours and Tims for time, and
 doesn't support anything else at this time.  Only two
@@ -132,7 +190,7 @@ off at EEEE.  \fBdozcal\fR will happily display these to
 less than 4 digits, if requested.
 .RE
 .TP
-.BR \-r
+.BR "\-r [event format string]"
 The event format.  Each event in your calendar is printed as
 a separate record; the argument to this option allows you to
 specify its format.  It operates independently of \fB\-d\fR
@@ -155,18 +213,40 @@ you've given \fBdozcal\fR a time formatting string.
 The event's closing (ending) time, formatted as you requested if
 you've given \fBdozcal\fR a time formatting string.
 .RE
+.TP
+.BR "\-f [inputfile]"
+Names an input data file for \fBdozcal\fR to use.  (See the
+section below about how to format such data files.)  This
+option can be specified more than once; \fBdozcal\fR will
+use all the files so specified, sorting them without regard
+to the order of their inclusion.
+.TP
+.BR "\-c [configfile]"
+Names a config file for \fBdozcal\fR to use.  (See the
+section below about how to format such config files.)  If
+not specified, \fBdozcal\fR will look for
+\fI$HOME/.dozcalrc\fR; if it cannot find that, it will
+proceed without any config files.  If this is specified
+multiple times, any options in later config files will
+override those in earlier ones.
+.RS
+.PP
+Command line options listed \fIafter\fR the config file
+option will take precedence; those listed \fIbefore\fR will
+be overridden if the config file contradicts them.
+.RE
 .SH FILES
 \fBdozcal\fR uses two files primarily:  the data, or library
 file, which has the actual library information in it, and a
 run-control, or config file, which contains simple lines to
-control \fBminlib\fR's behavior.
+control \fBdozcal\fR's behavior.
 .SS The Data File
 .PP
 \fBdozcal\fR works with data files that follow a simple but
 specific format.  Each record begins with a line containing
-the string \fI[EVENT]\fR and ends either at the end of the
-file or at the next line containing \fI[EVENT]\fR; blank
-lines are ignored.
+the string \fI[EVENT]\fR, \fI[TODO]\fR, or \fI[JOURNAL]\fR,
+and ends either at the end of the file or at the next line
+containing one of those strings; blank lines are ignored.
 .PP
 Within each event, you must specify at least a \fITITLE\fR
 and a \fISTART_DATE\fR.  The following are recognized
@@ -180,8 +260,8 @@ Gives the title of the event; e.g., "Meeting with Roy" or
 .BR START_DATE:
 The date on which the event occurs.  It is called start-date
 because many events recur on the calendar, but this one
-serves as either the only event or the first of a recurring
-event.
+serves as either the only event or the first day of a
+recurring event.
 .TP
 .BR END_DATE:
 The last date of the event, and (if you've specified an

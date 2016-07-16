@@ -44,6 +44,10 @@ int nat_holidays(char *s, int datenum)
 	if (strstr(s,"usa")) {
 		usa_holidays(datenum);
 	} if (strstr(s,"uk")) {
+		england_holidays(datenum);
+		wales_holidays(datenum);
+		scot_holidays(datenum);
+		nire_holidays(datenum);
 	} if (strstr(s,"eng")) {
 		england_holidays(datenum);
 	} if (strstr(s,"wales") || strstr(s,"welsh")) {
@@ -435,6 +439,12 @@ int wales_holidays(int datenum)
 	date->tm_year += 2;
 	holiday = last_wday_of_month(get_datenum(date), 1);
 	add_to_event("Late Summer Bank Holiday (Wales)",holiday);
+	date->tm_year -= 1; date->tm_mon = 2; date->tm_mday = 1;
+	add_to_event("St. David's Day (Wales)",get_datenum(date));
+	date->tm_year -= 1;
+	add_to_event("St. David's Day (Wales)",get_datenum(date));
+	date->tm_year += 2;
+	add_to_event("St. David's Day (Wales)",get_datenum(date));
 	date->tm_year -= 1;
 	return 0;
 }
