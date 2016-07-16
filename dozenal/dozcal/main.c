@@ -65,7 +65,31 @@ int main(int argc, char **argv)
 	const char *def_time = "%4h;%2b;%b";
 	char *nat;
 	char *relig;
+	char *conffile;
+	char *defconfname = "/.dozcalrc";
+	char *home;
+	char cwd[] = "~";
+	int preflen = -1;
+	int confflag = 0;
 
+	home = getenv("HOME");
+	if (home != NULL) {
+		preflen = strlen(home) + 1;
+	} else {
+		preflen = 2;
+	}
+	if ((conffile = malloc((preflen + strlen(defconfname) + 1) * 
+	sizeof(char))) == NULL) {
+		fprintf(stderr,"dozcal:  insufficient memory to hold "
+		"the configuration file name\n");
+		exit(INSUFF_MEM);
+	}
+	*conffile = '\0';
+	if (home != NULL) {
+		strcat(conffile,home); strcat(conffile,defconfname);
+	} else {
+		strcat(conffile,cwd); strcat(conffile,defconfname);
+	}
 	if ((event_list = malloc(recordnums++ * sizeof(struct event))) == NULL) {
 		fprintf(stderr,"dozcal:  insufficient memory to hold the "
 			"event list\n");
@@ -136,7 +160,9 @@ int main(int argc, char **argv)
 			numevents = process_file(optarg);
 			break;
 		case 'c':
-			proc_options(optarg,&moonphases,nat,relig);
+			proc_options(optarg,&moonphases,&nat,&relig,&date_form,
+				&time_form,&ev_form);
+			confflag = 1;
 			break;
 		case 'm':
 			if (strstr(optarg,"all")) {
@@ -197,6 +223,10 @@ int main(int argc, char **argv)
 			break;
 		}
 	}
+	if (confflag == 0) {
+		proc_options(conffile,&moonphases,&nat,&relig,&date_form,
+			&time_form,&ev_form);
+	}
 	if (startdate == -1)
 		startdate = 0;
 	if (enddate == -1)
@@ -237,6 +267,7 @@ int main(int argc, char **argv)
 	free(time_form);
 	free(nat);
 	free(relig);
+	free(conffile);
 	return 0;
 }
 

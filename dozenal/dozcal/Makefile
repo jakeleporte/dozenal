@@ -49,8 +49,8 @@ process_file.o: process_file.c utility.c ../conv/conv.o ../doz/doz.o ../dec/dec.
 proc_date.o:  proc_date.c utility.c ../conv/conv.o ../doz/doz.o ../dec/dec.o
 	$(CC) -I$(IDIR) -g -lm -c proc_date.c utility.c ../dec/dec.c ../conv/conv.c ../doz/doz.c
 
-opt_file.o: opt_file.c
-	$(CC) -I$(DIR) -g -lm -c opt_file.c
+opt_file.o: opt_file.c utility.c
+	$(CC) -I$(DIR) -g -lm -c opt_file.c utility.o
 
 utility.o: utility.c
 	$(CC) -I$(IDIR) -g -lm -c utility.c

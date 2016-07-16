@@ -31,7 +31,57 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-int proc_options(char *s, int *moonphases, char *nat, char *relig)
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+#include<errno.h>
+#include"errcodes.h"
+
+int proc_options(char *s, int *moonphases, char **nat, char **relig,
+					char **date_form, char **time_form, char **ev_form)
 {
+	FILE *fp; int holder; int implen;
+	char *line = NULL; size_t len = 0; ssize_t read;
+	
+	if ((fp = fopen(s,"r")) == NULL) {
+		fprintf(stderr,"dozcal:  unable to open file "
+			"\"%s\", with the following error:\n\t%d: "
+			"%s\n",s,errno,strerror(errno));
+		return 0;
+	}
+	while ((read = getline(&line, &len, fp)) != -1) {
+		chomp(line);
+		if (strstr(line,"MOON")) {
+			if (strstr(line,"major"))
+				*moonphases = 2;
+			if (strstr(line,"all"))
+				*moonphases = 1;
+		} else if (strstr(line,"RELIG")) {
+			holder = get_impstr(line);
+			*relig = realloc(*relig,((strlen(line)) * sizeof(char)));
+			strcpy(*relig,line+holder);
+		} else if (strstr(line,"NATION")) {
+			holder = get_impstr(line);
+			*nat = realloc(*nat,((strlen(line)) * sizeof(char)));
+			strcpy(*nat,line+holder);
+		} else if (strstr(line,"DATE_FORMAT")) {
+			holder = get_impstr(line);
+			*date_form = realloc(*date_form,((strlen(line)) * sizeof(char)));
+			strcpy(*date_form,line+holder);
+		} else if (strstr(line,"TIME_FORMAT")) {
+			holder = get_impstr(line);
+			*time_form = realloc(*time_form,((strlen(line)) * sizeof(char)));
+			strcpy(*time_form,line+holder);
+		} else if (strstr(line,"EVENT_FORMAT")) {
+			holder = get_impstr(line);
+			*ev_form = realloc(*ev_form,((strlen(line)) * sizeof(char)));
+			strcpy(*ev_form,line+holder);
+		} else if (strstr(line,"INPUT")) {
+			holder = get_impstr(line);
+			process_file(line+holder);
+		}
+	}
+	free(line);
+	fclose(fp);
 	return 0;
 }
