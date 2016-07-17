@@ -65,6 +65,8 @@ int main(int argc, char **argv)
 	const char *def_date = "%Y-%m-%d";
 	char *time_form;
 	const char *def_time = "%4h;%2b;%b";
+	char *todo_form;
+	const char *def_todo_form = "%p\t%d : %t\t%i\t%c:%g";
 	char *nat;
 	char *relig;
 	char *conffile;
@@ -116,6 +118,13 @@ int main(int argc, char **argv)
 		exit(INSUFF_MEM);
 	}
 	strcpy(date_form,def_date);
+	if ((todo_form = malloc(2*(strlen(def_todo_form)+1)*sizeof(char))) 
+	== NULL) {
+		fprintf(stderr,"dozcal:  insufficient memory to hold the "
+			"date format line\n");
+		exit(INSUFF_MEM);
+	}
+	strcpy(todo_form,def_todo_form);
 	if ((time_form = malloc(2*(strlen(def_date)+1)*sizeof(char))) == NULL) {
 		fprintf(stderr,"dozcal:  insufficient memory to hold the "
 			"time format line\n");
@@ -206,6 +215,15 @@ int main(int argc, char **argv)
 			}
 			strcpy(date_form,optarg);
 			break;
+		case 'R':
+			if ((todo_form = realloc(todo_form,(strlen(optarg)+1) * 
+			sizeof(char)))==NULL) {
+				fprintf(stderr,"dozcal:  insufficient memory to hold the "
+					"date format line\n");
+				exit(INSUFF_MEM);
+			}
+			strcpy(todo_form,optarg);
+			break;
 		case 't':
 			if ((time_form = realloc(time_form,(strlen(optarg)+1) * 
 			sizeof(char)))==NULL) {
@@ -282,8 +300,7 @@ int main(int argc, char **argv)
 		for (i = 0; i < (todonums-1); ++i) {
 			if ((todo_list[i].duedate >= startdate) &&
 			(todo_list[i].duedate <= enddate)) {
-//				print_event(ev_form,i,date_form,time_form);
-				printf("%s --- %d\n",todo_list[i].item,todo_list[i].duedate);
+				print_todo(todo_form,i,date_form,time_form);
 			}
 		}
 	}
@@ -292,9 +309,64 @@ int main(int argc, char **argv)
 	free(ev_form);
 	free(date_form);
 	free(time_form);
+	free(todo_form);
 	free(nat);
 	free(relig);
 	free(conffile);
+	return 0;
+}
+
+int print_todo(char *s, int index, char *date_format, char *time_format)
+{
+	int i; int j;
+	char holder[6];
+	int len = 256;
+	char *ptr;
+	char datestr[256];
+	char buffer[8];
+
+	if ((ptr = malloc(256 * sizeof(char))) == NULL) {
+		fprintf(stderr,"dozcal:  insufficient memory to hold the "
+			"todo strings\n");
+		exit(INSUFF_MEM);
+	}
+	for (i = 0; s[i] != '\0'; ++i) {
+		if (s[i] == '%') {
+			j = 0; holder[0] = '\0'; len = 0;
+			while (dozendig(s[++i]))
+				holder[j++] = s[i];
+			holder[j] = '\0';
+			if (holder[0] != '\0')
+				len = (int)doztodec(holder);
+			if (s[i] == 'd') {
+				num_to_date(todo_list[index].duedate,datestr,date_format);
+				printf("%*s",len,datestr);
+				datestr[0] = '\0';
+			} else if (s[i] == 't') {
+				secs_to_Tims(todo_list[index].duetime,datestr,time_format);
+				printf("%*s",len,datestr);
+				datestr[0] = '\0';
+			} else if (s[i] == 'p') {
+				printf("%*d",len,todo_list[index].priority);
+			} else if (s[i] == 'c') {
+				printf("%*d",len,todo_list[index].completed);
+			} else if (s[i] == 'g') {
+				dectodoz(buffer,(double)todo_list[index].pergross);
+				printf("%*s",len,buffer);
+			} else if (s[i] == 'i') {
+				printf("%*s",len,todo_list[index].item);
+			} else {
+				fprintf(stderr,"dozcal:  unrecognized conversion "
+					"character \"%%%c\" in todo form string, "
+					"\"%%%s\"\n",s[i],s);
+				exit(BAD_TODO_FORMAT);
+			}
+		} else {
+			printf("%c",s[i]);
+		}
+	}
+	printf("\n");
+	free(ptr);
 	return 0;
 }
 

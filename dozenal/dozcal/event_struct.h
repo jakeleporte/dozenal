@@ -51,6 +51,6 @@ struct todo {
 	int duetime;
 	int priority;			/* higher numbers have higher priority */
 	char location[256];
-	char completed;		/* '0' if not completed, 1 if completed */
-	char pergross;			/* 0-144 completed amount */
+	int completed;			/* '0' if not completed, 1 if completed */
+	int pergross;			/* 0-144 completed amount */
 };

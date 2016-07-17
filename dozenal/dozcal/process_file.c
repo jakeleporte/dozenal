@@ -132,7 +132,8 @@ int proc_rec(char buffer[][MAXLEN],int lines)
 		} if (strstr(buffer[i],"DUE_TIME")) {
 			starttime = proc_time(buffer[i]);
 		} if (strstr(buffer[i],"COMPLETED")) {
-			compflag = atoi(buffer[i]+get_impstr(buffer[i]));
+			holder = get_impstr(buffer[i]);
+			compflag = atoi(buffer[i]+holder);
 		} if (strstr(buffer[i],"PERGROSS")) {
 			holder = get_impstr(buffer[i]);
 			pergross = (int) doztodec(buffer[i]+holder);
@@ -163,6 +164,9 @@ int proc_rec(char buffer[][MAXLEN],int lines)
 					sizeof(struct todo)));
 				todo_list[todonums-1].duedate = -1;
 				todo_list[todonums-1].duetime = -1;
+				todo_list[todonums-1].priority = 0;
+				todo_list[todonums-1].completed = 0;
+				todo_list[todonums-1].pergross = 0;
 				strcpy(todo_list[todonums-1].item,title);
 				todo_list[todonums-1].duedate = holder;
 				todo_list[todonums-1].duetime = starttime;

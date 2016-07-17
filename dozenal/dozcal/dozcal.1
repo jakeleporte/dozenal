@@ -225,6 +225,36 @@ The event's closing (ending) time, formatted as you requested if
 you've given \fBdozcal\fR a time formatting string.
 .RE
 .TP
+.BR "\-R [todo format string]"
+The todo format.  Each todo in your calendar is printed as
+a separate record; the argument to this option allows you to
+specify its format.  It operates independently of \fB\-d\fR
+and \fB\-t\fR, which will still be formatted as you request.
+It accepts the following conversion strings:
+.RS
+.TP
+.BR %i
+The todo item; could be called the "title".  It's loaded
+from the \fITITLE\fR line in your data file.
+.TP
+.BR %p
+The priority of the todo.
+.TP
+.BR %d
+The due date of the todo.
+.TP
+.BR %t
+The due time of the todo.
+.TP
+.BR %c
+The completedness of the todo; that is, whether you're done
+or not.  This is "0" for not done, "1" for done.
+.TP
+.BR %g
+How much progress has been made on the todo.  Given as a
+perbiqua (1-100).
+.RE
+.TP
 .BR "\-f [inputfile]"
 Names an input data file for \fBdozcal\fR to use.  (See the
 section below about how to format such data files.)  This
