@@ -427,6 +427,7 @@ int todocomp(const void *todoone, const void *todotwo)
 	int priorone = 0; int priortwo = 0;
 	int dateone = 0; int datetwo = 0;
 	int timeone = 0; int timetwo = 0;
+	char *itemone; char *itemtwo;
 
 	const struct todo *firsttodo = (struct todo*) todoone;
 	const struct todo *sectodo = (struct todo*) todotwo;
@@ -436,6 +437,8 @@ int todocomp(const void *todoone, const void *todotwo)
 	datetwo = ((struct todo*) todotwo)->duedate;
 	timeone = ((struct todo*) todoone)->duetime;
 	timetwo = ((struct todo*) todotwo)->duetime;
+	itemone = ((struct todo*) todoone)->item;
+	itemtwo = ((struct todo*) todotwo)->item;
 	if (priorone > priortwo) {
 		return 1;
 	} else if (priorone < priortwo) {
@@ -451,7 +454,7 @@ int todocomp(const void *todoone, const void *todotwo)
 			} else if (timeone < timetwo) {
 				return -1;
 			} else {
-				return 0;
+				return strcmp(itemone,itemtwo);
 			}
 		}
 	}
