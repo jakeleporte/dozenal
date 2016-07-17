@@ -46,10 +46,15 @@
 
 char *datepats[] = {
 	"\\([0-9XE][0-9XE][0-9XE][0-9XE]\\)[-/]\\([0-9XE][0-9XE]\\)[-/]\\([0-9XE][0-9XE]\\)",
-	"\\([0-9XE][0-9XE]\\)[-/]\\([0-9XE][0-9XE]\\)[-/]\\([0-9XE][0-9XE][0-9XE][0-9XE]\\)"
+	"\\([0-9XE][0-9XE]\\)[-/]\\([0-9XE][0-9XE]\\)[-/]\\([0-9XE][0-9XE][0-9XE][0-9XE]\\)",
+	"\\([0-9XE][0-9XE]\\)[ ]*\\([A-Za-z][A-Za-z]*\\)[ ]*\\([0-9XE][0-9XE][0-9XE][0-9XE]\\)",
+	"\\([A-Za-z][A-Za-z]*\\)[ ]*\\([0-9XE][0-9XE]\\),[ ]*\\([0-9XE][0-9XE][0-9XE][0-9XE]\\)"
 };
 /*	year-/mo-/da
-	mo/-da-/year */
+	mo/-da-/year
+	da[]mon[]year
+	mon[]da,[]year
+*/
 
 /* returns time_t of date; -1 if failed */
 time_t proc_date(char *s)
@@ -63,7 +68,7 @@ time_t proc_date(char *s)
 	time_t returnval;
 
 	date = calloc(1,sizeof(struct tm));
-	for (i = 0; i < 2; ++i) {
+	for (i = 0; i < 4; ++i) {
 		if ((errornum = regcomp(&regone,datepats[i],0)) != 0) {
 			regerror(errornum,&regone,err,MAX_ERR_LENGTH);
 			return -1;
@@ -87,6 +92,28 @@ time_t proc_date(char *s)
 				sprintf(holder,"%.*s",pmatch[1].rm_eo - pmatch[1].rm_so, 
 					s+pmatch[1].rm_so);
 				date->tm_mon = (int)doztodec(holder) - 1;
+				sprintf(holder,"%.*s",pmatch[2].rm_eo - pmatch[2].rm_so, 
+					s+pmatch[2].rm_so);
+				date->tm_mday = (int)doztodec(holder);
+				sprintf(holder,"%.*s",pmatch[3].rm_eo - pmatch[3].rm_so, 
+					s+pmatch[3].rm_so);
+				date->tm_year = (int)doztodec(holder) - 1900;
+				break;
+			case 2:
+				sprintf(holder,"%.*s",pmatch[1].rm_eo - pmatch[1].rm_so, 
+					s+pmatch[1].rm_so);
+				date->tm_mday = (int)doztodec(holder);
+				sprintf(holder,"%.*s",pmatch[2].rm_eo - pmatch[2].rm_so, 
+					s+pmatch[2].rm_so);
+				date->tm_mon = month_string(holder);
+				sprintf(holder,"%.*s",pmatch[3].rm_eo - pmatch[3].rm_so, 
+					s+pmatch[3].rm_so);
+				date->tm_year = (int)doztodec(holder) - 1900;
+				break;
+			case 3:
+				sprintf(holder,"%.*s",pmatch[1].rm_eo - pmatch[1].rm_so, 
+					s+pmatch[1].rm_so);
+				date->tm_mon = month_string(holder);
 				sprintf(holder,"%.*s",pmatch[2].rm_eo - pmatch[2].rm_so, 
 					s+pmatch[2].rm_so);
 				date->tm_mday = (int)doztodec(holder);
@@ -258,4 +285,35 @@ int secs_to_Tims(int time,char *timestr,char *time_format)
 		}
 	}
 	return 0;
+}
+
+int month_string(char *s)
+{
+	lower_str(s);
+	if (strstr(s,"jan"))
+		return 0;
+	else if (strstr(s,"feb"))
+		return 1;
+	else if (strstr(s,"mar"))
+		return 2;
+	else if (strstr(s,"apr"))
+		return 3;
+	else if (strstr(s,"may"))
+		return 4;
+	else if (strstr(s,"jun"))
+		return 5;
+	else if (strstr(s,"jul"))
+		return 6;
+	else if (strstr(s,"aug"))
+		return 7;
+	else if (strstr(s,"sep"))
+		return 8;
+	else if (strstr(s,"oct"))
+		return 9;
+	else if (strstr(s,"nov"))
+		return 10;
+	else if (strstr(s,"dec"))
+		return 11;
+	else
+		return -1;
 }

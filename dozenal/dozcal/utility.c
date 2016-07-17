@@ -182,3 +182,13 @@ int mkdaynum(time_t datenum)
 	holder = (double) datenum / 86400;
 	return lround(holder);
 }
+
+int lower_str(char *s)
+{
+	int i;
+
+	for (i = 0; s[i] != '\0'; ++i) {
+		s[i] = tolower(s[i]);
+	}
+	return 0;
+}
