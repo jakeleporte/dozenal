@@ -129,6 +129,11 @@ time_t proc_date(char *s)
 		free(date);
 		return -1;
 	}
+	if ((date->tm_year == -1) || (date->tm_mon == -1) ||
+	(date->tm_mday == -1)) {
+		free(date);
+		return -1;
+	}
 	returnval = mktime(date);
 	free(date);
 	return returnval;

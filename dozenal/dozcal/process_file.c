@@ -142,7 +142,7 @@ int proc_rec(char buffer[][MAXLEN],int lines)
 	if (enddate == -1)
 		enddate = startdate;
 	if (startdate == -1)
-		return 0;
+		return -1;
 	startday = mkdaynum(startdate) + 1;
 	endday = mkdaynum(enddate) + 1;
 	currinterval = startday;
