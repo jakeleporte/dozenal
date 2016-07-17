@@ -51,6 +51,7 @@ int recordnums = 0;
 struct todo *todo_list;
 int todonums = 0;
 int comparator(const void *evone, const void *evtwo);
+int todocomp(const void *todoone, const void *todotwo);
 
 int main(int argc, char **argv)
 {
@@ -297,6 +298,7 @@ int main(int argc, char **argv)
 		}
 	}
 	if (iftodo == 1) {
+		qsort(todo_list,todonums-1,sizeof(struct todo),todocomp);
 		for (i = 0; i < (todonums-1); ++i) {
 			if ((todo_list[i].duedate >= startdate) &&
 			(todo_list[i].duedate <= enddate)) {
@@ -418,6 +420,41 @@ int print_event(char *s, int index, char *date_format, char *time_format)
 	printf("\n");
 	free(ptr);
 	return 0;
+}
+
+int todocomp(const void *todoone, const void *todotwo)
+{
+	int priorone = 0; int priortwo = 0;
+	int dateone = 0; int datetwo = 0;
+	int timeone = 0; int timetwo = 0;
+
+	const struct todo *firsttodo = (struct todo*) todoone;
+	const struct todo *sectodo = (struct todo*) todotwo;
+	priorone = ((struct todo*) todoone)->priority;
+	priortwo = ((struct todo*) todotwo)->priority;
+	dateone = ((struct todo*) todoone)->duedate;
+	datetwo = ((struct todo*) todotwo)->duedate;
+	timeone = ((struct todo*) todoone)->duetime;
+	timetwo = ((struct todo*) todotwo)->duetime;
+	if (priorone > priortwo) {
+		return 1;
+	} else if (priorone < priortwo) {
+		return -1;
+	} else {
+		if (dateone > datetwo) {
+			return 1;
+		} else if (dateone < datetwo) {
+			return -1;
+		} else {
+			if (timeone > timetwo) {
+				return 1;
+			} else if (timeone < timetwo) {
+				return -1;
+			} else {
+				return 0;
+			}
+		}
+	}
 }
 
 int comparator(const void *evone, const void *evtwo)
