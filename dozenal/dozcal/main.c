@@ -44,7 +44,6 @@
 #include"event_struct.h"
 
 #define NUM_EVENTS (sizeof(event_list) / sizeof(event_list[0]))
-#define MAXLEN 256
 
 struct event *event_list;
 int recordnums = 0;
@@ -322,12 +321,12 @@ int print_todo(char *s, int index, char *date_format, char *time_format)
 {
 	int i; int j;
 	char holder[6];
-	int len = 256;
+	int len = MAXLEN + 1;
 	char *ptr;
-	char datestr[256];
+	char datestr[MAXLEN+1];
 	char buffer[8];
 
-	if ((ptr = malloc(256 * sizeof(char))) == NULL) {
+	if ((ptr = malloc((MAXLEN+1) * sizeof(char))) == NULL) {
 		fprintf(stderr,"dozcal:  insufficient memory to hold the "
 			"todo strings\n");
 		exit(INSUFF_MEM);
@@ -376,11 +375,11 @@ int print_event(char *s, int index, char *date_format, char *time_format)
 {
 	int i; int j;
 	char holder[6];
-	int len = 256;
+	int len = MAXLEN + 1;
 	char *ptr;
-	char datestr[256];
+	char datestr[MAXLEN+1];
 
-	if ((ptr = malloc(256 * sizeof(char))) == NULL) {
+	if ((ptr = malloc((MAXLEN+1) * sizeof(char))) == NULL) {
 		fprintf(stderr,"dozcal:  insufficient memory to hold the "
 			"event strings\n");
 		exit(INSUFF_MEM);

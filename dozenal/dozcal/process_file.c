@@ -41,7 +41,6 @@
 #include"conv.h"
 
 #define NUM_EVENTS (sizeof(*event_list) / sizeof(*event_list[0]))
-#define MAXLEN 256
 
 extern struct event *event_list;
 extern int recordnums;
@@ -51,7 +50,7 @@ extern int todonums;
 int process_file(char *s)
 {
 	FILE *fp; char *line = NULL; size_t len = 0; ssize_t read;
-	char buffer[16][MAXLEN];
+	char buffer[16][MAXLEN+1];
 	int linesread = 0;
 	int currlineno = 0;
 	char *t;
@@ -78,7 +77,7 @@ int process_file(char *s)
 				strcpy(buffer[currlineno++],"TODO");
 		} else if (!strstr(line,"[EVENT]") && !strstr(line,"[TODO]")) {
 			t = strchr(line,':') + 1;
-			strcpy(buffer[currlineno++],line);
+			strncpy(buffer[currlineno++],line,MAXLEN);
 		}
 		linesread++;
 	}
@@ -89,14 +88,14 @@ int process_file(char *s)
 }
 
 /* expand each file event into a list of events for the struct */
-int proc_rec(char buffer[][MAXLEN],int lines)
+int proc_rec(char buffer[][MAXLEN+1],int lines)
 {
 	int i; int holder;
-	char title[256];
+	char title[MAXLEN+1];
 	time_t startdate; int startday;
 	time_t duetime;
 	time_t enddate = -1; int endday = -1;
-	int exceptions[256];
+	int exceptions[MAXLEN+1];
 	int j = 0;
 	int starttime = -1; int endtime = -1;
 	int interval = 1;
@@ -105,12 +104,12 @@ int proc_rec(char buffer[][MAXLEN],int lines)
 	int compflag = 0;
 	int pergross = 0;
 
-	for (i = 0; i < 256; ++i)
+	for (i = 0; i < MAXLEN; ++i)
 		exceptions[i] = -1;
 	for (i = 0; i <= lines; ++i) {
 		if (strstr(buffer[i],"TITLE")) {
 			holder = get_impstr(buffer[i]);
-			strcpy(title,buffer[i]+holder);
+			strncpy(title,buffer[i]+holder,MAXLEN);
 		} if (strstr(buffer[i],"START_DATE")) {
 			startdate = proc_date(buffer[i]);
 		} if (strstr(buffer[i],"END_DATE")) {
@@ -154,7 +153,7 @@ int proc_rec(char buffer[][MAXLEN],int lines)
 					sizeof(struct event)));
 				event_list[recordnums-1].starttime = -1;
 				event_list[recordnums-1].endtime = -1;
-				strcpy(event_list[recordnums-1].title,title);
+				strncpy(event_list[recordnums-1].title,title,MAXLEN);
 				event_list[recordnums-1].thisdate = holder;
 				event_list[recordnums-1].starttime = starttime;
 				event_list[recordnums-1].endtime = endtime;
@@ -167,7 +166,7 @@ int proc_rec(char buffer[][MAXLEN],int lines)
 				todo_list[todonums-1].priority = 0;
 				todo_list[todonums-1].completed = 0;
 				todo_list[todonums-1].pergross = 0;
-				strcpy(todo_list[todonums-1].item,title);
+				strncpy(todo_list[todonums-1].item,title,MAXLEN);
 				todo_list[todonums-1].duedate = holder;
 				todo_list[todonums-1].duetime = starttime;
 				todo_list[todonums-1].priority = priority;

@@ -31,6 +31,8 @@
  * <http://www.gnu.org/licenses/>.
  */
 
+#define MAXLEN 256
+
 #define EXIT_SUCCESS 0
 #define OPT_REQ_ARG 1
 #define UNREC_OPT 2

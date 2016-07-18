@@ -207,7 +207,7 @@ int num_to_date(int datenum, char *datestr, char *dateform)
 	time_t unixdate;
 	struct tm *broken;
 	int i; int j; int k; char holder[6];
-	char buffer[256];
+	char buffer[MAXLEN+1];
 	char doznum[6]; char formdoz[6];
 	int diff;
 	const char *padding="000000000000000000000000000";
@@ -242,7 +242,7 @@ int secs_to_Tims(int time,char *timestr,char *time_format)
 	const int tims = 20736; /* number of Tims in hr */
 	char hours[3]; char timpart[5];
 	char holder[5]; int len = -1;
-	char buffer[256];
+	char buffer[MAXLEN+1];
 	const char *padding="000000000000000000000000000";
 	int padlen;
 
@@ -262,7 +262,7 @@ int secs_to_Tims(int time,char *timestr,char *time_format)
 			timpart[k++] = buffer[i];
 	}
 	hours[j] = '\0'; timpart[k] = '\0'; timestr[0] = '\0';
-	for (i = 0; (i < 256) && (time_format[i] != '\0'); ++i) {
+	for (i = 0; (i < MAXLEN) && (time_format[i] != '\0'); ++i) {
 		j = 0; k = 0; len = -1; holder[0] = '\0'; buffer[0] = '\0';
 		if (time_format[i] == '%') {
 			while (dozendig(time_format[++i]) && (time_format[i] != '\0')) {

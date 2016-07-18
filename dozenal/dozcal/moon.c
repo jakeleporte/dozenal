@@ -48,7 +48,7 @@ int get_moonphases(int datenum, int moonphases)
 	int phase;
 	struct tm *date;
 	time_t daynumber;
-	char phase_str[256];
+	char phase_str[48];
 	char phasenum[3];
 
 	phase_str[0] = '\0';
