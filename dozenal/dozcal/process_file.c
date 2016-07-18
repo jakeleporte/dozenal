@@ -50,7 +50,7 @@ extern int todonums;
 int process_file(char *s)
 {
 	FILE *fp; char *line = NULL; size_t len = 0; ssize_t read;
-	char buffer[16][MAXLEN+1];
+	char buffer[MAXLINES][MAXLEN+1];
 	int linesread = 0;
 	int currlineno = 0;
 	char *t;
@@ -75,7 +75,8 @@ int process_file(char *s)
 				strcpy(buffer[currlineno++],"EVENT");
 			if (strstr(line,"[TODO]"))
 				strcpy(buffer[currlineno++],"TODO");
-		} else if (!strstr(line,"[EVENT]") && !strstr(line,"[TODO]")) {
+		} else if (!strstr(line,"[EVENT]") && !strstr(line,"[TODO]") && 
+		(currlineno < MAXLINES)) {
 			t = strchr(line,':') + 1;
 			strncpy(buffer[currlineno++],line,MAXLEN);
 		}
