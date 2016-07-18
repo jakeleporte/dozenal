@@ -44,7 +44,7 @@ Print todos.  Unlike the \fB\-E\fR flag, this turns printing
 of todos \fIon\fR, because printing of todos is off by
 default.
 .TP
-.BR "\-m [all|major]"
+.BR "\-m [all | major]"
 Include the phases of the moon in your output.  This must
 take one of two arguments:  "all", which will print the
 phase of the moon for all days in your date range; or
@@ -111,7 +111,8 @@ called "Washington's Birthday", though it never actually
 falls on Washington's birthday), Memorial Day, Independence
 Day, Labor Day, Columbus Day, Veterans Day, Thanksgiving
 Day, and Christmas Day.  It also includes election day,
-though this is not a federal holiday.
+though this is not a federal holiday.  Does \fInot\fR
+include any of the individual state holidays.
 .TP
 .BR uk
 This option is equivalent to adding \fBend\fR,
@@ -152,11 +153,16 @@ Australian national holidays.  Includes New Year's Day,
 Australia Day, Good Friday, Easter Monday, Anzac Day, and
 Christmas Day.
 .TP
-.BR "nz|kiwi"
+.BR "nz | kiwi"
 New Zealand's national holidays.  Includes New Year's Day,
 the day after New Year's Day, Waitangi Day, Good Friday,
 Easter Monday, Labour Day, Anzac Day, the Queen's Birthday,
 Christmas, and Boxing Day.
+.TP
+.BR canada
+Includes Canadian national holidays; does \fInot\fR include
+provincial holidays.  The national holidays are New Year's
+Day; Good Friday; Canada Day; Labour Day; and Christmas Day.
 .RE
 Countries with their holidays not included:  this is not
 meant as a slight, I'm just most familiar with these

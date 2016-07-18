@@ -60,9 +60,69 @@ int nat_holidays(char *s, int datenum)
 		rire_holidays(datenum);
 	} if (strstr(s,"austral")) {
 		austral_holidays(datenum);
+	} if (strstr(s,"canada")) {
+		canada_holidays(datenum);
 	} if (strstr(s,"nz") || strstr(s,"kiwi")) {
 		nz_holidays(datenum);
 	}
+	return 0;
+}
+
+int canada_holidays(int datenum)
+{
+	time_t datesecs; time_t rawtime;
+	struct tm *date;
+	int holiday;
+
+	datesecs = datenum * 86400;
+	time(&rawtime);
+	date = localtime(&rawtime);
+	date->tm_mon = 0; date->tm_mday = 1; mktime(date);
+	holiday = mkdaynum(mktime(date));
+	add_to_event("New Year's Day (Canada)",holiday);
+	date->tm_year -= 1;
+	holiday = mkdaynum(mktime(date));
+	add_to_event("New Year's Day (Canada)",holiday);
+	date->tm_year += 2;
+	holiday = mkdaynum(mktime(date));
+	add_to_event("New Year's Day (Canada)",holiday);
+	date->tm_year -= 1;
+	holiday = date_easter(date->tm_year + 1900) - 2;
+	add_to_event("Good Friday (Canada)",holiday);
+	date->tm_year -= 1;
+	holiday = date_easter(date->tm_year + 1900) - 2;
+	add_to_event("Good Friday (Canada)",holiday);
+	date->tm_year += 2;
+	holiday = date_easter(date->tm_year + 1900) - 2;
+	add_to_event("Good Friday (Canada)",holiday);
+	date->tm_year -= 1; date->tm_mon = 6; date->tm_mday = 1;
+	holiday = mkdaynum(mktime(date));
+	add_to_event("Canada Day (Canada)",holiday);
+	date->tm_year -= 1;
+	holiday = mkdaynum(mktime(date));
+	add_to_event("Canada Day (Canada)",holiday);
+	date->tm_year += 2;
+	holiday = mkdaynum(mktime(date));
+	add_to_event("Canada Day (Canada)",holiday);
+	date->tm_year -= 1; date->tm_mon = 8;
+	holiday = wday_of_month(mkdaynum(mktime(date)), 1, 1);
+	add_to_event("Labour Day (Canada)",holiday);
+	date->tm_year -= 1; date->tm_mon = 8;
+	holiday = wday_of_month(mkdaynum(mktime(date)), 1, 1);
+	add_to_event("Labour Day (Canada)",holiday);
+	date->tm_year += 2; date->tm_mon = 8;
+	holiday = wday_of_month(mkdaynum(mktime(date)), 1, 1);
+	add_to_event("Labour Day (Canada)",holiday);
+	date->tm_year -= 1; date->tm_mon = 11; date->tm_mday = 25;
+	holiday = mkdaynum(mktime(date));
+	add_to_event("Christmas Day (Canada)",holiday);
+	date->tm_year -= 1;
+	holiday = mkdaynum(mktime(date));
+	add_to_event("Christmas Day (Canada)",holiday);
+	date->tm_year += 2;
+	holiday = mkdaynum(mktime(date));
+	add_to_event("Christmas Day (Canada)",holiday);
+	date->tm_year -= 1;
 	return 0;
 }
 
