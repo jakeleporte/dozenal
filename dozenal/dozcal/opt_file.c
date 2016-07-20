@@ -38,7 +38,8 @@
 #include"errcodes.h"
 
 int proc_options(char *s, int *moonphases, char **nat, char **relig,
-					char **date_form, char **time_form, char **ev_form)
+					char **date_form, char **time_form, char **ev_form,
+					char **todo_form)
 {
 	FILE *fp; int holder; int implen;
 	char *line = NULL; size_t len = 0; ssize_t read;
@@ -76,6 +77,10 @@ int proc_options(char *s, int *moonphases, char **nat, char **relig,
 			holder = get_impstr(line);
 			*ev_form = realloc(*ev_form,((strlen(line)) * sizeof(char)));
 			strcpy(*ev_form,line+holder);
+		} else if (strstr(line,"TODO_FORMAT")) {
+			holder = get_impstr(line);
+			*todo_form = realloc(*todo_form,((strlen(line)) * sizeof(char)));
+			strcpy(*todo_form,line+holder);
 		} else if (strstr(line,"INPUT")) {
 			holder = get_impstr(line);
 			process_file(line+holder);

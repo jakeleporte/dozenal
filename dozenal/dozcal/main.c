@@ -144,7 +144,7 @@ int main(int argc, char **argv)
 	}
 	relig[0] = '\0';
 	opterr = 0;
-	while ((c = getopt(argc,argv,"VETm:f:s:e:d:t:r:c:n:h:")) != -1) {
+	while ((c = getopt(argc,argv,"VETR:m:f:s:e:d:t:r:c:n:h:")) != -1) {
 		switch(c) {
 		case 'V':
 			printf("dozcal v1.0\n");
@@ -185,7 +185,7 @@ int main(int argc, char **argv)
 			break;
 		case 'c':
 			proc_options(optarg,&moonphases,&nat,&relig,&date_form,
-				&time_form,&ev_form);
+				&time_form,&ev_form,&todo_form);
 			confflag = 1;
 			break;
 		case 'm':
@@ -258,7 +258,7 @@ int main(int argc, char **argv)
 	}
 	if (confflag == 0) {
 		proc_options(conffile,&moonphases,&nat,&relig,&date_form,
-			&time_form,&ev_form);
+			&time_form,&ev_form,&todo_form);
 	}
 	if (startdate == -1)
 		startdate = 0;
@@ -356,6 +356,8 @@ int print_todo(char *s, int index, char *date_format, char *time_format)
 				printf("%*s",len,buffer);
 			} else if (s[i] == 'i') {
 				printf("%*s",len,todo_list[index].item);
+			} else if (s[i] == 'l') {
+				printf("%*s",len,todo_list[index].location);
 			} else {
 				fprintf(stderr,"dozcal:  unrecognized conversion "
 					"character \"%%%c\" in todo form string, "
@@ -363,8 +365,18 @@ int print_todo(char *s, int index, char *date_format, char *time_format)
 				exit(BAD_TODO_FORMAT);
 			}
 		} else {
-			printf("%c",s[i]);
+			if (s[i] == '\\') {
+				if (s[i+1] == 'n') {
+					printf("\n");
+					++i;
+				} else {
+					printf("\\");
+				}
+			} else {
+				printf("%c",s[i]);
+			}
 		}
+		len = MAXLEN + 1;
 	}
 	printf("\n");
 	free(ptr);
@@ -420,7 +432,16 @@ int print_event(char *s, int index, char *date_format, char *time_format)
 				exit(BAD_EV_FORMAT);
 			}
 		} else {
-			printf("%c",s[i]);
+			if (s[i] == '\\') {
+				if (s[i+1] == 'n') {
+					printf("\n");
+					++i;
+				} else {
+					printf("\\");
+				}
+			} else {
+				printf("%c",s[i]);
+			}
 		}
 		len = MAXLEN + 1;
 	}

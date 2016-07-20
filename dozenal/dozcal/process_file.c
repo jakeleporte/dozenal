@@ -198,6 +198,7 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 				todo_list[todonums-1].pergross = pergross;
 				strncpy(todo_list[todonums-1].todoclass,class,SHORTLEN);
 				strncpy(todo_list[todonums-1].categories,categories,MAXLEN);
+				strncpy(todo_list[todonums-1].location,location,MAXLEN);
 				todonums++;
 			}
 		}
