@@ -411,6 +411,8 @@ int print_event(char *s, int index, char *date_format, char *time_format)
 				printf("%*s",len,event_list[index].categories);
 			} else if (s[i] == 't') {
 				printf("%*s",len,event_list[index].evclass);
+			} else if (s[i] == 'l') {
+				printf("%*s",len,event_list[index].location);
 			} else {
 				fprintf(stderr,"dozcal:  unrecognized conversion "
 					"character \"%%%c\" in event form string, "

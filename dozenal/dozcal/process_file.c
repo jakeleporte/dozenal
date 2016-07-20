@@ -94,6 +94,7 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 	int i; int holder;
 	char title[MAXLEN+1];
 	char categories[MAXLEN+1];
+	char location[MAXLEN+1];
 	char class[SHORTLEN+1];
 	time_t startdate; int startday;
 	time_t duetime;
@@ -110,6 +111,7 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 	categories[0] = '\0';
 	class[0] = '\0';
 	title[0] = '\0';
+	location[0] = '\0';
 	for (i = 0; i < MAXLEN; ++i)
 		exceptions[i] = -1;
 	for (i = 0; i <= lines; ++i) {
@@ -119,6 +121,9 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 		} if (strstr(buffer[i],"CLASS")) {
 			holder = get_impstr(buffer[i]);
 			strncpy(class,buffer[i]+holder,SHORTLEN);
+		} if (strstr(buffer[i],"LOCATION")) {
+			holder = get_impstr(buffer[i]);
+			strncpy(location,buffer[i]+holder,MAXLEN);
 		} if (strstr(buffer[i],"CATEGORY")) {
 			holder = get_impstr(buffer[i]);
 			if ((strlen(categories) + strlen(buffer[i]+holder) + 2) < MAXLEN) {
@@ -172,9 +177,7 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 				strncpy(event_list[recordnums-1].title,title,MAXLEN);
 				strncpy(event_list[recordnums-1].evclass,class,SHORTLEN);
 				strncpy(event_list[recordnums-1].categories,categories,MAXLEN);
-/*				printf("|%*s|",MAXLEN,event_list[recordnums-1].title);
-				printf("|%*s|",MAXLEN,event_list[recordnums-1].evclass);
-				printf("|%*s|",MAXLEN,event_list[recordnums-1].categories);*/
+				strncpy(event_list[recordnums-1].location,location,MAXLEN);
 				event_list[recordnums-1].thisdate = holder;
 				event_list[recordnums-1].starttime = starttime;
 				event_list[recordnums-1].endtime = endtime;
