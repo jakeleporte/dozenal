@@ -17,6 +17,7 @@ dozcal \- a command-line dozenal calendar program
 [\fB\-d\fR \fIdateformat\fR]
 [\fB\-t\fR \fItimeformat\fR]
 [\fB\-r\fR \fIeventformat\fR]
+[\fB\-R\fR \fItodoformat\fR]
 [\fB\-c\fR \fIconfigfile\fR]
 [\fB\-f\fR \fIinputfile\fR]
 .SH DESCRIPTION
@@ -26,7 +27,7 @@ dates and times.  Uses a simple plain-text file format.
 Multiple files can be specified on the command line.  Date
 formats and time formats can also be specified on the
 command line.  There are options to display religious and
-natioanl holidays.  All can further be specified in a
+national holidays.  All can further be specified in a
 configuration file, which is also plain-text and easily
 understandable.
 .SH OPTIONS
@@ -164,6 +165,7 @@ Includes Canadian national holidays; does \fInot\fR include
 provincial holidays.  The national holidays are New Year's
 Day; Good Friday; Canada Day; Labour Day; and Christmas Day.
 .RE
+.RS
 Countries with their holidays not included:  this is not
 meant as a slight, I'm just most familiar with these
 Anglophone countries and built them in for no other reason.
@@ -171,6 +173,7 @@ We hope to add facilities for easily including new
 programmable holidays that will hopefully resolve this
 issue.  Otherwise, such holidays must be included in an
 input data file.
+.RE
 .TP
 .BR "\-s [startdate]"
 The first date that you want results from.  If this is not

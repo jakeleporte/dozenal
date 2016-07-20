@@ -56,15 +56,15 @@ int islamic_holidays(int daynum)
 	date = localtime(&rawtime);
 	isl_date(date, now);
 	add_ramadan(date,now);
-	add_to_event("Eid Al-Fitr",get_datenum(date));
+	add_to_event("Eid Al-Fitr",get_datenum(date),"religious");
 	add_eidaladha(date,now);
 	date->tm_year -= 1; mktime(date);
 	add_ramadan(date,now);
-	add_to_event("Eid Al-Fitr",get_datenum(date));
+	add_to_event("Eid Al-Fitr",get_datenum(date),"religious");
 	add_eidaladha(date,now);
 	date->tm_year += 2; mktime(date);
 	add_ramadan(date,now);
-	add_to_event("Eid Al-Fitr",get_datenum(date));
+	add_to_event("Eid Al-Fitr",get_datenum(date),"religious");
 	add_eidaladha(date,now);
 	date->tm_year -= 1; mktime(date);
 	free(now);
@@ -90,7 +90,7 @@ int add_ramadan(struct tm *date, struct isldate *now)
 		isl_date(date,now);
 	}
 	while (now->imonth == 9) {
-		add_to_event("Ramadan",get_datenum(date)-1);
+		add_to_event("Ramadan",get_datenum(date)-1,"religious");
 		date->tm_mday += 1; mktime(date);
 		isl_date(date,now);
 	}
@@ -119,7 +119,7 @@ int add_eidaladha(struct tm *date, struct isldate *now)
 		}
 		isl_date(date,now);
 	}
-	add_to_event("Eid Al-Adha",get_datenum(date)-1);
+	add_to_event("Eid Al-Adha",get_datenum(date)-1,"religious");
 	date->tm_mday += 1; mktime(date);
 	isl_date(date,now);
 	return 0;

@@ -70,11 +70,12 @@ int get_moonphases(int datenum, int moonphases)
 	|| (phase == 8) || (phase == 15) || (phase == 22)))) {
 		event_list = realloc(event_list,(recordnums * 
 			sizeof(struct event)));
-		event_list[recordnums-1].starttime = -1;
+		add_to_event(phase_str,datenum,"astronomical");
+/*		event_list[recordnums-1].starttime = -1;
 		event_list[recordnums-1].endtime = -1;
 		strcpy(event_list[recordnums-1].title,phase_str);
 		event_list[recordnums-1].thisdate = datenum;
-		recordnums++;
+		recordnums++;*/
 	}
 	return 0;
 }

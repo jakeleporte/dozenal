@@ -93,6 +93,8 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 {
 	int i; int holder;
 	char title[MAXLEN+1];
+	char categories[MAXLEN+1];
+	char class[SHORTLEN+1];
 	time_t startdate; int startday;
 	time_t duetime;
 	time_t enddate = -1; int endday = -1;
@@ -105,12 +107,21 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 	int compflag = 0;
 	int pergross = 0;
 
+	categories[0] = '\0';
+	class[0] = '\0';
+	title[0] = '\0';
 	for (i = 0; i < MAXLEN; ++i)
 		exceptions[i] = -1;
 	for (i = 0; i <= lines; ++i) {
 		if (strstr(buffer[i],"TITLE")) {
 			holder = get_impstr(buffer[i]);
 			strncpy(title,buffer[i]+holder,MAXLEN);
+		} if (strstr(buffer[i],"CLASS")) {
+			holder = get_impstr(buffer[i]);
+			strncpy(class,buffer[i]+holder,SHORTLEN);
+		} if (strstr(buffer[i],"CATEGORY")) {
+			holder = get_impstr(buffer[i]);
+			strncpy(categories,buffer[i]+holder,MAXLEN);
 		} if (strstr(buffer[i],"START_DATE")) {
 			startdate = proc_date(buffer[i]);
 		} if (strstr(buffer[i],"END_DATE")) {
@@ -155,6 +166,11 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 				event_list[recordnums-1].starttime = -1;
 				event_list[recordnums-1].endtime = -1;
 				strncpy(event_list[recordnums-1].title,title,MAXLEN);
+				strncpy(event_list[recordnums-1].evclass,class,SHORTLEN);
+				strncpy(event_list[recordnums-1].categories,categories,MAXLEN);
+/*				printf("|%*s|",MAXLEN,event_list[recordnums-1].title);
+				printf("|%*s|",MAXLEN,event_list[recordnums-1].evclass);
+				printf("|%*s|",MAXLEN,event_list[recordnums-1].categories);*/
 				event_list[recordnums-1].thisdate = holder;
 				event_list[recordnums-1].starttime = starttime;
 				event_list[recordnums-1].endtime = endtime;
@@ -173,6 +189,8 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 				todo_list[todonums-1].priority = priority;
 				todo_list[todonums-1].completed = compflag;
 				todo_list[todonums-1].pergross = pergross;
+				strncpy(todo_list[todonums-1].todoclass,class,SHORTLEN);
+				strncpy(todo_list[todonums-1].categories,categories,MAXLEN);
 				todonums++;
 			}
 		}

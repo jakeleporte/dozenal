@@ -378,6 +378,7 @@ int print_event(char *s, int index, char *date_format, char *time_format)
 	int len = MAXLEN + 1;
 	char *ptr;
 	char datestr[MAXLEN+1];
+	char buffer[MAXLEN+1];
 
 	if ((ptr = malloc((MAXLEN+1) * sizeof(char))) == NULL) {
 		fprintf(stderr,"dozcal:  insufficient memory to hold the "
@@ -406,6 +407,10 @@ int print_event(char *s, int index, char *date_format, char *time_format)
 				datestr[0] = '\0';
 			} else if (s[i] == 'e') {
 				printf("%*s",len,event_list[index].title);
+			} else if (s[i] == 'C') {
+				printf("%*s",len,event_list[index].categories);
+			} else if (s[i] == 't') {
+				printf("%*s",len,event_list[index].evclass);
 			} else {
 				fprintf(stderr,"dozcal:  unrecognized conversion "
 					"character \"%%%c\" in event form string, "
@@ -415,6 +420,7 @@ int print_event(char *s, int index, char *date_format, char *time_format)
 		} else {
 			printf("%c",s[i]);
 		}
+		len = MAXLEN + 1;
 	}
 	printf("\n");
 	free(ptr);

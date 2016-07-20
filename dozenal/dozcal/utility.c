@@ -36,6 +36,7 @@
 #include<time.h>
 #include<math.h>
 #include"event_struct.h"
+#include"errcodes.h"
 
 extern struct event *event_list;
 extern int recordnums;
@@ -102,14 +103,19 @@ int dozendig(char c)
 	}
 }
 
-int add_to_event(char *title, int datenum)
+int add_to_event(char *title, int datenum, char *cat)
 {
 	event_list = realloc(event_list,(recordnums * 
 		sizeof(struct event)));
 	event_list[recordnums-1].starttime = -1;
 	event_list[recordnums-1].endtime = -1;
-	strcpy(event_list[recordnums-1].title,title);
+	strncpy(event_list[recordnums-1].title,title,MAXLEN);
+	strcpy(event_list[recordnums-1].evclass,"");
+	strcpy(event_list[recordnums-1].location,"");
+	strncpy(event_list[recordnums-1].categories,cat,MAXLEN);
 	event_list[recordnums-1].thisdate = datenum;
+	event_list[recordnums-1].relatedto = -1;
+	event_list[recordnums-1].transp = 1;
 	recordnums++;
 }
 

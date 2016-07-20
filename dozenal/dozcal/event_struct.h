@@ -47,6 +47,7 @@ struct event {
 struct todo {
 	char item[256];
 	char todoclass[16];
+	char categories[256];/* categories todo fits into; e.g., "business" */
 	int duedate;
 	int duetime;
 	int priority;			/* higher numbers have higher priority */
