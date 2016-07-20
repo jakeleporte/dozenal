@@ -121,7 +121,11 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 			strncpy(class,buffer[i]+holder,SHORTLEN);
 		} if (strstr(buffer[i],"CATEGORY")) {
 			holder = get_impstr(buffer[i]);
-			strncpy(categories,buffer[i]+holder,MAXLEN);
+			if ((strlen(categories) + strlen(buffer[i]+holder) + 2) < MAXLEN) {
+				if (strlen(categories) > 0)
+					strcat(categories,",");
+				strcat(categories,buffer[i]+holder);
+			}
 		} if (strstr(buffer[i],"START_DATE")) {
 			startdate = proc_date(buffer[i]);
 		} if (strstr(buffer[i],"END_DATE")) {
