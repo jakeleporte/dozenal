@@ -369,6 +369,9 @@ int print_todo(char *s, int index, char *date_format, char *time_format)
 				if (s[i+1] == 'n') {
 					printf("\n");
 					++i;
+				} else if (s[i+1] == 't') {
+					printf("\t");
+					++i;
 				} else {
 					printf("\\");
 				}
@@ -436,6 +439,9 @@ int print_event(char *s, int index, char *date_format, char *time_format)
 				if (s[i+1] == 'n') {
 					printf("\n");
 					++i;
+				} else if (s[i+1] == 't') {
+					printf("\t");
+					++i;
 				} else {
 					printf("\\");
 				}
@@ -492,6 +498,7 @@ int comparator(const void *evone, const void *evtwo)
 {
 	int dateone = 0; int datetwo = 0;
 	int timeone = 0; int timetwo = 0;
+	char *itemone; char *itemtwo;
 
 	const struct event *firstev = (struct event*) evone;
 	const struct event *secev = (struct event*) evtwo;
@@ -499,6 +506,8 @@ int comparator(const void *evone, const void *evtwo)
 	datetwo = ((struct event*) evtwo)->thisdate;
 	timeone = ((struct event*) evone)->starttime;
 	timetwo = ((struct event*) evtwo)->starttime;
+	itemone = ((struct event*) evone)->title;
+	itemtwo = ((struct event*) evtwo)->title;
 	if (dateone > datetwo) {
 		return 1;
 	} else if (dateone < datetwo) {
@@ -509,7 +518,7 @@ int comparator(const void *evone, const void *evtwo)
 		} else if (timeone < timetwo) {
 			return -1;
 		} else {
-			return 0;
+			return strcmp(itemone,itemtwo);
 		}
 	}
 }

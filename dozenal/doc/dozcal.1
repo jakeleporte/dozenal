@@ -166,6 +166,7 @@ provincial holidays.  The national holidays are New Year's
 Day; Good Friday; Canada Day; Labour Day; and Christmas Day.
 .RE
 .RS
+.PP
 Countries with their holidays not included:  this is not
 meant as a slight, I'm just most familiar with these
 Anglophone countries and built them in for no other reason.
@@ -242,6 +243,10 @@ The event's class.
 .BR %l
 The event's location.
 .RE
+.PP
+Event formats can also include newlines, specified in the
+usual way as \fI\\n\fR, and tabs, specified in the usual way
+as \fI\\t\fR.
 .TP
 .BR "\-R [todo format string]"
 The todo format.  Each todo in your calendar is printed as
@@ -271,7 +276,14 @@ or not.  This is "0" for not done, "1" for done.
 .BR %g
 How much progress has been made on the todo.  Given as a
 perbiqua (1-100).
+.TP
+.BR %l
+The location of the todo.
 .RE
+.PP
+Event formats can also include newlines, specified in the
+usual way as \fI\\n\fR, and tabs, specified in the usual way
+as \fI\\t\fR.
 .TP
 .BR "\-f [inputfile]"
 Names an input data file for \fBdozcal\fR to use.  (See the
@@ -355,6 +367,22 @@ punctuation, it will interpret the time as hours and Tims.
 .TP
 .BR END_TIME:
 The obvious corrollary of \fISTART_TIME\fR.
+.TP
+.BR LOCATION:
+Pretty self-explanatory, as well; where the event is going
+to occur.
+.TP
+.BR CLASS:
+Typically a single word to describe something special about
+the event; for example, "private" or "public."
+.TP
+.BR CATEGORY:
+You can specify this line as many times as necessary.
+Typically just describes the type of the event; for example,
+"Anniversary" might fall under both "marriage" and
+"personal".  If you put this in your formatting string,
+multiple categories will be printed together, separated by a
+a comma.
 .RE
 .PP
 An example record:
@@ -374,6 +402,106 @@ EXCEPT_DATE:  1200-0E-04
 EXCEPT_DATE:  1200-0E-05
 .br
 TITLE:  My Test Event #1
+.RE
+.PP
+Events are sorted first by start date; then by start time;
+then by title.
+.PP
+Todos are formatted similarly; naturally, however,
+their possible categories are a bit different.  Possible
+fields are:
+.RS
+.TP
+.BR TITLE:
+The todo's title or description.  For example, "Finish the
+taxes" or "buy birthday present for Susie."
+.TP
+.BR DUE_DATE:
+Self-explanatory.
+.TP
+.BR DUE_TIME:
+Self-explanatory.
+.TP
+.BR COMPLETED:
+If for some reason you want to keep completed todos in your
+list, you can set this flag to make it clear that it's
+already done.  A "0" indicates that the item is \fInot\fR
+complete; a "1" indicates that it is.
+.TP
+.BR PERGROSS:
+Gives the degree of completion of the todo, considered as
+parts per biqua.  E.g., if you're half-done with a todo, you
+might want to set this as "60".  Do \fInot\fR use a "%".
+.TP
+.BR LOCATION:
+Self-explanatory.
+.TP
+.BR CLASS:
+Same as for events.
+.TP
+.BR CATEGORY:
+Same as for events.
+.TP
+.BR PRIORITY:
+How important this todo is, expressed as an integer.  Lower
+integers are more important.
+.RE
+.PP
+Todos are sorted first by priority; then by due date; then
+by due time; and then by title.
+.SS The Config File
+.PP
+\fBdozcal\fR's config file is very simply formatted; the
+option is specified in all-caps, followed by a colon,
+followed by some optional space, and finally followed by the
+value.  Anything that can be specified on the command line
+can also be specified in the config file.  By default, if
+you don't give \fBdozcal\fR a config file with \fI\-c\fR, it
+will look for one at \fI$HOME/.dozcalrc\fR; if it can't find
+that, it will print a message to stderr and then continue
+with no config file.
+.PP
+Possible options in the config file are:
+.RS
+.TP
+.BR NATIONAL:
+Specifies the national holidays you want listed.  Argument
+is listed exactly as for the \fI\-n\fR command line option.
+.TP
+.BR RELIGIOUS:
+Specifies the religious holidays you want listed.  Argument
+is listed exactly as for the \fI\-h\fR command line option.
+.TP
+.BR MOON_PHASE:
+Specifies the way in which you want moon phases listed.
+Argument is exactly as for the \fI\-m\fR command line
+option.
+.TP
+.BR DATE_FORMAT:
+The format for the date when displayed.  Argument is exactly
+as for the \fI\-d\fR command line option.
+.TP
+.BR TIME_FORMAT:
+The format for the time when displayed.  Argument is exactly
+as for the \fI\-t\fR command line option.
+.TP
+.BR EVENT_FORMAT:
+The format for the events when they are printed.  Argument
+is exactly as for the \fI\-r\fR command line option.
+.TP
+.BR TODO_FORMAT:
+The format for the todos, if they are to be printed.
+Argument is exactly as for the \fI\-R\fR command line
+option.
+.TP
+.BR INPUT:
+Specifies a data file for \fBdozcal\fR to use, similar to
+the \fI\-f\fR command line option.  You can include as many
+of these as you like, and even mix them with \fI\-f\fR on
+the command line, but be aware that if you name the same
+file more than once, it will be included more than once;
+\fBdozcal\fR assumes that you tell it what you really want
+and does not check for duplicate files.
 .RE
 .SH ERRORS
 .PP
@@ -409,6 +537,20 @@ doesn't recognize.
 .BR 6
 You've given a conversion character in your event format
 (perhaps with the \fB\-r\fR option) that \fBdozcal\fR
+doesn't recognize.
+.TP
+.BR 7
+The phrase you've entered for the moon phase option doesn't
+make sense to \fBdozcal\fR; please use either \fIfull\fR or
+\fImajor\fR.
+.TP
+.BR 8
+The file you've specified for your config file isn't working
+correctly; see the specific error message for reasons.
+.TP
+.BR 9
+You've given a conversion character in your todo format
+(perhaps with the \fB\-R\fR option) that \fBdozcal\fR
 doesn't recognize.
 .SH BUGS
 None known at this time.
