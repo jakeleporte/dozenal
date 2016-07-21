@@ -242,11 +242,11 @@ The event's class.
 .TP
 .BR %l
 The event's location.
-.RE
 .PP
 Event formats can also include newlines, specified in the
 usual way as \fI\\n\fR, and tabs, specified in the usual way
 as \fI\\t\fR.
+.RE
 .TP
 .BR "\-R [todo format string]"
 The todo format.  Each todo in your calendar is printed as
@@ -279,11 +279,11 @@ perbiqua (1-100).
 .TP
 .BR %l
 The location of the todo.
-.RE
 .PP
 Event formats can also include newlines, specified in the
 usual way as \fI\\n\fR, and tabs, specified in the usual way
 as \fI\\t\fR.
+.RE
 .TP
 .BR "\-f [inputfile]"
 Names an input data file for \fBdozcal\fR to use.  (See the
@@ -349,10 +349,61 @@ event will occur every day (in which case, you may as well
 not specify an interval, because \fBdozcal\fR will assume
 you mean every day until the \fIEND_DATE\fR unless you tell
 it otherwise).
+.RS
 .PP
 If you've utilized the \fIFREQ\fR option, this interval will
 be the number of that unit.  E.g., if your \fIFREQ\fR is
 "monthly", it will be \fIinterval\fR number of months.
+.RE
+.TP
+.BR FREQ:
+This gives a generalized statement of the frequency of the
+event.  If you're using a standard number of days, then
+there is no need for this line, as \fIINTERVAL\fR works with
+a number of days by default.  If, on the other hand, you're
+working with some other interval (say, months), \fIFREQ\fR
+is what you need.
+.RS
+.PP
+\fIFREQ\fR works by a pretty simple heuristic.  If it finds
+the name of a weekday, then it looks for an ordinal number
+(e.g., "first", "second", "third", "fourth", or "last").  If
+it finds one, then it looks for the name of a month (at
+least the first three letters of one).  If it finds all
+three of these, it interprets this as asking for the event
+on the ordinal of that weekday of that month.  An example
+would be "Third Tuesday of April."
+.PP
+If it finds a weekday and an ordinal but not the name of a
+month, it interprets this as the ordinal of that weekday for
+every month in your range (from your given \fISTART_DATE\fR
+to your given \fIEND_DATE\fR, or to the end of the following
+year if you gave no \fIEND_DATE\fR).  An example would be
+"Last Thursday".
+.PP
+If it finds a weekday but no ordinal or month name, it
+interprets this as that ordinal day every month between
+\fISTART_DATE\fR and \fIEND_DATE\fR, or until the end of the
+following year if there is not \fIEND_DATE\fR.  An example
+might be "Wednesdays".
+.PP
+If it finds no weekday, no ordinal, and no month name, it
+looks for the strings "monthly" or "yearly" (with no regard
+to capitalization; the search is case-insensitive).  It it
+finds "monthly", it will repeat the event every month
+from \fISTART_DATE\fR to \fIEND_DATE\fR (or to the end of
+the following year if there is no \fIEND_DATE\fR).  If it
+finds "yearly", it will do the same every year.
+.PP
+\fIFREQ\fR does respect \fIINTERVAL\fR; so if your interval
+is "3", and your \fIFREQ\fR is "monthly", \fBdozcal\fR will
+place the event on the appropriate date every third month.
+.PP
+Note that while this system is designed to enable
+English-like syntax, it's not necessary; "third Tuesday in
+August" will yield the same results as "August Tuesday
+third".
+.RE
 .TP
 .BR EXCEPT_DATE:
 In a recurring event, \fIdon't\fR add an event on this date,
