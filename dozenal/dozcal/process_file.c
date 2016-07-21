@@ -35,6 +35,7 @@
 #include<stdlib.h>
 #include<string.h>
 #include<errno.h>
+#include<time.h>
 #include"errcodes.h"
 #include"event_struct.h"
 #include"utility.h"
@@ -96,6 +97,7 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 	char categories[MAXLEN+1];
 	char location[MAXLEN+1];
 	char class[SHORTLEN+1];
+	char freq[SHORTLEN+1];
 	time_t startdate; int startday;
 	time_t duetime;
 	time_t enddate = -1; int endday = -1;
@@ -107,11 +109,13 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 	int priority = 0;
 	int compflag = 0;
 	int pergross = 0;
+	struct tm *thedate;
 
 	categories[0] = '\0';
 	class[0] = '\0';
 	title[0] = '\0';
 	location[0] = '\0';
+	freq[0] = '\0';
 	for (i = 0; i < MAXLEN; ++i)
 		exceptions[i] = -1;
 	for (i = 0; i <= lines; ++i) {
@@ -157,6 +161,8 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 		} if (strstr(buffer[i],"PERGROSS")) {
 			holder = get_impstr(buffer[i]);
 			pergross = (int) doztodec(buffer[i]+holder);
+		} if (strstr(buffer[i],"FREQ")) {
+			strncpy(freq,buffer[i]+holder,MAXLEN);
 		}
 	}
 	if (enddate == -1)
@@ -166,40 +172,19 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 	startday = mkdaynum(startdate) + 1;
 	endday = mkdaynum(enddate) + 1;
 	currinterval = startday;
+	if (strlen(freq) > 0) {
+		//FIXME
+		return 0;
+	}
 	for (holder = startday; holder <= endday; ++holder) {
 		if ((not_in(holder,exceptions,j-1) == 0) &&
 		(currinterval == holder)) {
 			if (strstr(buffer[0],"EVENT")) {
-				event_list = realloc(event_list,(recordnums * 
-					sizeof(struct event)));
-				event_list[recordnums-1].starttime = -1;
-				event_list[recordnums-1].endtime = -1;
-				strncpy(event_list[recordnums-1].title,title,MAXLEN);
-				strncpy(event_list[recordnums-1].evclass,class,SHORTLEN);
-				strncpy(event_list[recordnums-1].categories,categories,MAXLEN);
-				strncpy(event_list[recordnums-1].location,location,MAXLEN);
-				event_list[recordnums-1].thisdate = holder;
-				event_list[recordnums-1].starttime = starttime;
-				event_list[recordnums-1].endtime = endtime;
-				recordnums++;
+				add_event(starttime, endtime, holder, title, class, 
+					categories, location);
 			} if (strstr(buffer[0],"TODO")) {
-				todo_list = realloc(todo_list,(todonums *
-					sizeof(struct todo)));
-				todo_list[todonums-1].duedate = -1;
-				todo_list[todonums-1].duetime = -1;
-				todo_list[todonums-1].priority = 0;
-				todo_list[todonums-1].completed = 0;
-				todo_list[todonums-1].pergross = 0;
-				strncpy(todo_list[todonums-1].item,title,MAXLEN);
-				todo_list[todonums-1].duedate = holder;
-				todo_list[todonums-1].duetime = starttime;
-				todo_list[todonums-1].priority = priority;
-				todo_list[todonums-1].completed = compflag;
-				todo_list[todonums-1].pergross = pergross;
-				strncpy(todo_list[todonums-1].todoclass,class,SHORTLEN);
-				strncpy(todo_list[todonums-1].categories,categories,MAXLEN);
-				strncpy(todo_list[todonums-1].location,location,MAXLEN);
-				todonums++;
+				add_todo(holder, starttime, priority, compflag, pergross,
+					title, class, categories, location);
 			}
 		}
 		if (currinterval == holder)
@@ -207,3 +192,4 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 	}
 	return 0;
 }
+

@@ -40,6 +40,8 @@
 
 extern struct event *event_list;
 extern int recordnums;
+extern struct todo *todo_list;
+extern int todonums;
 
 int chomp(char *s)
 {
@@ -196,5 +198,48 @@ int lower_str(char *s)
 	for (i = 0; s[i] != '\0'; ++i) {
 		s[i] = tolower(s[i]);
 	}
+	return 0;
+}
+
+int add_event(int starttime, int endtime, int thisdate,
+	char *title, char *class, char *categories, char
+	*location)
+{
+	event_list = realloc(event_list,(recordnums * 
+		sizeof(struct event)));
+	event_list[recordnums-1].starttime = -1;
+	event_list[recordnums-1].endtime = -1;
+	strncpy(event_list[recordnums-1].title,title,MAXLEN);
+	strncpy(event_list[recordnums-1].evclass,class,SHORTLEN);
+	strncpy(event_list[recordnums-1].categories,categories,MAXLEN);
+	strncpy(event_list[recordnums-1].location,location,MAXLEN);
+	event_list[recordnums-1].thisdate = thisdate;
+	event_list[recordnums-1].starttime = starttime;
+	event_list[recordnums-1].endtime = endtime;
+	recordnums++;
+	return 0;
+}
+
+int add_todo(int duedate,int starttime,int priority,
+	int compflag, int pergross, char *title, char *class,
+	char *categories, char *location)
+{
+	todo_list = realloc(todo_list,(todonums *
+		sizeof(struct todo)));
+	todo_list[todonums-1].duedate = -1;
+	todo_list[todonums-1].duetime = -1;
+	todo_list[todonums-1].priority = 0;
+	todo_list[todonums-1].completed = 0;
+	todo_list[todonums-1].pergross = 0;
+	strncpy(todo_list[todonums-1].item,title,MAXLEN);
+	todo_list[todonums-1].duedate = duedate;
+	todo_list[todonums-1].duetime = starttime;
+	todo_list[todonums-1].priority = priority;
+	todo_list[todonums-1].completed = compflag;
+	todo_list[todonums-1].pergross = pergross;
+	strncpy(todo_list[todonums-1].todoclass,class,SHORTLEN);
+	strncpy(todo_list[todonums-1].categories,categories,MAXLEN);
+	strncpy(todo_list[todonums-1].location,location,MAXLEN);
+	todonums++;
 	return 0;
 }
