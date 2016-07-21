@@ -32,6 +32,7 @@
  */
 
 #include<stdlib.h>
+#include<stdio.h>
 #include<string.h>
 #include<time.h>
 #include<math.h>
@@ -242,4 +243,14 @@ int add_todo(int duedate,int starttime,int priority,
 	strncpy(todo_list[todonums-1].location,location,MAXLEN);
 	todonums++;
 	return 0;
+}
+
+struct tm *broken_date(int daynum)
+{
+	struct tm *date;
+	time_t datenum;
+
+	datenum = daynum * 86400;
+	date = localtime(&datenum);
+	return date;
 }

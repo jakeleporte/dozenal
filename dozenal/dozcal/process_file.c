@@ -97,7 +97,7 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 	char categories[MAXLEN+1];
 	char location[MAXLEN+1];
 	char class[SHORTLEN+1];
-	char freq[SHORTLEN+1];
+	char freq[MAXLEN+1];
 	time_t startdate; int startday;
 	time_t duetime;
 	time_t enddate = -1; int endday = -1;
@@ -109,7 +109,9 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 	int priority = 0;
 	int compflag = 0;
 	int pergross = 0;
-	struct tm *thedate;
+	struct tm *date;
+	struct tm *othdate;
+	int year; int mon; int day;
 
 	categories[0] = '\0';
 	class[0] = '\0';
@@ -162,6 +164,7 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 			holder = get_impstr(buffer[i]);
 			pergross = (int) doztodec(buffer[i]+holder);
 		} if (strstr(buffer[i],"FREQ")) {
+			holder = get_impstr(buffer[i]);
 			strncpy(freq,buffer[i]+holder,MAXLEN);
 		}
 	}
@@ -173,7 +176,43 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 	endday = mkdaynum(enddate) + 1;
 	currinterval = startday;
 	if (strlen(freq) > 0) {
-		//FIXME
+		if (endday == holder) {
+			othdate = broken_date(startday);
+			othdate->tm_year += 1;  othdate->tm_mon = 11;
+			othdate->tm_mday = 31; mktime(othdate);
+			endday = get_datenum(othdate);
+			date = broken_date(startday);
+		}
+		lower_str(freq);
+		if (is_wkday(freq)) {
+			if (is_num(freq)) {
+				if (is_mon(freq)) {
+				} else {
+				}
+			} else {
+				if (is_mon(freq)) {
+				} else {
+				}
+			}
+			if (is_num(freq)) {
+			} else {
+			}
+		} else if (strstr(freq,"monthly")) {
+				date = broken_date(startday);
+				year = date->tm_year;
+				holder = get_datenum(date);
+				while (holder < endday) {
+					if (strstr(buffer[0],"EVENT")) {
+						add_event(starttime, endtime, holder, title, class, 
+							categories, location);
+					} if (strstr(buffer[0],"TODO")) {
+						add_todo(holder, starttime, priority, compflag, pergross,
+							title, class, categories, location);
+					}
+					date->tm_mon += interval; mktime(date);
+					holder = get_datenum(date);
+				}
+		}
 		return 0;
 	}
 	for (holder = startday; holder <= endday; ++holder) {
@@ -193,3 +232,41 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 	return 0;
 }
 
+/* return 1 if there's a weekday, 0 if not */
+int is_wkday(char *s)
+{
+	if (!strstr(s,"day"))
+		return 0;
+	if (strstr(s,"sunday") || strstr(s,"monday") ||
+	strstr(s,"tuesday") || strstr(s,"wednesday") ||
+	strstr(s,"thursday") || strstr(s,"friday") ||
+	strstr(s,"saturday"))
+		return 1;
+	else
+		return 0;
+
+}
+
+/* return 1 if there's a month, 0 if not */
+int is_mon(char *s)
+{
+	if (strstr(s,"jan") || strstr(s,"feb") || strstr(s,"mar") ||
+	strstr(s,"apr") || strstr(s,"may") || strstr(s,"jun") ||
+	strstr(s,"jul") || strstr(s,"aug") || strstr(s,"sep") ||
+	strstr(s,"oct") || strstr(s,"nov") || strstr(s,"dec"))
+		return 1;
+	else
+		return 0;
+}
+
+/* return 1 if there's a number, 0 if not */
+int is_num(char *s)
+{
+	if (strstr(s,"first") || strstr(s,"1st") ||
+	strstr(s,"second") || strstr(s,"2nd") ||
+	strstr(s,"third") || strstr(s,"3rd") ||
+	strstr(s,"fourth") || strstr(s,"4th") ||
+	strstr(s,"last"))
+		return 1;
+	return 0;
+}

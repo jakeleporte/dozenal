@@ -349,6 +349,10 @@ event will occur every day (in which case, you may as well
 not specify an interval, because \fBdozcal\fR will assume
 you mean every day until the \fIEND_DATE\fR unless you tell
 it otherwise).
+.PP
+If you've utilized the \fIFREQ\fR option, this interval will
+be the number of that unit.  E.g., if your \fIFREQ\fR is
+"monthly", it will be \fIinterval\fR number of months.
 .TP
 .BR EXCEPT_DATE:
 In a recurring event, \fIdon't\fR add an event on this date,
