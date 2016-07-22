@@ -32,7 +32,8 @@ dozdc \
 dozpret \
 dozstring \
 dozword \
-tgmconv
+tgmconv \
+dozcal
 
 all:
 
