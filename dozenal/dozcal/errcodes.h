@@ -45,3 +45,4 @@
 #define BAD_MOON_PHASE 7
 #define BAD_CONF_FILE 8
 #define BAD_TODO_FORMAT 9
+#define BAD_FREQ 10

@@ -238,7 +238,7 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 							holder = last_wday_of_month(holder,wday-1);
 					}
 				}
-			} else {//FIXME wday but no ordinal
+			} else {//wday but no ordinal
 				if (mon = is_mon(freq)) { // wkday, no ordinal, month
 					date = broken_date(startday);
 					holder = get_datenum(date);
@@ -263,6 +263,26 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 						holder += (interval * 7);
 					}
 				} else { //wkday, no ordinal, no month
+					date = broken_date(startday);
+					holder = get_datenum(date);
+					holder = wday_of_month(holder,wday-1,1);
+					while (holder < startday) holder += 7;
+					if (endday <= holder) {
+						endday = first_of_next(date);
+						date = broken_date(startday);
+					}
+					while (holder < endday) {
+						if (strstr(buffer[0],"EVENT")) {
+							add_event(starttime, endtime, holder, title, class, 
+								categories, location);
+						} if (strstr(buffer[0],"TODO")) {
+							add_todo(holder, starttime, priority, 
+								compflag, pergross, title, class, 
+								categories, location);
+						}
+						date->tm_mday += (interval * 7); mktime(date);
+						holder += (interval * 7);
+					}
 				}
 			}
 		} else if (strstr(freq,"monthly")) {
@@ -280,6 +300,25 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 				date->tm_mon += interval; mktime(date);
 				holder = get_datenum(date);
 			}
+		} else if (strstr(freq,"yearly")) {
+			date = broken_date(startday);
+			year = date->tm_year;
+			holder = get_datenum(date);
+			while (holder < endday) {
+				if (strstr(buffer[0],"EVENT")) {
+					add_event(starttime, endtime, holder, title, class, 
+						categories, location);
+				} if (strstr(buffer[0],"TODO")) {
+					add_todo(holder, starttime, priority, compflag, pergross,
+						title, class, categories, location);
+				}
+				date->tm_year += interval; mktime(date);
+				holder = get_datenum(date);
+			}
+		} else {
+			fprintf(stderr,"dozcal:  \"FREQ\" directive \"%s\" "
+				"cannot be interpreted\n",freq);
+			exit(BAD_FREQ);
 		}
 		return 0;
 	}
