@@ -60,13 +60,13 @@ int main(int argc, char **argv)
 	int numevents = 0;
 	int startdate = -1; int enddate = -1;
 	char *ev_form;
-	const char *def_form = "%-20d : %10s---%10c : %34e";
+	const char *def_form = "%d | %s | %c | %e | %l";
 	char *date_form;
 	const char *def_date = "%Y-%m-%d";
 	char *time_form;
-	const char *def_time = "%4h;%2b;%b";
+	const char *def_time = "%4h;%b";
 	char *todo_form;
-	const char *def_todo_form = "%p\t%d : %t\t%i\t%c:%g";
+	const char *def_todo_form = "%p | %d | %t | %i | %c | %g";
 	char *nat;
 	char *relig;
 	char *conffile;
