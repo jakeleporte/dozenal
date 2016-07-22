@@ -254,3 +254,22 @@ struct tm *broken_date(int daynum)
 	date = localtime(&datenum);
 	return date;
 }
+
+int first_of_next(struct tm *date)
+{
+	struct tm *thisdate;
+	time_t rawtime;
+	int mon; int year; int mday;
+
+	mon = date->tm_mon; year = date->tm_year; mday = date->tm_mday;
+	time(&rawtime);
+	thisdate = localtime(&rawtime);
+	thisdate->tm_year = year;
+	thisdate->tm_mon = mon;
+	thisdate->tm_mday = mday;
+	mktime(thisdate);
+	date->tm_mon = mon; date->tm_year = year; date->tm_mday = mday;
+	thisdate->tm_mon += 1; thisdate->tm_mday = 1;
+	mktime(thisdate);
+	return get_datenum(thisdate);
+}
