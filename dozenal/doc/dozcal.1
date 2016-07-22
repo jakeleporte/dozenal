@@ -377,15 +377,15 @@ would be "Third Tuesday of April."
 If it finds a weekday and an ordinal but not the name of a
 month, it interprets this as the ordinal of that weekday for
 every month in your range (from your given \fISTART_DATE\fR
-to your given \fIEND_DATE\fR, or to the end of the following
-year if you gave no \fIEND_DATE\fR).  An example would be
+to your given \fIEND_DATE\fR, or for the given month
+if you gave no \fIEND_DATE\fR).  An example would be
 "Last Thursday".
 .PP
 If it finds a weekday but no ordinal or month name, it
 interprets this as that ordinal day every month between
-\fISTART_DATE\fR and \fIEND_DATE\fR, or until the end of the
-following year if there is not \fIEND_DATE\fR.  An example
-might be "Wednesdays".
+\fISTART_DATE\fR and \fIEND_DATE\fR, or for the start date's
+month if there is not \fIEND_DATE\fR.  An example might be
+"Wednesdays".
 .PP
 If it finds no weekday, no ordinal, and no month name, it
 looks for the strings "monthly" or "yearly" (with no regard
