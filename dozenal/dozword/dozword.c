@@ -37,7 +37,7 @@
 
 int printwords(char *number,char scheme);
 
-#define NUMLEN 24
+#define NUMLEN 36 
 #define SUCCESS 0
 #define BAD_OPTION 1
 #define OPT_REQ_ARG 2
@@ -61,7 +61,7 @@ int main(int argc, char *argv[])
 			exit(SUCCESS);
 			break;
 		case 'n':
-			strcpy(number,optarg);
+			strncpy(number,optarg,NUMLEN-1);
 			break;
 		case 's':
 			scheme = 's';
@@ -184,6 +184,9 @@ int printwords(char *number,char scheme)
 {
 	int i; int len;
 
+	for (i = 0; number[i] != '\0' && (isdigit(number[i]) ||
+	(number[i] == 'X') || (number[i] == 'E')); ++i);
+	number[i] = '\0';
 	len = strlen(number);
 	for (i = 0; i <= len; ++i) {
 		printnumword(number+i);
