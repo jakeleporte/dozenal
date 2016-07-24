@@ -8,13 +8,17 @@ prefix ?= /usr/local
 bindir ?= $(prefix)/bin
 binmode = 755
 dirmode = 755
+IDIR =../include
 CC = gcc
 binobjects = dozword
 
 all: bin
 
-dozword: dozword.c
-	$(CC) -o dozword dozword.c
+dozword: dozword.c ../conv/conv.o ../doz/doz.o ../dec/dec.o
+	$(CC) -I$(IDIR) -lm -o dozword dozword.c ../conv/conv.o ../dec/dec.o ../doz/doz.o
+
+../conv/conv.o: ../conv/conv.c $(IDIR)/conv.h
+	$(MAKE) -C ../conv
 
 bin: $(binobjects)
 

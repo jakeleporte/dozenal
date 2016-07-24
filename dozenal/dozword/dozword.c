@@ -37,6 +37,7 @@
 
 int printwords(char *number,char scheme);
 
+#define NUMLEN 24
 #define SUCCESS 0
 #define BAD_OPTION 1
 #define OPT_REQ_ARG 2
@@ -44,7 +45,7 @@ int printwords(char *number,char scheme);
 int main(int argc, char *argv[])
 {
 	char c; char scheme = 's';
-	char number[24];
+	char number[NUMLEN];
 
 	opterr = 0;
 	while ((c = getopt(argc,argv,"Vpsn:")) != -1) {
@@ -80,10 +81,16 @@ int main(int argc, char *argv[])
 			break;
 		}
 	}
-	printwords(number,scheme);
-	printf("\n");
-
-	return 0;
+	if (strlen(number) > 0) {
+		printwords(number,scheme);
+		printf("\n");
+		exit(SUCCESS);
+	}
+	while (getword(number,NUMLEN) != EOF) {
+		printwords(number,scheme);
+		printf("\n");
+	}
+	return SUCCESS;
 }
 
 /* prints the number word */
@@ -91,97 +98,83 @@ int main(int argc, char *argv[])
 int printnumword(char *number)
 {
 	if (*number == '0')
-		printf("zero");
+		printf("zero ");
 	else if (*number == '1')
-		printf("one");
+		printf("one ");
 	else if (*number == '2')
-		printf("two");
+		printf("two ");
 	else if (*number == '3')
-		printf("three");
+		printf("three ");
 	else if (*number == '4')
-		printf("four");
+		printf("four ");
 	else if (*number == '5')
-		printf("five");
+		printf("five ");
 	else if (*number == '6')
-		printf("six");
+		printf("six ");
 	else if (*number == '7')
-		printf("seven");
+		printf("seven ");
 	else if (*number == '8')
-		printf("eight");
+		printf("eight ");
 	else if (*number == '9')
-		printf("nine");
+		printf("nine ");
 	else if (*number == 'X')
-		printf("ten");
+		printf("ten ");
 	else if (*number == 'E')
-		printf("elv");
+		printf("elv ");
 	return 0;
 }
 
-/* prints the exponent level appropriate for current number */
-
 int printpend(int currplace)
 {
-	if (currplace == 2)
-		printf("zen ");
-	else if (currplace == 3)
-		printf("duna ");
-	else if (currplace == 4)
-		printf("trina ");
-	else if (currplace == 5)
-		printf("quedra ");
-	else if (currplace == 6)
-		printf("quen ");
-	else if (currplace == 7)
-		printf("hes ");
-	else if (currplace == 8)
-		printf("sev ");
-	else if (currplace == 9)
-		printf("ak ");
-	else if (currplace == 10)
-		printf("neen ");
-	else if (currplace == 11)
-		printf("dex ");
-	else if (currplace == 12)
-		printf("lef ");
-	else if (currplace == 13)
-		printf("zennil ");
-	else if (currplace == 14)
-		printf("zenzen ");
-	else if (currplace == 15)
-		printf("zenduna ");
+	char numdigs[7];
+	int i;
+
+	if (currplace > 2985983)
+		currplace = 2985982;
+	dectodoz(numdigs,((double)currplace-1));
+	for (i = 0; numdigs[i] != '\0'; ++i) {
+		switch (numdigs[i]) {
+		case '0': printf("nil"); break;
+		case '1': printf("zen"); break;
+		case '2': printf("dun"); break;
+		case '3': printf("trin"); break;
+		case '4': printf("quedr"); break;
+		case '5': printf("quen"); break;
+		case '6': printf("hes"); break;
+		case '7': printf("sev"); break;
+		case '8': printf("ak"); break;
+		case '9': printf("neen"); break;
+		case 'X': printf("dex"); break;
+		case 'E': printf("lef"); break;
+		}
+	}
+	printf("a ");
 	return 0;
 }
 
 int printsdn(int currplace)
 {
-	if (currplace == 2)
-		printf("unqua ");
-	else if (currplace == 3)
-		printf("biqua ");
-	else if (currplace == 4)
-		printf("triqua ");
-	else if (currplace == 5)
-		printf("quadqua ");
-	else if (currplace == 6)
-		printf("pentqua ");
-	else if (currplace == 7)
-		printf("hexqua ");
-	else if (currplace == 8)
-		printf("septqua ");
-	else if (currplace == 9)
-		printf("octqua ");
-	else if (currplace == 10)
-		printf("ennqua ");
-	else if (currplace == 11)
-		printf("decqua ");
-	else if (currplace == 12)
-		printf("levqua ");
-	else if (currplace == 13)
-		printf("unnilqua ");
-	else if (currplace == 14)
-		printf("ununqua ");
-	else if (currplace == 15)
-		printf("unbiqua ");
+	char numdigs[7];
+	int i;
+
+	dectodoz(numdigs,((double)currplace-1));
+	for (i = 0; numdigs[i] != '\0'; ++i) {
+		switch (numdigs[i]) {
+		case '0': printf("nil"); break;
+		case '1': printf("un"); break;
+		case '2': printf("bi"); break;
+		case '3': printf("tri"); break;
+		case '4': printf("quad"); break;
+		case '5': printf("pent"); break;
+		case '6': printf("hex"); break;
+		case '7': printf("sept"); break;
+		case '8': printf("oct"); break;
+		case '9': printf("enn"); break;
+		case 'X': printf("dec"); break;
+		case 'E': printf("lev"); break;
+		}
+	}
+	printf("qua ");
 	return 0;
 }
 
@@ -189,19 +182,8 @@ int printsdn(int currplace)
 
 int printwords(char *number,char scheme)
 {
-//	int maxlength, numlength;
 	int i; int len;
 
-/*	for (i=0; number[i] != ';' && number[i] != '\0'; ++i);
-	maxlength = numlength = i;
-	for (i=0; i <= maxlength; i++) {
-		printnumword(number+i);
-		if (scheme == 'p')
-			printpend(numlength);
-		else if (scheme == 's')
-			printsdn(numlength);
-		--numlength;
-	}*/
 	len = strlen(number);
 	for (i = 0; i <= len; ++i) {
 		printnumword(number+i);
