@@ -30,85 +30,96 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
+#include <errno.h>
+#include <unistd.h>
 
-char error(int argc);
-char printwords(char *number);
-char printnumword(char *number, char first);
-char printexp(int currplace);
+int printwords(char *number,char scheme);
 
-/* check for errors, send number to word function, quit */
+#define SUCCESS 0
+#define BAD_OPTION 1
+#define OPT_REQ_ARG 2
 
 int main(int argc, char *argv[])
 {
-	if (error(argc))
-		return 1; 
-	
-	*argv++;
-	if (strcmp(*argv,"-v") == 0) {
-		printf("dozword v3.0\n");
-		printf("Copyright (C) 2010, 2011  Donald P. Goodman III\n");
-		printf("License GPLv3+:  GNU GPL version 3 or "
-		"later <http://gnu.org/licenses/gpl.html>\n");
-		printf("This is free software:  you are free "
-		"to change and redistribute it.  There is NO "
-		"WARRANTY, to the extent permitted by law.\n");
-		return 0;
+	char c; char scheme = 's';
+	char number[24];
+
+	opterr = 0;
+	while ((c = getopt(argc,argv,"Vpsn:")) != -1) {
+		switch (c) {
+		case 'V':
+			printf("dozword v4.0\n");
+			printf("Copyright (C) 2010, 2011  Donald P. Goodman III\n");
+			printf("License GPLv3+:  GNU GPL version 3 or "
+				"later <http://gnu.org/licenses/gpl.html>\n");
+			printf("This is free software:  you are free "
+				"to change and redistribute it.  There is NO "
+				"WARRANTY, to the extent permitted by law.\n");
+			exit(SUCCESS);
+			break;
+		case 'n':
+			strcpy(number,optarg);
+			break;
+		case 's':
+			scheme = 's';
+			break;
+		case 'p':
+			scheme = 'p';
+			break;
+		case '?':
+			if (optopt == 'n') {
+				fprintf(stderr,"dozcal:  option \"%c\" requires "
+					"an argument\n",optopt);
+				exit(OPT_REQ_ARG);
+			}
+			fprintf(stderr,"dozword:  unrecognized option "
+				"\"%c\"\n",optopt);
+			exit(BAD_OPTION);
+			break;
+		}
 	}
-	printwords(*argv);
+	printwords(number,scheme);
 	printf("\n");
 
 	return 0;
 }
 
-/* check for errors in input */
-
-char error(int argc)
-{
-	if (argc < 2) {
-		printf("Usage:  dozword <dozenal number>\n");
-		return 1;
-	} else if (argc > 2) {
-		printf("Too many arguments.  Usage:  dozword <dozenal number>\n");
-		return 1;
-	} else {
-		return 0; }
-}
-
 /* prints the number word */
 
-char printnumword(char *number, char first)
+int printnumword(char *number)
 {
 	if (*number == '0')
-		;
+		printf("zero");
 	else if (*number == '1')
-		printf("%cne",(first) ? 'O' : 'o' );
+		printf("one");
 	else if (*number == '2')
-		printf("%cwo",(first) ? 'T' : 't' );
+		printf("two");
 	else if (*number == '3')
-		printf("%chree",(first) ? 'T' : 't' );
+		printf("three");
 	else if (*number == '4')
-		printf("%cour",(first) ? 'F' : 'f' );
+		printf("four");
 	else if (*number == '5')
-		printf("%cive",(first) ? 'F' : 'f' );
+		printf("five");
 	else if (*number == '6')
-		printf("%cix",(first) ? 'S' : 's' );
+		printf("six");
 	else if (*number == '7')
-		printf("%ceven",(first) ? 'S' : 's' );
+		printf("seven");
 	else if (*number == '8')
-		printf("%cight",(first) ? 'E' : 'e' );
+		printf("eight");
 	else if (*number == '9')
-		printf("%cine",(first) ? 'N' : 'n' );
+		printf("nine");
 	else if (*number == 'X')
-		printf("%cen",(first) ? 'T' : 't' );
+		printf("ten");
 	else if (*number == 'E')
-		printf("%clv",(first) ? 'E' : 'e' );
+		printf("elv");
 	return 0;
 }
 
 /* prints the exponent level appropriate for current number */
 
-char printexp(int currplace)
+int printpend(int currplace)
 {
 	if (currplace == 2)
 		printf("zen ");
@@ -141,20 +152,62 @@ char printexp(int currplace)
 	return 0;
 }
 
+int printsdn(int currplace)
+{
+	if (currplace == 2)
+		printf("unqua ");
+	else if (currplace == 3)
+		printf("biqua ");
+	else if (currplace == 4)
+		printf("triqua ");
+	else if (currplace == 5)
+		printf("quadqua ");
+	else if (currplace == 6)
+		printf("pentqua ");
+	else if (currplace == 7)
+		printf("hexqua ");
+	else if (currplace == 8)
+		printf("septqua ");
+	else if (currplace == 9)
+		printf("octqua ");
+	else if (currplace == 10)
+		printf("ennqua ");
+	else if (currplace == 11)
+		printf("decqua ");
+	else if (currplace == 12)
+		printf("levqua ");
+	else if (currplace == 13)
+		printf("unnilqua ");
+	else if (currplace == 14)
+		printf("ununqua ");
+	else if (currplace == 15)
+		printf("unbiqua ");
+	return 0;
+}
+
 /* print the words for the number */
 
-char printwords(char *number)
+int printwords(char *number,char scheme)
 {
-	int maxlength, numlength;
-	int i;
-	char first = 1;
+//	int maxlength, numlength;
+	int i; int len;
 
-	for (i=0; number[i] != ';' && number[i] != '\0'; ++i);
+/*	for (i=0; number[i] != ';' && number[i] != '\0'; ++i);
 	maxlength = numlength = i;
 	for (i=0; i <= maxlength; i++) {
-		printnumword(number+i,first);
-		first = 0;
-		printexp(numlength);
+		printnumword(number+i);
+		if (scheme == 'p')
+			printpend(numlength);
+		else if (scheme == 's')
+			printsdn(numlength);
 		--numlength;
+	}*/
+	len = strlen(number);
+	for (i = 0; i <= len; ++i) {
+		printnumword(number+i);
+		if ((i == 0) && (scheme == 'p'))
+			printpend(len);
+		else if ((i == 0) && (scheme == 's'))
+			printsdn(len);
 	}
 }
