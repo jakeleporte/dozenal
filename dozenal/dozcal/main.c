@@ -64,7 +64,7 @@ int main(int argc, char **argv)
 	char *date_form;
 	const char *def_date = "%Y-%m-%d";
 	char *time_form;
-	const char *def_time = "%4h;%b";
+	const char *def_time = "%h;%4b";
 	char *todo_form;
 	const char *def_todo_form = "%p | %d | %t | %i | %c | %g";
 	char *nat;
