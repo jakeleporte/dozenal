@@ -66,7 +66,7 @@ int main(int argc, char **argv)
 	char *time_form;
 	const char *def_time = "%h;%4b";
 	char *todo_form;
-	const char *def_todo_form = "%p | %d | %t | %i | %c | %g | %t | %C | %l";
+	const char *def_todo_form = "%p | %d | %t | %i | %c | %g | %T | %C | %l";
 	char *nat;
 	char *relig;
 	char *conffile;
@@ -359,9 +359,9 @@ int print_todo(char *s, int index, char *date_format, char *time_format)
 			} else if (s[i] == 'l') {
 				printf("%*s",len,todo_list[index].location);
 			} else if (s[i] == 'C') {
-				printf("%*s",len,event_list[index].categories);
-			} else if (s[i] == 't') {
-				printf("%*s",len,event_list[index].evclass);
+				printf("%*s",len,todo_list[index].categories);
+			} else if (s[i] == 'T') {
+				printf("%*s",len,todo_list[index].todoclass);
 			} else {
 				fprintf(stderr,"dozcal:  unrecognized conversion "
 					"character \"%%%c\" in todo form string, "
