@@ -97,7 +97,7 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 	char categories[MAXLEN+1];
 	char location[MAXLEN+1];
 	char class[SHORTLEN+1];
-	char freq[MAXLEN+1];
+	char freq[SHORTLEN][MAXLEN+1];
 	time_t startdate; int startday;
 	time_t duetime;
 	time_t enddate = -1; int endday = -1;
@@ -112,12 +112,14 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 	struct tm *date;
 	struct tm *othdate;
 	int year; int mon; int day; int wday; int nday;
+	int numfreq = 0;
 
 	categories[0] = '\0';
 	class[0] = '\0';
 	title[0] = '\0';
 	location[0] = '\0';
-	freq[0] = '\0';
+	for (i = 0; i < SHORTLEN; ++i)
+		freq[i][0] = '\0';
 	for (i = 0; i < MAXLEN; ++i)
 		exceptions[i] = -1;
 	for (i = 0; i <= lines; ++i) {
@@ -165,7 +167,7 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 			pergross = (int) doztodec(buffer[i]+holder);
 		} if (strstr(buffer[i],"FREQ")) {
 			holder = get_impstr(buffer[i]);
-			strncpy(freq,buffer[i]+holder,MAXLEN);
+			strncpy(freq[numfreq++],buffer[i]+holder,MAXLEN);
 		}
 	}
 	if (enddate == -1)
@@ -175,81 +177,29 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 	startday = mkdaynum(startdate) + 1;
 	endday = mkdaynum(enddate) + 1;
 	currinterval = startday;
-	if (strlen(freq) > 0) {
-		if (endday == holder) {
-			othdate = broken_date(startday);
-			othdate->tm_year += 1;  othdate->tm_mon = 11;
-			othdate->tm_mday = 31; mktime(othdate);
-			endday = get_datenum(othdate);
-			date = broken_date(startday);
-		}
-		lower_str(freq);
-		if (wday = is_wkday(freq)) {
-			if (nday = is_num(freq)) {
-				if (mon = is_mon(freq)) {
-					date = broken_date(startday);
-					date->tm_mon = mon - 1; mktime(date);
-					holder = get_datenum(date);
-					if (nday <= 5)
-						holder = wday_of_month(holder,wday-1,nday);
-					else
-						holder = last_wday_of_month(holder,wday-1);
-					if (endday <= holder)
-						endday = holder + 1;
-					while (holder < endday) {
-						if (strstr(buffer[0],"EVENT")) {
-							add_event(starttime, endtime, holder, title, class, 
-								categories, location);
-						} if (strstr(buffer[0],"TODO")) {
-							add_todo(holder, starttime, priority, 
-								compflag, pergross, title, class, 
-								categories, location);
-						}
-						date->tm_year += interval; mktime(date);
-						holder = get_datenum(date);
-						if (nday <= 5)
-							holder = wday_of_month(holder,wday-1,nday);
-						else
-							holder = last_wday_of_month(holder,wday-1);
-					}
-				} else {
-					date = broken_date(startday);
-					holder = get_datenum(date);
-					if (nday <= 5)
-						holder = wday_of_month(holder,wday-1,nday);
-					else
-						holder = last_wday_of_month(holder,wday-1);
-					if (endday <= holder)
-						endday = holder + 1;
-					while (holder < endday) {
-						if (strstr(buffer[0],"EVENT")) {
-							add_event(starttime, endtime, holder, title, class, 
-								categories, location);
-						} if (strstr(buffer[0],"TODO")) {
-							add_todo(holder, starttime, priority, 
-								compflag, pergross, title, class, 
-								categories, location);
-						}
-						date->tm_mon += interval; mktime(date);
-						holder = get_datenum(date);
-						if (nday <= 5)
-							holder = wday_of_month(holder,wday-1,nday);
-						else
-							holder = last_wday_of_month(holder,wday-1);
-					}
-				}
-			} else {//wday but no ordinal
-				if (mon = is_mon(freq)) { // wkday, no ordinal, month
-					date = broken_date(startday);
-					holder = get_datenum(date);
-					holder = wday_of_month(holder,wday-1,1);
-					while (holder < startday) holder += 7;
-					if (endday <= holder) {
-						endday = first_of_next(date);
+	if (numfreq > 0) {
+		for (i = 0; i < numfreq; ++i) {
+			if (endday == holder) {
+				othdate = broken_date(startday);
+				othdate->tm_year += 1;  othdate->tm_mon = 11;
+				othdate->tm_mday = 31; mktime(othdate);
+				endday = get_datenum(othdate);
+				date = broken_date(startday);
+			}
+			lower_str(freq[i]);
+			if (wday = is_wkday(freq[i])) {
+				if (nday = is_num(freq[i])) {
+					if (mon = is_mon(freq[i])) {
 						date = broken_date(startday);
-					}
-					while (holder < endday) {
-						if (date->tm_mon == (mon - 1)) {
+						date->tm_mon = mon - 1; mktime(date);
+						holder = get_datenum(date);
+						if (nday <= 5)
+							holder = wday_of_month(holder,wday-1,nday);
+						else
+							holder = last_wday_of_month(holder,wday-1);
+						if (endday <= holder)
+							endday = holder + 1;
+						while (holder < endday) {
 							if (strstr(buffer[0],"EVENT")) {
 								add_event(starttime, endtime, holder, title, class, 
 									categories, location);
@@ -258,67 +208,121 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 									compflag, pergross, title, class, 
 									categories, location);
 							}
+							date->tm_year += interval; mktime(date);
+							holder = get_datenum(date);
+							if (nday <= 5)
+								holder = wday_of_month(holder,wday-1,nday);
+							else
+								holder = last_wday_of_month(holder,wday-1);
 						}
-						date->tm_mday += (interval * 7); mktime(date);
-						holder += (interval * 7);
-					}
-				} else { //wkday, no ordinal, no month
-					date = broken_date(startday);
-					holder = get_datenum(date);
-					holder = wday_of_month(holder,wday-1,1);
-					while (holder < startday) holder += 7;
-					if (endday <= holder) {
-						endday = first_of_next(date);
+					} else {
 						date = broken_date(startday);
-					}
-					while (holder < endday) {
-						if (strstr(buffer[0],"EVENT")) {
-							add_event(starttime, endtime, holder, title, class, 
-								categories, location);
-						} if (strstr(buffer[0],"TODO")) {
-							add_todo(holder, starttime, priority, 
-								compflag, pergross, title, class, 
-								categories, location);
+						holder = get_datenum(date);
+						if (nday <= 5)
+							holder = wday_of_month(holder,wday-1,nday);
+						else
+							holder = last_wday_of_month(holder,wday-1);
+						if (endday <= holder)
+							endday = holder + 1;
+						while (holder < endday) {
+							if (strstr(buffer[0],"EVENT")) {
+								add_event(starttime, endtime, holder, title, class, 
+									categories, location);
+							} if (strstr(buffer[0],"TODO")) {
+								add_todo(holder, starttime, priority, 
+									compflag, pergross, title, class, 
+									categories, location);
+							}
+							date->tm_mon += interval; mktime(date);
+							holder = get_datenum(date);
+							if (nday <= 5)
+								holder = wday_of_month(holder,wday-1,nday);
+							else
+								holder = last_wday_of_month(holder,wday-1);
 						}
-						date->tm_mday += (interval * 7); mktime(date);
-						holder += (interval * 7);
+					}
+				} else {//wday but no ordinal
+					if (mon = is_mon(freq[i])) { // wkday, no ordinal, month
+						date = broken_date(startday);
+						holder = get_datenum(date);
+						holder = wday_of_month(holder,wday-1,1);
+						while (holder < startday) holder += 7;
+						if (endday <= holder) {
+							endday = first_of_next(date);
+							date = broken_date(startday);
+						}
+						while (holder < endday) {
+							if (date->tm_mon == (mon - 1)) {
+								if (strstr(buffer[0],"EVENT")) {
+									add_event(starttime, endtime, holder, title, class, 
+										categories, location);
+								} if (strstr(buffer[0],"TODO")) {
+									add_todo(holder, starttime, priority, 
+										compflag, pergross, title, class, 
+										categories, location);
+								}
+							}
+							date->tm_mday += (interval * 7); mktime(date);
+							holder += (interval * 7);
+						}
+					} else { //wkday, no ordinal, no month
+						date = broken_date(startday);
+						holder = get_datenum(date);
+						holder = wday_of_month(holder,wday-1,1);
+						while (holder < startday) holder += 7;
+						if (endday <= holder) {
+							endday = first_of_next(date);
+							date = broken_date(startday);
+						}
+						while (holder < endday) {
+							if (strstr(buffer[0],"EVENT")) {
+								add_event(starttime, endtime, holder, title, class, 
+									categories, location);
+							} if (strstr(buffer[0],"TODO")) {
+								add_todo(holder, starttime, priority, 
+									compflag, pergross, title, class, 
+									categories, location);
+							}
+							date->tm_mday += (interval * 7); mktime(date);
+							holder += (interval * 7);
+						}
 					}
 				}
-			}
-		} else if (strstr(freq,"monthly")) {
-			date = broken_date(startday);
-			year = date->tm_year;
-			holder = get_datenum(date);
-			while (holder < endday) {
-				if (strstr(buffer[0],"EVENT")) {
-					add_event(starttime, endtime, holder, title, class, 
-						categories, location);
-				} if (strstr(buffer[0],"TODO")) {
-					add_todo(holder, starttime, priority, compflag, pergross,
-						title, class, categories, location);
-				}
-				date->tm_mon += interval; mktime(date);
+			} else if (strstr(freq[i],"monthly")) {
+				date = broken_date(startday);
+				year = date->tm_year;
 				holder = get_datenum(date);
-			}
-		} else if (strstr(freq,"yearly")) {
-			date = broken_date(startday);
-			year = date->tm_year;
-			holder = get_datenum(date);
-			while (holder < endday) {
-				if (strstr(buffer[0],"EVENT")) {
-					add_event(starttime, endtime, holder, title, class, 
-						categories, location);
-				} if (strstr(buffer[0],"TODO")) {
-					add_todo(holder, starttime, priority, compflag, pergross,
-						title, class, categories, location);
+				while (holder < endday) {
+					if (strstr(buffer[0],"EVENT")) {
+						add_event(starttime, endtime, holder, title, class, 
+							categories, location);
+					} if (strstr(buffer[0],"TODO")) {
+						add_todo(holder, starttime, priority, compflag, pergross,
+							title, class, categories, location);
+					}
+					date->tm_mon += interval; mktime(date);
+					holder = get_datenum(date);
 				}
-				date->tm_year += interval; mktime(date);
+			} else if (strstr(freq[i],"yearly")) {
+				date = broken_date(startday);
+				year = date->tm_year;
 				holder = get_datenum(date);
+				while (holder < endday) {
+					if (strstr(buffer[0],"EVENT")) {
+						add_event(starttime, endtime, holder, title, class, 
+							categories, location);
+					} if (strstr(buffer[0],"TODO")) {
+						add_todo(holder, starttime, priority, compflag, pergross,
+							title, class, categories, location);
+					}
+					date->tm_year += interval; mktime(date);
+					holder = get_datenum(date);
+				}
+			} else {
+				fprintf(stderr,"dozcal:  \"FREQ\" directive \"%s\" "
+					"cannot be interpreted\n",freq[i]);
+				exit(BAD_FREQ);
 			}
-		} else {
-			fprintf(stderr,"dozcal:  \"FREQ\" directive \"%s\" "
-				"cannot be interpreted\n",freq);
-			exit(BAD_FREQ);
 		}
 		return 0;
 	}
