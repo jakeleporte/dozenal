@@ -185,7 +185,7 @@ int main(int argc, char **argv)
 			break;
 		case 'c':
 			proc_options(optarg,&moonphases,&nat,&relig,&date_form,
-				&time_form,&ev_form,&todo_form);
+				&time_form,&ev_form,&todo_form,&iftodo,&ifevent);
 			confflag = 1;
 			break;
 		case 'm':
@@ -258,7 +258,7 @@ int main(int argc, char **argv)
 	}
 	if (confflag == 0) {
 		proc_options(conffile,&moonphases,&nat,&relig,&date_form,
-			&time_form,&ev_form,&todo_form);
+			&time_form,&ev_form,&todo_form,&iftodo,&ifevent);
 	}
 	if (startdate == -1)
 		startdate = 0;

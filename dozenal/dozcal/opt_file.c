@@ -39,7 +39,7 @@
 
 int proc_options(char *s, int *moonphases, char **nat, char **relig,
 					char **date_form, char **time_form, char **ev_form,
-					char **todo_form)
+					char **todo_form, int *iftodo, int *ifevent)
 {
 	FILE *fp; int holder; int implen;
 	char *line = NULL; size_t len = 0; ssize_t read;
@@ -84,6 +84,10 @@ int proc_options(char *s, int *moonphases, char **nat, char **relig,
 		} else if (strstr(line,"INPUT")) {
 			holder = get_impstr(line);
 			process_file(line+holder);
+		} else if (strstr(line,"PRINT_TODOS")) {
+			*iftodo = 1;
+		} else if (strstr(line,"NO_EVENT")) {
+			*ifevent = 0;
 		}
 	}
 	free(line);
