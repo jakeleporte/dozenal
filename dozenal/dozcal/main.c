@@ -70,7 +70,7 @@ int main(int argc, char **argv)
 	char *nat;
 	char *relig;
 	char *conffile;
-	char *defconfname = "/.dozcalrc";
+	char *defconfname = "/.dozcal/dozcalrc";
 	char *home;
 	char cwd[] = "~";
 	int preflen = -1;

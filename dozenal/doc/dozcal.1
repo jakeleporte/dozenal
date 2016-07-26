@@ -302,7 +302,7 @@ to the order of their inclusion.
 Names a config file for \fBdozcal\fR to use.  (See the
 section below about how to format such config files.)  If
 not specified, \fBdozcal\fR will look for
-\fI$HOME/.dozcalrc\fR; if it cannot find that, it will
+\fI$HOME/.dozcal/dozcalrc\fR; if it cannot find that, it will
 proceed without any config files.  If this is specified
 multiple times, any options in later config files will
 override those in earlier ones.
@@ -518,7 +518,7 @@ followed by some optional space, and finally followed by the
 value.  Anything that can be specified on the command line
 can also be specified in the config file.  By default, if
 you don't give \fBdozcal\fR a config file with \fI\-c\fR, it
-will look for one at \fI$HOME/.dozcalrc\fR; if it can't find
+will look for one at \fI$HOME/.dozcal/dozcalrc\fR; if it can't find
 that, it will print a message to stderr and then continue
 with no config file.
 .PP

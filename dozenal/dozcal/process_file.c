@@ -59,7 +59,7 @@ int process_file(char *s)
 
 	if ((fp = fopen(s,"r")) == NULL) {
 		fprintf(stderr,"dozcal:  unable to open file "
-			"\"%s\", with the following error:\n\t%d: "
+			"\"%s\", with this error:\n\t%d: "
 			"%s\n",s,errno,strerror(errno));
 		exit(BAD_FILE);
 	}
