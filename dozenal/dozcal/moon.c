@@ -56,7 +56,8 @@ int get_moonphases(int datenum, int moonphases)
 	daynumber = datenum * 86400;
 	date = localtime(&daynumber);
 	phase = moonphase(date->tm_year+1900,date->tm_mon,date->tm_mday);
-	sprintf(phasenum,"%d",phase);
+//	sprintf(phasenum,"%d",phase);
+	dectodoz(phasenum,(double)phase);
 	strcat(phase_str,phasenum);
 	if (phase == 0)
 		strcat(phase_str," (new)");
@@ -71,11 +72,6 @@ int get_moonphases(int datenum, int moonphases)
 		event_list = realloc(event_list,(recordnums * 
 			sizeof(struct event)));
 		add_to_event(phase_str,datenum,"astronomical");
-/*		event_list[recordnums-1].starttime = -1;
-		event_list[recordnums-1].endtime = -1;
-		strcpy(event_list[recordnums-1].title,phase_str);
-		event_list[recordnums-1].thisdate = datenum;
-		recordnums++;*/
 	}
 	return 0;
 }

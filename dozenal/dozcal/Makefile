@@ -28,8 +28,8 @@ dozcal: $(objects) ../doz/doz.o ../dec/dec.o ../conv/conv.o
 main.o: main.c ../conv/conv.o ../doz/doz.o ../dec/dec.o ../conv/conv.o
 	$(CC) -I$(IDIR) -g -lm -c main.c ../dec/dec.c ../conv/conv.c
 
-moon.o: moon.c
-	$(CC) -I$(IDIR) -g -lm -c moon.c
+moon.o: moon.c ../doz/doz.o
+	$(CC) -I$(IDIR) -g -lm -c moon.c ../doz/doz.c
 
 jewish_date.o: jewish_date.c
 	$(CC) -I$(IDIR) -g -lm -lhdate -c jewish_date.c
@@ -44,7 +44,7 @@ easter.o: easter.c
 	$(CC) -I$(IDIR) -g -lm -c easter.c
 
 process_file.o: process_file.c utility.c ../conv/conv.o ../doz/doz.o ../dec/dec.o
-	$(CC) -I$(IDIR) -g -lm -c process_file.c utility.o ../dec/dec.c ../conv/conv.c
+	$(CC) -I$(IDIR) -g -lm -c process_file.c utility.c ../dec/dec.c ../conv/conv.c
 
 proc_date.o:  proc_date.c utility.c ../conv/conv.o ../doz/doz.o ../dec/dec.o
 	$(CC) -I$(IDIR) -g -lm -c proc_date.c utility.c ../dec/dec.c ../conv/conv.c ../doz/doz.c
