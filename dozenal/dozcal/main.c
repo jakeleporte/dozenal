@@ -144,7 +144,7 @@ int main(int argc, char **argv)
 	}
 	relig[0] = '\0';
 	opterr = 0;
-	while ((c = getopt(argc,argv,"VETR:m:f:s:e:d:t:r:c:n:h:")) != -1) {
+	while ((c = getopt(argc,argv,"VETR:m:f:s:e:d:t:r:c:n:h:l:")) != -1) {
 		switch(c) {
 		case 'V':
 			printf("dozcal v1.0\n");
@@ -161,6 +161,9 @@ int main(int argc, char **argv)
 			break;
 		case 'T':
 			iftodo = 1;
+			break;
+		case 'l':
+			call_lua(optarg);
 			break;
 		case 'n':
 			if ((nat = realloc(nat,(strlen(optarg)+1) * 

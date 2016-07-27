@@ -17,7 +17,7 @@ IDIR =../include
 LUALIB = -llua5.2
 CC = gcc
 objects = main.o utility.o proc_date.o process_file.o moon.o opt_file.o \
-	easter.o nat_holidays.o jewish_date.o islamic.o
+	easter.o nat_holidays.o jewish_date.o islamic.o call_lua.o
 binobjects = dozcal
 
 all: bin
@@ -29,6 +29,9 @@ dozcal: $(objects) ../doz/doz.o ../dec/dec.o ../conv/conv.o
 main.o: main.c ../conv/conv.o ../doz/doz.o ../dec/dec.o ../conv/conv.o
 	$(CC) -I$(IDIR) -g -lm -c main.c ../dec/dec.c ../conv/conv.c \
 		$(LUALIB)
+
+call_lua.o: call_lua.c
+	$(CC) -I$(IDIR) -g -c call_lua.c -lm $(LUALIB)
 
 moon.o: moon.c ../doz/doz.o
 	$(CC) -I$(IDIR) -g -lm -c moon.c ../doz/doz.c
