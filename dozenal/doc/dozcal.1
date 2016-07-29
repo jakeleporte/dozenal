@@ -19,6 +19,7 @@ dozcal \- a command-line dozenal calendar program
 [\fB\-r\fR \fIeventformat\fR]
 [\fB\-R\fR \fItodoformat\fR]
 [\fB\-c\fR \fIconfigfile\fR]
+[\fB\-l\fR \fIluascript\fR]
 [\fB\-f\fR \fIinputfile\fR]
 .SH DESCRIPTION
 .B dozcal
@@ -170,10 +171,10 @@ Day; Good Friday; Canada Day; Labour Day; and Christmas Day.
 Countries with their holidays not included:  this is not
 meant as a slight, I'm just most familiar with these
 Anglophone countries and built them in for no other reason.
-We hope to add facilities for easily including new
-programmable holidays that will hopefully resolve this
-issue.  Otherwise, such holidays must be included in an
-input data file.
+If you wish to add your country's holidays, have at it;
+consider the \fB\-l\fR option, and write a Lua script which
+will set those holidays on their proper days and tell
+\fBdozcal\fR to include them.
 .RE
 .TP
 .BR "\-s [startdate]"
@@ -290,6 +291,17 @@ Event formats can also include newlines, specified in the
 usual way as \fI\\n\fR, and tabs, specified in the usual way
 as \fI\\t\fR.
 .RE
+.TP
+.BR "\-l [luascript]"
+Tells \fBdozcal\fR to read a Lua script with its built-in
+Lua 5.2 interpreter.  Can be repeated as desired.  This
+script can add events to the calendar which are too variable
+for a static input file.  As an example, the script
+\fIcath_lit_1176.lua\fR is packaged with \fBdozcal\fR, which
+implements the entire Roman Catholic calendar of the liturgy
+of 1176 (d1962), complete with movable feasts properly
+placed.  Please see the section below on Lua scripting for
+details.
 .TP
 .BR "\-f [inputfile]"
 Names an input data file for \fBdozcal\fR to use.  (See the
@@ -563,6 +575,15 @@ the command line, but be aware that if you name the same
 file more than once, it will be included more than once;
 \fBdozcal\fR assumes that you tell it what you really want
 and does not check for duplicate files.
+.TP
+.BR SCRIPT:
+Specifies a Lua script for \fBdozcal\fR to run and take
+input from.  You can include as many of these as you like,
+and even mix them with \fI\-l\fR on the command line, but be
+aware that if you name the same file more than once, the
+events that the script adds will be added twice.
+\fBdozcal\fR assumes that you tell it what you really want
+and does not check for duplicate files.
 .RE
 .SH ERRORS
 .PP
@@ -613,8 +634,19 @@ correctly; see the specific error message for reasons.
 You've given a conversion character in your todo format
 (perhaps with the \fB\-R\fR option) that \fBdozcal\fR
 doesn't recognize.
+.TP
+.BR 10
+Your FREQ specification isn't in a format the \fBdozcal\fR
+can interpret.
+.TP
+.BR 11
+\fBdozcal\fR found an error in a Lua script that you've
+included, either from the config file or by using the option
+\fB\-l\fR.  Repair your Lua script and try again.
 .SH BUGS
-None known at this time.
+.PP
+The last event included via Lua script is included twice.  I
+can't figure out why this is so or how to fix it.
 .SH AUTHOR
 Donald P. Goodman III <dgoodmaniii at gmail dot com>
 .SH SEE ALSO

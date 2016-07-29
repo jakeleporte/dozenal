@@ -84,6 +84,9 @@ int proc_options(char *s, int *moonphases, char **nat, char **relig,
 		} else if (strstr(line,"INPUT")) {
 			holder = get_impstr(line);
 			process_file(line+holder);
+		} else if (strstr(line,"SCRIPT")) {
+			holder = get_impstr(line);
+			call_lua(line+holder);
 		} else if (strstr(line,"PRINT_TODOS")) {
 			*iftodo = 1;
 		} else if (strstr(line,"NO_EVENT")) {
