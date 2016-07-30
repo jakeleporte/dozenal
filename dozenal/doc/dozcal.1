@@ -9,6 +9,8 @@ dozcal \- a command-line dozenal calendar program
 [\fB\-V\fR]
 [\fB\-E\fR]
 [\fB\-T\fR]
+[\fB\-w\fR]
+[\fB\-W\fR \fIfirstdayofweek\fR]
 [\fB\-m\fR \fIfull|major\fR]
 [\fB\-h\fR \fIreligious\fR]
 [\fB\-n\fR \fInational\fR]
@@ -45,6 +47,20 @@ so this flag turns event printing \fIoff\fR.
 Print todos.  Unlike the \fB\-E\fR flag, this turns printing
 of todos \fIon\fR, because printing of todos is off by
 default.
+.TP
+.BR \-w
+Print results for the week including the starting date.
+This is any seven-day period; you can set which day of the
+week you want to be the first with the \fB\-W\fR option.
+Using this will cause any end date given to be ignored.
+.TP
+.BR "\-W [first day of week]
+Set which day of the week you want to be first; has no
+effect unless you've requested weekly output.  Accepts an
+integer 0-6 (with 0 being Sunday), or a string including at
+least the first three letters of the day of the week you'd
+like to be first; e.g., "mon".  Capitalization is
+irrelevant.
 .TP
 .BR "\-m [all | major]"
 Include the phases of the moon in your output.  This must

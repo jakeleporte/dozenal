@@ -47,3 +47,4 @@
 #define BAD_TODO_FORMAT 9
 #define BAD_FREQ 10
 #define LUA_ERROR 11
+#define BAD_FDOW 12

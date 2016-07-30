@@ -39,7 +39,8 @@
 
 int proc_options(char *s, int *moonphases, char **nat, char **relig,
 					char **date_form, char **time_form, char **ev_form,
-					char **todo_form, int *iftodo, int *ifevent)
+					char **todo_form, int *iftodo, int *ifevent,
+					int *weekout, int *fdow)
 {
 	FILE *fp; int holder; int implen;
 	char *line = NULL; size_t len = 0; ssize_t read;
@@ -91,6 +92,11 @@ int proc_options(char *s, int *moonphases, char **nat, char **relig,
 			*iftodo = 1;
 		} else if (strstr(line,"NO_EVENT")) {
 			*ifevent = 0;
+		} else if (strstr(line,"WEEKLY")) {
+			*weekout = 1;
+		} else if (strstr(line,"FIRST_DOW")) {
+			holder = get_impstr(line);
+			*fdow = first_dow(line+holder);
 		}
 	}
 	free(line);

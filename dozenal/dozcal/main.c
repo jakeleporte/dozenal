@@ -77,6 +77,8 @@ int main(int argc, char **argv)
 	int confflag = 0;
 	int ifevent = 1;
 	int iftodo = 0;
+	int weekout = 0;
+	int fdow = 0;
 
 	home = getenv("HOME");
 	if (home != NULL) {
@@ -144,7 +146,7 @@ int main(int argc, char **argv)
 	}
 	relig[0] = '\0';
 	opterr = 0;
-	while ((c = getopt(argc,argv,"VETR:m:f:s:e:d:t:r:c:n:h:l:")) != -1) {
+	while ((c = getopt(argc,argv,"VETwR:m:f:s:e:d:t:r:c:n:h:l:W:")) != -1) {
 		switch(c) {
 		case 'V':
 			printf("dozcal v1.0\n");
@@ -164,6 +166,12 @@ int main(int argc, char **argv)
 			break;
 		case 'l':
 			call_lua(optarg);
+			break;
+		case 'w':
+			weekout = 1;
+			break;
+		case 'W':
+			fdow = first_dow(optarg);
 			break;
 		case 'n':
 			if ((nat = realloc(nat,(strlen(optarg)+1) * 
@@ -188,7 +196,8 @@ int main(int argc, char **argv)
 			break;
 		case 'c':
 			proc_options(optarg,&moonphases,&nat,&relig,&date_form,
-				&time_form,&ev_form,&todo_form,&iftodo,&ifevent);
+				&time_form,&ev_form,&todo_form,&iftodo,&ifevent,&weekout,
+				&fdow);
 			confflag = 1;
 			break;
 		case 'm':
@@ -204,10 +213,10 @@ int main(int argc, char **argv)
 			}
 			break;
 		case 's':
-			startdate = mkdaynum(proc_date(optarg));
+			startdate = mkdaynum(proc_date(optarg)) + 1;
 			break;
 		case 'e':
-			enddate = mkdaynum(proc_date(optarg));
+			enddate = mkdaynum(proc_date(optarg)) + 1;
 			break;
 		case 'd':
 			if ((date_form = realloc(date_form,(strlen(optarg)+1) * 
@@ -248,7 +257,9 @@ int main(int argc, char **argv)
 		case '?':
 			if ((optopt == 'f') || (optopt == 'd')
 			|| (optopt == 'm') || (optopt == 'c')
-			|| (optopt == 't') || (optopt == 'r')) {
+			|| (optopt == 't') || (optopt == 'r')
+			|| (optopt == 'R') || (optopt == 'l')
+			|| (optopt == 'W')) {
 				fprintf(stderr,"dozcal:  option \"%c\" requires "
 					"an argument\n",optopt);
 				exit(OPT_REQ_ARG);
@@ -261,12 +272,18 @@ int main(int argc, char **argv)
 	}
 	if (confflag == 0) {
 		proc_options(conffile,&moonphases,&nat,&relig,&date_form,
-			&time_form,&ev_form,&todo_form,&iftodo,&ifevent);
+			&time_form,&ev_form,&todo_form,&iftodo,&ifevent,&weekout,
+			&fdow);
 	}
 	if (startdate == -1)
 		startdate = 0;
 	if (enddate == -1)
 		enddate = INT_MAX - 1;
+	if ((weekout == 1) && (startdate != 0)) {
+		while (get_weekday(startdate) != fdow)
+			startdate -= 1;
+		enddate = startdate + 6;
+	}
 	qsort(event_list,recordnums-1,sizeof(struct event),comparator);
 	if (strlen(relig) > 0) {
 		if (strstr(relig,"west")) {
@@ -526,6 +543,47 @@ int comparator(const void *evone, const void *evtwo)
 			return -1;
 		} else {
 			return strcmp(itemone,itemtwo);
+		}
+	}
+}
+
+int first_dow(char *s)
+{
+	int ret;
+
+	if (isdigit(s[0])) {
+		ret = atoi(s);
+		if ((ret < 7) && (ret >= 0)) {
+			return ret;
+		} else {
+			fprintf(stderr,"dozcal:  invalid value for "
+				"the first day of week; must be the name of "
+				"a day or a number 0--7, but value is \"%s\"\n",
+				s);
+			exit(BAD_FDOW);
+		}
+	} else {
+		lower_str(s);
+		if (strstr(s,"sun"))
+			return 0;
+		else if (strstr(s,"mon"))
+			return 1;
+		else if (strstr(s,"tue"))
+			return 2;
+		else if (strstr(s,"wed"))
+			return 3;
+		else if (strstr(s,"thu"))
+			return 4;
+		else if (strstr(s,"fri"))
+			return 5;
+		else if (strstr(s,"sat"))
+			return 6;
+		else {
+			fprintf(stderr,"dozcal:  invalid value for "
+				"the first day of week; must be the name of "
+				"a day or a number 0--7, but value is \"%s\"\n",
+				s);
+			exit(BAD_FDOW);
 		}
 	}
 }
