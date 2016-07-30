@@ -600,6 +600,19 @@ aware that if you name the same file more than once, the
 events that the script adds will be added twice.
 \fBdozcal\fR assumes that you tell it what you really want
 and does not check for duplicate files.
+.TP
+.BR WEEKLY
+Tells \fBdozcal\fR that you want it to give you weekly
+output.  This will only work if you've given it an explicit
+start date; otherwise it can't know what week to give you.
+It will also ignore whatever end date, if any, you've given
+it.
+.TP
+.BR FIRST_DOW:
+First day of the week; only has effect when you've asked for
+weekly output.  Can be an integer 0-6 (with 0 being Sunday),
+or a string containing at least the first three letters of
+the weekday.  Capitalization is irrelevant.
 .RE
 .SH ERRORS
 .PP
@@ -659,6 +672,10 @@ can interpret.
 \fBdozcal\fR found an error in a Lua script that you've
 included, either from the config file or by using the option
 \fB\-l\fR.  Repair your Lua script and try again.
+.TP
+.BR 12
+\fBdozcal\fR can't understand what you gave it for a first
+day of the week.
 .SH BUGS
 .PP
 The last event included via Lua script is included twice.  I
