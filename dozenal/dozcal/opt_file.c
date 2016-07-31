@@ -60,27 +60,27 @@ int proc_options(char *s, int *moonphases, char **nat, char **relig,
 				*moonphases = 1;
 		} else if (strstr(line,"RELIG")) {
 			holder = get_impstr(line);
-			*relig = realloc(*relig,((strlen(line)) * sizeof(char)));
+			*relig = realloc(*relig,((strlen(line)+1) * sizeof(char)));
 			strcpy(*relig,line+holder);
 		} else if (strstr(line,"NATION")) {
 			holder = get_impstr(line);
-			*nat = realloc(*nat,((strlen(line)) * sizeof(char)));
+			*nat = realloc(*nat,((strlen(line)+1) * sizeof(char)));
 			strcpy(*nat,line+holder);
 		} else if (strstr(line,"DATE_FORMAT")) {
 			holder = get_impstr(line);
-			*date_form = realloc(*date_form,((strlen(line)) * sizeof(char)));
+			*date_form = realloc(*date_form,((strlen(line)+1) * sizeof(char)));
 			strcpy(*date_form,line+holder);
 		} else if (strstr(line,"TIME_FORMAT")) {
 			holder = get_impstr(line);
-			*time_form = realloc(*time_form,((strlen(line)) * sizeof(char)));
+			*time_form = realloc(*time_form,((strlen(line)+1) * sizeof(char)));
 			strcpy(*time_form,line+holder);
 		} else if (strstr(line,"EVENT_FORMAT")) {
 			holder = get_impstr(line);
-			*ev_form = realloc(*ev_form,((strlen(line)) * sizeof(char)));
+			*ev_form = realloc(*ev_form,((strlen(line)+1) * sizeof(char)));
 			strcpy(*ev_form,line+holder);
 		} else if (strstr(line,"TODO_FORMAT")) {
 			holder = get_impstr(line);
-			*todo_form = realloc(*todo_form,((strlen(line)) * sizeof(char)));
+			*todo_form = realloc(*todo_form,((strlen(line)+1) * sizeof(char)));
 			strcpy(*todo_form,line+holder);
 		} else if (strstr(line,"INPUT")) {
 			holder = get_impstr(line);

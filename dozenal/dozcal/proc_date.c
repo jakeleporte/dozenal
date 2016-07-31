@@ -226,7 +226,8 @@ int num_to_date(int datenum, char *datestr, char *dateform)
 			dectodoz(doznum,(double)atoi(holder));
 			padlen = strlen(holder) - strlen(doznum);
 			sprintf(formdoz,"%*.*s%s",padlen,padlen,padding,doznum);
-			strcat(datestr,formdoz);
+			if ((strlen(datestr)+strlen(formdoz)) < MAXLEN)
+				strcat(datestr,formdoz);
 			--i;
 		} else {
 			datestr[strlen(datestr)+1] = '\0';
@@ -274,10 +275,12 @@ int secs_to_Tims(int time,char *timestr,char *time_format)
 			}
 			if (time_format[i] == 'h') {
 				sprintf(buffer,"%*.*s",len,len,hours);
-				strcat(timestr,buffer);
+				if ((strlen(timestr)+strlen(buffer)) < MAXLEN)
+					strcat(timestr,buffer);
 			} else if (time_format[i] == 'b') {
 				sprintf(buffer,"%*.*s",len,len,timpart);
-				strcat(timestr,buffer);
+				if ((strlen(timestr)+strlen(buffer)) < MAXLEN)
+					strcat(timestr,buffer);
 			} else {
 				fprintf(stderr,"dozcal:  unknown conversion "
 					"character \"%%%c\" in time format string, "

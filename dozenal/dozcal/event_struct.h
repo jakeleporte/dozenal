@@ -10,7 +10,7 @@
  * dozcal:  keeps a calendar with a specific internal format
  * in dozenal
  *
- * (C) Copyright 2016  Donald P. Goodman III
+ * (C) Copyright 20SHORTLEN+1  Donald P. Goodman III
  *
  * This file is part of dozcal.
  *
@@ -31,27 +31,29 @@
  * <http://www.gnu.org/licenses/>.
  */
 
+#include"errcodes.h"
+
 struct event {
-	int id;					/* idnum of the event entry */
-	char title[256];		/* title of the event */
-	int thisdate;			/* the date */
-	int starttime;			/* starting time, in Tims from midnight */
-	int endtime;			/* ending time, in Tims from midnight */
-	char location[256];	/* the location of the event */
-	int relatedto;			/* idnum of other events or todos */
-	char evclass[16];		/* e.g., "private" */
-	char categories[256];/* categories event fits into; e.g., "business" */
-	char transp;			/* '0' if opaque, 1 if transp */
+	int id;						/* idnum of the event entry */
+	char title[MAXLEN+1];	/* title of the event */
+	int thisdate;				/* the date */
+	int starttime;				/* starting time, in Tims from midnight */
+	int endtime;				/* ending time, in Tims from midnight */
+	char location[MAXLEN+1];	/* the location of the event */
+	int relatedto;				/* idnum of other events or todos */
+	char evclass[SHORTLEN+1];			/* e.g., "private" */
+	char categories[MAXLEN+1];/* categories; e.g., "business" */
+	char transp;				/* '0' if opaque, 1 if transp */
 };
 
 struct todo {
-	char item[256];
-	char todoclass[16];
-	char categories[256];/* categories todo fits into; e.g., "business" */
+	char item[MAXLEN+1];
+	char todoclass[SHORTLEN+1];
+	char categories[MAXLEN+1];/* categories todo fits into; e.g., "business" */
 	int duedate;
 	int duetime;
 	int priority;			/* higher numbers have higher priority */
-	char location[256];
+	char location[MAXLEN+1];
 	int completed;			/* '0' if not completed, 1 if completed */
 	int pergross;			/* 0-144 completed amount */
 };
