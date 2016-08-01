@@ -146,10 +146,10 @@ time_t proc_date(char *s)
 }
 
 char *timepats[] = {
-	"\\([0-9XE][0-9XE]\\):\\([0-9XE][0-9XE]\\)",
-	"\\([0-9XE][0-9XE]\\);\\([0-9XE][0-9XE]\\)",
-	"\\([0-9XE][0-9XE]\\);\\([0-9XE][0-9XE][0-9XE][0-9XE]\\)",
-	"\\([0-9XE][0-9XE]\\)\\([0-9XE][0-9XE]\\)",
+	"\\([0-9XE][0-9XE]*\\):\\([0-9XE][0-9XE]\\)",
+	"\\([0-9XE][0-9XE]*\\);\\([0-9XE][0-9XE]\\)",
+	"\\([0-9XE][0-9XE]*\\);\\([0-9XE][0-9XE][0-9XE][0-9XE]\\)",
+	"\\([0-9XE][0-9XE]*\\)\\([0-9XE][0-9XE]\\)",
 };
 
 /* returns number of Tims since midnight, starting at 0 */
@@ -202,10 +202,21 @@ int proc_time(char *s)
 				hours += (int)doztodec(holder);
 				break;
 			}
-			break;
+			return hours;
 		}
 	}
-	return hours;
+	if (strstr(s,"START_TIME")) {
+		fprintf(stderr,"dozcal:  cannot parse time in line "
+			"\"%s\"; setting start time to 00;00 and "
+			"continuing...\n",s);
+		return 0;
+	} else if (strstr(s,"END_TIME")) {
+		fprintf(stderr,"dozcal:  cannot parse time in line "
+			"\"%s\"; ignoring end time for this record and "
+			"continuing...\n",s);
+		return -1;
+	}
+	return -1;
 }
 
 int num_to_date(int datenum, char *datestr, char *dateform)
