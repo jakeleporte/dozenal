@@ -89,7 +89,7 @@ int main(int argc, char **argv)
 	if ((conffile = malloc((preflen + strlen(defconfname) + 1) * 
 	sizeof(char))) == NULL) {
 		fprintf(stderr,"dozcal:  insufficient memory to hold "
-		"the configuration file name\n");
+			"the configuration file name\n");
 		exit(INSUFF_MEM);
 	}
 	*conffile = '\0';
