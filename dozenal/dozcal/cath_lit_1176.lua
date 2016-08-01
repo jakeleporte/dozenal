@@ -503,17 +503,16 @@ function fill_year(year,returntab,index)
 	return index
 end
 
+returntab = {{}}
+index = 1
+
 function dozcal_return_ev()
-	returntab = {{}}
-	index = 1
-	index = fill_year(2016,returntab,index)
+--	index = fill_year(2016,returntab,index)
 	return unpack(returntab)
 end
 
 numevents = 23
 
 function dozcal_return_ev_num()
-	local returntab = {{}}
-	local index = 1
 	return fill_year(2016,returntab,index)
 end
