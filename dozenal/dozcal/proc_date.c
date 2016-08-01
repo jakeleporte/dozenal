@@ -59,7 +59,7 @@ char *datepats[] = {
 /* returns time_t of date; -1 if failed */
 time_t proc_date(char *s)
 {
-	int i; int result; int errornum;
+	int i; int result; int errornum; int impstr;
 	char err[MAX_ERR_LENGTH+1];
 	struct tm *date;
 	regmatch_t pmatch[4]; size_t nmatch = 4;
@@ -127,10 +127,16 @@ time_t proc_date(char *s)
 	}
 	if (result != 0) {
 		free(date);
+		impstr = get_impstr(s);
+		fprintf(stderr,"dozcal:  no date format found in line "
+			"\"%s\"; ignoring this record and continuing...\n", s+impstr);
 		return -1;
 	}
 	if ((date->tm_year == -1) || (date->tm_mon == -1) ||
 	(date->tm_mday == -1)) {
+		impstr = get_impstr(s);
+		fprintf(stderr,"dozcal:  cannot parse date \"%s\"; "
+			"ignoring this record and continuing...\n",s+impstr);
 		free(date);
 		return -1;
 	}
