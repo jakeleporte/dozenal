@@ -34,7 +34,6 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
-#include<sys/stat.h>
 #include"errcodes.h"
 #include<lua5.2/lua.h>
 #include<lua5.2/lauxlib.h>
@@ -175,10 +174,4 @@ int file_prefix(char **s, char *t)
 		}
 	}
 	return -1;
-}
-
-int file_exist(char *s)
-{
-	struct stat buffer;
-	return (stat(s,&buffer) == 0);
 }

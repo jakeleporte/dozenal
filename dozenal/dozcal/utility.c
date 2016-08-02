@@ -36,6 +36,7 @@
 #include<string.h>
 #include<time.h>
 #include<math.h>
+#include<sys/stat.h>
 #include"event_struct.h"
 #include"errcodes.h"
 
@@ -272,4 +273,10 @@ int first_of_next(struct tm *date)
 	thisdate->tm_mon += 1; thisdate->tm_mday = 1;
 	mktime(thisdate);
 	return get_datenum(thisdate);
+}
+
+int file_exist(char *s)
+{
+	struct stat buffer;
+	return (stat(s,&buffer) == 0);
 }

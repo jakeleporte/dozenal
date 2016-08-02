@@ -1,3 +1,4 @@
+#!/usr/bin/awk -f
 # +AMDG
 # Converts dozcal plain output (default) to "fancy" plain
 # text output
