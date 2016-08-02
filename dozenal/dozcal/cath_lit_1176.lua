@@ -133,6 +133,59 @@ function print_date(year,month,day)
 	return dozenize(year).."-"..dozenize(month).."-"..dozenize(day)
 end
 
+function saints_feasts(year,returntab,index)
+	table.insert(saints,{greg_to_jdn(year,1,5),"St. Telephorus, PM","Comm"})
+	table.insert(saints,{greg_to_jdn(year,1,11),"St. Hyginus, PM","Comm"})
+	table.insert(saints,{greg_to_jdn(year,1,14),"St. Hilary, ED",
+		"III Class"})
+	table.insert(saints,{greg_to_jdn(year,1,14),"St. Felix, SM",
+		"Comm"})
+	table.insert(saints,{greg_to_jdn(year,1,15),"St. Paul, Hermit, C",
+		"III Class"})
+	table.insert(saints,{greg_to_jdn(year,1,15),"St. Maurus, A",
+		"Comm"})
+	table.insert(saints,{greg_to_jdn(year,1,16),"St. Marcellus I, PM",
+		"III Class"})
+	table.insert(saints,{greg_to_jdn(year,1,17),"St. Anthony, A",
+		"III Class"})
+	table.insert(saints,{greg_to_jdn(year,1,18),"St. Priscilla, VM",
+		"Comm"})
+	table.insert(saints,{greg_to_jdn(year,1,19),
+		"Sts. Marius, Martha, Audifax, and Abachum, MM", "Comm"})
+	table.insert(saints,{greg_to_jdn(year,1,19),"St. Canute, M",
+		"Comm"})
+	table.insert(saints,{greg_to_jdn(year,1,20),
+		"St. Fabian, P, and St. Sebatian, MM", "III Class"})
+	table.insert(saints,{greg_to_jdn(year,1,21), "St. Agnes, VM",
+		"III Class"})
+	table.insert(saints,{greg_to_jdn(year,1,22), 
+		"St. Vincent and Anastasius, MM", "III Class"})
+	table.insert(saints,{greg_to_jdn(year,1,23), 
+		"St. Raymund of Penafort, C", "III Class"})
+	table.insert(saints,{greg_to_jdn(year,1,23), 
+		"St. Emerentiana, VM", "Comm"})
+	table.insert(saints,{greg_to_jdn(year,1,24), 
+		"St. Timothy, EM", "III Class"})
+	table.insert(saints,{greg_to_jdn(year,1,25), 
+		"Conversion of St. Paul, Ap.", "III Class"})
+	table.insert(saints,{greg_to_jdn(year,1,25), 
+		"St. Peter, Ap.", "Comm"})
+	table.insert(saints,{greg_to_jdn(year,1,26), 
+		"St. Polycarp, EM", "III Class"})
+	table.insert(saints,{greg_to_jdn(year,1,27), 
+		"St. John Chrysostom, ECD", "III Class"})
+	table.insert(saints,{greg_to_jdn(year,1,28), 
+		"St. Peter Nolasco, C", "III Class"})
+	table.insert(saints,{greg_to_jdn(year,1,28), 
+		"St. Agnes, VM", "Comm"})
+	table.insert(saints,{greg_to_jdn(year,1,29), 
+		"St. Francis de Sales, ECD", "III Class"})
+	table.insert(saints,{greg_to_jdn(year,1,30), 
+		"St. Martina, VM", "III Class"})
+	table.insert(saints,{greg_to_jdn(year,1,31), 
+		"St. John Bosco, C", "III Class"})
+end
+
 function fill_year(year,returntab,index)
 	-- Easter season
 	jdn_easter = greg_to_jdn(easter(year))
@@ -358,6 +411,7 @@ function fill_year(year,returntab,index)
 			LOCATION=""
 	}
 	index = index + 1
+	jdn_septua = jdn_easter-63
 	-- Christmas season
 	jdn_epiph = greg_to_jdn(year,1,6)
 	table.insert(usedvals,jdn_epiph)
@@ -382,9 +436,26 @@ function fill_year(year,returntab,index)
 		START_DATE=print_date(jdn_to_greg(next_sunday(jdn_epiph))),
 			TITLE="Holy Family",CLASS="Catholic:  1176",
 			START_TIME="",END_TIME="", LOCATION="",
-			CATEGORY="traditional,catholic,christmas"
+			CATEGORY="II Class,traditional,catholic,christmas"
 	}
 	index = index + 1
+	jdn_holyfamily = next_sunday(jdn_epiph)
+	modif = 7
+	afterepiph = 2
+	while (jdn_holyfamily+modif < jdn_septua) do
+		table.insert(usedvals,jdn_holyfamily+modif)
+		returntab[index] = {
+			START_DATE=print_date(jdn_to_greg(jdn_holyfamily+modif)),
+				TITLE=afterepiph..last_char(afterepiph)..
+					" Sunday after Epiphany",
+				CLASS="Catholic:  1176",
+				START_TIME="",END_TIME="", LOCATION="",
+				CATEGORY="II Class,traditional,catholic,christmas"
+		}
+		index = index + 1
+		modif = modif + 7
+		afterepiph = afterepiph + 1
+	end
 	local holder = jdn_epiph;
 	--[[ Holy Name:  Sunday between Circ. and Epiph. if there
 	is one, Jan 2 if not ]]--
@@ -716,13 +787,85 @@ function fill_year(year,returntab,index)
 		end
 		modif = modif + 1
 	end
---	modif = 0
---	while ((jdn_christmas+modif 
+	if (dow_from_jdn(greg_to_jdn(year,11,2)) ~= 0) then
+		allsouls = greg_to_jdn(year,11,2);
+	else
+		allsouls = greg_to_jdn(year,11,2);
+	end
+	table.insert(usedvals,allsouls)
+	returntab[index] = {
+		START_DATE=print_date(jdn_to_greg(allsouls)),
+			TITLE="All Souls' Day",
+			CLASS="Catholic:  1176",
+			START_TIME="",END_TIME="", LOCATION="",
+			CATEGORY="I Class,traditional,catholic,feast"
+	}
+	index = index + 1
+	table.insert(usedvals,greg_to_jdn(year,2,22))
+	returntab[index] = {
+		START_DATE=print_date(jdn_to_greg(greg_to_jdn(year,2,22))),
+			TITLE="Chair of St. Peter",
+			CLASS="Catholic:  1176",
+			START_TIME="",END_TIME="", LOCATION="",
+			CATEGORY="II Class,traditional,catholic,feast"
+	}
+	index = index + 1
+	table.insert(usedvals,greg_to_jdn(year,9,14))
+	returntab[index] = {
+		START_DATE=print_date(jdn_to_greg(greg_to_jdn(year,9,14))),
+			TITLE="Exaltation of the Holy Cross",
+			CLASS="Catholic:  1176",
+			START_TIME="",END_TIME="", LOCATION="",
+			CATEGORY="II Class,traditional,catholic,feast"
+	}
+	index = index + 1
+	table.insert(usedvals,greg_to_jdn(year,1,13))
+	returntab[index] = {
+		START_DATE=print_date(jdn_to_greg(greg_to_jdn(year,1,13))),
+			TITLE="Baptism of the Lord",
+			CLASS="Catholic:  1176",
+			START_TIME="",END_TIME="", LOCATION="",
+			CATEGORY="II Class,traditional,catholic,feast"
+	}
+	index = index + 1
+	-- Do the saints feasts
+	saints_feasts(year,returntab,index)
+	for key,val in pairs(saints) do
+		done = false
+		feastclass = ""
+		feastname = ""
+		feast_jdn = ""
+		for keytwo,value in pairs(val) do
+			if (keytwo == 1) then
+				feast_jdn = value
+			elseif (keytwo == 2) then
+				feastname = value
+			elseif (keytwo == 3) then
+				if (donedate(feast_jdn) == true) then
+					print("HEY:  "..feastname)
+					feastclass = "Comm"
+				else
+					feastclass = value
+				end
+			end
+		end
+		if (feast_jdn ~= "") then
+			returntab[index] = {
+				START_DATE=print_date(jdn_to_greg(feast_jdn)),
+					TITLE=feastname,
+					CLASS="Catholic:  1176",
+					START_TIME="",END_TIME="", LOCATION="",
+					CATEGORY=feastclass..",traditional,catholic,feast"
+			}
+			index = index + 1
+		end
+	end
 
 
 	return index
 end
 
+saints = {{}}
 usedvals = {}
 returntab = {{}}
 index = 1
