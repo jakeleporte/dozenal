@@ -361,11 +361,11 @@ int print_todo(char *s, int index, char *date_format, char *time_format)
 				len = (int)doztodec(holder);
 			if (s[i] == 'd') {
 				num_to_date(todo_list[index].duedate,datestr,date_format);
-				printf("%*s",len,datestr);
+				printf("%*.*s",len,len,datestr);
 				datestr[0] = '\0';
 			} else if (s[i] == 't') {
 				secs_to_Tims(todo_list[index].duetime,datestr,time_format);
-				printf("%*s",len,datestr);
+				printf("%*.*s",len,len,datestr);
 				datestr[0] = '\0';
 			} else if (s[i] == 'p') {
 				printf("%*d",len,todo_list[index].priority);
@@ -373,15 +373,15 @@ int print_todo(char *s, int index, char *date_format, char *time_format)
 				printf("%*d",len,todo_list[index].completed);
 			} else if (s[i] == 'g') {
 				dectodoz(buffer,(double)todo_list[index].pergross);
-				printf("%*s",len,buffer);
+				printf("%*.*s",len,len,buffer);
 			} else if (s[i] == 'i') {
-				printf("%*s",len,todo_list[index].item);
+				printf("%*.*s",len,len,todo_list[index].item);
 			} else if (s[i] == 'l') {
-				printf("%*s",len,todo_list[index].location);
+				printf("%*.*s",len,len,todo_list[index].location);
 			} else if (s[i] == 'C') {
-				printf("%*s",len,todo_list[index].categories);
+				printf("%*.*s",len,len,todo_list[index].categories);
 			} else if (s[i] == 'T') {
-				printf("%*s",len,todo_list[index].todoclass);
+				printf("%*.*s",len,len,todo_list[index].todoclass);
 			} else {
 				fprintf(stderr,"dozcal:  unrecognized conversion "
 					"character \"%%%c\" in todo form string, "
@@ -434,24 +434,24 @@ int print_event(char *s, int index, char *date_format, char *time_format)
 				len = (int)doztodec(holder);
 			if (s[i] == 'd') {
 				num_to_date(event_list[index].thisdate,datestr,date_format);
-				printf("%*s",len,datestr);
+				printf("%*.*s",len,len,datestr);
 				datestr[0] = '\0';
 			} else if (s[i] == 's') {
 				secs_to_Tims(event_list[index].starttime,datestr,time_format);
-				printf("%*s",len,datestr);
+				printf("%*.*s",len,len,datestr);
 				datestr[0] = '\0';
 			} else if (s[i] == 'c') {
 				secs_to_Tims(event_list[index].endtime,datestr,time_format);
-				printf("%*s",len,datestr);
+				printf("%*.*s",len,len,datestr);
 				datestr[0] = '\0';
 			} else if (s[i] == 'e') {
-				printf("%*s",len,event_list[index].title);
+				printf("%*.*s",len,len,event_list[index].title);
 			} else if (s[i] == 'C') {
-				printf("%*s",len,event_list[index].categories);
+				printf("%*.*s",len,len,event_list[index].categories);
 			} else if (s[i] == 't') {
-				printf("%*s",len,event_list[index].evclass);
+				printf("%*.*s",len,len,event_list[index].evclass);
 			} else if (s[i] == 'l') {
-				printf("%*s",len,event_list[index].location);
+				printf("%*.*s",len,len,event_list[index].location);
 			} else {
 				fprintf(stderr,"dozcal:  unrecognized conversion "
 					"character \"%%%c\" in event form string, "
