@@ -184,6 +184,577 @@ function saints_feasts(year,returntab,index)
 		"St. Martina, VM", "III Class"})
 	table.insert(saints,{greg_to_jdn(year,1,31), 
 		"St. John Bosco, C", "III Class"})
+	table.insert(saints,{greg_to_jdn(year,2,1), 
+		"St. Ignatius, EM", "III Class"})
+	table.insert(saints,{greg_to_jdn(year,2,2), 
+		"Purification of the Blessed Virgin Mary", "II Class"})
+	table.insert(saints,{greg_to_jdn(year,2,3), 
+		"St. Blase, EM", "Comm"})
+	table.insert(saints,{greg_to_jdn(year,2,4), 
+		"St. Andrew Corsini, EC", "III Class"})
+	table.insert(saints,{greg_to_jdn(year,2,5), 
+		"St. Agatha, VM", "III Class"})
+	table.insert(saints,{greg_to_jdn(year,2,6), 
+		"St. Titus, EC", "III Class"})
+	table.insert(saints,{greg_to_jdn(year,2,6), 
+		"St. Dorothy, VM", "Comm"})
+	table.insert(saints,{greg_to_jdn(year,2,7), 
+		"St. Romuald, A", "III Class"})
+	table.insert(saints,{greg_to_jdn(year,2,8), 
+		"St. John of Matha, C", "III Class"})
+	table.insert(saints,{greg_to_jdn(year,2,9), 
+		"St. Cyril of Alexandria, ECD", "III Class"})
+	table.insert(saints,{greg_to_jdn(year,2,10), 
+		"St. Scholastica, V", "III Class"})
+	table.insert(saints,{greg_to_jdn(year,2,11), 
+		"Apparition of the Blessed Virgin Mary Immaculate", "III Class"})
+	table.insert(saints,{greg_to_jdn(year,2,12), 
+		"Seven Holy Founders of the Order of Servants of the Blessed Virgin Mary, C", "III Class"})
+	table.insert(saints,{greg_to_jdn(year,2,14), 
+		"St. Valentine, SM","Comm"})
+	table.insert(saints,{greg_to_jdn(year,2,15), 
+		"Sts. Faustinus and Jovita, M","Comm"})
+	table.insert(saints,{greg_to_jdn(year,2,18), 
+		"St. Simeon, EM","Comm"})
+	table.insert(saints,{greg_to_jdn(year,2,23), 
+		"St. Peter Damian, C","III Class"})
+	if (is_leap_y(year)) then
+		table.insert(saints,{greg_to_jdn(year,2,25), 
+			"St. Matthias, Ap.","II Class"})
+		table.insert(saints,{greg_to_jdn(year,2,28), 
+			"St. Gabriel of Our Lady of Sorrows","III Class"})
+	else
+		table.insert(saints,{greg_to_jdn(year,2,24), 
+			"St. Matthias, Ap.","II Class"})
+		table.insert(saints,{greg_to_jdn(year,2,27), 
+			"St. Gabriel of Our Lady of Sorrows","III Class"})
+	end
+	table.insert(saints,{greg_to_jdn(year,3,4), 
+		"St. Casimir, C","III Class"})
+	table.insert(saints,{greg_to_jdn(year,3,4), 
+		"St. Lucius I, PM","Comm"})
+	table.insert(saints,{greg_to_jdn(year,3,6), 
+		"Sts. Perpetua and Felicity, M","III Class"})
+	table.insert(saints,{greg_to_jdn(year,3,7), 
+		"St. Thomas Aquinas, CD","III Class"})
+	table.insert(saints,{greg_to_jdn(year,3,8), 
+		"St. John of God, C","III Class"})
+	table.insert(saints,{greg_to_jdn(year,3,9), 
+		"St. Frances of Rome, Widow","III Class"})
+	table.insert(saints,{greg_to_jdn(year,3,10), 
+		"The Forty Holy Martyrs","III Class"})
+	table.insert(saints,{greg_to_jdn(year,3,12), 
+		"St. Gregory I, PCD","III Class"})
+	table.insert(saints,{greg_to_jdn(year,3,17), 
+		"St. Patrick, EC","III Class"})
+	table.insert(saints,{greg_to_jdn(year,3,18), 
+		"St. Cyril of Jerusalem, ECD","III Class"})
+	table.insert(saints,{greg_to_jdn(year,3,21), 
+		"St. Benedict, A","III Class"})
+	table.insert(saints,{greg_to_jdn(year,3,24), 
+		"St. Gabriel the Archangel","III Class"})
+	table.insert(saints,{greg_to_jdn(year,3,27), 
+		"St. John Damascene, CD","III Class"})
+	table.insert(saints,{greg_to_jdn(year,3,28), 
+		"St. John Capistran, C","III Class"})
+	table.insert(saints,{greg_to_jdn(year,4,2), 
+		"St. Francis of Paula, C","III Class"})
+	table.insert(saints,{greg_to_jdn(year,4,4), 
+		"St. Isidore, ECD","III Class"})
+	table.insert(saints,{greg_to_jdn(year,4,5), 
+		"St. Vincent Ferrer, C","III Class"})
+	table.insert(saints,{greg_to_jdn(year,4,11), 
+		"St. Leo I, PCD","III Class"})
+	table.insert(saints,{greg_to_jdn(year,4,13), 
+		"St. Hermenegild, M","III Class"})
+	table.insert(saints,{greg_to_jdn(year,4,14), 
+		"St. Justin, M","III Class"})
+	table.insert(saints,{greg_to_jdn(year,4,14), 
+		"Sts. Tiburtius, Valerian, and Maximus, M","Comm"})
+	table.insert(saints,{greg_to_jdn(year,4,17), 
+		"St. Anicetus, PM","Comm"})
+	table.insert(saints,{greg_to_jdn(year,4,21), 
+		"St. Anselm, ECD","III Class"})
+	table.insert(saints,{greg_to_jdn(year,4,22), 
+		"Sts. Soter and Cajus, PM","III Class"})
+	table.insert(saints,{greg_to_jdn(year,4,23), 
+		"St. George, M","Comm"})
+	table.insert(saints,{greg_to_jdn(year,4,24), 
+		"St. Fidelis of Sigmaringen, M","III Class"})
+	table.insert(saints,{greg_to_jdn(year,4,25), 
+		"St. Mark the Evangelist","II Class"})
+	table.insert(saints,{greg_to_jdn(year,4,26), 
+		"Sts. Cletus and Marcellinus, PM","III Class"})
+	table.insert(saints,{greg_to_jdn(year,4,27), 
+		"St. Peter Canisius, CD","III Class"})
+	table.insert(saints,{greg_to_jdn(year,4,28), 
+		"St. Paul of the Cross, C","III Class"})
+	table.insert(saints,{greg_to_jdn(year,4,29), 
+		"St. Peter Martyr, M","III Class"})
+	table.insert(saints,{greg_to_jdn(year,4,30), 
+		"St. Catherine of Siena, V","III Class"})
+	table.insert(saints,{greg_to_jdn(year,5,2), 
+		"St. Athanasius, ECD","III Class"})
+	table.insert(saints,{greg_to_jdn(year,5,3), 
+		"Sts. Alexander, Eventius, and Theodolus, M","Comm"})
+	table.insert(saints,{greg_to_jdn(year,5,3), 
+		"St. Juvenal, EC","Comm"})
+	table.insert(saints,{greg_to_jdn(year,5,4), 
+		"St. Monica, Widow","III Class"})
+	table.insert(saints,{greg_to_jdn(year,5,5), 
+		"St. Pius V, PM","III Class"})
+	table.insert(saints,{greg_to_jdn(year,5,7), 
+		"St. Stanislaus, EM","III Class"})
+	table.insert(saints,{greg_to_jdn(year,5,9), 
+		"St. Gregory Nazianzen, ECD","III Class"})
+	table.insert(saints,{greg_to_jdn(year,5,10), 
+		"St. Antoninus, EC","III Class"})
+	table.insert(saints,{greg_to_jdn(year,5,10), 
+		"Sts. Goridan and Epimachus","Comm"})
+	table.insert(saints,{greg_to_jdn(year,5,11), 
+		"Sts. Phillip and James, Ap.","II Class"})
+	table.insert(saints,{greg_to_jdn(year,5,12), 
+		"Sts. Nereus, Achilleus, Domitilla, V, and Pancras, M","III Class"})
+	table.insert(saints,{greg_to_jdn(year,5,13), 
+		"St. Robert Bellarmine, ECD","III Class"})
+	table.insert(saints,{greg_to_jdn(year,5,14), 
+		"St. Boniface, M","Comm"})
+	table.insert(saints,{greg_to_jdn(year,5,15), 
+		"St. John Baptist de la Salle, C","III Class"})
+	table.insert(saints,{greg_to_jdn(year,5,16), 
+		"St. Ubald, EC","III Class"})
+	table.insert(saints,{greg_to_jdn(year,5,17), 
+		"St. Paschal Baylon, C","III Class"})
+	table.insert(saints,{greg_to_jdn(year,5,18), 
+		"St. Venantius, M","III Class"})
+	table.insert(saints,{greg_to_jdn(year,5,19), 
+		"St. Peter Celestine, PC","III Class"})
+	table.insert(saints,{greg_to_jdn(year,5,19), 
+		"St. Pudentiana, V","Comm"})
+	table.insert(saints,{greg_to_jdn(year,5,20), 
+		"St. Bernardine of Siena, C","III Class"})
+	table.insert(saints,{greg_to_jdn(year,5,25), 
+		"St. Gregory VII, PC","III Class"})
+	table.insert(saints,{greg_to_jdn(year,5,25), 
+		"St. Urban I, PM","Comm"})
+	table.insert(saints,{greg_to_jdn(year,5,26), 
+		"St. Philip Neri, C","III Class"})
+	table.insert(saints,{greg_to_jdn(year,5,26), 
+		"St. Eleutherius, PM","Comm"})
+	table.insert(saints,{greg_to_jdn(year,5,27), 
+		"St. Bede the Venerable, CD","III Class"})
+	table.insert(saints,{greg_to_jdn(year,5,27), 
+		"St. John I, PM","Comm"})
+	table.insert(saints,{greg_to_jdn(year,5,28), 
+		"St. Augustine, EC","III Class"})
+	table.insert(saints,{greg_to_jdn(year,5,29), 
+		"St. Mary Magdalen de Pazzi, V","III Class"})
+	table.insert(saints,{greg_to_jdn(year,5,30), 
+		"St. Felix I, PM","Comm"})
+	table.insert(saints,{greg_to_jdn(year,5,31), 
+		"Blessed Virgin Mary, Queen","II Class"})
+	table.insert(saints,{greg_to_jdn(year,5,31), 
+		"St. Petronilla, V","Comm"})
+	table.insert(saints,{greg_to_jdn(year,6,1), 
+		"St. Angela Merici, V","III Class"})
+	table.insert(saints,{greg_to_jdn(year,6,2), 
+		"Sts. Marcellinus, Peter, and Eramus, EM","Comm"})
+	table.insert(saints,{greg_to_jdn(year,6,4), 
+		"St. Francis Caracciolo, C","III Class"})
+	table.insert(saints,{greg_to_jdn(year,6,5), 
+		"St. Boniface, EM","III Class"})
+	table.insert(saints,{greg_to_jdn(year,6,6), 
+		"St. Norbert, EC","III Class"})
+	table.insert(saints,{greg_to_jdn(year,6,9), 
+		"Sts. Primus and Felician, M","Comm"})
+	table.insert(saints,{greg_to_jdn(year,6,10), 
+		"St. Margaret, Queen, Widow","III Class"})
+	table.insert(saints,{greg_to_jdn(year,6,11), 
+		"St. Barnabas, Ap.","III Class"})
+	table.insert(saints,{greg_to_jdn(year,6,12), 
+		"St. John of San Facundo, C","III Class"})
+	table.insert(saints,{greg_to_jdn(year,6,12), 
+		"Sts. Basilides, Cyrinus, Nabor, and Nazarius, M","Comm"})
+	table.insert(saints,{greg_to_jdn(year,6,13), 
+		"St. Anthony of Padua, C","III Class"})
+	table.insert(saints,{greg_to_jdn(year,6,14), 
+		"St. Basil the Great, ECD","III Class"})
+	table.insert(saints,{greg_to_jdn(year,6,15), 
+		"Sts. Vitus, Modestus, and Crescentia, M","Comm"})
+	table.insert(saints,{greg_to_jdn(year,6,17), 
+		"St. Gregory Barbarigo, EC","III Class"})
+	table.insert(saints,{greg_to_jdn(year,6,18), 
+		"St. Ephraem Syrus, De.CD","III Class"})
+	table.insert(saints,{greg_to_jdn(year,6,18), 
+		"Sts. Mark and Marcellianus, M","Comm"})
+	table.insert(saints,{greg_to_jdn(year,6,19), 
+		"St. Juliana Falconieri, V","III Class"})
+	table.insert(saints,{greg_to_jdn(year,6,19), 
+		"Sts. Gervase and Protase, M","Comm"})
+	table.insert(saints,{greg_to_jdn(year,6,20), 
+		"St. Silverius, PM","Comm"})
+	table.insert(saints,{greg_to_jdn(year,6,21), 
+		"St. Aloysius Gonzaga, C","III Class"})
+	table.insert(saints,{greg_to_jdn(year,6,22), 
+		"St. Paulinus, EC","III Class"})
+	table.insert(saints,{greg_to_jdn(year,6,25), 
+		"St. William, A","III Class"})
+	table.insert(saints,{greg_to_jdn(year,6,29), 
+		"Sts. John and Paul, M","III Class"})
+	table.insert(saints,{greg_to_jdn(year,6,30), 
+		"St. Paul the Apostle","Comm"})
+	table.insert(saints,{greg_to_jdn(year,7,2), 
+		"Visitation of the Blessed Virgin Mary","II Class"})
+	table.insert(saints,{greg_to_jdn(year,7,2), 
+		"Sts. Processus and Martinian, M","Comm"})
+	table.insert(saints,{greg_to_jdn(year,7,3), 
+		"St. Irenaeus, EM","III Class"})
+	table.insert(saints,{greg_to_jdn(year,7,5), 
+		"St. Anthony Mary Zaccaria, C","III Class"})
+	table.insert(saints,{greg_to_jdn(year,7,7), 
+		"Sts. Cyril and Methodius, EC","III Class"})
+	table.insert(saints,{greg_to_jdn(year,7,8), 
+		"St. Elizabeth, Queen, Widow","III Class"})
+	table.insert(saints,{greg_to_jdn(year,7,10), 
+		"Seven Holy Brothers, M","III Class"})
+	table.insert(saints,{greg_to_jdn(year,7,10), 
+		"Sts. Rufina and Secunda, VM","III Class"})
+	table.insert(saints,{greg_to_jdn(year,7,11), 
+		"St. Pius I, PM","Comm"})
+	table.insert(saints,{greg_to_jdn(year,7,12), 
+		"St. John Gualbert, A","III Class"})
+	table.insert(saints,{greg_to_jdn(year,7,12), 
+		"Sts. Nabor and Felix, M","Comm"})
+	table.insert(saints,{greg_to_jdn(year,7,14), 
+		"St. Bonaventure, ECD","III Class"})
+	table.insert(saints,{greg_to_jdn(year,7,15), 
+		"St. Henry II, Emperor, C","III Class"})
+	table.insert(saints,{greg_to_jdn(year,7,16), 
+		"Blessed Virgin Mary of Mt. Carmel","Comm"})
+	table.insert(saints,{greg_to_jdn(year,7,17), 
+		"St. Alexius, C","Comm"})
+	table.insert(saints,{greg_to_jdn(year,7,18), 
+		"St. Camillus de Lellis, C","III Class"})
+	table.insert(saints,{greg_to_jdn(year,7,18), 
+		"St. Symphorosa and her Seven Sons, M","Comm"})
+	table.insert(saints,{greg_to_jdn(year,7,19), 
+		"St. Vincent de Paul, C","III Class"})
+	table.insert(saints,{greg_to_jdn(year,7,20), 
+		"St. Jerome Emiliani, C","III Class"})
+	table.insert(saints,{greg_to_jdn(year,7,20), 
+		"St. Margaret, VM","Comm"})
+	table.insert(saints,{greg_to_jdn(year,7,21), 
+		"St. Lawrence of Brindisi, CD","III Class"})
+	table.insert(saints,{greg_to_jdn(year,7,21), 
+		"St. Praxedes, V","Comm"})
+	table.insert(saints,{greg_to_jdn(year,7,22), 
+		"St. Mary Magdalene, Penitent","III Class"})
+	table.insert(saints,{greg_to_jdn(year,7,23), 
+		"St. Apollinaris, M","III Class"})
+	table.insert(saints,{greg_to_jdn(year,7,23), 
+		"St. Liborius, EC","Comm"})
+	table.insert(saints,{greg_to_jdn(year,7,24), 
+		"St. Christina, VM","Comm"})
+	table.insert(saints,{greg_to_jdn(year,7,25), 
+		"St. James, Ap.","II Class"})
+	table.insert(saints,{greg_to_jdn(year,7,25), 
+		"St. Christopher, M","Comm"})
+	table.insert(saints,{greg_to_jdn(year,7,26), 
+		"St. Anne, Mother of the Blessed Virgin Mary","II Class"})
+	table.insert(saints,{greg_to_jdn(year,7,27), 
+		"St. Pantaleon, M","Comm"})
+	table.insert(saints,{greg_to_jdn(year,7,28), 
+		"Sts. Nazarius and Celsus, M; St. Victor I, PM; St.  Innocent I, PC","III Class"})
+	table.insert(saints,{greg_to_jdn(year,7,29), 
+		"St. Martha, V","III Class"})
+	table.insert(saints,{greg_to_jdn(year,7,29), 
+		"Sts. Felix, Simplicius, Faustinus, and Beatrice, M","Comm"})
+	table.insert(saints,{greg_to_jdn(year,7,30), 
+		"Sts. Abdon and Sennen, M","Comm"})
+	table.insert(saints,{greg_to_jdn(year,7,31), 
+		"St. Ignatius, C","III Class"})
+	table.insert(saints,{greg_to_jdn(year,8,1), 
+		"Holy Machabees, M","Comm"})
+	table.insert(saints,{greg_to_jdn(year,8,2), 
+		"St. Alphonsus Mary of Liguori, ECD","III Class"})
+	table.insert(saints,{greg_to_jdn(year,8,2), 
+		"St. Stephen I, PM","Comm"})
+	table.insert(saints,{greg_to_jdn(year,8,4), 
+		"St. Dominic, C","III Class"})
+	table.insert(saints,{greg_to_jdn(year,8,5), 
+		"Dedication of Our Lady of the Snows","III Class"})
+	table.insert(saints,{greg_to_jdn(year,8,6), 
+		"Transfiguration of Our Lord Jesus Christ","II Class"})
+	table.insert(saints,{greg_to_jdn(year,8,6), 
+		"Sts. Xystus I, P, Felicissimus, and Agapitus, M","Comm"})
+	table.insert(saints,{greg_to_jdn(year,8,7), 
+		"St. Cajetan, C","III Class"})
+	table.insert(saints,{greg_to_jdn(year,8,7), 
+		"St. Donatus, EM","Comm"})
+	table.insert(saints,{greg_to_jdn(year,8,8), 
+		"St. John Mary Vianney, SC","III Class"})
+	table.insert(saints,{greg_to_jdn(year,8,8), 
+		"Sts. Cyriacus, Largus, and Smaragdus, M","Comm"})
+	table.insert(saints,{greg_to_jdn(year,8,9), 
+		"Vigil of St. Lawrence","III Class"})
+	table.insert(saints,{greg_to_jdn(year,8,9), 
+		"St. Romanus, M","Comm"})
+	table.insert(saints,{greg_to_jdn(year,8,10), 
+		"St. Larence, M","II Class"})
+	table.insert(saints,{greg_to_jdn(year,8,11), 
+		"Sts. Tiburtius and Susanna, V, M","Comm"})
+	table.insert(saints,{greg_to_jdn(year,8,12), 
+		"St. Clare, V","III Class"})
+	table.insert(saints,{greg_to_jdn(year,8,13), 
+		"Sts. Hippolytus and Cassian, M","Comm"})
+	table.insert(saints,{greg_to_jdn(year,8,14), 
+		"St. Eusebius, C","Comm"})
+	table.insert(saints,{greg_to_jdn(year,8,16), 
+		"St. Joachim, Father of the Blessed Virgin Mary, C","II Class"})
+	table.insert(saints,{greg_to_jdn(year,8,17), 
+		"St. Hyacinth of Poland, C","III Class"})
+	table.insert(saints,{greg_to_jdn(year,8,18), 
+		"St. Agapitus, M","Comm"})
+	table.insert(saints,{greg_to_jdn(year,8,19), 
+		"St. John Eudes, C","III Class"})
+	table.insert(saints,{greg_to_jdn(year,8,20), 
+		"St. Bernard, AD","III Class"})
+	table.insert(saints,{greg_to_jdn(year,8,21), 
+		"St. Jane Frances de Chantal, Widow","III Class"})
+	table.insert(saints,{greg_to_jdn(year,8,22), 
+		"Immaculate Heart of the Blessed Virgin Mary","II Class"})
+	table.insert(saints,{greg_to_jdn(year,8,22), 
+		"Sts. Timothy and Companions, M","Comm"})
+	table.insert(saints,{greg_to_jdn(year,8,23), 
+		"St. Philip Benizi, C","III Class"})
+	table.insert(saints,{greg_to_jdn(year,8,24), 
+		"St. Bartholomew, Ap.","II Class"})
+	table.insert(saints,{greg_to_jdn(year,8,25), 
+		"St. Louis, King, C","III Class"})
+	table.insert(saints,{greg_to_jdn(year,8,26), 
+		"St. Zephyrinus, PM","Comm"})
+	table.insert(saints,{greg_to_jdn(year,8,27), 
+		"St. Joseph Calasanctius, C","III Class"})
+	table.insert(saints,{greg_to_jdn(year,8,28), 
+		"St. Augustine, ECD","III Class"})
+	table.insert(saints,{greg_to_jdn(year,8,28), 
+		"St. Hermes, M","Comm"})
+	table.insert(saints,{greg_to_jdn(year,8,29), 
+		"Beheading of St. John the Baptist","III Class"})
+	table.insert(saints,{greg_to_jdn(year,8,29), 
+		"St. Sabina, M","Comm"})
+	table.insert(saints,{greg_to_jdn(year,8,30), 
+		"St. Rose of Lima, V","III Class"})
+	table.insert(saints,{greg_to_jdn(year,8,30), 
+		"Sts. Felix and Adauctus, M","Comm"})
+	table.insert(saints,{greg_to_jdn(year,8,31), 
+		"St. Raymond Nonnatus, C","III Class"})
+	table.insert(saints,{greg_to_jdn(year,9,1), 
+		"St. Giles, A","Comm"})
+	table.insert(saints,{greg_to_jdn(year,9,1), 
+		"Holy Twelve Brothers, M","Comm"})
+	table.insert(saints,{greg_to_jdn(year,9,2), 
+		"St. Stephen, King, C","III Class"})
+	table.insert(saints,{greg_to_jdn(year,9,3), 
+		"St. Pius X, PC","III Class"})
+	table.insert(saints,{greg_to_jdn(year,9,5), 
+		"St. Laurence Justinian, EC","III Class"})
+	table.insert(saints,{greg_to_jdn(year,9,8), 
+		"Nativity of the Blessed Virgin Mary","II Class"})
+	table.insert(saints,{greg_to_jdn(year,9,8), 
+		"St. Hadrian, M","Comm"})
+	table.insert(saints,{greg_to_jdn(year,9,9), 
+		"St. Gorgonius, M","Comm"})
+	table.insert(saints,{greg_to_jdn(year,9,10), 
+		"St. Nicholas of Tolentino, C","III Class"})
+	table.insert(saints,{greg_to_jdn(year,9,11), 
+		"Sts. Protus and Hyacinth, M","Comm"})
+	table.insert(saints,{greg_to_jdn(year,9,12), 
+		"Most Holy Name of Mary","III Class"})
+	table.insert(saints,{greg_to_jdn(year,9,15), 
+		"Seven Sorrows of the Blessed Virgin Mary","II Class"})
+	table.insert(saints,{greg_to_jdn(year,9,15), 
+		"St. Nicomedes, M","Comm"})
+	table.insert(saints,{greg_to_jdn(year,9,16), 
+		"St. Cornelius, P, and St. Cyprian, E, M","III Class"})
+	table.insert(saints,{greg_to_jdn(year,9,16), 
+		"Sts. Euphemia, V, Lucy and Geminianus, M","Comm"})
+	table.insert(saints,{greg_to_jdn(year,9,17), 
+		"Stigmata of St. Francis, C","Comm"})
+	table.insert(saints,{greg_to_jdn(year,9,18), 
+		"St. Joseph of Cupertino, C","III Class"})
+	table.insert(saints,{greg_to_jdn(year,9,19), 
+		"St. Januarius, E, and Companions, M","III Class"})
+	table.insert(saints,{greg_to_jdn(year,9,20), 
+		"St. Eustace and Companions, M","Comm"})
+	table.insert(saints,{greg_to_jdn(year,9,21), 
+		"St. Matthew, Ap. and Evangelist","II Class"})
+	table.insert(saints,{greg_to_jdn(year,9,22), 
+		"St. Thomas of Villanova, EC","III Class"})
+	table.insert(saints,{greg_to_jdn(year,9,22), 
+		"Sts. Maurice and Companions, M","Comm"})
+	table.insert(saints,{greg_to_jdn(year,9,23), 
+		"St. Linus, PM","III Class"})
+	table.insert(saints,{greg_to_jdn(year,9,23), 
+		"St. Thecla, VM","Comm"})
+	table.insert(saints,{greg_to_jdn(year,9,24), 
+		"Our Lady of Ransom","Comm"})
+	table.insert(saints,{greg_to_jdn(year,9,26), 
+		"Sts. Cyprian and Justina, V, M","Comm"})
+	table.insert(saints,{greg_to_jdn(year,9,27), 
+		"Sts. Cosmas and Damian, M","III Class"})
+	table.insert(saints,{greg_to_jdn(year,9,28), 
+		"St. Wenceslaus, Duke, M","III Class"})
+	table.insert(saints,{greg_to_jdn(year,9,30), 
+		"St. Jerome, SCD","III Class"})
+	table.insert(saints,{greg_to_jdn(year,10,1), 
+		"St. Remigius, EC","Comm"})
+	table.insert(saints,{greg_to_jdn(year,10,2), 
+		"Holy Guardian Angels","III Class"})
+	table.insert(saints,{greg_to_jdn(year,10,3), 
+		"St. Teresa of the Child Jesus, V","III Class"})
+	table.insert(saints,{greg_to_jdn(year,10,4), 
+		"St. Francis of Assisi","III Class"})
+	table.insert(saints,{greg_to_jdn(year,10,5), 
+		"St. Placid and Companions, M","Comm"})
+	table.insert(saints,{greg_to_jdn(year,10,6), 
+		"St. Bruno, C","III Class"})
+	table.insert(saints,{greg_to_jdn(year,10,7), 
+		"Blessed Virgin Mary of the Rosary","II Class"})
+	table.insert(saints,{greg_to_jdn(year,10,7), 
+		"St. Mark, PC","Comm"})
+	table.insert(saints,{greg_to_jdn(year,10,8), 
+		"St. Bridget, Widow","III Class"})
+	table.insert(saints,{greg_to_jdn(year,10,8), 
+		"Sts. Sergius, Bacchus, Marcellus, and Apuleius, M","Comm"})
+	table.insert(saints,{greg_to_jdn(year,10,9), 
+		"St. John Leonard, C","III Class"})
+	table.insert(saints,{greg_to_jdn(year,10,9), 
+		"Sts. Denis, E, Rusticus, S, and Elutherius, M","Comm"})
+	table.insert(saints,{greg_to_jdn(year,10,10), 
+		"St. Francis Borgia, C","III Class"})
+	table.insert(saints,{greg_to_jdn(year,10,11), 
+		"Maternity of the Blessed Virgina Mary","II Class"})
+	table.insert(saints,{greg_to_jdn(year,10,13), 
+		"St. Edward, King, C","III Class"})
+	table.insert(saints,{greg_to_jdn(year,10,14), 
+		"St. Callistus, PM","III Class"})
+	table.insert(saints,{greg_to_jdn(year,10,15), 
+		"St. Teresa, V","III Class"})
+	table.insert(saints,{greg_to_jdn(year,10,16), 
+		"St. Hedwig, Widow","III Class"})
+	table.insert(saints,{greg_to_jdn(year,10,17), 
+		"St. Margaret Mary Alacoque, V","III Class"})
+	table.insert(saints,{greg_to_jdn(year,10,18), 
+		"St. Luke, Evangelist","II Class"})
+	table.insert(saints,{greg_to_jdn(year,10,19), 
+		"St. Peter of Alcantara, C","III Class"})
+	table.insert(saints,{greg_to_jdn(year,10,20), 
+		"St. John Cantius, C","III Class"})
+	table.insert(saints,{greg_to_jdn(year,10,21), 
+		"St. Hilarion, A","Comm"})
+	table.insert(saints,{greg_to_jdn(year,10,21), 
+		"Sts. Ursula and Companions, VM","Comm"})
+	table.insert(saints,{greg_to_jdn(year,10,23), 
+		"St. Anthony Mary Claret, EC","III Class"})
+	table.insert(saints,{greg_to_jdn(year,10,24), 
+		"St. Raphael Archangel","III Class"})
+	table.insert(saints,{greg_to_jdn(year,10,25), 
+		"Sts. Chrysanthus and Daria, M","Comm"})
+	table.insert(saints,{greg_to_jdn(year,10,26), 
+		"St. Evaristus, PM","Comm"})
+	table.insert(saints,{greg_to_jdn(year,10,28), 
+		"Sts. Simon and Jude, Ap.","II Class"})
+	table.insert(saints,{greg_to_jdn(year,11,4), 
+		"St. Charles, EC","III Class"})
+	table.insert(saints,{greg_to_jdn(year,11,4), 
+		"Sts. Vitalis and Agricola, M","Comm"})
+	table.insert(saints,{greg_to_jdn(year,11,8), 
+		"Holy Four Crowned Martyrs","Comm"})
+	table.insert(saints,{greg_to_jdn(year,11,9), 
+		"Dedication of the Archbasilica of the Most Holy Savior","II Class"})
+	table.insert(saints,{greg_to_jdn(year,11,9), 
+		"St. Theodore, M","Comm"})
+	table.insert(saints,{greg_to_jdn(year,11,10), 
+		"St. Andrew Avellino, C","III Class"})
+	table.insert(saints,{greg_to_jdn(year,11,10), 
+		"Sts. Tryphon, Respicius, and Nympha, M","Comm"})
+	table.insert(saints,{greg_to_jdn(year,11,11), 
+		"St. Martin, EC","III Class"})
+	table.insert(saints,{greg_to_jdn(year,11,11), 
+		"St. Mennas, M","Comm"})
+	table.insert(saints,{greg_to_jdn(year,11,12), 
+		"St. Martin I, PM","III Class"})
+	table.insert(saints,{greg_to_jdn(year,11,13), 
+		"St. Didacus, C","III Class"})
+	table.insert(saints,{greg_to_jdn(year,11,14), 
+		"St. Josaphat, EM","III Class"})
+	table.insert(saints,{greg_to_jdn(year,11,15), 
+		"St. Albert the Great, ECD","III Class"})
+	table.insert(saints,{greg_to_jdn(year,11,16), 
+		"St. Gertrude, V","III Class"})
+	table.insert(saints,{greg_to_jdn(year,11,17), 
+		"St. Gregory Thaumaturgus, EC","III Class"})
+	table.insert(saints,{greg_to_jdn(year,11,18), 
+		"Dedication of the Basilica of Sts. Peter and Paul","III Class"})
+	table.insert(saints,{greg_to_jdn(year,11,19), 
+		"St. Elisabeth, Widow","III Class"})
+	table.insert(saints,{greg_to_jdn(year,11,19), 
+		"St. Pontianus, PM","Comm"})
+	table.insert(saints,{greg_to_jdn(year,11,20), 
+		"St. Felix of Valois, C","III Class"})
+	table.insert(saints,{greg_to_jdn(year,11,21), 
+		"Presentation of the Blessed Virgin Mary","III Class"})
+	table.insert(saints,{greg_to_jdn(year,11,22), 
+		"St. Cecilia, VM","III Class"})
+	table.insert(saints,{greg_to_jdn(year,11,23), 
+		"St. Clement I, PM","III Class"})
+	table.insert(saints,{greg_to_jdn(year,11,23), 
+		"St. Felicitas, M","Comm"})
+	table.insert(saints,{greg_to_jdn(year,11,24), 
+		"St. John of the Cross, CD","III Class"})
+	table.insert(saints,{greg_to_jdn(year,11,24), 
+		"St. Chrysogonus, M","Comm"})
+	table.insert(saints,{greg_to_jdn(year,11,25), 
+		"St. Catherine, VM","III Class"})
+	table.insert(saints,{greg_to_jdn(year,11,26), 
+		"St. Sylvester, A","III Class"})
+	table.insert(saints,{greg_to_jdn(year,11,26), 
+		"St. Peter of Alexandria, EM","Comm"})
+	table.insert(saints,{greg_to_jdn(year,11,29), 
+		"St. Saturninus","Comm"})
+	table.insert(saints,{greg_to_jdn(year,11,30), 
+		"St. Andrew, Ap.","II Class"})
+	table.insert(saints,{greg_to_jdn(year,12,2), 
+		"St. Bibiana, VM","III Class"})
+	table.insert(saints,{greg_to_jdn(year,12,3), 
+		"St. Francis Xavier, C","III Class"})
+	table.insert(saints,{greg_to_jdn(year,12,4), 
+		"St. Peter Chrysologus, ECD","III Class"})
+	table.insert(saints,{greg_to_jdn(year,12,4), 
+		"St. Barbara, VM","Comm"})
+	table.insert(saints,{greg_to_jdn(year,12,5), 
+		"St. Sabbas, A","Comm"})
+	table.insert(saints,{greg_to_jdn(year,12,6), 
+		"St. Nicholas, EC","III Class"})
+	table.insert(saints,{greg_to_jdn(year,12,7), 
+		"St. Ambrose, ECD","III Class"})
+	table.insert(saints,{greg_to_jdn(year,12,10), 
+		"St. Melchiades, PM","Comm"})
+	table.insert(saints,{greg_to_jdn(year,12,11), 
+		"St. Damasus I, PC","III Class"})
+	table.insert(saints,{greg_to_jdn(year,12,13), 
+		"St. Lucy, VM","III Class"})
+	table.insert(saints,{greg_to_jdn(year,12,16), 
+		"St. Eusebius, EM","III Class"})
+	table.insert(saints,{greg_to_jdn(year,12,21), 
+		"St. Thomas, Ap.","II Class"})
+	table.insert(saints,{greg_to_jdn(year,12,21), 
+		"St. Thomas, Ap.","II Class"})
+	table.insert(saints,{greg_to_jdn(year,12,29), 
+		"St. Thomas, EM","Comm"})
+	table.insert(saints,{greg_to_jdn(year,12,31), 
+		"St. Sylvester I, PM","Comm"})
 end
 
 function fill_year(year,returntab,index)
@@ -321,6 +892,16 @@ function fill_year(year,returntab,index)
 			TITLE="Passion Sunday",CLASS="Catholic:  1176",
 			START_TIME="",END_TIME="",
 			CATEGORY="I Class,traditional,catholic,lent",
+			LOCATION=""
+	}
+	index = index + 1
+	table.insert(usedvals,jdn_easter-9)
+	returntab[index] = {
+		START_DATE=print_date(jdn_to_greg(jdn_easter-9)),
+			TITLE="Seven Sorrows of the Blessed Virgin Mary",
+			CLASS="Catholic:  1176",
+			START_TIME="",END_TIME="",
+			CATEGORY="Comm,traditional,catholic,lent",
 			LOCATION=""
 	}
 	index = index + 1
@@ -487,7 +1068,15 @@ function fill_year(year,returntab,index)
 		START_DATE=print_date(jdn_to_greg(jdn_christmas)),
 			TITLE="Christmas",CLASS="Catholic:  1176",
 			START_TIME="",END_TIME="", LOCATION="",
-			CATEGORY="traditional,catholic,christmas"
+			CATEGORY="I Class,traditional,catholic,christmas"
+	}
+	index = index + 1
+	table.insert(usedvals,jdn_christmas-1)
+	returntab[index] = {
+		START_DATE=print_date(jdn_to_greg(jdn_christmas-1)),
+			TITLE="Vigil of Christmas",CLASS="Catholic:  1176",
+			START_TIME="",END_TIME="", LOCATION="",
+			CATEGORY="I Class,traditional,catholic,christmas"
 	}
 	index = index + 1
 	-- Advent season
@@ -594,7 +1183,7 @@ function fill_year(year,returntab,index)
 		START_DATE=print_date(jdn_to_greg(jdn_easter+38)),
 			TITLE="Vigil of the Ascension",CLASS="Catholic:  1176",
 			START_TIME="",END_TIME="", LOCATION="",
-			CATEGORY="traditional,catholic,easter"
+			CATEGORY="II Class,traditional,catholic,easter"
 	}
 	index = index + 1
 	table.insert(usedvals,jdn_easter+39)
@@ -602,7 +1191,7 @@ function fill_year(year,returntab,index)
 		START_DATE=print_date(jdn_to_greg(jdn_easter+39)),
 			TITLE="Ascension Thursday",CLASS="Catholic:  1176",
 			START_TIME="",END_TIME="", LOCATION="",
-			CATEGORY="traditional,catholic,easter"
+			CATEGORY="I Class,traditional,catholic,easter"
 	}
 	index = index + 1
 	table.insert(usedvals,jdn_easter+42)
@@ -801,6 +1390,16 @@ function fill_year(year,returntab,index)
 			CATEGORY="I Class,traditional,catholic,feast"
 	}
 	index = index + 1
+	allsaints = greg_to_jdn(year,11,1)
+	table.insert(usedvals,allsaints)
+	returntab[index] = {
+		START_DATE=print_date(jdn_to_greg(allsaints)),
+			TITLE="All Saints' Day",
+			CLASS="Catholic:  1176",
+			START_TIME="",END_TIME="", LOCATION="",
+			CATEGORY="I Class,traditional,catholic,feast"
+	}
+	index = index + 1
 	table.insert(usedvals,greg_to_jdn(year,2,22))
 	returntab[index] = {
 		START_DATE=print_date(jdn_to_greg(greg_to_jdn(year,2,22))),
@@ -828,6 +1427,114 @@ function fill_year(year,returntab,index)
 			CATEGORY="II Class,traditional,catholic,feast"
 	}
 	index = index + 1
+	table.insert(usedvals,greg_to_jdn(year,3,19))
+	returntab[index] = {
+		START_DATE=print_date(jdn_to_greg(greg_to_jdn(year,3,19))),
+			TITLE="St. Joseph, Spouse of the Blessed Virgin Mary, C, and Patron of the Universal Church",
+			CLASS="Catholic:  1176",
+			START_TIME="",END_TIME="", LOCATION="",
+			CATEGORY="I Class,traditional,catholic,feast"
+	}
+	index = index + 1
+	table.insert(usedvals,greg_to_jdn(year,3,25))
+	returntab[index] = {
+		START_DATE=print_date(jdn_to_greg(greg_to_jdn(year,3,25))),
+			TITLE="Anunciation of the Blessed Virgin Mary",
+			CLASS="Catholic:  1176",
+			START_TIME="",END_TIME="", LOCATION="",
+			CATEGORY="I Class,traditional,catholic,feast"
+	}
+	index = index + 1
+	table.insert(usedvals,greg_to_jdn(year,5,1))
+	returntab[index] = {
+		START_DATE=print_date(jdn_to_greg(greg_to_jdn(year,5,1))),
+			TITLE="St. Joseph the Workman, Spouse of the Blessed Virgin Mary",
+			CLASS="Catholic:  1176",
+			START_TIME="",END_TIME="", LOCATION="",
+			CATEGORY="I Class,traditional,catholic,feast"
+	}
+	index = index + 1
+	table.insert(usedvals,greg_to_jdn(year,6,24))
+	returntab[index] = {
+		START_DATE=print_date(jdn_to_greg(greg_to_jdn(year,6,24))),
+			TITLE="Nativity of St. John the Baptist",
+			CLASS="Catholic:  1176",
+			START_TIME="",END_TIME="", LOCATION="",
+			CATEGORY="I Class,traditional,catholic,feast"
+	}
+	index = index + 1
+	table.insert(usedvals,greg_to_jdn(year,6,23))
+	returntab[index] = {
+		START_DATE=print_date(jdn_to_greg(greg_to_jdn(year,6,23))),
+			TITLE="Vigil of the Nativity of St. John the Baptist",
+			CLASS="Catholic:  1176",
+			START_TIME="",END_TIME="", LOCATION="",
+			CATEGORY="II Class,traditional,catholic,feast"
+	}
+	index = index + 1
+	table.insert(usedvals,greg_to_jdn(year,6,29))
+	returntab[index] = {
+		START_DATE=print_date(jdn_to_greg(greg_to_jdn(year,6,29))),
+			TITLE="Sts. Peter and Paul, Ap.",
+			CLASS="Catholic:  1176",
+			START_TIME="",END_TIME="", LOCATION="",
+			CATEGORY="I Class,traditional,catholic,feast"
+	}
+	index = index + 1
+	table.insert(usedvals,greg_to_jdn(year,6,28))
+	returntab[index] = {
+		START_DATE=print_date(jdn_to_greg(greg_to_jdn(year,6,28))),
+			TITLE="Vigil of Sts. Peter and Paul, Ap.",
+			CLASS="Catholic:  1176",
+			START_TIME="",END_TIME="", LOCATION="",
+			CATEGORY="II Class,traditional,catholic,feast"
+	}
+	index = index + 1
+	table.insert(usedvals,greg_to_jdn(year,7,1))
+	returntab[index] = {
+		START_DATE=print_date(jdn_to_greg(greg_to_jdn(year,7,1))),
+			TITLE="The Most Precious Blood of Our Lord Jesus Christ",
+			CLASS="Catholic:  1176",
+			START_TIME="",END_TIME="", LOCATION="",
+			CATEGORY="I Class,traditional,catholic,feast"
+	}
+	index = index + 1
+	table.insert(usedvals,greg_to_jdn(year,8,15))
+	returntab[index] = {
+		START_DATE=print_date(jdn_to_greg(greg_to_jdn(year,8,15))),
+			TITLE="Assumption of the Blessed Virgin Mary",
+			CLASS="Catholic:  1176",
+			START_TIME="",END_TIME="", LOCATION="",
+			CATEGORY="I Class,traditional,catholic,feast"
+	}
+	index = index + 1
+	table.insert(usedvals,greg_to_jdn(year,8,14))
+	returntab[index] = {
+		START_DATE=print_date(jdn_to_greg(greg_to_jdn(year,8,14))),
+			TITLE="Vigil of the Assumption of the Blessed Virgin Mary",
+			CLASS="Catholic:  1176",
+			START_TIME="",END_TIME="", LOCATION="",
+			CATEGORY="II Class,traditional,catholic,feast"
+	}
+	index = index + 1
+	table.insert(usedvals,greg_to_jdn(year,9,29))
+	returntab[index] = {
+		START_DATE=print_date(jdn_to_greg(greg_to_jdn(year,9,29))),
+			TITLE="Dedication of St. Michael Archangel",
+			CLASS="Catholic:  1176",
+			START_TIME="",END_TIME="", LOCATION="",
+			CATEGORY="I Class,traditional,catholic,feast"
+	}
+	index = index + 1
+	table.insert(usedvals,greg_to_jdn(year,12,8))
+	returntab[index] = {
+		START_DATE=print_date(jdn_to_greg(greg_to_jdn(year,12,8))),
+			TITLE="Immaculate Conception of the Blessed Virgin Mary",
+			CLASS="Catholic:  1176",
+			START_TIME="",END_TIME="", LOCATION="",
+			CATEGORY="I Class,traditional,catholic,feast"
+	}
+	index = index + 1
 	-- Do the saints feasts
 	saints_feasts(year,returntab,index)
 	for key,val in pairs(saints) do
@@ -842,7 +1549,6 @@ function fill_year(year,returntab,index)
 				feastname = value
 			elseif (keytwo == 3) then
 				if (donedate(feast_jdn) == true) then
-					print("HEY:  "..feastname)
 					feastclass = "Comm"
 				else
 					feastclass = value
