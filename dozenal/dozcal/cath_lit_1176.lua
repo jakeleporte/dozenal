@@ -9,6 +9,33 @@ function donedate(element)
 	return false
 end
 
+function move_from_sun(jdn)
+	if (dow_from_jdn(jdn) == 0) then
+		return jdn+1
+	else
+		return jdn
+	end
+end
+
+function ifinret(element)
+	local i = 1
+	local j = 0
+	for i = #returntab,1,-1 do
+		local v = returntab[i]
+		for key,val in pairs(v) do
+			if (key == "START_DATE") then
+				if (val == element) then
+					j = i
+					break;
+				end
+			end
+		end
+	end
+	if (j ~= 0) then
+		table.remove(returntab,j)
+	end
+end
+
 function greg_to_jdn(year,month,day)
 	local a = math.floor((14 - month) / 12)
 	local y = year + 4800 - a
@@ -186,8 +213,6 @@ function saints_feasts(year,returntab,index)
 		"St. John Bosco, C", "III Class"})
 	table.insert(saints,{greg_to_jdn(year,2,1), 
 		"St. Ignatius, EM", "III Class"})
-	table.insert(saints,{greg_to_jdn(year,2,2), 
-		"Purification of the Blessed Virgin Mary", "II Class"})
 	table.insert(saints,{greg_to_jdn(year,2,3), 
 		"St. Blase, EM", "Comm"})
 	table.insert(saints,{greg_to_jdn(year,2,4), 
@@ -219,13 +244,9 @@ function saints_feasts(year,returntab,index)
 	table.insert(saints,{greg_to_jdn(year,2,23), 
 		"St. Peter Damian, C","III Class"})
 	if (is_leap_y(year)) then
-		table.insert(saints,{greg_to_jdn(year,2,25), 
-			"St. Matthias, Ap.","II Class"})
 		table.insert(saints,{greg_to_jdn(year,2,28), 
 			"St. Gabriel of Our Lady of Sorrows","III Class"})
 	else
-		table.insert(saints,{greg_to_jdn(year,2,24), 
-			"St. Matthias, Ap.","II Class"})
 		table.insert(saints,{greg_to_jdn(year,2,27), 
 			"St. Gabriel of Our Lady of Sorrows","III Class"})
 	end
@@ -281,8 +302,6 @@ function saints_feasts(year,returntab,index)
 		"St. George, M","Comm"})
 	table.insert(saints,{greg_to_jdn(year,4,24), 
 		"St. Fidelis of Sigmaringen, M","III Class"})
-	table.insert(saints,{greg_to_jdn(year,4,25), 
-		"St. Mark the Evangelist","II Class"})
 	table.insert(saints,{greg_to_jdn(year,4,26), 
 		"Sts. Cletus and Marcellinus, PM","III Class"})
 	table.insert(saints,{greg_to_jdn(year,4,27), 
@@ -311,8 +330,6 @@ function saints_feasts(year,returntab,index)
 		"St. Antoninus, EC","III Class"})
 	table.insert(saints,{greg_to_jdn(year,5,10), 
 		"Sts. Goridan and Epimachus","Comm"})
-	table.insert(saints,{greg_to_jdn(year,5,11), 
-		"Sts. Phillip and James, Ap.","II Class"})
 	table.insert(saints,{greg_to_jdn(year,5,12), 
 		"Sts. Nereus, Achilleus, Domitilla, V, and Pancras, M","III Class"})
 	table.insert(saints,{greg_to_jdn(year,5,13), 
@@ -351,8 +368,6 @@ function saints_feasts(year,returntab,index)
 		"St. Mary Magdalen de Pazzi, V","III Class"})
 	table.insert(saints,{greg_to_jdn(year,5,30), 
 		"St. Felix I, PM","Comm"})
-	table.insert(saints,{greg_to_jdn(year,5,31), 
-		"Blessed Virgin Mary, Queen","II Class"})
 	table.insert(saints,{greg_to_jdn(year,5,31), 
 		"St. Petronilla, V","Comm"})
 	table.insert(saints,{greg_to_jdn(year,6,1), 
@@ -483,8 +498,6 @@ function saints_feasts(year,returntab,index)
 		"St. Dominic, C","III Class"})
 	table.insert(saints,{greg_to_jdn(year,8,5), 
 		"Dedication of Our Lady of the Snows","III Class"})
-	table.insert(saints,{greg_to_jdn(year,8,6), 
-		"Transfiguration of Our Lord Jesus Christ","II Class"})
 	table.insert(saints,{greg_to_jdn(year,8,6), 
 		"Sts. Xystus I, P, Felicissimus, and Agapitus, M","Comm"})
 	table.insert(saints,{greg_to_jdn(year,8,7), 
@@ -671,8 +684,6 @@ function saints_feasts(year,returntab,index)
 		"Sts. Vitalis and Agricola, M","Comm"})
 	table.insert(saints,{greg_to_jdn(year,11,8), 
 		"Holy Four Crowned Martyrs","Comm"})
-	table.insert(saints,{greg_to_jdn(year,11,9), 
-		"Dedication of the Archbasilica of the Most Holy Savior","II Class"})
 	table.insert(saints,{greg_to_jdn(year,11,9), 
 		"St. Theodore, M","Comm"})
 	table.insert(saints,{greg_to_jdn(year,11,10), 
@@ -877,6 +888,7 @@ function fill_year(year,returntab,index)
 			LOCATION=""
 	}
 	index = index + 1
+	ash_wednes = jdn_easter-46
 	table.insert(usedvals,jdn_easter-7)
 	returntab[index] = {
 		START_DATE=print_date(jdn_to_greg(jdn_easter-7)),
@@ -886,6 +898,7 @@ function fill_year(year,returntab,index)
 			LOCATION=""
 	}
 	index = index + 1
+	palm_sunday = jdn_easter-7
 	table.insert(usedvals,jdn_easter-14)
 	returntab[index] = {
 		START_DATE=print_date(jdn_to_greg(jdn_easter-14)),
@@ -1012,7 +1025,7 @@ function fill_year(year,returntab,index)
 	}
 	circumcision = jdn_epiph-5
 	index = index + 1
-	table.insert(usedvals,jdn_epiph)
+	table.insert(usedvals,next_sunday(jdn_epiph))
 	returntab[index] = {
 		START_DATE=print_date(jdn_to_greg(next_sunday(jdn_epiph))),
 			TITLE="Holy Family",CLASS="Catholic:  1176",
@@ -1044,20 +1057,20 @@ function fill_year(year,returntab,index)
 		holder = holder - 1;
 	end
 	if (holder == (jdn_epiph - 5)) then
-	table.insert(usedvals,year,1,2)
+		table.insert(usedvals,greg_to_jdn(year,1,2))
 		returntab[index] = {
 			START_DATE=print_date(jdn_to_greg(greg_to_jdn(year,1,2))),
 				TITLE="Most Holy Name of Jesus",CLASS="Catholic:  1176",
 				START_TIME="",END_TIME="", LOCATION="",
-				CATEGORY="traditional,catholic,christmas"
+				CATEGORY="II Class,traditional,catholic,christmas"
 		}
 	else
-	table.insert(usedvals,jdn_epiph-5)
+		table.insert(usedvals,next_sunday(jdn_epiph-5))
 		returntab[index] = {
 			START_DATE=print_date(jdn_to_greg(next_sunday(jdn_epiph-5))),
 				TITLE="Most Holy Name of Jesus",CLASS="Catholic:  1176",
 				START_TIME="",END_TIME="", LOCATION="",
-				CATEGORY="traditional,catholic,christmas"
+				CATEGORY="II Class,traditional,catholic,christmas"
 		}
 	end
 	index = index + 1
@@ -1079,8 +1092,22 @@ function fill_year(year,returntab,index)
 			CATEGORY="I Class,traditional,catholic,christmas"
 	}
 	index = index + 1
+	christmas_holder = greg_to_jdn(year,12,29)
+	while (christmas_holder < greg_to_jdn(year+1,1,1)) do
+		if (dow_from_jdn(christmas_holder) ~= 0) then
+			table.insert(usedvals,christmas_holder)
+			returntab[index] = {
+				START_DATE=print_date(jdn_to_greg(christmas_holder)),
+					TITLE="Feria",CLASS="Catholic:  1176",
+					START_TIME="",END_TIME="", LOCATION="",
+					CATEGORY="II Class,traditional,catholic,christmas"
+			}
+			index = index + 1
+		end
+		christmas_holder = christmas_holder + 1
+	end
 	-- Advent season
-	table.insert(usedvals,jdn_christmas)
+	table.insert(usedvals,last_sunday(jdn_christmas))
 	returntab[index] = {
 		START_DATE=print_date(jdn_to_greg(last_sunday(jdn_christmas))),
 			TITLE="4th Sunday of Advent",CLASS="Catholic:  1176",
@@ -1088,7 +1115,7 @@ function fill_year(year,returntab,index)
 			CATEGORY="I Class,traditional,catholic,advent"
 	}
 	index = index + 1
-	table.insert(usedvals,jdn_christmas)
+	table.insert(usedvals,last_sunday(jdn_christmas)-7)
 	returntab[index] = {
 		START_DATE=print_date(jdn_to_greg(last_sunday(jdn_christmas)-7)),
 			TITLE="3rd Sunday of Advent",CLASS="Catholic:  1176",
@@ -1121,15 +1148,20 @@ function fill_year(year,returntab,index)
 			CATEGORY="II Class,traditional,catholic,advent"
 	}
 	index = index + 1
-	table.insert(usedvals,jdn_christmas)
+	if ((last_sunday(jdn_christmas)-14) == greg_to_jdn(year,12,8)) then
+		secadvcat = "Comm"
+	else
+		secadvcat = "I Class"
+	end
+	table.insert(usedvals,last_sunday(jdn_christmas)-14)
 	returntab[index] = {
 		START_DATE=print_date(jdn_to_greg(last_sunday(jdn_christmas)-14)),
 			TITLE="2nd Sunday of Advent",CLASS="Catholic:  1176",
 			START_TIME="",END_TIME="", LOCATION="",
-			CATEGORY="I Class,traditional,catholic,advent"
+			CATEGORY=secadvcat..",traditional,catholic,advent"
 	}
 	index = index + 1
-	table.insert(usedvals,jdn_christmas)
+	table.insert(usedvals,last_sunday(jdn_christmas)-21)
 	returntab[index] = {
 		START_DATE=print_date(jdn_to_greg(last_sunday(jdn_christmas)-21)),
 			TITLE="1st Sunday of Advent",CLASS="Catholic:  1176",
@@ -1137,6 +1169,7 @@ function fill_year(year,returntab,index)
 			CATEGORY="I Class,traditional,catholic,advent"
 	}
 	index = index + 1
+	first_sun_adv = last_sunday(jdn_christmas)-21
 	-- Easter Season
 	table.insert(usedvals,jdn_easter+7)
 	returntab[index] = {
@@ -1376,8 +1409,10 @@ function fill_year(year,returntab,index)
 		end
 		modif = modif + 1
 	end
-	if (dow_from_jdn(greg_to_jdn(year,11,2)) ~= 0) then
-		allsouls = greg_to_jdn(year,11,2);
+	if (dow_from_jdn(greg_to_jdn(year,11,2)) == 0) then
+		allsouls = greg_to_jdn(year,11,3);
+	elseif (dow_from_jdn(greg_to_jdn(year,11,2)) == 1) then
+		allsouls = greg_to_jdn(year,11,4);
 	else
 		allsouls = greg_to_jdn(year,11,2);
 	end
@@ -1390,10 +1425,9 @@ function fill_year(year,returntab,index)
 			CATEGORY="I Class,traditional,catholic,feast"
 	}
 	index = index + 1
-	allsaints = greg_to_jdn(year,11,1)
-	table.insert(usedvals,allsaints)
+	table.insert(usedvals,allsouls-1)
 	returntab[index] = {
-		START_DATE=print_date(jdn_to_greg(allsaints)),
+		START_DATE=print_date(jdn_to_greg(allsouls-1)),
 			TITLE="All Saints' Day",
 			CLASS="Catholic:  1176",
 			START_TIME="",END_TIME="", LOCATION="",
@@ -1409,6 +1443,7 @@ function fill_year(year,returntab,index)
 			CATEGORY="II Class,traditional,catholic,feast"
 	}
 	index = index + 1
+	holycross = greg_to_jdn(year,9,14)
 	table.insert(usedvals,greg_to_jdn(year,9,14))
 	returntab[index] = {
 		START_DATE=print_date(jdn_to_greg(greg_to_jdn(year,9,14))),
@@ -1427,69 +1462,78 @@ function fill_year(year,returntab,index)
 			CATEGORY="II Class,traditional,catholic,feast"
 	}
 	index = index + 1
-	table.insert(usedvals,greg_to_jdn(year,3,19))
+	joseph_spouse = move_from_sun(greg_to_jdn(year,3,19))
+	table.insert(usedvals,joseph_spouse)
 	returntab[index] = {
-		START_DATE=print_date(jdn_to_greg(greg_to_jdn(year,3,19))),
+		START_DATE=print_date(jdn_to_greg(joseph_spouse)),
 			TITLE="St. Joseph, Spouse of the Blessed Virgin Mary, C, and Patron of the Universal Church",
 			CLASS="Catholic:  1176",
 			START_TIME="",END_TIME="", LOCATION="",
 			CATEGORY="I Class,traditional,catholic,feast"
 	}
 	index = index + 1
-	table.insert(usedvals,greg_to_jdn(year,3,25))
+	annunciation = move_from_sun(greg_to_jdn(year,3,25))
+	table.insert(usedvals,annunciation)
 	returntab[index] = {
-		START_DATE=print_date(jdn_to_greg(greg_to_jdn(year,3,25))),
-			TITLE="Anunciation of the Blessed Virgin Mary",
+		START_DATE=print_date(jdn_to_greg(annunciation)),
+			TITLE="Annunciation of the Blessed Virgin Mary",
 			CLASS="Catholic:  1176",
 			START_TIME="",END_TIME="", LOCATION="",
 			CATEGORY="I Class,traditional,catholic,feast"
 	}
 	index = index + 1
-	table.insert(usedvals,greg_to_jdn(year,5,1))
+	joseph_worker = move_from_sun(greg_to_jdn(year,5,1))
+	table.insert(usedvals,joseph_worker)
 	returntab[index] = {
-		START_DATE=print_date(jdn_to_greg(greg_to_jdn(year,5,1))),
+		START_DATE=print_date(jdn_to_greg(joseph_worker)),
 			TITLE="St. Joseph the Workman, Spouse of the Blessed Virgin Mary",
 			CLASS="Catholic:  1176",
 			START_TIME="",END_TIME="", LOCATION="",
 			CATEGORY="I Class,traditional,catholic,feast"
 	}
 	index = index + 1
-	table.insert(usedvals,greg_to_jdn(year,6,24))
+	nativity_john = move_from_sun(greg_to_jdn(year,6,24))
+	table.insert(usedvals,nativity_john)
 	returntab[index] = {
-		START_DATE=print_date(jdn_to_greg(greg_to_jdn(year,6,24))),
+		START_DATE=print_date(jdn_to_greg(nativity_john)),
 			TITLE="Nativity of St. John the Baptist",
 			CLASS="Catholic:  1176",
 			START_TIME="",END_TIME="", LOCATION="",
 			CATEGORY="I Class,traditional,catholic,feast"
 	}
 	index = index + 1
-	table.insert(usedvals,greg_to_jdn(year,6,23))
+	if (dow_from_jdn(nativity_john-1) ~= 0) then
+		table.insert(usedvals,nativity_john-1)
+		returntab[index] = {
+			START_DATE=print_date(jdn_to_greg(nativity_john-1)),
+				TITLE="Vigil of the Nativity of St. John the Baptist",
+				CLASS="Catholic:  1176",
+				START_TIME="",END_TIME="", LOCATION="",
+				CATEGORY="II Class,traditional,catholic,feast"
+		}
+		index = index + 1
+	end
+	peter_and_paul = move_from_sun(greg_to_jdn(year,6,29))
+	table.insert(usedvals,peter_and_paul)
 	returntab[index] = {
-		START_DATE=print_date(jdn_to_greg(greg_to_jdn(year,6,23))),
-			TITLE="Vigil of the Nativity of St. John the Baptist",
-			CLASS="Catholic:  1176",
-			START_TIME="",END_TIME="", LOCATION="",
-			CATEGORY="II Class,traditional,catholic,feast"
-	}
-	index = index + 1
-	table.insert(usedvals,greg_to_jdn(year,6,29))
-	returntab[index] = {
-		START_DATE=print_date(jdn_to_greg(greg_to_jdn(year,6,29))),
+		START_DATE=print_date(jdn_to_greg(peter_and_paul)),
 			TITLE="Sts. Peter and Paul, Ap.",
 			CLASS="Catholic:  1176",
 			START_TIME="",END_TIME="", LOCATION="",
 			CATEGORY="I Class,traditional,catholic,feast"
 	}
 	index = index + 1
-	table.insert(usedvals,greg_to_jdn(year,6,28))
-	returntab[index] = {
-		START_DATE=print_date(jdn_to_greg(greg_to_jdn(year,6,28))),
-			TITLE="Vigil of Sts. Peter and Paul, Ap.",
-			CLASS="Catholic:  1176",
-			START_TIME="",END_TIME="", LOCATION="",
-			CATEGORY="II Class,traditional,catholic,feast"
-	}
-	index = index + 1
+	if (dow_from_jdn(peter_and_paul-1) ~= 0) then
+		table.insert(usedvals,greg_to_jdn(year,6,28))
+		returntab[index] = {
+			START_DATE=print_date(jdn_to_greg(greg_to_jdn(year,6,28))),
+				TITLE="Vigil of Sts. Peter and Paul, Ap.",
+				CLASS="Catholic:  1176",
+				START_TIME="",END_TIME="", LOCATION="",
+				CATEGORY="II Class,traditional,catholic,feast"
+		}
+		index = index + 1
+	end
 	table.insert(usedvals,greg_to_jdn(year,7,1))
 	returntab[index] = {
 		START_DATE=print_date(jdn_to_greg(greg_to_jdn(year,7,1))),
@@ -1499,33 +1543,39 @@ function fill_year(year,returntab,index)
 			CATEGORY="I Class,traditional,catholic,feast"
 	}
 	index = index + 1
-	table.insert(usedvals,greg_to_jdn(year,8,15))
+	assumption = move_from_sun(greg_to_jdn(year,8,15))
+	table.insert(usedvals,assumption)
 	returntab[index] = {
-		START_DATE=print_date(jdn_to_greg(greg_to_jdn(year,8,15))),
+		START_DATE=print_date(jdn_to_greg(assumption)),
 			TITLE="Assumption of the Blessed Virgin Mary",
 			CLASS="Catholic:  1176",
 			START_TIME="",END_TIME="", LOCATION="",
 			CATEGORY="I Class,traditional,catholic,feast"
 	}
 	index = index + 1
-	table.insert(usedvals,greg_to_jdn(year,8,14))
+	if (dow_from_jdn(assumption-1) ~= 0) then
+		table.insert(usedvals,assumption-1)
+		returntab[index] = {
+			START_DATE=print_date(jdn_to_greg(assumption-1)),
+				TITLE="Vigil of the Assumption of the Blessed Virgin Mary",
+				CLASS="Catholic:  1176",
+				START_TIME="",END_TIME="", LOCATION="",
+				CATEGORY="II Class,traditional,catholic,feast"
+		}
+		index = index + 1
+	end
+	dedic_michael = move_from_sun(greg_to_jdn(year,9,29))
+	table.insert(usedvals,dedic_michael)
 	returntab[index] = {
-		START_DATE=print_date(jdn_to_greg(greg_to_jdn(year,8,14))),
-			TITLE="Vigil of the Assumption of the Blessed Virgin Mary",
-			CLASS="Catholic:  1176",
-			START_TIME="",END_TIME="", LOCATION="",
-			CATEGORY="II Class,traditional,catholic,feast"
-	}
-	index = index + 1
-	table.insert(usedvals,greg_to_jdn(year,9,29))
-	returntab[index] = {
-		START_DATE=print_date(jdn_to_greg(greg_to_jdn(year,9,29))),
+		START_DATE=print_date(jdn_to_greg(dedic_michael)),
 			TITLE="Dedication of St. Michael Archangel",
 			CLASS="Catholic:  1176",
 			START_TIME="",END_TIME="", LOCATION="",
 			CATEGORY="I Class,traditional,catholic,feast"
 	}
 	index = index + 1
+	-- Delete anything from Dec 8, including Sun., then add Imm. Conc.
+	ifinret(print_date(jdn_to_greg(greg_to_jdn(year,12,8))));
 	table.insert(usedvals,greg_to_jdn(year,12,8))
 	returntab[index] = {
 		START_DATE=print_date(jdn_to_greg(greg_to_jdn(year,12,8))),
@@ -1535,6 +1585,130 @@ function fill_year(year,returntab,index)
 			CATEGORY="I Class,traditional,catholic,feast"
 	}
 	index = index + 1
+	ifinret(print_date(jdn_to_greg(greg_to_jdn(year,2,2))));
+	table.insert(usedvals,greg_to_jdn(year,2,2))
+	returntab[index] = {
+		START_DATE=print_date(jdn_to_greg(greg_to_jdn(year,2,2))),
+			TITLE="Purification of the Blessed Virgin Mary",
+			CLASS="Catholic:  1176",
+			START_TIME="",END_TIME="", LOCATION="",
+			CATEGORY="II Class,traditional,catholic,feast"
+	}
+	index = index + 1
+	ifinret(print_date(jdn_to_greg(greg_to_jdn(year,8,6))));
+	table.insert(usedvals,greg_to_jdn(year,8,6))
+	returntab[index] = {
+		START_DATE=print_date(jdn_to_greg(greg_to_jdn(year,8,6))),
+			TITLE="Transfiguration of Our Lord Jesus Christ",
+			CLASS="Catholic:  1176",
+			START_TIME="",END_TIME="", LOCATION="",
+			CATEGORY="II Class,traditional,catholic,feast"
+	}
+	index = index + 1
+	ifinret(print_date(jdn_to_greg(greg_to_jdn(year,11,9))));
+	table.insert(usedvals,greg_to_jdn(year,11,9))
+	returntab[index] = {
+		START_DATE=print_date(jdn_to_greg(greg_to_jdn(year,11,9))),
+			TITLE="Dedication of the Archbasilica of the Most Holy Savior",
+			CLASS="Catholic:  1176",
+			START_TIME="",END_TIME="", LOCATION="",
+			CATEGORY="II Class,traditional,catholic,feast"
+	}
+	index = index + 1
+	september = next_sunday(holycross)
+	table.insert(usedvals,september+3)
+	returntab[index] = {
+		START_DATE=print_date(jdn_to_greg(september+3)),
+			TITLE="Ember Wednesday",
+			CLASS="Catholic:  1176",
+			START_TIME="",END_TIME="", LOCATION="",
+			CATEGORY="II Class,traditional,catholic,feast"
+	}
+	index = index + 1
+	table.insert(usedvals,september+5)
+	returntab[index] = {
+		START_DATE=print_date(jdn_to_greg(september+5)),
+			TITLE="Ember Friday",
+			CLASS="Catholic:  1176",
+			START_TIME="",END_TIME="", LOCATION="",
+			CATEGORY="II Class,traditional,catholic,feast"
+	}
+	index = index + 1
+	table.insert(usedvals,september+6)
+	returntab[index] = {
+		START_DATE=print_date(jdn_to_greg(september+6)),
+			TITLE="Ember Saturday",
+			CLASS="Catholic:  1176",
+			START_TIME="",END_TIME="", LOCATION="",
+			CATEGORY="II Class,traditional,catholic,feast"
+	}
+	index = index + 1
+	if (is_leap_y(year) == true) then
+		stmatthias = greg_to_jdn(year,2,25)
+	else
+		stmatthias = greg_to_jdn(year,2,24)
+	end
+	if (dow_from_jdn(stmatthias) ~= 0) then
+		table.insert(usedvals,stmatthias)
+		returntab[index] = {
+			START_DATE=print_date(jdn_to_greg(stmatthias)),
+				TITLE="St. Matthias, Ap.",
+				CLASS="Catholic:  1176",
+				START_TIME="",END_TIME="", LOCATION="",
+				CATEGORY="II Class,traditional,catholic,feast"
+		}
+		index = index + 1
+	end
+	if (dow_from_jdn(greg_to_jdn(year,4,25)) ~= 0) then
+		table.insert(usedvals,greg_to_jdn(year,4,25))
+		returntab[index] = {
+			START_DATE=print_date(jdn_to_greg(greg_to_jdn(year,4,25))),
+				TITLE="St. Mark the Evangelist",
+				CLASS="Catholic:  1176",
+				START_TIME="",END_TIME="", LOCATION="",
+				CATEGORY="II Class,traditional,catholic,feast"
+		}
+		index = index + 1
+	end
+	if (dow_from_jdn(greg_to_jdn(year,5,11)) ~= 0) then
+		table.insert(usedvals,greg_to_jdn(year,5,11))
+		returntab[index] = {
+			START_DATE=print_date(jdn_to_greg(greg_to_jdn(year,5,11))),
+				TITLE="Sts. Philip and James, Ap.",
+				CLASS="Catholic:  1176",
+				START_TIME="",END_TIME="", LOCATION="",
+				CATEGORY="II Class,traditional,catholic,feast"
+		}
+		index = index + 1
+	end
+	if (dow_from_jdn(greg_to_jdn(year,5,31)) ~= 0) then
+		table.insert(usedvals,greg_to_jdn(year,5,31))
+		returntab[index] = {
+			START_DATE=print_date(jdn_to_greg(greg_to_jdn(year,5,31))),
+				TITLE="Blessed Virgin Mary, Queen",
+				CLASS="Catholic:  1176",
+				START_TIME="",END_TIME="", LOCATION="",
+				CATEGORY="II Class,traditional,catholic,feast"
+		}
+		index = index + 1
+	end
+	-- Ferias in Lent take precedence over saints III Class
+	firstjdn = ash_wednes
+	lastjdn = palm_sunday
+	while (firstjdn < lastjdn) do
+		if (donedate(firstjdn) == false) then
+			table.insert(usedvals,firstjdn)
+			returntab[index] = {
+				START_DATE=print_date(jdn_to_greg(firstjdn)),
+					TITLE="Feria",
+					CLASS="Catholic:  1176",
+					START_TIME="",END_TIME="", LOCATION="",
+					CATEGORY="III Class,traditional,catholic,feast"
+			}
+			index = index + 1
+		end
+		firstjdn = firstjdn + 1
+	end
 	-- Do the saints feasts
 	saints_feasts(year,returntab,index)
 	for key,val in pairs(saints) do
@@ -1556,6 +1730,7 @@ function fill_year(year,returntab,index)
 			end
 		end
 		if (feast_jdn ~= "") then
+			table.insert(usedvals,feast_jdn)
 			returntab[index] = {
 				START_DATE=print_date(jdn_to_greg(feast_jdn)),
 					TITLE=feastname,
@@ -1566,8 +1741,38 @@ function fill_year(year,returntab,index)
 			index = index + 1
 		end
 	end
-
-
+	firstjdn = first_sun_adv
+	lastjdn = greg_to_jdn(year,12,16)
+	while (firstjdn <= lastjdn) do
+		if (donedate(firstjdn) == false) then
+			table.insert(usedvals,firstjdn)
+			returntab[index] = {
+				START_DATE=print_date(jdn_to_greg(firstjdn)),
+					TITLE="Feria",
+					CLASS="Catholic:  1176",
+					START_TIME="",END_TIME="", LOCATION="",
+					CATEGORY="III Class,traditional,catholic,feast"
+			}
+			index = index + 1
+		end
+		firstjdn = firstjdn + 1
+	end
+	firstjdn = greg_to_jdn(year,1,1)
+	lastjdn = greg_to_jdn(year,12,31)
+	while (firstjdn <= lastjdn) do
+		if (donedate(firstjdn) == false) then
+			table.insert(usedvals,firstjdn)
+			returntab[index] = {
+				START_DATE=print_date(jdn_to_greg(firstjdn)),
+					TITLE="Feria",
+					CLASS="Catholic:  1176",
+					START_TIME="",END_TIME="", LOCATION="",
+					CATEGORY="IV Class,traditional,catholic,feast"
+			}
+			index = index + 1
+		end
+		firstjdn = firstjdn + 1
+	end
 	return index
 end
 
