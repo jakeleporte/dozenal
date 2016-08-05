@@ -419,8 +419,6 @@ function saints_feasts(year,returntab,index)
 	table.insert(saints,{greg_to_jdn(year,6,30), 
 		"St. Paul the Apostle","Comm"})
 	table.insert(saints,{greg_to_jdn(year,7,2), 
-		"Visitation of the Blessed Virgin Mary","II Class"})
-	table.insert(saints,{greg_to_jdn(year,7,2), 
 		"Sts. Processus and Martinian, M","Comm"})
 	table.insert(saints,{greg_to_jdn(year,7,3), 
 		"St. Irenaeus, EM","III Class"})
@@ -471,11 +469,7 @@ function saints_feasts(year,returntab,index)
 	table.insert(saints,{greg_to_jdn(year,7,24), 
 		"St. Christina, VM","Comm"})
 	table.insert(saints,{greg_to_jdn(year,7,25), 
-		"St. James, Ap.","II Class"})
-	table.insert(saints,{greg_to_jdn(year,7,25), 
 		"St. Christopher, M","Comm"})
-	table.insert(saints,{greg_to_jdn(year,7,26), 
-		"St. Anne, Mother of the Blessed Virgin Mary","II Class"})
 	table.insert(saints,{greg_to_jdn(year,7,27), 
 		"St. Pantaleon, M","Comm"})
 	table.insert(saints,{greg_to_jdn(year,7,28), 
@@ -512,8 +506,6 @@ function saints_feasts(year,returntab,index)
 		"Vigil of St. Lawrence","III Class"})
 	table.insert(saints,{greg_to_jdn(year,8,9), 
 		"St. Romanus, M","Comm"})
-	table.insert(saints,{greg_to_jdn(year,8,10), 
-		"St. Larence, M","II Class"})
 	table.insert(saints,{greg_to_jdn(year,8,11), 
 		"Sts. Tiburtius and Susanna, V, M","Comm"})
 	table.insert(saints,{greg_to_jdn(year,8,12), 
@@ -522,8 +514,6 @@ function saints_feasts(year,returntab,index)
 		"Sts. Hippolytus and Cassian, M","Comm"})
 	table.insert(saints,{greg_to_jdn(year,8,14), 
 		"St. Eusebius, C","Comm"})
-	table.insert(saints,{greg_to_jdn(year,8,16), 
-		"St. Joachim, Father of the Blessed Virgin Mary, C","II Class"})
 	table.insert(saints,{greg_to_jdn(year,8,17), 
 		"St. Hyacinth of Poland, C","III Class"})
 	table.insert(saints,{greg_to_jdn(year,8,18), 
@@ -535,13 +525,9 @@ function saints_feasts(year,returntab,index)
 	table.insert(saints,{greg_to_jdn(year,8,21), 
 		"St. Jane Frances de Chantal, Widow","III Class"})
 	table.insert(saints,{greg_to_jdn(year,8,22), 
-		"Immaculate Heart of the Blessed Virgin Mary","II Class"})
-	table.insert(saints,{greg_to_jdn(year,8,22), 
 		"Sts. Timothy and Companions, M","Comm"})
 	table.insert(saints,{greg_to_jdn(year,8,23), 
 		"St. Philip Benizi, C","III Class"})
-	table.insert(saints,{greg_to_jdn(year,8,24), 
-		"St. Bartholomew, Ap.","II Class"})
 	table.insert(saints,{greg_to_jdn(year,8,25), 
 		"St. Louis, King, C","III Class"})
 	table.insert(saints,{greg_to_jdn(year,8,26), 
@@ -573,8 +559,6 @@ function saints_feasts(year,returntab,index)
 	table.insert(saints,{greg_to_jdn(year,9,5), 
 		"St. Laurence Justinian, EC","III Class"})
 	table.insert(saints,{greg_to_jdn(year,9,8), 
-		"Nativity of the Blessed Virgin Mary","II Class"})
-	table.insert(saints,{greg_to_jdn(year,9,8), 
 		"St. Hadrian, M","Comm"})
 	table.insert(saints,{greg_to_jdn(year,9,9), 
 		"St. Gorgonius, M","Comm"})
@@ -584,8 +568,6 @@ function saints_feasts(year,returntab,index)
 		"Sts. Protus and Hyacinth, M","Comm"})
 	table.insert(saints,{greg_to_jdn(year,9,12), 
 		"Most Holy Name of Mary","III Class"})
-	table.insert(saints,{greg_to_jdn(year,9,15), 
-		"Seven Sorrows of the Blessed Virgin Mary","II Class"})
 	table.insert(saints,{greg_to_jdn(year,9,15), 
 		"St. Nicomedes, M","Comm"})
 	table.insert(saints,{greg_to_jdn(year,9,16), 
@@ -600,8 +582,6 @@ function saints_feasts(year,returntab,index)
 		"St. Januarius, E, and Companions, M","III Class"})
 	table.insert(saints,{greg_to_jdn(year,9,20), 
 		"St. Eustace and Companions, M","Comm"})
-	table.insert(saints,{greg_to_jdn(year,9,21), 
-		"St. Matthew, Ap. and Evangelist","II Class"})
 	table.insert(saints,{greg_to_jdn(year,9,22), 
 		"St. Thomas of Villanova, EC","III Class"})
 	table.insert(saints,{greg_to_jdn(year,9,22), 
@@ -633,8 +613,6 @@ function saints_feasts(year,returntab,index)
 	table.insert(saints,{greg_to_jdn(year,10,6), 
 		"St. Bruno, C","III Class"})
 	table.insert(saints,{greg_to_jdn(year,10,7), 
-		"Blessed Virgin Mary of the Rosary","II Class"})
-	table.insert(saints,{greg_to_jdn(year,10,7), 
 		"St. Mark, PC","Comm"})
 	table.insert(saints,{greg_to_jdn(year,10,8), 
 		"St. Bridget, Widow","III Class"})
@@ -646,8 +624,6 @@ function saints_feasts(year,returntab,index)
 		"Sts. Denis, E, Rusticus, S, and Elutherius, M","Comm"})
 	table.insert(saints,{greg_to_jdn(year,10,10), 
 		"St. Francis Borgia, C","III Class"})
-	table.insert(saints,{greg_to_jdn(year,10,11), 
-		"Maternity of the Blessed Virgina Mary","II Class"})
 	table.insert(saints,{greg_to_jdn(year,10,13), 
 		"St. Edward, King, C","III Class"})
 	table.insert(saints,{greg_to_jdn(year,10,14), 
@@ -658,8 +634,6 @@ function saints_feasts(year,returntab,index)
 		"St. Hedwig, Widow","III Class"})
 	table.insert(saints,{greg_to_jdn(year,10,17), 
 		"St. Margaret Mary Alacoque, V","III Class"})
-	table.insert(saints,{greg_to_jdn(year,10,18), 
-		"St. Luke, Evangelist","II Class"})
 	table.insert(saints,{greg_to_jdn(year,10,19), 
 		"St. Peter of Alcantara, C","III Class"})
 	table.insert(saints,{greg_to_jdn(year,10,20), 
@@ -676,8 +650,6 @@ function saints_feasts(year,returntab,index)
 		"Sts. Chrysanthus and Daria, M","Comm"})
 	table.insert(saints,{greg_to_jdn(year,10,26), 
 		"St. Evaristus, PM","Comm"})
-	table.insert(saints,{greg_to_jdn(year,10,28), 
-		"Sts. Simon and Jude, Ap.","II Class"})
 	table.insert(saints,{greg_to_jdn(year,11,4), 
 		"St. Charles, EC","III Class"})
 	table.insert(saints,{greg_to_jdn(year,11,4), 
@@ -734,8 +706,6 @@ function saints_feasts(year,returntab,index)
 		"St. Peter of Alexandria, EM","Comm"})
 	table.insert(saints,{greg_to_jdn(year,11,29), 
 		"St. Saturninus","Comm"})
-	table.insert(saints,{greg_to_jdn(year,11,30), 
-		"St. Andrew, Ap.","II Class"})
 	table.insert(saints,{greg_to_jdn(year,12,2), 
 		"St. Bibiana, VM","III Class"})
 	table.insert(saints,{greg_to_jdn(year,12,3), 
@@ -1681,11 +1651,176 @@ function fill_year(year,returntab,index)
 		}
 		index = index + 1
 	end
+	if (dow_from_jdn(greg_to_jdn(year,7,2)) ~= 0) then
+		table.insert(usedvals,greg_to_jdn(year,7,2))
+		returntab[index] = {
+			START_DATE=print_date(jdn_to_greg(greg_to_jdn(year,7,2))),
+				TITLE="Visitation of the Blessed Virgin Mary",
+				CLASS="Catholic:  1176",
+				START_TIME="",END_TIME="", LOCATION="",
+				CATEGORY="II Class,traditional,catholic,feast"
+		}
+		index = index + 1
+	end
+	if (dow_from_jdn(greg_to_jdn(year,7,25)) ~= 0) then
+		table.insert(usedvals,greg_to_jdn(year,7,25))
+		returntab[index] = {
+			START_DATE=print_date(jdn_to_greg(greg_to_jdn(year,7,25))),
+				TITLE="St. James, Ap.",
+				CLASS="Catholic:  1176",
+				START_TIME="",END_TIME="", LOCATION="",
+				CATEGORY="II Class,traditional,catholic,feast"
+		}
+		index = index + 1
+	end
+	if (dow_from_jdn(greg_to_jdn(year,7,26)) ~= 0) then
+		table.insert(usedvals,greg_to_jdn(year,7,26))
+		returntab[index] = {
+			START_DATE=print_date(jdn_to_greg(greg_to_jdn(year,7,26))),
+				TITLE="St. Anne, Mother of the Blessed Virgin Mary",
+				CLASS="Catholic:  1176",
+				START_TIME="",END_TIME="", LOCATION="",
+				CATEGORY="II Class,traditional,catholic,feast"
+		}
+		index = index + 1
+	end
 	if (dow_from_jdn(greg_to_jdn(year,5,31)) ~= 0) then
 		table.insert(usedvals,greg_to_jdn(year,5,31))
 		returntab[index] = {
 			START_DATE=print_date(jdn_to_greg(greg_to_jdn(year,5,31))),
 				TITLE="Blessed Virgin Mary, Queen",
+				CLASS="Catholic:  1176",
+				START_TIME="",END_TIME="", LOCATION="",
+				CATEGORY="II Class,traditional,catholic,feast"
+		}
+		index = index + 1
+	end
+	if (dow_from_jdn(greg_to_jdn(year,8,10)) ~= 0) then
+		table.insert(usedvals,greg_to_jdn(year,8,10))
+		returntab[index] = {
+			START_DATE=print_date(jdn_to_greg(greg_to_jdn(year,8,10))),
+				TITLE="St. Lawrence, M",
+				CLASS="Catholic:  1176",
+				START_TIME="",END_TIME="", LOCATION="",
+				CATEGORY="II Class,traditional,catholic,feast"
+		}
+		index = index + 1
+	end
+	if (dow_from_jdn(greg_to_jdn(year,8,16)) ~= 0) then
+		table.insert(usedvals,greg_to_jdn(year,8,16))
+		returntab[index] = {
+			START_DATE=print_date(jdn_to_greg(greg_to_jdn(year,8,16))),
+				TITLE="St. Joachim, Father of the Blessed Virgin Mary, C",
+				CLASS="Catholic:  1176",
+				START_TIME="",END_TIME="", LOCATION="",
+				CATEGORY="II Class,traditional,catholic,feast"
+		}
+		index = index + 1
+	end
+	if (dow_from_jdn(greg_to_jdn(year,8,22)) ~= 0) then
+		table.insert(usedvals,greg_to_jdn(year,8,22))
+		returntab[index] = {
+			START_DATE=print_date(jdn_to_greg(greg_to_jdn(year,8,22))),
+				TITLE="Immaculate Heart of the Blessed Virgin Mary",
+				CLASS="Catholic:  1176",
+				START_TIME="",END_TIME="", LOCATION="",
+				CATEGORY="II Class,traditional,catholic,feast"
+		}
+		index = index + 1
+	end
+	if (dow_from_jdn(greg_to_jdn(year,8,24)) ~= 0) then
+		table.insert(usedvals,greg_to_jdn(year,8,24))
+		returntab[index] = {
+			START_DATE=print_date(jdn_to_greg(greg_to_jdn(year,8,24))),
+				TITLE="St. Bartholomew, Ap.",
+				CLASS="Catholic:  1176",
+				START_TIME="",END_TIME="", LOCATION="",
+				CATEGORY="II Class,traditional,catholic,feast"
+		}
+		index = index + 1
+	end
+	if (dow_from_jdn(greg_to_jdn(year,9,8)) ~= 0) then
+		table.insert(usedvals,greg_to_jdn(year,9,8))
+		returntab[index] = {
+			START_DATE=print_date(jdn_to_greg(greg_to_jdn(year,9,8))),
+				TITLE="Nativity of the Blessed Virgin Mary",
+				CLASS="Catholic:  1176",
+				START_TIME="",END_TIME="", LOCATION="",
+				CATEGORY="II Class,traditional,catholic,feast"
+		}
+		index = index + 1
+	end
+	if (dow_from_jdn(greg_to_jdn(year,9,15)) ~= 0) then
+		table.insert(usedvals,greg_to_jdn(year,9,15))
+		returntab[index] = {
+			START_DATE=print_date(jdn_to_greg(greg_to_jdn(year,9,15))),
+				TITLE="Seven Sorrows of the Blessed Virgin Mary",
+				CLASS="Catholic:  1176",
+				START_TIME="",END_TIME="", LOCATION="",
+				CATEGORY="II Class,traditional,catholic,feast"
+		}
+		index = index + 1
+	end
+	if (dow_from_jdn(greg_to_jdn(year,9,21)) ~= 0) then
+		table.insert(usedvals,greg_to_jdn(year,9,21))
+		returntab[index] = {
+			START_DATE=print_date(jdn_to_greg(greg_to_jdn(year,9,21))),
+				TITLE="St. Matthew, Ap. and Evangelist",
+				CLASS="Catholic:  1176",
+				START_TIME="",END_TIME="", LOCATION="",
+				CATEGORY="II Class,traditional,catholic,feast"
+		}
+		index = index + 1
+	end
+	if (dow_from_jdn(greg_to_jdn(year,10,7)) ~= 0) then
+		table.insert(usedvals,greg_to_jdn(year,10,7))
+		returntab[index] = {
+			START_DATE=print_date(jdn_to_greg(greg_to_jdn(year,10,7))),
+				TITLE="Blessed Virgin Mary of the Rosary",
+				CLASS="Catholic:  1176",
+				START_TIME="",END_TIME="", LOCATION="",
+				CATEGORY="II Class,traditional,catholic,feast"
+		}
+		index = index + 1
+	end
+	if (dow_from_jdn(greg_to_jdn(year,10,11)) ~= 0) then
+		table.insert(usedvals,greg_to_jdn(year,10,11))
+		returntab[index] = {
+			START_DATE=print_date(jdn_to_greg(greg_to_jdn(year,10,11))),
+				TITLE="Maternity of the Blessed Virgin Mary",
+				CLASS="Catholic:  1176",
+				START_TIME="",END_TIME="", LOCATION="",
+				CATEGORY="II Class,traditional,catholic,feast"
+		}
+		index = index + 1
+	end
+	if (dow_from_jdn(greg_to_jdn(year,10,18)) ~= 0) then
+		table.insert(usedvals,greg_to_jdn(year,10,18))
+		returntab[index] = {
+			START_DATE=print_date(jdn_to_greg(greg_to_jdn(year,10,18))),
+				TITLE="St. Luke, Evangelist",
+				CLASS="Catholic:  1176",
+				START_TIME="",END_TIME="", LOCATION="",
+				CATEGORY="II Class,traditional,catholic,feast"
+		}
+		index = index + 1
+	end
+	if (dow_from_jdn(greg_to_jdn(year,10,28)) ~= 0) then
+		table.insert(usedvals,greg_to_jdn(year,10,28))
+		returntab[index] = {
+			START_DATE=print_date(jdn_to_greg(greg_to_jdn(year,10,28))),
+				TITLE="Sts. Simon and Jude, Ap.",
+				CLASS="Catholic:  1176",
+				START_TIME="",END_TIME="", LOCATION="",
+				CATEGORY="II Class,traditional,catholic,feast"
+		}
+		index = index + 1
+	end
+	if (dow_from_jdn(greg_to_jdn(year,11,30)) ~= 0) then
+		table.insert(usedvals,greg_to_jdn(year,11,30))
+		returntab[index] = {
+			START_DATE=print_date(jdn_to_greg(greg_to_jdn(year,11,30))),
+				TITLE="St. Andrew, Ap.",
 				CLASS="Catholic:  1176",
 				START_TIME="",END_TIME="", LOCATION="",
 				CATEGORY="II Class,traditional,catholic,feast"
