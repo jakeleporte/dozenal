@@ -48,3 +48,4 @@
 #define BAD_FREQ 10
 #define LUA_ERROR 11
 #define BAD_FDOW 12
+#define BAD_OUT_FILE 13

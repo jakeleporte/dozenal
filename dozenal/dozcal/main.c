@@ -79,6 +79,8 @@ int main(int argc, char **argv)
 	int iftodo = 0;
 	int weekout = 0;
 	int fdow = 0;
+	FILE *outfile = stdout;
+	int filedesc[2];
 
 	home = getenv("HOME");
 	if (home != NULL) {
@@ -146,7 +148,8 @@ int main(int argc, char **argv)
 	}
 	relig[0] = '\0';
 	opterr = 0;
-	while ((c = getopt(argc,argv,"VETwR:m:f:s:e:d:t:r:c:n:h:l:W:")) != -1) {
+	while ((c = getopt(argc,argv,"VETwR:m:f:s:e:d:t:r:c:n:h:l:W:")) 
+	!= -1) {
 		switch(c) {
 		case 'V':
 			printf("dozcal v1.0\n");
@@ -312,7 +315,7 @@ int main(int argc, char **argv)
 		for (i = 0; i < (recordnums-1); ++i) {
 			if ((event_list[i].thisdate >= startdate) &&
 			(event_list[i].thisdate <= enddate)) {
-				print_event(ev_form,i,date_form,time_form);
+				print_event(ev_form,i,date_form,time_form,outfile);
 			}
 		}
 	}
@@ -321,7 +324,7 @@ int main(int argc, char **argv)
 		for (i = 0; i < (todonums-1); ++i) {
 			if ((todo_list[i].duedate >= startdate) &&
 			(todo_list[i].duedate <= enddate)) {
-				print_todo(todo_form,i,date_form,time_form);
+				print_todo(todo_form,i,date_form,time_form,outfile);
 			}
 		}
 	}
@@ -337,7 +340,8 @@ int main(int argc, char **argv)
 	return 0;
 }
 
-int print_todo(char *s, int index, char *date_format, char *time_format)
+int print_todo(char *s, int index, char *date_format, char
+*time_format,FILE *outfile)
 {
 	int i; int j;
 	char holder[6];
@@ -363,39 +367,39 @@ int print_todo(char *s, int index, char *date_format, char *time_format)
 				num_to_date(todo_list[index].duedate,datestr,date_format);
 				if (len == 0)
 					len = strlen(datestr);
-				printf("%*.*s",len,len,datestr);
+				fprintf(outfile,"%*.*s",len,len,datestr);
 				datestr[0] = '\0';
 			} else if (s[i] == 't') {
 				secs_to_Tims(todo_list[index].duetime,datestr,time_format);
 				if (len == 0)
 					len = strlen(datestr);
-				printf("%*.*s",len,len,datestr);
+				fprintf(outfile,"%*.*s",len,len,datestr);
 				datestr[0] = '\0';
 			} else if (s[i] == 'p') {
-				printf("%*d",len,todo_list[index].priority);
+				fprintf(outfile,"%*d",len,todo_list[index].priority);
 			} else if (s[i] == 'c') {
-				printf("%*d",len,todo_list[index].completed);
+				fprintf(outfile,"%*d",len,todo_list[index].completed);
 			} else if (s[i] == 'g') {
 				dectodoz(buffer,(double)todo_list[index].pergross);
 				if (len == 0)
 					len = strlen(buffer);
-				printf("%*.*s",len,len,buffer);
+				fprintf(outfile,"%*.*s",len,len,buffer);
 			} else if (s[i] == 'i') {
 				if (len == 0)
 					len = strlen(todo_list[index].item);
-				printf("%*.*s",len,len,todo_list[index].item);
+				fprintf(outfile,"%*.*s",len,len,todo_list[index].item);
 			} else if (s[i] == 'l') {
 				if (len == 0)
 					len = strlen(todo_list[index].location);
-				printf("%*.*s",len,len,todo_list[index].location);
+				fprintf(outfile,"%*.*s",len,len,todo_list[index].location);
 			} else if (s[i] == 'C') {
 				if (len == 0)
 					len = strlen(todo_list[index].categories);
-				printf("%*.*s",len,len,todo_list[index].categories);
+				fprintf(outfile,"%*.*s",len,len,todo_list[index].categories);
 			} else if (s[i] == 'T') {
 				if (len == 0)
 					len = strlen(todo_list[index].todoclass);
-				printf("%*.*s",len,len,todo_list[index].todoclass);
+				fprintf(outfile,"%*.*s",len,len,todo_list[index].todoclass);
 			} else {
 				fprintf(stderr,"dozcal:  unrecognized conversion "
 					"character \"%%%c\" in todo form string, "
@@ -405,26 +409,27 @@ int print_todo(char *s, int index, char *date_format, char *time_format)
 		} else {
 			if (s[i] == '\\') {
 				if (s[i+1] == 'n') {
-					printf("\n");
+					fprintf(outfile,"\n");
 					++i;
 				} else if (s[i+1] == 't') {
-					printf("\t");
+					fprintf(outfile,"\t");
 					++i;
 				} else {
-					printf("\\");
+					fprintf(outfile,"\\");
 				}
 			} else {
-				printf("%c",s[i]);
+				fprintf(outfile,"%c",s[i]);
 			}
 		}
 		len = MAXLEN + 1;
 	}
-	printf("\n");
+	fprintf(outfile,"\n");
 	free(ptr);
 	return 0;
 }
 
-int print_event(char *s, int index, char *date_format, char *time_format)
+int print_event(char *s, int index, char *date_format, char
+*time_format, FILE *outfile)
 {
 	int i; int j;
 	char holder[6];
@@ -450,36 +455,36 @@ int print_event(char *s, int index, char *date_format, char *time_format)
 				num_to_date(event_list[index].thisdate,datestr,date_format);
 				if (len == 0)
 					len = strlen(datestr);
-				printf("%*.*s",len,len,datestr);
+				fprintf(outfile,"%*.*s",len,len,datestr);
 				datestr[0] = '\0';
 			} else if (s[i] == 's') {
 				secs_to_Tims(event_list[index].starttime,datestr,time_format);
 				if (len == 0)
 					len = strlen(datestr);
-				printf("%*.*s",len,len,datestr);
+				fprintf(outfile,"%*.*s",len,len,datestr);
 				datestr[0] = '\0';
 			} else if (s[i] == 'c') {
 				secs_to_Tims(event_list[index].endtime,datestr,time_format);
 				if (len == 0)
 					len = strlen(datestr);
-				printf("%*.*s",len,len,datestr);
+				fprintf(outfile,"%*.*s",len,len,datestr);
 				datestr[0] = '\0';
 			} else if (s[i] == 'e') {
 				if (len == 0)
 					len = strlen(event_list[index].title);
-				printf("%*.*s",len,len,event_list[index].title);
+				fprintf(outfile,"%*.*s",len,len,event_list[index].title);
 			} else if (s[i] == 'C') {
 				if (len == 0)
 					len = strlen(event_list[index].categories);
-				printf("%*.*s",len,len,event_list[index].categories);
+				fprintf(outfile,"%*.*s",len,len,event_list[index].categories);
 			} else if (s[i] == 't') {
 				if (len == 0)
 					len = strlen(event_list[index].evclass);
-				printf("%*.*s",len,len,event_list[index].evclass);
+				fprintf(outfile,"%*.*s",len,len,event_list[index].evclass);
 			} else if (s[i] == 'l') {
 				if (len == 0)
 					len = strlen(event_list[index].location);
-				printf("%*.*s",len,len,event_list[index].location);
+				fprintf(outfile,"%*.*s",len,len,event_list[index].location);
 			} else {
 				fprintf(stderr,"dozcal:  unrecognized conversion "
 					"character \"%%%c\" in event form string, "
@@ -489,21 +494,21 @@ int print_event(char *s, int index, char *date_format, char *time_format)
 		} else {
 			if (s[i] == '\\') {
 				if (s[i+1] == 'n') {
-					printf("\n");
+					fprintf(outfile,"\n");
 					++i;
 				} else if (s[i+1] == 't') {
-					printf("\t");
+					fprintf(outfile,"\t");
 					++i;
 				} else {
-					printf("\\");
+					fprintf(outfile,"\\");
 				}
 			} else {
-				printf("%c",s[i]);
+				fprintf(outfile,"%c",s[i]);
 			}
 		}
 		len = MAXLEN + 1;
 	}
-	printf("\n");
+	fprintf(outfile,"\n");
 	free(ptr);
 	return 0;
 }
