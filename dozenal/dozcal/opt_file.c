@@ -40,7 +40,7 @@
 int proc_options(char *s, int *moonphases, char **nat, char **relig,
 					char **date_form, char **time_form, char **ev_form,
 					char **todo_form, int *iftodo, int *ifevent,
-					int *weekout, int *fdow)
+					int *weekout, int *fdow, char **astro)
 {
 	FILE *fp; int holder; int implen;
 	char *line = NULL; size_t len = 0; ssize_t read;
@@ -66,6 +66,10 @@ int proc_options(char *s, int *moonphases, char **nat, char **relig,
 			holder = get_impstr(line);
 			*nat = realloc(*nat,((strlen(line)+1) * sizeof(char)));
 			strcpy(*nat,line+holder);
+		} else if (strstr(line,"ASTRON")) {
+			holder = get_impstr(line);
+			*astro = realloc(*astro,((strlen(line)+1) * sizeof(char)));
+			strcpy(*astro,line+holder);
 		} else if (strstr(line,"DATE_FORMAT")) {
 			holder = get_impstr(line);
 			*date_form = realloc(*date_form,((strlen(line)+1) * sizeof(char)));

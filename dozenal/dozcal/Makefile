@@ -18,7 +18,8 @@ LUALIB = -llua5.2
 CC = gcc
 LOCALLIBS = event_struct.h errcodes.h
 objects = main.o utility.o proc_date.o process_file.o moon.o opt_file.o \
-	easter.o nat_holidays.o jewish_date.o islamic.o call_lua.o
+	easter.o nat_holidays.o jewish_date.o islamic.o call_lua.o julday.o \
+	astron.o
 binobjects = dozcal
 
 all: bin
@@ -48,6 +49,12 @@ nat_holidays.o: nat_holidays.c $(LOCALLIBS)
 
 easter.o: easter.c $(LOCALLIBS)
 	$(CC) -I$(IDIR) -g -lm -c easter.c
+
+astron.o: astron.c utility.c julday.c ../conv/conv.o ../doz/doz.o  $(LOCALLIBS)
+	$(CC) -I$(IDIR) -g -lm -c astron.c utility.c ../dec/dec.c ../conv/conv.c
+
+julday.o: julday.c utility.c $(LOCALLIBS)
+	$(CC) -I$(DIR) -g -lm -c julday.c utility.c
 
 process_file.o: process_file.c utility.c ../conv/conv.o ../doz/doz.o ../dec/dec.o $(LOCALLIBS)
 	$(CC) -I$(IDIR) -g -lm -c process_file.c utility.c ../dec/dec.c ../conv/conv.c

@@ -57,6 +57,7 @@ int main(int argc, char **argv)
 	char c; int i;
 	int tmpctr;					/* for looping without changing recordnums */
 	int moonphases = 0;		/* if 0, no phases; if 1, yes */
+	int seasons = 0;			/* if 0, no seasons, if 1, yes */
 	int numevents = 0;
 	int startdate = -1; int enddate = -1;
 	char *ev_form;
@@ -69,6 +70,7 @@ int main(int argc, char **argv)
 	const char *def_todo_form = "%p | %d | %t | %i | %c | %g | %T | %C | %l";
 	char *nat;
 	char *relig;
+	char *astro;
 	char *conffile;
 	char *defconfname = "/.dozcal/dozcalrc";
 	char *home;
@@ -141,6 +143,12 @@ int main(int argc, char **argv)
 		exit(INSUFF_MEM);
 	}
 	nat[0] = '\0';
+	if ((astro = malloc(1*sizeof(char))) == NULL) {
+		fprintf(stderr,"dozcal:  insufficient memory to hold the "
+			"astronomical dates requested\n");
+		exit(INSUFF_MEM);
+	}
+	astro[0] = '\0';
 	if ((relig = malloc(1*sizeof(char))) == NULL) {
 		fprintf(stderr,"dozcal:  insufficient memory to hold the "
 			"religious holidays requested\n");
@@ -148,7 +156,7 @@ int main(int argc, char **argv)
 	}
 	relig[0] = '\0';
 	opterr = 0;
-	while ((c = getopt(argc,argv,"VETwR:m:f:s:e:d:t:r:c:n:h:l:W:")) 
+	while ((c = getopt(argc,argv,"VETwR:m:f:s:e:d:t:r:c:n:h:l:W:a:")) 
 	!= -1) {
 		switch(c) {
 		case 'V':
@@ -176,6 +184,15 @@ int main(int argc, char **argv)
 		case 'W':
 			fdow = first_dow(optarg);
 			break;
+		case 'a':
+			if ((astro = realloc(astro,(strlen(optarg)+1) * 
+			sizeof(char)))==NULL) {
+				fprintf(stderr,"dozcal:  insufficient memory to hold the "
+					"astronomical dates requested\n");
+				exit(INSUFF_MEM);
+			}
+			strcpy(astro,optarg);
+			break;
 		case 'n':
 			if ((nat = realloc(nat,(strlen(optarg)+1) * 
 			sizeof(char)))==NULL) {
@@ -200,7 +217,7 @@ int main(int argc, char **argv)
 		case 'c':
 			proc_options(optarg,&moonphases,&nat,&relig,&date_form,
 				&time_form,&ev_form,&todo_form,&iftodo,&ifevent,&weekout,
-				&fdow);
+				&fdow,&astro);
 			confflag = 1;
 			break;
 		case 'm':
@@ -262,7 +279,7 @@ int main(int argc, char **argv)
 			|| (optopt == 'm') || (optopt == 'c')
 			|| (optopt == 't') || (optopt == 'r')
 			|| (optopt == 'R') || (optopt == 'l')
-			|| (optopt == 'W')) {
+			|| (optopt == 'W') || (optopt == 'a')) {
 				fprintf(stderr,"dozcal:  option \"%c\" requires "
 					"an argument\n",optopt);
 				exit(OPT_REQ_ARG);
@@ -276,7 +293,7 @@ int main(int argc, char **argv)
 	if (confflag == 0) {
 		proc_options(conffile,&moonphases,&nat,&relig,&date_form,
 			&time_form,&ev_form,&todo_form,&iftodo,&ifevent,&weekout,
-			&fdow);
+			&fdow,&astro);
 	}
 	if (startdate == -1)
 		startdate = 0;
@@ -287,7 +304,7 @@ int main(int argc, char **argv)
 			startdate -= 1;
 		enddate = startdate + 6;
 	}
-	qsort(event_list,recordnums-1,sizeof(struct event),comparator);
+//	qsort(event_list,recordnums-1,sizeof(struct event),comparator);
 	if (strlen(relig) > 0) {
 		if (strstr(relig,"west")) {
 			west_holidays(event_list[0].thisdate);
@@ -298,19 +315,24 @@ int main(int argc, char **argv)
 		} if (strstr(relig,"isl")) {
 			islamic_holidays(event_list[0].thisdate);
 		}
-		qsort(event_list,recordnums-1,sizeof(struct event),comparator);
+//		qsort(event_list,recordnums-1,sizeof(struct event),comparator);
+	}
+	if (strlen(astro) > 0) {
+		astron(astro,event_list[0].thisdate);
+//		qsort(event_list,recordnums-1,sizeof(struct event),comparator);
 	}
 	if (strlen(nat) > 0) {
 		nat_holidays(nat, event_list[0].thisdate);
-		qsort(event_list,recordnums-1,sizeof(struct event),comparator);
+//		qsort(event_list,recordnums-1,sizeof(struct event),comparator);
 	}
 	if (moonphases > 0) {
 		tmpctr = event_list[recordnums-2].thisdate;
 		for (i = event_list[0].thisdate; i <= tmpctr; ++i) {
 			get_moonphases(i,moonphases);
 		}
-		qsort(event_list,recordnums-1,sizeof(struct event),comparator);
+//		qsort(event_list,recordnums-1,sizeof(struct event),comparator);
 	}
+	qsort(event_list,recordnums-1,sizeof(struct event),comparator);
 	if (ifevent == 1) {
 		for (i = 0; i < (recordnums-1); ++i) {
 			if ((event_list[i].thisdate >= startdate) &&
@@ -336,6 +358,7 @@ int main(int argc, char **argv)
 	free(todo_form);
 	free(nat);
 	free(relig);
+	free(astro);
 	free(conffile);
 	return 0;
 }
