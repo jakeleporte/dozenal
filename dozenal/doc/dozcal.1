@@ -12,6 +12,8 @@ dozcal \- a command-line dozenal calendar program
 [\fB\-w\fR]
 [\fB\-W\fR \fIfirstdayofweek\fR]
 [\fB\-m\fR \fIfull|major\fR]
+[\fB\-a\fR \fIastronomical\fR]
+[\fB\-g\fR \fIlatitude/longitude\fR]
 [\fB\-h\fR \fIreligious\fR]
 [\fB\-n\fR \fInational\fR]
 [\fB\-s\fR \fIstartdate\fR]
@@ -70,6 +72,53 @@ phase of the moon for all days in your date range; or
 "new", "first quarter", "full", and "last quarter").  In
 either case, the age of the moon in days is printed as its
 phase, with some text for the major phases.
+.TP
+.BR "\-g [latitude/longitude]"
+Gives geographical information necessary for determining
+certain astronomical dates and times (particularly those of
+the sun).  It can be given in dozenal degrees; in degrees,
+minutes, and seconds, or in unciaPi.
+.RS
+.PP
+Note that latitude and longitude must be given in that
+order, separated by a forward slash (\fB/\fR).
+.PP
+If the information is given in degrees, minutes, and
+seconds, if should be given with \fBo\fR as the degree
+marking, with \fB'\fR as the minute marking, and with
+\fB"\fR as the second marking; e.g., \fI46o13'26"\fR.  
+.PP
+If the information is given as dozenal degrees, simply
+append \fBo\fR to the number; e.g., \fI46;3324o\fR.
+.PP
+If the information is given as unciaPi, simply use the
+number with no suffix.
+.PP
+These forms can be mixed freely; e.g., latitude can be given
+in dozenal degrees, but longitude in some other format.
+.RE
+.TP
+.BR "\-a [astronomical string]"
+If you want certain astronomical information included in
+your calendar, use this option.  It takes a single string as
+an argument, and the contents of the string determine what
+astronomical information will be added.  Some of these
+options require geographical information, as given by the
+\fB\-g\fR option; if that is not given, the astronomical
+options will (almost certainly incorrectly) assume a
+latitude of 0 and a longitude of 0.  These strings may be
+concatenated however you wish  and in whatever order.
+.RS
+.TP
+.BR season
+Includes the astronomical seasons; that is, the March and
+September equinoxes, and the June and December solstices.
+Lists them as accurately as possible, with times.
+.TP
+.BR sun
+Includes sunrise, solar noon, and sunset for each date in
+the requested range.  Requires geographical information.
+.RE
 .TP
 .BR "\-h [holiday string]"
 Include religious holidays.  This takes a single string as

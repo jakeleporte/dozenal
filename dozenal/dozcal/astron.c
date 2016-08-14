@@ -42,13 +42,22 @@
 #include<string.h>
 #include"utility.h"
 #include"julday.h"
-#include"conv.h"
+
+extern double latitude;
+extern double longitude;
 
 int astron(char *s, int datenum)
 {
 	if (strstr(s,"season")) {
 		seasons(datenum_to_jdn(datenum));
+	} if (strstr(s,"sun")) {
+		sunrise(datenum_to_jdn(datenum));
 	}
+	return 0;
+}
+
+int sunrise(double jdn)
+{
 	return 0;
 }
 
@@ -75,7 +84,6 @@ int seasons(double jdn)
 	set_time_str(buf,ae);
 	add_event(proc_time(buf), 0, jdn_to_datenum(ae), "September Equinox",
 		"astronomical", "astronomical,seasons", "");
-	fprintf(stderr,"%s\n",buf);
 	set_time_str(buf,ss);
 	add_event(proc_time(buf), 0, jdn_to_datenum(ss), "June Solstice",
 		"astronomical", "astronomical,seasons", "");

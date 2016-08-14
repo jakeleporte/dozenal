@@ -49,3 +49,6 @@
 #define LUA_ERROR 11
 #define BAD_FDOW 12
 #define BAD_OUT_FILE 13
+#define BAD_GEOG_STR 14
+#define BAD_LATITUDE 15
+#define BAD_LONGITUDE 16

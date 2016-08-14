@@ -51,6 +51,8 @@ struct todo *todo_list;
 int todonums = 0;
 int comparator(const void *evone, const void *evtwo);
 int todocomp(const void *todoone, const void *todotwo);
+double latitude = 0.0;
+double longitude = 0.0;
 
 int main(int argc, char **argv)
 {
@@ -156,7 +158,7 @@ int main(int argc, char **argv)
 	}
 	relig[0] = '\0';
 	opterr = 0;
-	while ((c = getopt(argc,argv,"VETwR:m:f:s:e:d:t:r:c:n:h:l:W:a:")) 
+	while ((c = getopt(argc,argv,"VETwR:m:f:s:e:d:t:r:c:n:h:l:W:a:g:")) 
 	!= -1) {
 		switch(c) {
 		case 'V':
@@ -210,6 +212,9 @@ int main(int argc, char **argv)
 				exit(INSUFF_MEM);
 			}
 			strcpy(relig,optarg);
+			break;
+		case 'g':
+			proc_geog(optarg);
 			break;
 		case 'f':
 			numevents = process_file(optarg);
@@ -279,7 +284,8 @@ int main(int argc, char **argv)
 			|| (optopt == 'm') || (optopt == 'c')
 			|| (optopt == 't') || (optopt == 'r')
 			|| (optopt == 'R') || (optopt == 'l')
-			|| (optopt == 'W') || (optopt == 'a')) {
+			|| (optopt == 'W') || (optopt == 'a')
+			|| (optopt == 'g')) {
 				fprintf(stderr,"dozcal:  option \"%c\" requires "
 					"an argument\n",optopt);
 				exit(OPT_REQ_ARG);

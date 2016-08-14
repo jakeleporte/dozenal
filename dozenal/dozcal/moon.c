@@ -62,11 +62,11 @@ int get_moonphases(int datenum, int moonphases)
 	if (phase == 0)
 		strcat(phase_str," (new)");
 	if (phase == 8)
-		strcat(phase_str," (first quarter)");
+		strcat(phase_str," (waxing half)");
 	if (phase == 15)
 		strcat(phase_str," (full)");
 	if (phase == 22)
-		strcat(phase_str," (last quarter)");
+		strcat(phase_str," (waning half)");
 	if ((moonphases == 1) || ((moonphases == 2) && ((phase == 0) 
 	|| (phase == 8) || (phase == 15) || (phase == 22)))) {
 		event_list = realloc(event_list,(recordnums * 

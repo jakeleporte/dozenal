@@ -37,6 +37,9 @@
 #include<errno.h>
 #include"errcodes.h"
 
+extern double latitude;
+extern double longitude;
+
 int proc_options(char *s, int *moonphases, char **nat, char **relig,
 					char **date_form, char **time_form, char **ev_form,
 					char **todo_form, int *iftodo, int *ifevent,
