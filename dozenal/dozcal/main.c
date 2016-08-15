@@ -301,10 +301,12 @@ int main(int argc, char **argv)
 			&time_form,&ev_form,&todo_form,&iftodo,&ifevent,&weekout,
 			&fdow,&astro);
 	}
+	qsort(event_list,recordnums-1,sizeof(struct event),comparator);
 	if (startdate == -1)
 		startdate = 0;
 	if (enddate == -1)
-		enddate = INT_MAX - 1;
+//		enddate = INT_MAX - 1;
+		enddate = event_list[recordnums-2].thisdate;
 	if ((weekout == 1) && (startdate != 0)) {
 		while (get_weekday(startdate) != fdow)
 			startdate -= 1;
@@ -324,7 +326,10 @@ int main(int argc, char **argv)
 //		qsort(event_list,recordnums-1,sizeof(struct event),comparator);
 	}
 	if (strlen(astro) > 0) {
-		astron(astro,event_list[0].thisdate);
+		if (startdate == 0)
+			astron(astro,event_list[0].thisdate,enddate);
+		else
+			astron(astro,startdate,enddate);
 //		qsort(event_list,recordnums-1,sizeof(struct event),comparator);
 	}
 	if (strlen(nat) > 0) {

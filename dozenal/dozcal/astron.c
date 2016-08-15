@@ -36,28 +36,83 @@
  * codeguru.com/code/legacy/date_time/Seasons.zip.
  */
 
+/* from sunriset.c */
+#define sun_rise_set(year,month,day,lon,lat,rise,set)  \
+        __sunriset__( year, month, day, lon, lat, -35.0/60.0, 1, rise, set )
+
 #include<stdio.h>
 #include<math.h>
 #include<time.h>
 #include<string.h>
+#include"errcodes.h"
 #include"utility.h"
 #include"julday.h"
 
 extern double latitude;
 extern double longitude;
 
-int astron(char *s, int datenum)
+double degtorad(double degs);
+double radtodeg(double rads);
+
+int astron(char *s, int startdate, int enddate)
 {
 	if (strstr(s,"season")) {
-		seasons(datenum_to_jdn(datenum));
+		seasons(datenum_to_jdn(startdate));
 	} if (strstr(s,"sun")) {
-		sunrise(datenum_to_jdn(datenum));
+		while (startdate <= enddate) {
+			suntimes(datenum_to_jdn(startdate));
+			startdate++;
+		}
 	}
 	return 0;
 }
 
-int sunrise(double jdn)
+int suntimes(double jdn)
 {
+	struct tm *date;
+	time_t rawtime;
+	int sunset;
+	double risetime; double settime;
+	char bufr[12]; char bufs[12];
+
+	rawtime = time(&rawtime);
+//	date = localtime(&rawtime);
+	date = broken_date(jdn_to_datenum(jdn));
+	sunset = sun_rise_set(date->tm_year+1900,date->tm_mon+1,date->tm_mday,
+		longitude,latitude,&risetime,&settime);
+	risetime += date->tm_gmtoff/60/60;
+	settime += date->tm_gmtoff/60/60;
+	dec_to_mins(settime,bufs);
+	dec_to_mins(risetime,bufr);
+	if (sunset == 0) {
+		add_event(proc_time(bufr), 0, jdn_to_datenum(jdn), "Sunrise",
+			"solar", "astronomical,solar", "");
+		add_event(proc_time(bufs), 0, jdn_to_datenum(jdn), "Sunset",
+			"solar", "astronomical,solar", "");
+	} else if (sunset == -1) {
+	}
+	return 0;
+}
+
+int dec_to_mins(double number, char *s)
+{
+	int i; int j = 0;
+	double hrs, mns, frac;
+	int hours, mins;
+	char bufhr[SHORTLEN]; char bufmn[SHORTLEN];
+	char dbufhr[SHORTLEN]; char dbufmn[SHORTLEN];
+
+	s[0] = '\0'; bufhr[0] = '\0'; bufmn[0] = '\0';
+	frac = modf(number,&hrs);
+	hours = (int)(floor(hrs));
+	mns = frac * 60;
+	mins = (int)(floor(mns));
+	dectodoz(bufhr,(double)hours);
+	dectodoz(bufmn,(double)mins);
+	sprintf(s,"%2s:%2s\n",bufhr,bufmn);
+	for (i = 0; s[i] != '\0'; ++i) {
+		if (s[i] == ' ') s[i] = '0';
+	}
 	return 0;
 }
 
@@ -91,4 +146,14 @@ int seasons(double jdn)
 	add_event(proc_time(buf), 0, jdn_to_datenum(ws), "December Solstice",
 		"astronomical", "astronomical,seasons", "");
 	return 0;
+}
+
+double degtorad(double degs)
+{
+	return ((degs * M_PI) / 180);
+}
+
+double radtodeg(double rads)
+{
+	return ((rads * 180) / M_PI);
 }
