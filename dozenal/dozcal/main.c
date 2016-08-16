@@ -53,6 +53,7 @@ int comparator(const void *evone, const void *evtwo);
 int todocomp(const void *todoone, const void *todotwo);
 double latitude = 0.0;
 double longitude = 0.0;
+double tzoffset = -999.0;
 
 int main(int argc, char **argv)
 {
@@ -158,7 +159,7 @@ int main(int argc, char **argv)
 	}
 	relig[0] = '\0';
 	opterr = 0;
-	while ((c = getopt(argc,argv,"VETwR:m:f:s:e:d:t:r:c:n:h:l:W:a:g:")) 
+	while ((c = getopt(argc,argv,"VETwR:m:f:s:e:d:t:r:c:n:h:l:W:a:g:z:")) 
 	!= -1) {
 		switch(c) {
 		case 'V':
@@ -212,6 +213,9 @@ int main(int argc, char **argv)
 				exit(INSUFF_MEM);
 			}
 			strcpy(relig,optarg);
+			break;
+		case 'z':
+			tzoffset = doztodec(optarg);
 			break;
 		case 'g':
 			proc_geog(optarg);
@@ -285,7 +289,7 @@ int main(int argc, char **argv)
 			|| (optopt == 't') || (optopt == 'r')
 			|| (optopt == 'R') || (optopt == 'l')
 			|| (optopt == 'W') || (optopt == 'a')
-			|| (optopt == 'g')) {
+			|| (optopt == 'g') || (optopt == 'z')) {
 				fprintf(stderr,"dozcal:  option \"%c\" requires "
 					"an argument\n",optopt);
 				exit(OPT_REQ_ARG);
@@ -305,14 +309,12 @@ int main(int argc, char **argv)
 	if (startdate == -1)
 		startdate = 0;
 	if (enddate == -1)
-//		enddate = INT_MAX - 1;
 		enddate = event_list[recordnums-2].thisdate;
 	if ((weekout == 1) && (startdate != 0)) {
 		while (get_weekday(startdate) != fdow)
 			startdate -= 1;
 		enddate = startdate + 6;
 	}
-//	qsort(event_list,recordnums-1,sizeof(struct event),comparator);
 	if (strlen(relig) > 0) {
 		if (strstr(relig,"west")) {
 			west_holidays(event_list[0].thisdate);
@@ -323,25 +325,21 @@ int main(int argc, char **argv)
 		} if (strstr(relig,"isl")) {
 			islamic_holidays(event_list[0].thisdate);
 		}
-//		qsort(event_list,recordnums-1,sizeof(struct event),comparator);
 	}
 	if (strlen(astro) > 0) {
 		if (startdate == 0)
 			astron(astro,event_list[0].thisdate,enddate);
 		else
 			astron(astro,startdate,enddate);
-//		qsort(event_list,recordnums-1,sizeof(struct event),comparator);
 	}
 	if (strlen(nat) > 0) {
 		nat_holidays(nat, event_list[0].thisdate);
-//		qsort(event_list,recordnums-1,sizeof(struct event),comparator);
 	}
 	if (moonphases > 0) {
 		tmpctr = event_list[recordnums-2].thisdate;
 		for (i = event_list[0].thisdate; i <= tmpctr; ++i) {
 			get_moonphases(i,moonphases);
 		}
-//		qsort(event_list,recordnums-1,sizeof(struct event),comparator);
 	}
 	qsort(event_list,recordnums-1,sizeof(struct event),comparator);
 	if (ifevent == 1) {

@@ -14,6 +14,7 @@ dozcal \- a command-line dozenal calendar program
 [\fB\-m\fR \fIfull|major\fR]
 [\fB\-a\fR \fIastronomical\fR]
 [\fB\-g\fR \fIlatitude/longitude\fR]
+[\fB\-z\fR \fIoffset\fR]
 [\fB\-h\fR \fIreligious\fR]
 [\fB\-n\fR \fInational\fR]
 [\fB\-s\fR \fIstartdate\fR]
@@ -118,9 +119,22 @@ September equinoxes, and the June and December solstices.
 Lists them as accurately as possible, with times.
 .TP
 .BR sun
-Includes sunrise, solar noon, and sunset for each date in
+Includes sunrise and sunset for each date in
 the requested range.  Requires geographical information.
+Note that these are the \fIlocal\fR times; \fBdozcal\fR will
+use whatever information is given to it about time zones, if
+any, and if it has none, it will guess the time zone based
+on your system's time.  Only in the latter case will it know
+about daylight savings time.
 .RE
+.TP
+.BR "\-z [offset]"
+Gives \fBdozcal\fR a time zone offset to work with.  This is
+an \fIoffset\fR, not a time zone name; "EST", for example,
+will not get you the results you want.  You want, rather,
+"-4;0".  If you don't specify this, \fBdozcal\fR will
+attempt to guess time zone information from your system
+time.
 .TP
 .BR "\-h [holiday string]"
 Include religious holidays.  This takes a single string as

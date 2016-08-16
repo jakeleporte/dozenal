@@ -60,7 +60,7 @@ geog.o: geog.c utility.c julday.c $(LOCALLIBS)
 	$(CC) -I$(IDIR) -g -lm -c geog.c utility.c ../conv/conv.c ../dec/dec.c
 
 julday.o: julday.c utility.c $(LOCALLIBS)
-	$(CC) -I$(DIR) -g -lm -c julday.c utility.c
+	$(CC) -I$(IDIR) -g -lm -c julday.c utility.c
 
 process_file.o: process_file.c utility.c ../conv/conv.o ../doz/doz.o ../dec/dec.o $(LOCALLIBS)
 	$(CC) -I$(IDIR) -g -lm -c process_file.c utility.c ../dec/dec.c ../conv/conv.c
@@ -68,8 +68,8 @@ process_file.o: process_file.c utility.c ../conv/conv.o ../doz/doz.o ../dec/dec.
 proc_date.o:  proc_date.c utility.c ../conv/conv.o ../doz/doz.o ../dec/dec.o $(LOCALLIBS)
 	$(CC) -I$(IDIR) -g -lm -c proc_date.c utility.c ../dec/dec.c ../conv/conv.c ../doz/doz.c
 
-opt_file.o: opt_file.c utility.c $(LOCALLIBS)
-	$(CC) -I$(DIR) -g -lm -c opt_file.c utility.c
+opt_file.o: opt_file.c utility.c ../conv/conv.o ../dec/dec.o $(LOCALLIBS)
+	$(CC) -I$(IDIR) -g -lm -c opt_file.c utility.c ../dec/dec.c ../conv/conv.c
 
 utility.o: utility.c $(LOCALLIBS)
 	$(CC) -I$(IDIR) -g -lm -c utility.c

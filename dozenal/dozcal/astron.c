@@ -50,6 +50,7 @@
 
 extern double latitude;
 extern double longitude;
+extern double tzoffset;
 
 double degtorad(double degs);
 double radtodeg(double rads);
@@ -76,12 +77,16 @@ int suntimes(double jdn)
 	char bufr[12]; char bufs[12];
 
 	rawtime = time(&rawtime);
-//	date = localtime(&rawtime);
 	date = broken_date(jdn_to_datenum(jdn));
 	sunset = sun_rise_set(date->tm_year+1900,date->tm_mon+1,date->tm_mday,
 		longitude,latitude,&risetime,&settime);
-	risetime += date->tm_gmtoff/60/60;
-	settime += date->tm_gmtoff/60/60;
+	if (tzoffset < -50.0) {
+		risetime += date->tm_gmtoff/60/60;
+		settime += date->tm_gmtoff/60/60;
+	} else {
+		risetime += tzoffset;
+		settime += tzoffset;
+	}
 	dec_to_mins(settime,bufs);
 	dec_to_mins(risetime,bufr);
 	if (sunset == 0) {

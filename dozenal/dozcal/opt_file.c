@@ -35,10 +35,12 @@
 #include<stdlib.h>
 #include<string.h>
 #include<errno.h>
+#include"conv.h"
 #include"errcodes.h"
 
 extern double latitude;
 extern double longitude;
+extern double tzoffset;
 
 int proc_options(char *s, int *moonphases, char **nat, char **relig,
 					char **date_form, char **time_form, char **ev_form,
@@ -73,6 +75,13 @@ int proc_options(char *s, int *moonphases, char **nat, char **relig,
 			holder = get_impstr(line);
 			*astro = realloc(*astro,((strlen(line)+1) * sizeof(char)));
 			strcpy(*astro,line+holder);
+		} else if (strstr(line,"TIMEZONE")) {
+			holder = get_impstr(line);
+			tzoffset = doztodec(line+holder);
+			fprintf(stderr,"%f\n",tzoffset);
+		} else if (strstr(line,"GEOG")) {
+			holder = get_impstr(line);
+			proc_geog(line+holder);
 		} else if (strstr(line,"DATE_FORMAT")) {
 			holder = get_impstr(line);
 			*date_form = realloc(*date_form,((strlen(line)+1) * sizeof(char)));
