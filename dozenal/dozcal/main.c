@@ -49,11 +49,13 @@ struct event *event_list;
 int recordnums = 0;
 struct todo *todo_list;
 int todonums = 0;
-int comparator(const void *evone, const void *evtwo);
-int todocomp(const void *todoone, const void *todotwo);
 double latitude = 0.0;
 double longitude = 0.0;
 double tzoffset = -999.0;
+int utc = 0; /* if 1, use UTC time */
+
+int comparator(const void *evone, const void *evtwo);
+int todocomp(const void *todoone, const void *todotwo);
 
 int main(int argc, char **argv)
 {
@@ -159,7 +161,7 @@ int main(int argc, char **argv)
 	}
 	relig[0] = '\0';
 	opterr = 0;
-	while ((c = getopt(argc,argv,"VETwR:m:f:s:e:d:t:r:c:n:h:l:W:a:g:z:")) 
+	while ((c = getopt(argc,argv,"VETwuR:m:f:s:e:d:t:r:c:n:h:l:W:a:g:z:")) 
 	!= -1) {
 		switch(c) {
 		case 'V':
@@ -180,6 +182,9 @@ int main(int argc, char **argv)
 			break;
 		case 'l':
 			call_lua(optarg);
+			break;
+		case 'u':
+			utc = 1;
 			break;
 		case 'w':
 			weekout = 1;
