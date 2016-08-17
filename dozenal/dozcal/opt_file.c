@@ -41,6 +41,7 @@
 extern double latitude;
 extern double longitude;
 extern double tzoffset;
+extern int utc;
 
 int proc_options(char *s, int *moonphases, char **nat, char **relig,
 					char **date_form, char **time_form, char **ev_form,
@@ -106,6 +107,8 @@ int proc_options(char *s, int *moonphases, char **nat, char **relig,
 			call_lua(line+holder);
 		} else if (strstr(line,"PRINT_TODOS")) {
 			*iftodo = 1;
+		} else if (strstr(line,"UTCTIME")) {
+			utc = 1;
 		} else if (strstr(line,"NO_EVENT")) {
 			*ifevent = 0;
 		} else if (strstr(line,"WEEKLY")) {
