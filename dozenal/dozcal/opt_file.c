@@ -50,7 +50,9 @@ int proc_options(char *s, int *moonphases, char **nat, char **relig,
 {
 	FILE *fp; int holder; int implen;
 	char *line = NULL; size_t len = 0; ssize_t read;
-	
+
+	if (strcmp(s,"-") == 0)
+		return 0;
 	if ((fp = fopen(s,"r")) == NULL) {
 		fprintf(stderr,"dozcal:  unable to open file "
 			"\"%s\", with this error:\n\t%d: "

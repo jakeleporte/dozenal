@@ -88,7 +88,10 @@ int get_impstr(char *s)
 {
 	char *t;
 
-	t = strchr(s,':') + 1;
+	t = strchr(s,':');
+	if (t == NULL)
+		return 0;
+	t++;
 	t = front_chomp(t);
 	return t-s;
 }

@@ -409,6 +409,12 @@ override those in earlier ones.
 Command line options listed \fIafter\fR the config file
 option will take precedence; those listed \fIbefore\fR will
 be overridden if the config file contradicts them.
+.PP
+Because \fBdozcal\fR assumes you want a config file, it does
+everything it can to find one; if you specifically want
+\fBdozcal\fR \fInot\fR to use a config file, use this option
+with the argument "\-" (a hyphen); this will cause
+\fBdozcal\fR to use only its defaults in all cases.
 .RE
 .SH FILES
 \fBdozcal\fR uses two files primarily:  the data, or library

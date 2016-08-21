@@ -129,7 +129,7 @@ time_t proc_date(char *s)
 		free(date);
 		impstr = get_impstr(s);
 		fprintf(stderr,"dozcal:  no date format found in line "
-			"\"%s\"; ignoring this record and continuing...\n", s+impstr);
+			"\"%s\"; ignoring this record and continuing...\n", s);
 		return -1;
 	}
 	if ((date->tm_year == -1) || (date->tm_mon == -1) ||
