@@ -53,6 +53,8 @@ double latitude = 0.0;
 double longitude = 0.0;
 double tzoffset = -999.0;
 int utc = 0; /* if 1, use UTC time */
+char **evlines; int numevs = 1;
+char **todolines; int numtodos = 1;
 
 int comparator(const void *evone, const void *evtwo);
 int todocomp(const void *todoone, const void *todotwo);
@@ -89,6 +91,16 @@ int main(int argc, char **argv)
 	FILE *outfile = stdout;
 	int filedesc[2];
 
+	if ((evlines = malloc(1 * sizeof(char *))) == NULL) {
+		fprintf(stderr,"dozcal:  insufficient memory to store "
+			"the formatted event lines\n");
+		exit(INSUFF_MEM);
+	}
+	if ((todolines = malloc(1 * sizeof(char *))) == NULL) {
+		fprintf(stderr,"dozcal:  insufficient memory to store "
+			"the formatted todo lines\n");
+		exit(INSUFF_MEM);
+	}
 	home = getenv("HOME");
 	if (home != NULL) {
 		preflen = strlen(home) + 1;
@@ -374,6 +386,10 @@ int main(int argc, char **argv)
 	free(relig);
 	free(astro);
 	free(conffile);
+	for (i = 1; i < numevs; ++i)
+		free(*(evlines+i));
+	free(evlines);
+	free(todolines);
 	return 0;
 }
 
@@ -386,6 +402,7 @@ int print_todo(char *s, int index, char *date_format, char
 	char *ptr;
 	char datestr[MAXLEN+1];
 	char buffer[8];
+	char othbuf[MAXLEN-1];
 
 	if ((ptr = malloc((MAXLEN+1) * sizeof(char))) == NULL) {
 		fprintf(stderr,"dozcal:  insufficient memory to hold the "
@@ -474,15 +491,23 @@ int print_event(char *s, int index, char *date_format, char
 	char *ptr;
 	char datestr[MAXLEN+1];
 	char buffer[MAXLEN+1];
+	char othbuf[MAXLEN+1];
 
-	if ((ptr = malloc((MAXLEN+1) * sizeof(char))) == NULL) {
-		fprintf(stderr,"dozcal:  insufficient memory to hold the "
-			"event strings\n");
+	numevs++;
+	if ((evlines = realloc(evlines,(numevs * sizeof(char *)))) == NULL) {
+		fprintf(stderr,"dozcal:  insufficient memory to store "
+			"the formatted event lines\n");
 		exit(INSUFF_MEM);
 	}
+	if ((*(evlines+(numevs-1)) = malloc(MAXLEN * sizeof(char))) == NULL) {
+		fprintf(stderr,"dozcal:  insufficient memory to store "
+			"the formatted event lines\n");
+		exit(INSUFF_MEM);
+	}
+	othbuf[0] = '\0';
 	for (i = 0; s[i] != '\0'; ++i) {
 		if (s[i] == '%') {
-			j = 0; holder[0] = '\0'; len = 0;
+			j = 0; holder[0] = '\0'; len = 0; buffer[0] = '\0';
 			while (dozendig(s[++i]))
 				holder[j++] = s[i];
 			holder[j] = '\0';
@@ -492,36 +517,36 @@ int print_event(char *s, int index, char *date_format, char
 				num_to_date(event_list[index].thisdate,datestr,date_format);
 				if (len == 0)
 					len = strlen(datestr);
-				fprintf(outfile,"%*.*s",len,len,datestr);
+				sprintf(buffer,"%*.*s",len,len,datestr);
 				datestr[0] = '\0';
 			} else if (s[i] == 's') {
 				secs_to_Tims(event_list[index].starttime,datestr,time_format);
 				if (len == 0)
 					len = strlen(datestr);
-				fprintf(outfile,"%*.*s",len,len,datestr);
+				sprintf(buffer,"%*.*s",len,len,datestr);
 				datestr[0] = '\0';
 			} else if (s[i] == 'c') {
 				secs_to_Tims(event_list[index].endtime,datestr,time_format);
 				if (len == 0)
 					len = strlen(datestr);
-				fprintf(outfile,"%*.*s",len,len,datestr);
+				sprintf(buffer,"%*.*s",len,len,datestr);
 				datestr[0] = '\0';
 			} else if (s[i] == 'e') {
 				if (len == 0)
 					len = strlen(event_list[index].title);
-				fprintf(outfile,"%*.*s",len,len,event_list[index].title);
+				sprintf(buffer,"%*.*s",len,len,event_list[index].title);
 			} else if (s[i] == 'C') {
 				if (len == 0)
 					len = strlen(event_list[index].categories);
-				fprintf(outfile,"%*.*s",len,len,event_list[index].categories);
+				sprintf(buffer,"%*.*s",len,len,event_list[index].categories);
 			} else if (s[i] == 't') {
 				if (len == 0)
 					len = strlen(event_list[index].evclass);
-				fprintf(outfile,"%*.*s",len,len,event_list[index].evclass);
+				sprintf(buffer,"%*.*s",len,len,event_list[index].evclass);
 			} else if (s[i] == 'l') {
 				if (len == 0)
 					len = strlen(event_list[index].location);
-				fprintf(outfile,"%*.*s",len,len,event_list[index].location);
+				sprintf(buffer,"%*.*s",len,len,event_list[index].location);
 			} else {
 				fprintf(stderr,"dozcal:  unrecognized conversion "
 					"character \"%%%c\" in event form string, "
@@ -531,22 +556,24 @@ int print_event(char *s, int index, char *date_format, char
 		} else {
 			if (s[i] == '\\') {
 				if (s[i+1] == 'n') {
-					fprintf(outfile,"\n");
+					sprintf(buffer,"\n");
 					++i;
 				} else if (s[i+1] == 't') {
-					fprintf(outfile,"\t");
+					sprintf(buffer,"\t");
 					++i;
 				} else {
-					fprintf(outfile,"\\");
+					sprintf(buffer,"\\");
 				}
 			} else {
-				fprintf(outfile,"%c",s[i]);
+				sprintf(buffer,"%c",s[i]);
 			}
 		}
 		len = MAXLEN + 1;
+		strcat(othbuf,buffer);
 	}
-	fprintf(outfile,"\n");
-	free(ptr);
+	strcat(othbuf,"\n");
+	strncpy(*(evlines+(numevs-1)),othbuf,MAXLEN);
+	printf("%s",*(evlines+(numevs-1)));
 	return 0;
 }
 
