@@ -363,7 +363,8 @@ int main(int argc, char **argv)
 		for (i = 0; i < (recordnums-1); ++i) {
 			if ((event_list[i].thisdate >= startdate) &&
 			(event_list[i].thisdate <= enddate)) {
-				print_event(ev_form,i,date_form,time_form,outfile);
+				fill_event(ev_form,i,date_form,time_form,outfile);
+				print_events();
 			}
 		}
 	}
@@ -372,7 +373,8 @@ int main(int argc, char **argv)
 		for (i = 0; i < (todonums-1); ++i) {
 			if ((todo_list[i].duedate >= startdate) &&
 			(todo_list[i].duedate <= enddate)) {
-				print_todo(todo_form,i,date_form,time_form,outfile);
+				fill_todo(todo_form,i,date_form,time_form,outfile);
+				print_todos();
 			}
 		}
 	}
@@ -389,11 +391,13 @@ int main(int argc, char **argv)
 	for (i = 1; i < numevs; ++i)
 		free(*(evlines+i));
 	free(evlines);
+	for (i = 1; i < numtodos; ++i)
+		free(*(todolines+i));
 	free(todolines);
 	return 0;
 }
 
-int print_todo(char *s, int index, char *date_format, char
+int fill_todo(char *s, int index, char *date_format, char
 *time_format,FILE *outfile)
 {
 	int i; int j;
@@ -401,15 +405,24 @@ int print_todo(char *s, int index, char *date_format, char
 	int len = MAXLEN + 1;
 	char *ptr;
 	char datestr[MAXLEN+1];
-	char buffer[8];
-	char othbuf[MAXLEN-1];
+	char buffer[SHORTLEN];
+	char othbuf[MAXLEN+1];
+	char tmpbuf[MAXLEN+1];
 
-	if ((ptr = malloc((MAXLEN+1) * sizeof(char))) == NULL) {
-		fprintf(stderr,"dozcal:  insufficient memory to hold the "
-			"todo strings\n");
+	numtodos++;
+	if ((todolines=realloc(todolines,(numtodos*sizeof(char *)))) == NULL) {
+		fprintf(stderr,"dozcal:  insufficient memory to store "
+			"the formatted event lines\n");
 		exit(INSUFF_MEM);
 	}
+	if ((*(todolines+(numtodos-1))=malloc(MAXLEN*sizeof(char))) == NULL) {
+		fprintf(stderr,"dozcal:  insufficient memory to store "
+			"the formatted event lines\n");
+		exit(INSUFF_MEM);
+	}
+	othbuf[0] = '\0';
 	for (i = 0; s[i] != '\0'; ++i) {
+		tmpbuf[0] = '\0';
 		if (s[i] == '%') {
 			j = 0; holder[0] = '\0'; len = 0;
 			while (dozendig(s[++i]))
@@ -421,39 +434,39 @@ int print_todo(char *s, int index, char *date_format, char
 				num_to_date(todo_list[index].duedate,datestr,date_format);
 				if (len == 0)
 					len = strlen(datestr);
-				fprintf(outfile,"%*.*s",len,len,datestr);
+				sprintf(tmpbuf,"%*.*s",len,len,datestr);
 				datestr[0] = '\0';
 			} else if (s[i] == 't') {
 				secs_to_Tims(todo_list[index].duetime,datestr,time_format);
 				if (len == 0)
 					len = strlen(datestr);
-				fprintf(outfile,"%*.*s",len,len,datestr);
+				sprintf(tmpbuf,"%*.*s",len,len,datestr);
 				datestr[0] = '\0';
 			} else if (s[i] == 'p') {
-				fprintf(outfile,"%*d",len,todo_list[index].priority);
+				sprintf(tmpbuf,"%*d",len,todo_list[index].priority);
 			} else if (s[i] == 'c') {
-				fprintf(outfile,"%*d",len,todo_list[index].completed);
+				sprintf(tmpbuf,"%*d",len,todo_list[index].completed);
 			} else if (s[i] == 'g') {
 				dectodoz(buffer,(double)todo_list[index].pergross);
 				if (len == 0)
 					len = strlen(buffer);
-				fprintf(outfile,"%*.*s",len,len,buffer);
+				sprintf(tmpbuf,"%*.*s",len,len,buffer);
 			} else if (s[i] == 'i') {
 				if (len == 0)
 					len = strlen(todo_list[index].item);
-				fprintf(outfile,"%*.*s",len,len,todo_list[index].item);
+				sprintf(tmpbuf,"%*.*s",len,len,todo_list[index].item);
 			} else if (s[i] == 'l') {
 				if (len == 0)
 					len = strlen(todo_list[index].location);
-				fprintf(outfile,"%*.*s",len,len,todo_list[index].location);
+				sprintf(tmpbuf,"%*.*s",len,len,todo_list[index].location);
 			} else if (s[i] == 'C') {
 				if (len == 0)
 					len = strlen(todo_list[index].categories);
-				fprintf(outfile,"%*.*s",len,len,todo_list[index].categories);
+				sprintf(tmpbuf,"%*.*s",len,len,todo_list[index].categories);
 			} else if (s[i] == 'T') {
 				if (len == 0)
 					len = strlen(todo_list[index].todoclass);
-				fprintf(outfile,"%*.*s",len,len,todo_list[index].todoclass);
+				sprintf(tmpbuf,"%*.*s",len,len,todo_list[index].todoclass);
 			} else {
 				fprintf(stderr,"dozcal:  unrecognized conversion "
 					"character \"%%%c\" in todo form string, "
@@ -463,26 +476,33 @@ int print_todo(char *s, int index, char *date_format, char
 		} else {
 			if (s[i] == '\\') {
 				if (s[i+1] == 'n') {
-					fprintf(outfile,"\n");
+					sprintf(tmpbuf,"\n");
 					++i;
 				} else if (s[i+1] == 't') {
-					fprintf(outfile,"\t");
+					sprintf(tmpbuf,"\t");
 					++i;
 				} else {
-					fprintf(outfile,"\\");
+					sprintf(tmpbuf,"\\");
 				}
 			} else {
-				fprintf(outfile,"%c",s[i]);
+				sprintf(tmpbuf,"%c",s[i]);
 			}
 		}
 		len = MAXLEN + 1;
+		strcat(othbuf,tmpbuf);
 	}
-	fprintf(outfile,"\n");
-	free(ptr);
+	strncpy(*(todolines+(numtodos-1)),othbuf,MAXLEN);
 	return 0;
 }
 
-int print_event(char *s, int index, char *date_format, char
+int print_todos()
+{
+	printf("%s",*(todolines+(numtodos-1)));
+	printf("\n");
+	return 0;
+}
+
+int fill_event(char *s, int index, char *date_format, char
 *time_format, FILE *outfile)
 {
 	int i; int j;
@@ -571,9 +591,14 @@ int print_event(char *s, int index, char *date_format, char
 		len = MAXLEN + 1;
 		strcat(othbuf,buffer);
 	}
-	strcat(othbuf,"\n");
 	strncpy(*(evlines+(numevs-1)),othbuf,MAXLEN);
+	return 0;
+}
+
+int print_events()
+{
 	printf("%s",*(evlines+(numevs-1)));
+	printf("\n");
 	return 0;
 }
 
