@@ -602,6 +602,28 @@ int print_events()
 	return 0;
 }
 
+int clear_events()
+{
+	numevs = 1;
+	if ((evlines = realloc(evlines,(1 * sizeof(char *)))) == NULL) {
+		fprintf(stderr,"dozcal:  insufficient memory to store "
+			"the formatted event lines\n");
+		exit(INSUFF_MEM);
+	}
+	return 0;
+}
+
+int clear_todos()
+{
+	numtodos = 1;
+	if ((todolines = realloc(todolines,(1 * sizeof(char *)))) == NULL) {
+		fprintf(stderr,"dozcal:  insufficient memory to store "
+			"the formatted todo lines\n");
+		exit(INSUFF_MEM);
+	}
+	return 0;
+}
+
 int todocomp(const void *todoone, const void *todotwo)
 {
 	int priorone = 0; int priortwo = 0;
