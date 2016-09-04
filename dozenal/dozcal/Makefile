@@ -15,22 +15,27 @@ binmode = 755
 dirmode = 755
 IDIR =../include
 LUALIB = -llua5.2
+CURSLIB = -lncurses
 CC = gcc
 LOCALLIBS = event_struct.h errcodes.h
 objects = main.o utility.o proc_date.o process_file.o moon.o opt_file.o \
 	easter.o nat_holidays.o jewish_date.o islamic.o call_lua.o julday.o \
-	astron.o geog.o sunriset.o
+	astron.o geog.o sunriset.o tui.o
 binobjects = dozcal
 
 all: bin
 
 dozcal: $(objects) ../doz/doz.o ../dec/dec.o ../conv/conv.o event_struct.h $(LOCALLIBS)
 	$(CC) -I$(IDIR) -std=c99 -g -lm -lhdate -o dozcal ../conv/conv.o \
-		../doz/doz.o ../dec/dec.o $(objects) $(LUALIB)
+		../doz/doz.o ../dec/dec.o $(objects) $(LUALIB) $(CURSLIB)
 
-main.o: main.c ../conv/conv.o ../doz/doz.o ../dec/dec.o ../conv/conv.o $(LOCALLIBS)
+main.o: main.c tui.o ../conv/conv.o ../doz/doz.o ../dec/dec.o ../conv/conv.o $(LOCALLIBS)
 	$(CC) -I$(IDIR) -g -lm -c main.c ../dec/dec.c ../conv/conv.c \
-		$(LUALIB)
+		$(LUALIB) $(CURSLIB)
+
+tui.o: tui.c utility.o ../conv/conv.o ../doz/doz.o ../conv/conv.o $(LOCALLIBS)
+	gcc -I$(IDIR) -g -lm -c tui.c julday.c utility.c ../doz/doz.c \
+		../conv/conv.c ../dec/dec.c -lncurses
 
 call_lua.o: call_lua.c $(LOCALLIBS)
 	$(CC) -I$(IDIR) -g -c call_lua.c -lm $(LUALIB)

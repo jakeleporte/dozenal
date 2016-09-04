@@ -90,6 +90,7 @@ int main(int argc, char **argv)
 	int fdow = 0;
 	FILE *outfile = stdout;
 	int filedesc[2];
+	int usetui = 0;
 
 	if ((evlines = malloc(1 * sizeof(char *))) == NULL) {
 		fprintf(stderr,"dozcal:  insufficient memory to store "
@@ -173,7 +174,7 @@ int main(int argc, char **argv)
 	}
 	relig[0] = '\0';
 	opterr = 0;
-	while ((c = getopt(argc,argv,"VETwuR:m:f:s:e:d:t:r:c:n:h:l:W:a:g:z:")) 
+	while ((c = getopt(argc,argv,"VETwuvR:m:f:s:e:d:t:r:c:n:h:l:W:a:g:z:")) 
 	!= -1) {
 		switch(c) {
 		case 'V':
@@ -185,6 +186,9 @@ int main(int argc, char **argv)
 				"and redistribute it.  There is NO WARRANTY, "
 				"to the extent permitted by law.\n");
 			exit(EXIT_SUCCESS);
+			break;
+		case 'v':
+			usetui = 1;
 			break;
 		case 'E':
 			ifevent = 0;
@@ -359,6 +363,10 @@ int main(int argc, char **argv)
 		}
 	}
 	qsort(event_list,recordnums-1,sizeof(struct event),comparator);
+	if (usetui == 1) {
+		build_tui(ev_form,date_form,time_form);
+		exit(EXIT_SUCCESS);
+	}
 	if (ifevent == 1) {
 		for (i = 0; i < (recordnums-1); ++i) {
 			if ((event_list[i].thisdate >= startdate) &&
