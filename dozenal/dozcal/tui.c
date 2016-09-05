@@ -54,7 +54,8 @@ int build_tui(char *ev_form,char *date_form,char *time_form)
 	/* main event loop */
 	win = eventswin;
 	win = switch_win(calendar,eventswin,todowin,win,evtitle,todotitle);
-	numrecs = load_evconts(evconts,eheight,ewidth,ev_form,date_form,time_form,datenum);
+	numrecs = load_evconts(evconts,eheight,ewidth,ev_form,date_form,
+		time_form,datenum);
 	while ((c = getch()) != 'q') {
 		if (win == calendar) {
 			switch(c) {
@@ -139,7 +140,7 @@ char *ev_form, char *date_form, char *time_form, int datenum)
 	clear_evconts(evconts);
 	clear_events();
 	for (i = 0; i < (recordnums-1); ++i) {
-		if (event_list[i].thisdate == datenum) {
+		if (event_list[i].thisdate == (datenum-1)) {
 			fill_event(ev_form,i,date_form,time_form,outfile);
 			numrecs++;
 		}
@@ -236,7 +237,6 @@ int shift,WINDOW *evconts)
 		*year = date->tm_year + 1900;
 	clear_cal(win);
 	datenum = print_cal(win,*mon,*year,0,*currday,evconts);
-//	datenum = get_datenum(date);
 	return datenum;
 }
 
@@ -296,7 +296,7 @@ WINDOW *evconts)
 		}
 		date->tm_mday +=1; mktime(date);
 	}
-	date->tm_mday = currday; date->tm_mon -= 1; mktime(date);
+	date->tm_mday = currday + 1; date->tm_mon -= 1; mktime(date);
 	return get_datenum(date);
 }
 
