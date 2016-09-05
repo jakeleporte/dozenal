@@ -283,3 +283,16 @@ int file_exist(char *s)
 	struct stat buffer;
 	return (stat(s,&buffer) == 0);
 }
+
+int countchars(char *s, char c)
+{
+	int num = 0;
+	int i;
+
+	for (i = 0; s[i] != '\0'; ++i) {
+		if (s[i] == c) {
+			++num;
+		}
+	}
+	return num;
+}

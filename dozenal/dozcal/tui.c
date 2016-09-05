@@ -30,6 +30,8 @@ int build_tui(char *ev_form,char *date_form,char *time_form)
 	int currday = 1;
 	int c;
 	int x, y;
+	int evpos = 0; int todopos = 0;
+	int numrecs;
 
 	initscr(); cbreak(); noecho(); keypad(stdscr,TRUE); curs_set(0);
 	refresh();
@@ -52,34 +54,38 @@ int build_tui(char *ev_form,char *date_form,char *time_form)
 	/* main event loop */
 	win = eventswin;
 	win = switch_win(calendar,eventswin,todowin,win,evtitle,todotitle);
-	load_evconts(evconts,eheight,ewidth,ev_form,date_form,time_form,datenum);
+	numrecs = load_evconts(evconts,eheight,ewidth,ev_form,date_form,time_form,datenum);
 	while ((c = getch()) != 'q') {
 		if (win == calendar) {
 			switch(c) {
 			case KEY_DOWN: case 'j':
 				datenum = change_cal(calendar,&currday,&mon,&year,7,evconts);
-				load_evconts(evconts,eheight,ewidth,ev_form,date_form,
+				numrecs = load_evconts(evconts,eheight,ewidth,ev_form,date_form,
 					time_form,datenum);
+				evpos = 0;
 				break;
 			case KEY_UP: case 'k':
 				datenum = change_cal(calendar,&currday,&mon,&year,-7,evconts);
-				load_evconts(evconts,eheight,ewidth,ev_form,date_form,
+				numrecs = load_evconts(evconts,eheight,ewidth,ev_form,date_form,
 					time_form,datenum);
+				evpos = 0;
 				break;
 			case KEY_LEFT: case 'l':
 				datenum = change_cal(calendar,&currday,&mon,&year,1,evconts);
-				load_evconts(evconts,eheight,ewidth,ev_form,date_form,
+				numrecs = load_evconts(evconts,eheight,ewidth,ev_form,date_form,
 					time_form,datenum);
+				evpos = 0;
 				break;
 			case KEY_RIGHT: case 'h':
 				datenum = change_cal(calendar,&currday,&mon,&year,-1,evconts);
-				load_evconts(evconts,eheight,ewidth,ev_form,date_form,
+				numrecs = load_evconts(evconts,eheight,ewidth,ev_form,date_form,
 					time_form,datenum);
+				evpos = 0;
 				break;
 			case 9:
 				win = switch_win(calendar,eventswin,todowin,win,
 					evtitle,todotitle);
-				load_evconts(evconts,eheight,ewidth,ev_form,date_form,
+				numrecs = load_evconts(evconts,eheight,ewidth,ev_form,date_form,
 					time_form,datenum);
 				break;
 			}
@@ -88,8 +94,18 @@ int build_tui(char *ev_form,char *date_form,char *time_form)
 			case 9:
 				win = switch_win(calendar,eventswin,todowin,win,
 					evtitle,todotitle);
-				load_evconts(evconts,eheight,ewidth,ev_form,date_form,
+				numrecs = load_evconts(evconts,eheight,ewidth,ev_form,date_form,
 					time_form,datenum);
+				break;
+			case 'j':
+				if (evpos <= numrecs) {
+					prefresh(evconts,++evpos,0,5,3,eheight,ewidth-2);
+				}
+				break;
+			case 'k':
+				if (evpos >= 0) {
+					prefresh(evconts,--evpos,0,5,3,eheight,ewidth-2);
+				}
 				break;
 			}
 		} else if (win == todowin) {
@@ -97,6 +113,8 @@ int build_tui(char *ev_form,char *date_form,char *time_form)
 			case 9:
 				win = switch_win(calendar,eventswin,todowin,win,
 					evtitle,todotitle);
+				numrecs = load_evconts(evconts,eheight,ewidth,ev_form,date_form,
+					time_form,datenum);
 				break;
 			}
 		}
@@ -114,21 +132,24 @@ int build_tui(char *ev_form,char *date_form,char *time_form)
 int load_evconts(WINDOW *evconts,int eheight, int ewidth,
 char *ev_form, char *date_form, char *time_form, int datenum)
 {
-	int i;
+	int i; int numnewlines = 0;
 	FILE *outfile;
+	int numrecs = 0;
 
 	clear_evconts(evconts);
 	clear_events();
 	for (i = 0; i < (recordnums-1); ++i) {
 		if (event_list[i].thisdate == datenum) {
 			fill_event(ev_form,i,date_form,time_form,outfile);
+			numrecs++;
 		}
 	}
 	for (i = 1; i < numevs; ++i) {
-		mvwprintw(evconts,0+i-1,0,"%s",*(evlines+i));
+		numnewlines += countchars(*(evlines+i),'\n');
+		mvwprintw(evconts,0+i-1+numnewlines,0,"%s",*(evlines+i));
 	}
-	prefresh(evconts,0,0,5,3,eheight,ewidth);
-	return 0;
+	prefresh(evconts,0,0,5,3,eheight,ewidth-2);
+	return numrecs + numnewlines;
 }
 
 int clear_evconts(WINDOW *evconts)
