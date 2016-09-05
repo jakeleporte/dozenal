@@ -149,6 +149,12 @@ char *ev_form, char *date_form, char *time_form, int datenum)
 		numnewlines += countchars(*(evlines+i),'\n');
 		mvwprintw(evconts,0+i-1+numnewlines,0,"%s",*(evlines+i));
 	}
+	int j;
+	for (j = 0; j <= ewidth; ++j)
+		mvwprintw(evconts,i+3+numnewlines,j,"-");
+	center_line(evconts,i+4+numnewlines,"END OF DATA     ");
+	for (j = 0; j <= ewidth; ++j)
+		mvwprintw(evconts,i+5+numnewlines,j,"-");
 	prefresh(evconts,0,0,5,3,eheight,ewidth-2);
 	return numrecs + numnewlines;
 }
