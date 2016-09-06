@@ -364,7 +364,8 @@ int main(int argc, char **argv)
 	}
 	qsort(event_list,recordnums-1,sizeof(struct event),comparator);
 	if (usetui == 1) {
-		build_tui(ev_form,date_form,time_form);
+		qsort(todo_list,todonums-1,sizeof(struct todo),todocomp);
+		build_tui(ev_form,date_form,time_form,todo_form);
 		exit(EXIT_SUCCESS);
 	}
 	if (ifevent == 1) {

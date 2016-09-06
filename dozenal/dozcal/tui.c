@@ -19,7 +19,8 @@ extern int todonums;
 WINDOW *switch_win(WINDOW *cal,WINDOW *ev, WINDOW *todo, 
 	WINDOW *currwin, WINDOW *evtitle, WINDOW *todotitle);
 
-int build_tui(char *ev_form,char *date_form,char *time_form)
+int build_tui(char *ev_form,char *date_form,char *time_form, 
+char *todo_form)
 {
 	int mon = 9; int year = 2016;
 	WINDOW *calendar,*eventswin,*todowin,*evtitle,*todotitle,
@@ -30,24 +31,26 @@ int build_tui(char *ev_form,char *date_form,char *time_form)
 	int currday = 1;
 	int c;
 	int x, y;
-	int evpos = 0; int todopos = 0;
+	int evpos = 0; int evhpos = 0; int todopos = 0; int todohpos = 0;
 	int numrecs;
+	int numtrecs;
 
 	initscr(); cbreak(); noecho(); keypad(stdscr,TRUE); curs_set(0);
 	refresh();
 	getmaxyx(stdscr,y,x);
 	ewidth = x - cwidth - 2;
-	eheight = y - 8;
+	eheight = y - 4;
 	/* title bar */
 	make_titlebar();
 	/* event window, event title, and content pad */
 	eventswin = newwin(y-3,x-cwidth,1,0);
 	evtitle = newwin(2,x-cwidth-2,2,1);
-	evconts = newpad((3*y),ewidth);
+	evconts = newpad((3*y),2*ewidth);
 	/* todo window, todo title, and content pad */
-	todowin = newwin(y-3-cheight,cwidth,cheight+1,x-cwidth);
+	twidth = cwidth; theight = cheight+1;
+	todowin = newwin(y-2-theight,twidth,theight,x-twidth);
 	todotitle = newwin(2,cwidth-2,y-2-cheight+2,x-cwidth+1);
-	todoconts = newpad((3 * y),cwidth-2);
+	todoconts = newpad((3 * y),3*twidth);
 	/* calendar window and contents */
 	calendar = newwin(cheight,cwidth,1,x-cwidth);
 	datenum = print_cal(calendar,mon,year,0,currday,evconts);
@@ -56,6 +59,8 @@ int build_tui(char *ev_form,char *date_form,char *time_form)
 	win = switch_win(calendar,eventswin,todowin,win,evtitle,todotitle);
 	numrecs = load_evconts(evconts,eheight,ewidth,ev_form,date_form,
 		time_form,datenum);
+	numtrecs = load_todos(todoconts,theight,twidth,todo_form,date_form,
+		time_form);
 	while ((c = getch()) != 'q') {
 		if (win == calendar) {
 			switch(c) {
@@ -63,24 +68,32 @@ int build_tui(char *ev_form,char *date_form,char *time_form)
 				datenum = change_cal(calendar,&currday,&mon,&year,7,evconts);
 				numrecs = load_evconts(evconts,eheight,ewidth,ev_form,date_form,
 					time_form,datenum);
+				numtrecs = load_todos(todoconts,theight,twidth,todo_form,
+					date_form, time_form);
 				evpos = 0;
 				break;
 			case KEY_UP: case 'k':
 				datenum = change_cal(calendar,&currday,&mon,&year,-7,evconts);
 				numrecs = load_evconts(evconts,eheight,ewidth,ev_form,date_form,
 					time_form,datenum);
+				numtrecs = load_todos(todoconts,theight,twidth,todo_form,
+					date_form, time_form);
 				evpos = 0;
 				break;
-			case KEY_LEFT: case 'l':
+			case KEY_RIGHT: case 'l':
 				datenum = change_cal(calendar,&currday,&mon,&year,1,evconts);
 				numrecs = load_evconts(evconts,eheight,ewidth,ev_form,date_form,
 					time_form,datenum);
+				numtrecs = load_todos(todoconts,theight,twidth,todo_form,
+					date_form, time_form);
 				evpos = 0;
 				break;
-			case KEY_RIGHT: case 'h':
+			case KEY_LEFT: case 'h':
 				datenum = change_cal(calendar,&currday,&mon,&year,-1,evconts);
 				numrecs = load_evconts(evconts,eheight,ewidth,ev_form,date_form,
 					time_form,datenum);
+				numtrecs = load_todos(todoconts,theight,twidth,todo_form,
+					date_form, time_form);
 				evpos = 0;
 				break;
 			case 9:
@@ -88,6 +101,8 @@ int build_tui(char *ev_form,char *date_form,char *time_form)
 					evtitle,todotitle);
 				numrecs = load_evconts(evconts,eheight,ewidth,ev_form,date_form,
 					time_form,datenum);
+				numtrecs = load_todos(todoconts,theight,twidth,todo_form,
+					date_form, time_form);
 				break;
 			}
 		} else if (win == eventswin) {
@@ -97,15 +112,25 @@ int build_tui(char *ev_form,char *date_form,char *time_form)
 					evtitle,todotitle);
 				numrecs = load_evconts(evconts,eheight,ewidth,ev_form,date_form,
 					time_form,datenum);
+				numtrecs = load_todos(todoconts,theight,twidth,todo_form,
+					date_form, time_form);
 				break;
-			case 'j':
+			case 'j': case KEY_DOWN:
 				if (evpos <= numrecs) {
 					prefresh(evconts,++evpos,0,5,3,eheight,ewidth-2);
 				}
 				break;
-			case 'k':
+			case 'k': case KEY_UP:
 				if (evpos >= 0) {
 					prefresh(evconts,--evpos,0,5,3,eheight,ewidth-2);
+				}
+				break;
+			case 'l': case KEY_RIGHT:
+				prefresh(evconts,evpos,++evhpos,5,3,eheight,ewidth-2);
+				break;
+			case 'h': case KEY_LEFT:
+				if (evhpos >= 0) {
+					prefresh(evconts,evpos,--evhpos,5,3,eheight,ewidth-2);
 				}
 				break;
 			}
@@ -116,6 +141,30 @@ int build_tui(char *ev_form,char *date_form,char *time_form)
 					evtitle,todotitle);
 				numrecs = load_evconts(evconts,eheight,ewidth,ev_form,date_form,
 					time_form,datenum);
+				numtrecs = load_todos(todoconts,theight,twidth,todo_form,
+					date_form, time_form);
+				break;
+			case 'l': case KEY_RIGHT:
+				prefresh(todoconts,todopos,++todohpos,y-theight+3,x-twidth+2,
+					y-4,x-3);
+				break;
+			case 'h': case KEY_LEFT:
+				if (todohpos >= 0) {
+					prefresh(todoconts,todopos,--todohpos,y-theight+3,x-twidth+2,
+						y-4,x-3);
+				}
+				break;
+			case 'j': case KEY_DOWN:
+				if (todopos <= numtrecs) {
+					prefresh(todoconts,++todopos,todohpos,y-theight+3,x-twidth+2,
+						y-4,x-3);
+				}
+				break;
+			case 'k': case KEY_UP:
+				if (todopos >= 0) {
+					prefresh(todoconts,--todopos,todohpos,y-theight+3,x-twidth+2,
+						y-4,x-3);
+				}
 				break;
 			}
 		}
@@ -136,7 +185,9 @@ char *ev_form, char *date_form, char *time_form, int datenum)
 	int i; int numnewlines = 0;
 	FILE *outfile;
 	int numrecs = 0;
+	int x, y;
 
+	getmaxyx(stdscr,y,x);
 	clear_evconts(evconts);
 	clear_events();
 	for (i = 0; i < (recordnums-1); ++i) {
@@ -150,13 +201,38 @@ char *ev_form, char *date_form, char *time_form, int datenum)
 		mvwprintw(evconts,0+i-1+numnewlines,0,"%s",*(evlines+i));
 	}
 	int j;
-	for (j = 0; j <= ewidth; ++j)
+	for (j = 0; j <= x; ++j) {
 		mvwprintw(evconts,i+3+numnewlines,j,"-");
-	center_line(evconts,i+4+numnewlines,"END OF DATA     ");
-	for (j = 0; j <= ewidth; ++j)
-		mvwprintw(evconts,i+5+numnewlines,j,"-");
+		mvwprintw(evconts,i+4+numnewlines,j,"-");
+	}
 	prefresh(evconts,0,0,5,3,eheight,ewidth-2);
 	return numrecs + numnewlines;
+}
+
+int load_todos(WINDOW *todoconts,int theight, int twidth,
+char *todo_form, char *date_form, char *time_form)
+{
+	int i; int numnewlines = 0;
+	FILE *outfile;
+	int numrecs = 0;
+	int x, y;
+
+	getmaxyx(stdscr,y,x);
+	clear_todos();
+	for (i = 0; i < (todonums-1); ++i) {
+			fill_todo(todo_form,i,date_form,time_form,outfile);
+	}
+	for (i = 1; i < numtodos; ++i) {
+		numnewlines += countchars(*(todolines+i),'\n');
+		mvwprintw(todoconts,0+i-1+numnewlines,0,"%s",*(todolines+i));
+	}
+	int j;
+	for (j = 0; j < x; ++j) {
+		mvwprintw(todoconts,i+1+numnewlines,j,"-");
+		mvwprintw(todoconts,i+2+numnewlines,j,"-");
+	}
+	prefresh(todoconts,1,0,y-theight+3,x-twidth+2,y-4,x-3);
+	return numtodos + numnewlines - 3;
 }
 
 int clear_evconts(WINDOW *evconts)
