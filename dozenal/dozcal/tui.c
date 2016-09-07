@@ -44,6 +44,7 @@ char *todo_form)
 	eheight = y - 4;
 	/* title bar */
 	make_titlebar();
+	make_botbar();
 	/* event window, event title, and content pad */
 	eventswin = newwin(y-3,x-cwidth,1,0);
 	evtitle = newwin(2,x-cwidth-2,2,1);
@@ -357,6 +358,25 @@ int make_titlebar()
 	for (i = lenlft; i <= (x - lenrgt - 1); ++i)
 		mvprintw(0,i," ");
 	mvprintw(0,i,"%s",rgtstr);
+	attroff(A_BOLD | A_REVERSE);
+	return 0;
+}
+
+int make_botbar()
+{
+	int x, y,lenlft,lenrgt, i;
+	char *lftstr = "q:QUIT | TAB/SHFT-TAB:switch windows | k/j:UP/DOWN | "
+		"h/l:LEFT/RIGHT";
+	char *rgtstr = " ";
+
+	getmaxyx(stdscr,y,x);
+	lenlft = strlen(lftstr);
+	lenrgt = strlen(rgtstr);
+	attron(A_BOLD | A_REVERSE);
+	mvprintw(y-2,0,"%s",lftstr);
+	for (i = lenlft; i <= (x - lenrgt - 1); ++i)
+		mvprintw(y-2,i," ");
+	mvprintw(y-2,i,"%s",rgtstr);
 	attroff(A_BOLD | A_REVERSE);
 	return 0;
 }
