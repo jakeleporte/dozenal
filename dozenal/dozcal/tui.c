@@ -18,6 +18,8 @@ extern int todonums;
 
 WINDOW *switch_win(WINDOW *cal,WINDOW *ev, WINDOW *todo, 
 	WINDOW *currwin, WINDOW *evtitle, WINDOW *todotitle);
+WINDOW *switch_back_win(WINDOW *cal,WINDOW *ev, WINDOW *todo, 
+	WINDOW *currwin, WINDOW *evtitle, WINDOW *todotitle);
 
 int build_tui(char *ev_form,char *date_form,char *time_form, 
 char *todo_form)
@@ -104,11 +106,27 @@ char *todo_form)
 				numtrecs = load_todos(todoconts,theight,twidth,todo_form,
 					date_form, time_form);
 				break;
+			case KEY_BTAB:
+				win = switch_back_win(calendar,eventswin,todowin,win,
+					evtitle,todotitle);
+				numrecs = load_evconts(evconts,eheight,ewidth,ev_form,date_form,
+					time_form,datenum);
+				numtrecs = load_todos(todoconts,theight,twidth,todo_form,
+					date_form, time_form);
+				break;
 			}
 		} else if (win == eventswin) {
 			switch(c) {
 			case 9:
 				win = switch_win(calendar,eventswin,todowin,win,
+					evtitle,todotitle);
+				numrecs = load_evconts(evconts,eheight,ewidth,ev_form,date_form,
+					time_form,datenum);
+				numtrecs = load_todos(todoconts,theight,twidth,todo_form,
+					date_form, time_form);
+				break;
+			case KEY_BTAB:
+				win = switch_back_win(calendar,eventswin,todowin,win,
 					evtitle,todotitle);
 				numrecs = load_evconts(evconts,eheight,ewidth,ev_form,date_form,
 					time_form,datenum);
@@ -144,12 +162,20 @@ char *todo_form)
 				numtrecs = load_todos(todoconts,theight,twidth,todo_form,
 					date_form, time_form);
 				break;
+			case KEY_BTAB:
+				win = switch_back_win(calendar,eventswin,todowin,win,
+					evtitle,todotitle);
+				numrecs = load_evconts(evconts,eheight,ewidth,ev_form,date_form,
+					time_form,datenum);
+				numtrecs = load_todos(todoconts,theight,twidth,todo_form,
+					date_form, time_form);
+				break;
 			case 'l': case KEY_RIGHT:
 				prefresh(todoconts,todopos,++todohpos,y-theight+3,x-twidth+2,
 					y-4,x-3);
 				break;
 			case 'h': case KEY_LEFT:
-				if (todohpos >= 0) {
+				if (todohpos >= 1) {
 					prefresh(todoconts,todopos,--todohpos,y-theight+3,x-twidth+2,
 						y-4,x-3);
 				}
@@ -161,7 +187,7 @@ char *todo_form)
 				}
 				break;
 			case 'k': case KEY_UP:
-				if (todopos >= 0) {
+				if (todopos >= 1) {
 					prefresh(todoconts,--todopos,todohpos,y-theight+3,x-twidth+2,
 						y-4,x-3);
 				}
@@ -231,7 +257,7 @@ char *todo_form, char *date_form, char *time_form)
 		mvwprintw(todoconts,i+1+numnewlines,j,"-");
 		mvwprintw(todoconts,i+2+numnewlines,j,"-");
 	}
-	prefresh(todoconts,1,0,y-theight+3,x-twidth+2,y-4,x-3);
+	prefresh(todoconts,0,0,y-theight+3,x-twidth+2,y-4,x-3);
 	return numtodos + numnewlines - 3;
 }
 
@@ -267,6 +293,41 @@ WINDOW *evtitle, WINDOW *todotitle)
 	if (currwin == ev)
 		win = cal;
 	if (currwin == cal)
+		win = todo;
+	wattron(win,A_BOLD);
+	wborder(win,ACS_VLINE,ACS_VLINE,ACS_HLINE,ACS_HLINE,
+		ACS_ULCORNER,ACS_URCORNER, ACS_LLCORNER,ACS_LRCORNER);
+	wattroff(win,A_BOLD);
+	wrefresh(win);
+	wborder(evtitle,' ',' ',' ',ACS_HLINE,' ',' ',' ',' ');
+	wborder(todotitle,' ',' ',' ',ACS_HLINE,' ',' ',' ',' ');
+	center_line(evtitle,0,"Events");
+	center_line(todotitle,0,"Todos");
+	wrefresh(evtitle);
+	wrefresh(todotitle);
+	return win;
+}
+
+WINDOW *switch_back_win(WINDOW *cal, WINDOW *ev, WINDOW *todo,
+WINDOW *currwin, WINDOW *evtitle, WINDOW *todotitle)
+{
+	WINDOW *win;
+	int i;
+
+	wborder(cal,ACS_VLINE,ACS_VLINE,ACS_HLINE,ACS_HLINE,
+		ACS_ULCORNER,ACS_URCORNER, ACS_LLCORNER,ACS_LRCORNER);
+	wborder(ev,ACS_VLINE,ACS_VLINE,ACS_HLINE,ACS_HLINE,
+		ACS_ULCORNER,ACS_URCORNER, ACS_LLCORNER,ACS_LRCORNER);
+	wborder(todo,ACS_VLINE,ACS_VLINE,ACS_HLINE,ACS_HLINE,
+		ACS_ULCORNER,ACS_URCORNER, ACS_LLCORNER,ACS_LRCORNER);
+	wrefresh(cal);
+	wrefresh(ev);
+	wrefresh(todo);
+	if (currwin == todo)
+		win = cal;
+	if (currwin == cal)
+		win = ev;
+	if (currwin == ev)
 		win = todo;
 	wattron(win,A_BOLD);
 	wborder(win,ACS_VLINE,ACS_VLINE,ACS_HLINE,ACS_HLINE,
