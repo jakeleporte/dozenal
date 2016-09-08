@@ -55,6 +55,8 @@ double tzoffset = -999.0;
 int utc = 0; /* if 1, use UTC time */
 char **evlines; int numevs = 1;
 char **todolines; int numtodos = 1;
+struct globopts *allopts;
+int numopts = 33;
 
 int comparator(const void *evone, const void *evtwo);
 int todocomp(const void *todoone, const void *todotwo);
@@ -92,6 +94,7 @@ int main(int argc, char **argv)
 	int filedesc[2];
 	int usetui = 0;
 
+	build_globopts_struct();
 	if ((evlines = malloc(1 * sizeof(char *))) == NULL) {
 		fprintf(stderr,"dozcal:  insufficient memory to store "
 			"the formatted event lines\n");
@@ -174,7 +177,7 @@ int main(int argc, char **argv)
 	}
 	relig[0] = '\0';
 	opterr = 0;
-	while ((c = getopt(argc,argv,"VETwuvR:m:f:s:e:d:t:r:c:n:h:l:W:a:g:z:")) 
+	while ((c = getopt(argc,argv,"VCETwuvR:m:f:s:e:d:t:r:c:n:h:l:W:a:g:z:")) 
 	!= -1) {
 		switch(c) {
 		case 'V':
@@ -189,6 +192,8 @@ int main(int argc, char **argv)
 			break;
 		case 'v':
 			usetui = 1;
+			break;
+		case 'C':
 			break;
 		case 'E':
 			ifevent = 0;
@@ -739,4 +744,109 @@ int first_dow(char *s)
 			exit(BAD_FDOW);
 		}
 	}
+}
+	
+int build_globopts_struct()
+{
+	if ((allopts = malloc(numopts * sizeof(struct globopts))) == NULL) {
+		fprintf(stderr,"dozcal:  insufficient memory to store "
+			"the global options");
+		exit(INSUFF_MEM);
+	}
+	strcpy(allopts[NOCOLOR].opt,"NOCOLOR");
+		allopts[NOCOLOR].r = 0; allopts[NOCOLOR].g = 0; 
+		allopts[NOCOLOR].b = 0;
+	strcpy(allopts[WHOLEBG].opt,"WHOLE_BG");
+		allopts[WHOLEBG].r = 0; allopts[WHOLEBG].g = 0;
+		allopts[WHOLEBG].b = 0;
+	strcpy(allopts[CALBG].opt,"CALENDAR_BG");
+		allopts[CALBG].r = 0; allopts[CALBG].g = 0;
+		allopts[CALBG].b = 0;
+	strcpy(allopts[EVENTBG].opt,"EVENT_BG");
+		allopts[EVENTBG].r = 0; allopts[EVENTBG].g = 0;
+		allopts[EVENTBG].b = 0;
+	strcpy(allopts[TODOBG].opt,"TODO_BG");
+		allopts[TODOBG].r = 0; allopts[TODOBG].g = 0;
+		allopts[TODOBG].b = 0;
+	strcpy(allopts[CALTITLEFORE].opt,"CAL_TITLE_FORE");
+		allopts[CALTITLEFORE].r = 1000; allopts[CALTITLEFORE].g = 1000;
+		allopts[CALTITLEFORE].b = 1000;
+	strcpy(allopts[CALTITLEBACK].opt,"CAL_TITLE_BACK");
+		allopts[CALTITLEBACK].r = 0; allopts[CALTITLEBACK].g = 0;
+		allopts[CALTITLEBACK].b = 0;
+	strcpy(allopts[CALWEEKFORE].opt,"CAL_WEEK_FORE");
+		allopts[CALWEEKFORE].r = 0; allopts[CALWEEKFORE].g = 0;
+		allopts[CALWEEKFORE].b = 0;
+	strcpy(allopts[CALWEEKBACK].opt,"CAL_WEEK_BACK");
+		allopts[CALWEEKBACK].r = 1000; allopts[CALWEEKBACK].g = 1000;
+		allopts[CALWEEKBACK].b = 1000;
+	strcpy(allopts[TODOTITLEFORE].opt,"TODO_TITLE_FORE");
+		allopts[TODOTITLEFORE].r = 0; allopts[TODOTITLEFORE].g = 0;
+		allopts[TODOTITLEFORE].b = 0;
+	strcpy(allopts[TODOTITLEBACK].opt,"TODO_TITLE_BACK");
+		allopts[TODOTITLEBACK].r = 1000; allopts[TODOTITLEBACK].g = 1000;
+		allopts[TODOTITLEBACK].b = 1000;
+	strcpy(allopts[TODOLINEFORE].opt,"TODO_LINE_FORE");
+		allopts[TODOLINEFORE].r = 1000; allopts[TODOLINEFORE].g = 1000;
+		allopts[TODOLINEFORE].b = 1000;
+	strcpy(allopts[TODOLINEBACK].opt,"TODO_LINE_BACK");
+		allopts[TODOLINEBACK].r = 1000; allopts[TODOLINEBACK].g = 1000;
+		allopts[TODOLINEBACK].b = 1000;
+	strcpy(allopts[TODOFORE].opt,"TODO_FORE");
+		allopts[TODOFORE].r = 0; allopts[TODOFORE].g = 0;
+		allopts[TODOFORE].b = 0;
+	strcpy(allopts[TODOBACK].opt,"TODO_BACK");
+		allopts[TODOBACK].r = 1000; allopts[TODOBACK].g = 1000;
+		allopts[TODOBACK].b = 1000;
+	strcpy(allopts[EVTITLEFORE].opt,"EV_TITLE_FORE");
+		allopts[EVTITLEFORE].r = 0; allopts[EVTITLEFORE].g = 0;
+		allopts[EVTITLEFORE].b = 0;
+	strcpy(allopts[EVTITLEBACK].opt,"EV_TITLE_BACK");
+		allopts[EVTITLEBACK].r = 1000; allopts[EVTITLEBACK].g = 1000;
+		allopts[EVTITLEBACK].b = 1000;
+	strcpy(allopts[EVLINEFORE].opt,"EV_LINE_FORE");
+		allopts[EVLINEFORE].r = 1000; allopts[EVLINEFORE].g = 1000;
+		allopts[EVLINEFORE].b = 1000;
+	strcpy(allopts[EVLINEBACK].opt,"EV_LINE_BACK");
+		allopts[EVLINEBACK].r = 1000; allopts[EVLINEBACK].g = 1000;
+		allopts[EVLINEBACK].b = 1000;
+	strcpy(allopts[EVFORE].opt,"EV_FORE");
+		allopts[EVFORE].r = 0; allopts[EVFORE].g = 0;
+		allopts[EVFORE].b = 0;
+	strcpy(allopts[EVBACK].opt,"EV_BACK");
+		allopts[EVBACK].r = 1000; allopts[EVBACK].g = 1000;
+		allopts[EVBACK].b = 1000;
+	strcpy(allopts[TITLEFORE].opt,"TITLE_FORE");
+		allopts[TITLEFORE].r = 1000; allopts[TITLEFORE].g = 1000;
+		allopts[TITLEFORE].b = 1000;
+	strcpy(allopts[TITLEBACK].opt,"TITLE_BACK");
+		allopts[TITLEBACK].r = 0; allopts[TITLEBACK].g = 0;
+		allopts[TITLEBACK].b = 0;
+	strcpy(allopts[BOTFORE].opt,"BOT_FORE");
+		allopts[BOTFORE].r = 0; allopts[BOTFORE].g = 0;
+		allopts[BOTFORE].b = 0;
+	strcpy(allopts[BOTBACK].opt,"BOT_BACK");
+		allopts[BOTBACK].r = 1000; allopts[BOTBACK].g = 1000;
+		allopts[BOTBACK].b = 1000;
+	strcpy(allopts[WARNINGFORE].opt,"WARNING_FORE");
+		allopts[WARNINGFORE].r = 0; allopts[WARNINGFORE].g = 0;
+		allopts[WARNINGFORE].b = 0;
+	strcpy(allopts[WARNINGBACK].opt,"WARNING_BACK");
+		allopts[WARNINGBACK].r = 1000; allopts[WARNINGBACK].g = 1000;
+		allopts[WARNINGBACK].b = 1000;
+	strcpy(allopts[INACTIVEBORDFORE].opt,"INACTIVE_BORDER_FORE");
+		allopts[INACTIVEBORDFORE].r = 1000;
+		allopts[INACTIVEBORDFORE].g = 1000;
+		allopts[INACTIVEBORDFORE].b = 1000;
+	strcpy(allopts[INACTIVEBORDBACK].opt,"INACTIVE_BORDER_BACK");
+		allopts[INACTIVEBORDBACK].r = 0;
+		allopts[INACTIVEBORDBACK].g = 0;
+		allopts[INACTIVEBORDBACK].b = 0;
+	strcpy(allopts[ACTIVEBORDFORE].opt,"ACTIVE_BORDER_FORE");
+		allopts[ACTIVEBORDFORE].r = 1000; allopts[ACTIVEBORDFORE].g = 1000;
+		allopts[ACTIVEBORDFORE].b = 1000;
+	strcpy(allopts[ACTIVEBORDBACK].opt,"ACTIVE_BORDER_BACK");
+		allopts[ACTIVEBORDBACK].r = 0; allopts[ACTIVEBORDBACK].g = 0;
+		allopts[ACTIVEBORDBACK].b = 0;
+	return 0;
 }

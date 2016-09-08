@@ -15,6 +15,8 @@ extern struct event *event_list;
 extern int recordnums;
 extern struct todo *todo_list;
 extern int todonums;
+extern struct globopts *allopts;
+extern int numopts;
 
 WINDOW *switch_win(WINDOW *cal,WINDOW *ev, WINDOW *todo, 
 	WINDOW *currwin, WINDOW *evtitle, WINDOW *todotitle);
@@ -38,6 +40,14 @@ char *todo_form)
 	int numtrecs;
 
 	initscr(); cbreak(); noecho(); keypad(stdscr,TRUE); curs_set(0);
+	if (has_colors() == FALSE) {
+		print_warn("ERROR:  Terminal does not support color; "
+			"using default colors...");
+	}
+	start_color();
+	if (can_change_color() == FALSE) {
+		normalize_colors();
+	}
 	refresh();
 	getmaxyx(stdscr,y,x);
 	ewidth = x - cwidth - 2;
@@ -52,7 +62,7 @@ char *todo_form)
 	/* todo window, todo title, and content pad */
 	twidth = cwidth; theight = cheight+1;
 	todowin = newwin(y-2-theight,twidth,theight,x-twidth);
-	todotitle = newwin(2,cwidth-2,y-2-cheight+2,x-cwidth+1);
+	todotitle = newwin(2,cwidth-2,theight+1,x-cwidth+1);
 	todoconts = newpad((3 * y),3*twidth);
 	/* calendar window and contents */
 	calendar = newwin(cheight,cwidth,1,x-cwidth);
@@ -100,6 +110,7 @@ char *todo_form)
 				evpos = 0;
 				break;
 			case 9:
+				clear_warn();
 				win = switch_win(calendar,eventswin,todowin,win,
 					evtitle,todotitle);
 				numrecs = load_evconts(evconts,eheight,ewidth,ev_form,date_form,
@@ -108,6 +119,7 @@ char *todo_form)
 					date_form, time_form);
 				break;
 			case KEY_BTAB:
+				clear_warn();
 				win = switch_back_win(calendar,eventswin,todowin,win,
 					evtitle,todotitle);
 				numrecs = load_evconts(evconts,eheight,ewidth,ev_form,date_form,
@@ -119,6 +131,7 @@ char *todo_form)
 		} else if (win == eventswin) {
 			switch(c) {
 			case 9:
+				clear_warn();
 				win = switch_win(calendar,eventswin,todowin,win,
 					evtitle,todotitle);
 				numrecs = load_evconts(evconts,eheight,ewidth,ev_form,date_form,
@@ -127,6 +140,7 @@ char *todo_form)
 					date_form, time_form);
 				break;
 			case KEY_BTAB:
+				clear_warn();
 				win = switch_back_win(calendar,eventswin,todowin,win,
 					evtitle,todotitle);
 				numrecs = load_evconts(evconts,eheight,ewidth,ev_form,date_form,
@@ -136,19 +150,19 @@ char *todo_form)
 				break;
 			case 'j': case KEY_DOWN:
 				if (evpos <= numrecs) {
-					prefresh(evconts,++evpos,0,5,3,eheight,ewidth-2);
+					prefresh(evconts,++evpos,evhpos,5,3,eheight,ewidth-2);
 				}
 				break;
 			case 'k': case KEY_UP:
-				if (evpos >= 0) {
-					prefresh(evconts,--evpos,0,5,3,eheight,ewidth-2);
+				if (evpos >= 1) {
+					prefresh(evconts,--evpos,evhpos,5,3,eheight,ewidth-2);
 				}
 				break;
 			case 'l': case KEY_RIGHT:
 				prefresh(evconts,evpos,++evhpos,5,3,eheight,ewidth-2);
 				break;
 			case 'h': case KEY_LEFT:
-				if (evhpos >= 0) {
+				if (evhpos >= 1) {
 					prefresh(evconts,evpos,--evhpos,5,3,eheight,ewidth-2);
 				}
 				break;
@@ -156,6 +170,7 @@ char *todo_form)
 		} else if (win == todowin) {
 			switch(c) {
 			case 9:
+				clear_warn();
 				win = switch_win(calendar,eventswin,todowin,win,
 					evtitle,todotitle);
 				numrecs = load_evconts(evconts,eheight,ewidth,ev_form,date_form,
@@ -164,6 +179,7 @@ char *todo_form)
 					date_form, time_form);
 				break;
 			case KEY_BTAB:
+				clear_warn();
 				win = switch_back_win(calendar,eventswin,todowin,win,
 					evtitle,todotitle);
 				numrecs = load_evconts(evconts,eheight,ewidth,ev_form,date_form,
@@ -172,37 +188,57 @@ char *todo_form)
 					date_form, time_form);
 				break;
 			case 'l': case KEY_RIGHT:
-				prefresh(todoconts,todopos,++todohpos,y-theight+3,x-twidth+2,
+				prefresh(todoconts,todopos,++todohpos,theight+3,x-twidth+2,
 					y-4,x-3);
 				break;
 			case 'h': case KEY_LEFT:
 				if (todohpos >= 1) {
-					prefresh(todoconts,todopos,--todohpos,y-theight+3,x-twidth+2,
+					prefresh(todoconts,todopos,--todohpos,theight+3,x-twidth+2,
 						y-4,x-3);
 				}
 				break;
 			case 'j': case KEY_DOWN:
 				if (todopos <= numtrecs) {
-					prefresh(todoconts,++todopos,todohpos,y-theight+3,x-twidth+2,
+					prefresh(todoconts,++todopos,todohpos,theight+3,x-twidth+2,
 						y-4,x-3);
 				}
 				break;
 			case 'k': case KEY_UP:
 				if (todopos >= 1) {
-					prefresh(todoconts,--todopos,todohpos,y-theight+3,x-twidth+2,
+					prefresh(todoconts,--todopos,todohpos,theight+3,x-twidth+2,
 						y-4,x-3);
 				}
 				break;
 			}
 		}
 	}
-	getch();
 	delwin(calendar);
 	delwin(eventswin);
 	delwin(evtitle);
 	delwin(todotitle);
 	delwin(todowin);
 	endwin();
+	return 0;
+}
+
+int clear_warn()
+{
+	int x,y,i;
+
+	getmaxyx(stdscr,y,x);
+	for (i = 0; i <= x; ++i)
+		mvprintw(y-1,i," ");
+	return 0;
+}
+
+int print_warn(char *s)
+{
+	int x,y,i;
+
+	getmaxyx(stdscr,y,x);
+	attron(A_BOLD);
+	mvprintw(y-1,0,"%s",s);
+	attroff(A_BOLD);
 	return 0;
 }
 	
@@ -258,7 +294,7 @@ char *todo_form, char *date_form, char *time_form)
 		mvwprintw(todoconts,i+1+numnewlines,j,"-");
 		mvwprintw(todoconts,i+2+numnewlines,j,"-");
 	}
-	prefresh(todoconts,0,0,y-theight+3,x-twidth+2,y-4,x-3);
+	prefresh(todoconts,0,0,theight+3,x-twidth+2,y-4,x-3);
 	return numtodos + numnewlines - 3;
 }
 
@@ -280,12 +316,20 @@ WINDOW *evtitle, WINDOW *todotitle)
 	WINDOW *win;
 	int i;
 
+	init_pair(1,allopts[INACTIVEBORDFORE].colconst,
+		allopts[INACTIVEBORDBACK].colconst);
+	wattron(todo,COLOR_PAIR(1));
+	wattron(ev,COLOR_PAIR(1));
+	wattron(cal,COLOR_PAIR(1));
 	wborder(cal,ACS_VLINE,ACS_VLINE,ACS_HLINE,ACS_HLINE,
 		ACS_ULCORNER,ACS_URCORNER, ACS_LLCORNER,ACS_LRCORNER);
 	wborder(ev,ACS_VLINE,ACS_VLINE,ACS_HLINE,ACS_HLINE,
 		ACS_ULCORNER,ACS_URCORNER, ACS_LLCORNER,ACS_LRCORNER);
 	wborder(todo,ACS_VLINE,ACS_VLINE,ACS_HLINE,ACS_HLINE,
 		ACS_ULCORNER,ACS_URCORNER, ACS_LLCORNER,ACS_LRCORNER);
+	wattroff(todo,COLOR_PAIR(1));
+	wattroff(ev,COLOR_PAIR(1));
+	wattroff(cal,COLOR_PAIR(1));
 	wrefresh(cal);
 	wrefresh(ev);
 	wrefresh(todo);
@@ -296,8 +340,12 @@ WINDOW *evtitle, WINDOW *todotitle)
 	if (currwin == cal)
 		win = todo;
 	wattron(win,A_BOLD);
+	init_pair(2,allopts[ACTIVEBORDFORE].colconst,
+		allopts[ACTIVEBORDBACK].colconst);
+	wattron(win,COLOR_PAIR(2));
 	wborder(win,ACS_VLINE,ACS_VLINE,ACS_HLINE,ACS_HLINE,
 		ACS_ULCORNER,ACS_URCORNER, ACS_LLCORNER,ACS_LRCORNER);
+	wattroff(win,COLOR_PAIR(2));
 	wattroff(win,A_BOLD);
 	wrefresh(win);
 	wborder(evtitle,' ',' ',' ',ACS_HLINE,' ',' ',' ',' ');
@@ -315,6 +363,11 @@ WINDOW *currwin, WINDOW *evtitle, WINDOW *todotitle)
 	WINDOW *win;
 	int i;
 
+	init_pair(1,allopts[INACTIVEBORDFORE].colconst,
+		allopts[INACTIVEBORDBACK].colconst);
+	wattron(todo,COLOR_PAIR(1));
+	wattron(ev,COLOR_PAIR(1));
+	wattron(cal,COLOR_PAIR(1));
 	wborder(cal,ACS_VLINE,ACS_VLINE,ACS_HLINE,ACS_HLINE,
 		ACS_ULCORNER,ACS_URCORNER, ACS_LLCORNER,ACS_LRCORNER);
 	wborder(ev,ACS_VLINE,ACS_VLINE,ACS_HLINE,ACS_HLINE,
@@ -324,6 +377,9 @@ WINDOW *currwin, WINDOW *evtitle, WINDOW *todotitle)
 	wrefresh(cal);
 	wrefresh(ev);
 	wrefresh(todo);
+	wattroff(todo,COLOR_PAIR(1));
+	wattroff(ev,COLOR_PAIR(1));
+	wattroff(cal,COLOR_PAIR(1));
 	if (currwin == todo)
 		win = cal;
 	if (currwin == cal)
@@ -331,8 +387,12 @@ WINDOW *currwin, WINDOW *evtitle, WINDOW *todotitle)
 	if (currwin == ev)
 		win = todo;
 	wattron(win,A_BOLD);
+	init_pair(2,allopts[ACTIVEBORDFORE].colconst,
+		allopts[ACTIVEBORDBACK].colconst);
+	wattron(win,COLOR_PAIR(2));
 	wborder(win,ACS_VLINE,ACS_VLINE,ACS_HLINE,ACS_HLINE,
 		ACS_ULCORNER,ACS_URCORNER, ACS_LLCORNER,ACS_LRCORNER);
+	wattroff(win,COLOR_PAIR(2));
 	wattroff(win,A_BOLD);
 	wrefresh(win);
 	wborder(evtitle,' ',' ',' ',ACS_HLINE,' ',' ',' ',' ');
@@ -535,5 +595,46 @@ int center_line(WINDOW *win, int y, char *s)
 	getmaxyx(win,rows,cols);
 	len = strlen(s);
 	mvwprintw(win,y,cols/2-len/2,"%s",s);
+	return 0;
+}
+
+int normalize_colors()
+{
+	int i;
+
+	print_warn("WARNING:  Terminal does not support changing "
+		"colors; using built-in colors...");
+	for (i = 1; i < numopts; ++i) {
+		if (allopts[i].r > 0)
+			allopts[i].r = 1000;
+		if (allopts[i].g > 0)
+			allopts[i].g = 1000;
+		if (allopts[i].b > 0)
+			allopts[i].b = 1000;
+		if ((allopts[i].r == 0) && (allopts[i].g == 0) &&
+		(allopts[i].b == 0))
+			allopts[i].colconst = COLOR_BLACK;
+		if ((allopts[i].r == 1000) && (allopts[i].g == 0) &&
+		(allopts[i].b == 0))
+			allopts[i].colconst = COLOR_RED;
+		if ((allopts[i].r == 0) && (allopts[i].g == 1000) &&
+		(allopts[i].b == 0))
+			allopts[i].colconst = COLOR_GREEN;
+		if ((allopts[i].r == 0) && (allopts[i].g == 0) &&
+		(allopts[i].b == 1000))
+			allopts[i].colconst = COLOR_BLUE;
+		if ((allopts[i].r == 1000) && (allopts[i].g == 1000) &&
+		(allopts[i].b == 0))
+			allopts[i].colconst = COLOR_YELLOW;
+		if ((allopts[i].r == 0) && (allopts[i].g == 1000) &&
+		(allopts[i].b == 1000))
+			allopts[i].colconst = COLOR_CYAN;
+		if ((allopts[i].r == 1000) && (allopts[i].g == 1000) &&
+		(allopts[i].b == 1000))
+			allopts[i].colconst = COLOR_WHITE;
+		if ((allopts[i].r == 1000) && (allopts[i].g == 0) &&
+		(allopts[i].b == 1000))
+			allopts[i].colconst = COLOR_MAGENTA;
+	}
 	return 0;
 }

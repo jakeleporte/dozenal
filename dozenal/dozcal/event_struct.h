@@ -57,3 +57,45 @@ struct todo {
 	int completed;			/* '0' if not completed, 1 if completed */
 	int pergross;			/* 0-144 completed amount */
 };
+
+struct globopts {
+	char opt[12];
+	int r;
+	int g;
+	int b;
+	int colconst;
+};
+
+#define	NOCOLOR				0
+#define	WHOLEBG				1
+#define	CALBG					2
+#define	EVENTBG				3
+#define	TODOBG				4
+#define	CALTITLEFORE		5
+#define	CALTITLEBACK		6
+#define	CALWEEKFORE			7
+#define	CALWEEKBACK			8
+#define	CALFORE				9
+#define	CALBACK				10
+#define	TODOTITLEFORE		11
+#define	TODOTITLEBACK		12
+#define	TODOLINEFORE		13
+#define	TODOLINEBACK		14
+#define	TODOFORE				15
+#define	TODOBACK				16
+#define	EVTITLEFORE			17
+#define	EVTITLEBACK			18
+#define	EVLINEFORE			19
+#define	EVLINEBACK			20
+#define	EVFORE				21
+#define	EVBACK				22
+#define	TITLEFORE			23
+#define	TITLEBACK			24
+#define	BOTFORE				25
+#define	BOTBACK				26
+#define	WARNINGFORE			27
+#define	WARNINGBACK			28
+#define	INACTIVEBORDFORE	29
+#define	INACTIVEBORDBACK	30
+#define	ACTIVEBORDFORE		31
+#define	ACTIVEBORDBACK		32
