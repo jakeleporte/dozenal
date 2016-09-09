@@ -46,8 +46,12 @@ char *todo_form)
 	}
 	start_color();
 	if (can_change_color() == FALSE) {
-		normalize_colors();
+		equalize_colors();
+	} else {
+		define_colors();
 	}
+	init_pair(7,COLOR_WHITE,allopts[WHOLEBG].colconst);
+	wbkgd(stdscr,COLOR_PAIR(7));
 	refresh();
 	getmaxyx(stdscr,y,x);
 	ewidth = x - cwidth - 2;
@@ -57,11 +61,15 @@ char *todo_form)
 	make_botbar();
 	/* event window, event title, and content pad */
 	eventswin = newwin(y-3,x-cwidth,1,0);
+	init_pair(16,COLOR_WHITE,allopts[WHOLEEVBG].colconst);
+	wbkgd(eventswin,COLOR_PAIR(16));
 	evtitle = newwin(2,x-cwidth-2,2,1);
 	evconts = newpad((3*y),2*ewidth);
 	/* todo window, todo title, and content pad */
 	twidth = cwidth; theight = cheight+1;
 	todowin = newwin(y-2-theight,twidth,theight,x-twidth);
+	init_pair(17,COLOR_WHITE,allopts[WHOLETODOBG].colconst);
+	wbkgd(todowin,COLOR_PAIR(17));
 	todotitle = newwin(2,cwidth-2,theight+1,x-cwidth+1);
 	todoconts = newpad((3 * y),3*twidth);
 	/* calendar window and contents */
@@ -70,6 +78,7 @@ char *todo_form)
 	/* main event loop */
 	win = eventswin;
 	win = switch_win(calendar,eventswin,todowin,win,evtitle,todotitle);
+	datenum = change_cal(calendar,&currday,&mon,&year,7,evconts);
 	numrecs = load_evconts(evconts,eheight,ewidth,ev_form,date_form,
 		time_form,datenum);
 	numtrecs = load_todos(todoconts,theight,twidth,todo_form,date_form,
@@ -113,6 +122,7 @@ char *todo_form)
 				clear_warn();
 				win = switch_win(calendar,eventswin,todowin,win,
 					evtitle,todotitle);
+				datenum = change_cal(calendar,&currday,&mon,&year,0,evconts);
 				numrecs = load_evconts(evconts,eheight,ewidth,ev_form,date_form,
 					time_form,datenum);
 				numtrecs = load_todos(todoconts,theight,twidth,todo_form,
@@ -122,6 +132,7 @@ char *todo_form)
 				clear_warn();
 				win = switch_back_win(calendar,eventswin,todowin,win,
 					evtitle,todotitle);
+				datenum = change_cal(calendar,&currday,&mon,&year,0,evconts);
 				numrecs = load_evconts(evconts,eheight,ewidth,ev_form,date_form,
 					time_form,datenum);
 				numtrecs = load_todos(todoconts,theight,twidth,todo_form,
@@ -134,6 +145,7 @@ char *todo_form)
 				clear_warn();
 				win = switch_win(calendar,eventswin,todowin,win,
 					evtitle,todotitle);
+				datenum = change_cal(calendar,&currday,&mon,&year,0,evconts);
 				numrecs = load_evconts(evconts,eheight,ewidth,ev_form,date_form,
 					time_form,datenum);
 				numtrecs = load_todos(todoconts,theight,twidth,todo_form,
@@ -143,6 +155,7 @@ char *todo_form)
 				clear_warn();
 				win = switch_back_win(calendar,eventswin,todowin,win,
 					evtitle,todotitle);
+				datenum = change_cal(calendar,&currday,&mon,&year,0,evconts);
 				numrecs = load_evconts(evconts,eheight,ewidth,ev_form,date_form,
 					time_form,datenum);
 				numtrecs = load_todos(todoconts,theight,twidth,todo_form,
@@ -173,6 +186,7 @@ char *todo_form)
 				clear_warn();
 				win = switch_win(calendar,eventswin,todowin,win,
 					evtitle,todotitle);
+				datenum = change_cal(calendar,&currday,&mon,&year,0,evconts);
 				numrecs = load_evconts(evconts,eheight,ewidth,ev_form,date_form,
 					time_form,datenum);
 				numtrecs = load_todos(todoconts,theight,twidth,todo_form,
@@ -182,6 +196,7 @@ char *todo_form)
 				clear_warn();
 				win = switch_back_win(calendar,eventswin,todowin,win,
 					evtitle,todotitle);
+				datenum = change_cal(calendar,&currday,&mon,&year,0,evconts);
 				numrecs = load_evconts(evconts,eheight,ewidth,ev_form,date_form,
 					time_form,datenum);
 				numtrecs = load_todos(todoconts,theight,twidth,todo_form,
@@ -235,10 +250,15 @@ int print_warn(char *s)
 {
 	int x,y,i;
 
+	fprintf(stderr,"%d %d\n",allopts[WARNINGFORE].colconst,
+		allopts[WARNINGBACK].colconst);
 	getmaxyx(stdscr,y,x);
+	init_pair(5,allopts[WARNINGFORE].colconst,allopts[WARNINGBACK].colconst);
 	attron(A_BOLD);
+	attron(COLOR_PAIR(5));
 	mvprintw(y-1,0,"%s",s);
 	attroff(A_BOLD);
+	attroff(COLOR_PAIR(5));
 	return 0;
 }
 	
@@ -253,6 +273,10 @@ char *ev_form, char *date_form, char *time_form, int datenum)
 	getmaxyx(stdscr,y,x);
 	clear_evconts(evconts);
 	clear_events();
+	init_pair(14,allopts[EVFORE].colconst,allopts[EVBACK].colconst);
+	init_pair(15,COLOR_WHITE,allopts[EVENTBG].colconst);
+	wbkgd(evconts,COLOR_PAIR(15));
+	wattron(evconts,COLOR_PAIR(14));
 	for (i = 0; i < (recordnums-1); ++i) {
 		if (event_list[i].thisdate == (datenum-1)) {
 			fill_event(ev_form,i,date_form,time_form,outfile);
@@ -269,6 +293,7 @@ char *ev_form, char *date_form, char *time_form, int datenum)
 		mvwprintw(evconts,i+4+numnewlines,j,"-");
 	}
 	prefresh(evconts,0,0,5,3,eheight,ewidth-2);
+	wattroff(evconts,COLOR_PAIR(14));
 	return numrecs + numnewlines;
 }
 
@@ -282,6 +307,11 @@ char *todo_form, char *date_form, char *time_form)
 
 	getmaxyx(stdscr,y,x);
 	clear_todos();
+	init_pair(18,COLOR_WHITE,allopts[TODOBG].colconst);
+	wbkgd(todoconts,COLOR_PAIR(18));
+	init_pair(19,allopts[TODOFORE].colconst,
+		allopts[TODOBACK].colconst);
+	wattron(todoconts,COLOR_PAIR(19));
 	for (i = 0; i < (todonums-1); ++i) {
 			fill_todo(todo_form,i,date_form,time_form,outfile);
 	}
@@ -295,6 +325,7 @@ char *todo_form, char *date_form, char *time_form)
 		mvwprintw(todoconts,i+2+numnewlines,j,"-");
 	}
 	prefresh(todoconts,0,0,theight+3,x-twidth+2,y-4,x-3);
+	wattroff(todoconts,COLOR_PAIR(19));
 	return numtodos + numnewlines - 3;
 }
 
@@ -318,6 +349,8 @@ WINDOW *evtitle, WINDOW *todotitle)
 
 	init_pair(1,allopts[INACTIVEBORDFORE].colconst,
 		allopts[INACTIVEBORDBACK].colconst);
+	init_pair(6,COLOR_WHITE,allopts[CALBG].colconst);
+	wbkgd(cal,COLOR_PAIR(6));
 	wattron(todo,COLOR_PAIR(1));
 	wattron(ev,COLOR_PAIR(1));
 	wattron(cal,COLOR_PAIR(1));
@@ -348,10 +381,28 @@ WINDOW *evtitle, WINDOW *todotitle)
 	wattroff(win,COLOR_PAIR(2));
 	wattroff(win,A_BOLD);
 	wrefresh(win);
+	init_pair(12,allopts[EVLINEFORE].colconst,
+		allopts[EVLINEBACK].colconst);
+	wattron(evtitle,COLOR_PAIR(12));
 	wborder(evtitle,' ',' ',' ',ACS_HLINE,' ',' ',' ',' ');
+	wattroff(evtitle,COLOR_PAIR(12));
+	init_pair(13,allopts[TODOLINEFORE].colconst,
+		allopts[TODOLINEBACK].colconst);
+	wattron(todotitle,COLOR_PAIR(13));
 	wborder(todotitle,' ',' ',' ',ACS_HLINE,' ',' ',' ',' ');
+	wattroff(todotitle,COLOR_PAIR(13));
+	init_pair(10,allopts[EVTITLEFORE].colconst,
+		allopts[EVTITLEBACK].colconst);
+	wattron(evtitle,COLOR_PAIR(10));
+	wbkgd(evtitle,COLOR_PAIR(10));
 	center_line(evtitle,0,"Events");
+	wattroff(evtitle,COLOR_PAIR(10));
+	init_pair(11,allopts[TODOTITLEFORE].colconst,
+		allopts[TODOTITLEBACK].colconst);
+	wattron(todotitle,COLOR_PAIR(11));
+	wbkgd(todotitle,COLOR_PAIR(11));
 	center_line(todotitle,0,"Todos");
+	wattroff(todotitle,COLOR_PAIR(11));
 	wrefresh(evtitle);
 	wrefresh(todotitle);
 	return win;
@@ -365,6 +416,8 @@ WINDOW *currwin, WINDOW *evtitle, WINDOW *todotitle)
 
 	init_pair(1,allopts[INACTIVEBORDFORE].colconst,
 		allopts[INACTIVEBORDBACK].colconst);
+	init_pair(6,COLOR_WHITE,allopts[CALBG].colconst);
+	wbkgd(cal,COLOR_PAIR(6));
 	wattron(todo,COLOR_PAIR(1));
 	wattron(ev,COLOR_PAIR(1));
 	wattron(cal,COLOR_PAIR(1));
@@ -374,18 +427,18 @@ WINDOW *currwin, WINDOW *evtitle, WINDOW *todotitle)
 		ACS_ULCORNER,ACS_URCORNER, ACS_LLCORNER,ACS_LRCORNER);
 	wborder(todo,ACS_VLINE,ACS_VLINE,ACS_HLINE,ACS_HLINE,
 		ACS_ULCORNER,ACS_URCORNER, ACS_LLCORNER,ACS_LRCORNER);
-	wrefresh(cal);
-	wrefresh(ev);
-	wrefresh(todo);
 	wattroff(todo,COLOR_PAIR(1));
 	wattroff(ev,COLOR_PAIR(1));
 	wattroff(cal,COLOR_PAIR(1));
+	wrefresh(cal);
+	wrefresh(ev);
+	wrefresh(todo);
 	if (currwin == todo)
 		win = cal;
-	if (currwin == cal)
-		win = ev;
 	if (currwin == ev)
 		win = todo;
+	if (currwin == cal)
+		win = ev;
 	wattron(win,A_BOLD);
 	init_pair(2,allopts[ACTIVEBORDFORE].colconst,
 		allopts[ACTIVEBORDBACK].colconst);
@@ -395,10 +448,28 @@ WINDOW *currwin, WINDOW *evtitle, WINDOW *todotitle)
 	wattroff(win,COLOR_PAIR(2));
 	wattroff(win,A_BOLD);
 	wrefresh(win);
+	init_pair(12,allopts[EVLINEFORE].colconst,
+		allopts[EVLINEBACK].colconst);
+	wattron(evtitle,COLOR_PAIR(12));
 	wborder(evtitle,' ',' ',' ',ACS_HLINE,' ',' ',' ',' ');
+	wattroff(evtitle,COLOR_PAIR(12));
+	init_pair(13,allopts[TODOLINEFORE].colconst,
+		allopts[TODOLINEBACK].colconst);
+	wattron(todotitle,COLOR_PAIR(13));
 	wborder(todotitle,' ',' ',' ',ACS_HLINE,' ',' ',' ',' ');
+	wattroff(todotitle,COLOR_PAIR(13));
+	init_pair(10,allopts[EVTITLEFORE].colconst,
+		allopts[EVTITLEBACK].colconst);
+	wattron(evtitle,COLOR_PAIR(10));
+	wbkgd(evtitle,COLOR_PAIR(10));
 	center_line(evtitle,0,"Events");
+	wattroff(evtitle,COLOR_PAIR(10));
+	init_pair(11,allopts[TODOTITLEFORE].colconst,
+		allopts[TODOTITLEBACK].colconst);
+	wattron(todotitle,COLOR_PAIR(11));
+	wbkgd(todotitle,COLOR_PAIR(11));
 	center_line(todotitle,0,"Todos");
+	wattroff(todotitle,COLOR_PAIR(11));
 	wrefresh(evtitle);
 	wrefresh(todotitle);
 	return win;
@@ -413,12 +484,16 @@ int make_titlebar()
 	getmaxyx(stdscr,y,x);
 	lenlft = strlen(lftstr);
 	lenrgt = strlen(rgtstr);
-	attron(A_BOLD | A_REVERSE);
+	init_pair(3,allopts[TITLEFORE].colconst,
+		allopts[TITLEBACK].colconst);
+	attron(A_BOLD);
+	attron(COLOR_PAIR(3));
 	mvprintw(0,0,"%s",lftstr);
 	for (i = lenlft; i <= (x - lenrgt - 1); ++i)
 		mvprintw(0,i," ");
 	mvprintw(0,i,"%s",rgtstr);
-	attroff(A_BOLD | A_REVERSE);
+	attroff(A_BOLD);
+	attroff(COLOR_PAIR(3));
 	return 0;
 }
 
@@ -432,12 +507,16 @@ int make_botbar()
 	getmaxyx(stdscr,y,x);
 	lenlft = strlen(lftstr);
 	lenrgt = strlen(rgtstr);
-	attron(A_BOLD | A_REVERSE);
+	init_pair(4,allopts[BOTFORE].colconst,
+		allopts[BOTBACK].colconst);
+	attron(A_BOLD);
+	attron(COLOR_PAIR(4));
 	mvprintw(y-2,0,"%s",lftstr);
 	for (i = lenlft; i <= (x - lenrgt - 1); ++i)
 		mvprintw(y-2,i," ");
 	mvprintw(y-2,i,"%s",rgtstr);
-	attroff(A_BOLD | A_REVERSE);
+	attroff(COLOR_PAIR(4));
+	attroff(A_BOLD);
 	return 0;
 }
 
@@ -497,6 +576,8 @@ WINDOW *evconts)
 		hoffset = 2 + ((date->tm_wday - 1 - fdow) * 3);
 	else
 		hoffset = 2 + (3 * fdow);
+	init_pair(20,allopts[CALFORE].colconst,allopts[CALBACK].colconst);
+	wattron(win,COLOR_PAIR(20));
 	while(date->tm_mon == mon) {
 		buf[0] = '\0';
 		if ((date->tm_wday % 7) == fdow) {
@@ -519,6 +600,7 @@ WINDOW *evconts)
 		}
 		date->tm_mday +=1; mktime(date);
 	}
+	wattroff(win,COLOR_PAIR(20));
 	date->tm_mday = currday + 1; date->tm_mon -= 1; mktime(date);
 	return get_datenum(date);
 }
@@ -528,6 +610,9 @@ int print_monline(WINDOW *win,int mon, int year)
 	char month[24];
 	char buf[5];
 
+	init_pair(9,allopts[CALTITLEFORE].colconst,
+		allopts[CALTITLEBACK].colconst);
+	wattron(win,COLOR_PAIR(9));
 	dectodoz(buf,(double)year);
 	if (mon == 0) {
 		sprintf(month,"%s %s","January",buf);
@@ -566,11 +651,15 @@ int print_monline(WINDOW *win,int mon, int year)
 		sprintf(month,"%s %s","December",buf);
 		center_line(win,1,month);
 	}
+	wattroff(win,COLOR_PAIR(9));
 	return 0;
 }
 
 int print_wdayline(WINDOW *win,int fdow)
 {
+	init_pair(8,allopts[CALWEEKFORE].colconst,
+		allopts[CALWEEKBACK].colconst);
+	wattron(win,COLOR_PAIR(8));
 	if (fdow == 0)
 		mvwprintw(win,2,2,"Su Mo Tu We Th Fr Sa");
 	else if (fdow == 1)
@@ -585,6 +674,7 @@ int print_wdayline(WINDOW *win,int fdow)
 		mvwprintw(win,2,2,"Fr Sa Su Mo Tu We Th");
 	else if (fdow == 6)
 		mvwprintw(win,2,2,"Sa Su Mo Tu We Th Fr");
+	wattroff(win,COLOR_PAIR(8));
 	return 0;
 }
 
@@ -598,12 +688,10 @@ int center_line(WINDOW *win, int y, char *s)
 	return 0;
 }
 
-int normalize_colors()
+int equalize_colors()
 {
 	int i;
 
-	print_warn("WARNING:  Terminal does not support changing "
-		"colors; using built-in colors...");
 	for (i = 1; i < numopts; ++i) {
 		if (allopts[i].r > 0)
 			allopts[i].r = 1000;
@@ -636,5 +724,108 @@ int normalize_colors()
 		(allopts[i].b == 1000))
 			allopts[i].colconst = COLOR_MAGENTA;
 	}
+	print_warn("WARNING:  Terminal does not support changing "
+		"colors; using built-in colors...");
+	return 0;
+}
+
+int define_colors()
+{
+	init_color(COL_WHOLEBG,allopts[WHOLEBG].r,
+		allopts[WHOLEBG].g,allopts[WHOLEBG].b);
+	allopts[WHOLEBG].colconst = COL_WHOLEBG;
+	init_color(COL_CALBG,allopts[CALBG].r,
+		allopts[CALBG].g,allopts[CALBG].b);
+	allopts[CALBG].colconst = COL_CALBG;
+	init_color(COL_EVENTBG,allopts[EVENTBG].r,
+		allopts[EVENTBG].g,allopts[EVENTBG].b);
+	allopts[EVENTBG].colconst = COL_EVENTBG;
+	init_color(COL_TODOBG,allopts[TODOBG].r,
+		allopts[TODOBG].g,allopts[TODOBG].b);
+	allopts[TODOBG].colconst = COL_TODOBG;
+	init_color(COL_CALTITLEFORE,allopts[CALTITLEFORE].r,
+		allopts[CALTITLEFORE].g,allopts[CALTITLEFORE].b);
+	allopts[CALTITLEFORE].colconst = COL_CALTITLEFORE;
+	init_color(COL_CALTITLEBACK,allopts[CALTITLEBACK].r,
+		allopts[CALTITLEBACK].g,allopts[CALTITLEBACK].b);
+	allopts[CALTITLEBACK].colconst = COL_CALTITLEBACK;
+	init_color(COL_CALWEEKFORE,allopts[CALWEEKFORE].r,
+		allopts[CALWEEKFORE].g,allopts[CALWEEKFORE].b);
+	allopts[CALWEEKFORE].colconst = COL_CALWEEKFORE;
+	init_color(COL_CALWEEKBACK,allopts[CALWEEKBACK].r,
+		allopts[CALWEEKBACK].g,allopts[CALWEEKBACK].b);
+	allopts[CALWEEKBACK].colconst = COL_CALWEEKBACK;
+	init_color(COL_CALFORE,allopts[CALFORE].r,
+		allopts[CALFORE].g,allopts[CALFORE].b);
+	allopts[CALFORE].colconst = COL_CALFORE;
+	init_color(COL_CALBACK,allopts[CALBACK].r,
+		allopts[CALBACK].g,allopts[CALBACK].b);
+	allopts[CALBACK].colconst = COL_CALBACK;
+	init_color(COL_TODOTITLEFORE,allopts[TODOTITLEFORE].r,
+		allopts[TODOTITLEFORE].g,allopts[TODOTITLEFORE].b);
+	allopts[TODOTITLEFORE].colconst = COL_TODOTITLEFORE;
+	init_color(COL_TODOTITLEBACK,allopts[TODOTITLEBACK].r,
+		allopts[TODOTITLEBACK].g,allopts[TODOTITLEBACK].b);
+	allopts[TODOTITLEBACK].colconst = COL_TODOTITLEBACK;
+	init_color(COL_TODOLINEFORE,allopts[TODOLINEFORE].r,
+		allopts[TODOLINEFORE].g,allopts[TODOLINEFORE].b);
+	allopts[TODOLINEFORE].colconst = COL_TODOLINEFORE;
+	init_color(COL_TODOLINEBACK,allopts[TODOLINEBACK].r,
+		allopts[TODOLINEBACK].g,allopts[TODOLINEBACK].b);
+	allopts[TODOLINEBACK].colconst = COL_TODOLINEBACK;
+	init_color(COL_TODOFORE,allopts[TODOFORE].r,
+		allopts[TODOFORE].g,allopts[TODOFORE].b);
+	allopts[TODOFORE].colconst = COL_TODOFORE;
+	init_color(COL_TODOBACK,allopts[TODOBACK].r,
+		allopts[TODOBACK].g,allopts[TODOBACK].b);
+	allopts[TODOBACK].colconst = COL_TODOBACK;
+	init_color(COL_EVTITLEFORE,allopts[EVTITLEFORE].r,
+		allopts[EVTITLEFORE].g,allopts[EVTITLEFORE].b);
+	allopts[EVTITLEFORE].colconst = COL_EVTITLEFORE;
+	init_color(COL_EVTITLEBACK,allopts[EVTITLEBACK].r,
+		allopts[EVTITLEBACK].g,allopts[EVTITLEBACK].b);
+	allopts[EVTITLEBACK].colconst = COL_EVTITLEBACK;
+	init_color(COL_EVLINEFORE,allopts[EVLINEFORE].r,
+		allopts[EVLINEFORE].g,allopts[EVLINEFORE].b);
+	allopts[EVLINEFORE].colconst = COL_EVLINEFORE;
+	init_color(COL_EVLINEBACK,allopts[EVLINEBACK].r,
+		allopts[EVLINEBACK].g,allopts[EVLINEBACK].b);
+	allopts[EVLINEBACK].colconst = COL_EVLINEBACK;
+	init_color(COL_EVFORE,allopts[EVFORE].r,
+		allopts[EVFORE].g,allopts[EVFORE].b);
+	allopts[EVFORE].colconst = COL_EVFORE;
+	init_color(COL_EVBACK,allopts[EVBACK].r,
+		allopts[EVBACK].g,allopts[EVBACK].b);
+	allopts[EVBACK].colconst = COL_EVBACK;
+	init_color(COL_TITLEFORE,allopts[TITLEFORE].r,
+		allopts[TITLEFORE].g,allopts[TITLEFORE].b);
+	allopts[TITLEFORE].colconst = COL_TITLEFORE;
+	init_color(COL_TITLEBACK,allopts[TITLEBACK].r,
+		allopts[TITLEBACK].g,allopts[TITLEBACK].b);
+	allopts[TITLEBACK].colconst = COL_TITLEBACK;
+	init_color(COL_BOTFORE,allopts[BOTFORE].r,
+		allopts[BOTFORE].g,allopts[BOTFORE].b);
+	allopts[BOTFORE].colconst = COL_BOTFORE;
+	init_color(COL_BOTBACK,allopts[BOTBACK].r,
+		allopts[BOTBACK].g,allopts[BOTBACK].b);
+	allopts[BOTBACK].colconst = COL_BOTBACK;
+	init_color(COL_WARNINGFORE,allopts[WARNINGFORE].r,
+		allopts[WARNINGFORE].g,allopts[WARNINGFORE].b);
+	allopts[WARNINGFORE].colconst = COL_WARNINGFORE;
+	init_color(COL_WARNINGBACK,allopts[WARNINGBACK].r,
+		allopts[WARNINGBACK].g,allopts[WARNINGBACK].b);
+	allopts[WARNINGBACK].colconst = COL_WARNINGBACK;
+	init_color(COL_INACTIVEBORDFORE,allopts[INACTIVEBORDFORE].r,
+		allopts[INACTIVEBORDFORE].g,allopts[INACTIVEBORDFORE].b);
+	allopts[INACTIVEBORDFORE].colconst = COL_INACTIVEBORDFORE;
+	init_color(COL_INACTIVEBORDBACK,allopts[INACTIVEBORDBACK].r,
+		allopts[INACTIVEBORDBACK].g,allopts[INACTIVEBORDBACK].b);
+	allopts[INACTIVEBORDBACK].colconst = COL_INACTIVEBORDBACK;
+	init_color(COL_ACTIVEBORDFORE,allopts[ACTIVEBORDFORE].r,
+		allopts[ACTIVEBORDFORE].g,allopts[ACTIVEBORDFORE].b);
+	allopts[ACTIVEBORDFORE].colconst = COL_ACTIVEBORDFORE;
+	init_color(COL_ACTIVEBORDBACK,allopts[ACTIVEBORDBACK].r,
+		allopts[ACTIVEBORDBACK].g,allopts[ACTIVEBORDBACK].b);
+	allopts[ACTIVEBORDBACK].colconst = COL_ACTIVEBORDBACK;
 	return 0;
 }

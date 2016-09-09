@@ -59,7 +59,7 @@ struct todo {
 };
 
 struct globopts {
-	char opt[12];
+	char opt[36];
 	int r;
 	int g;
 	int b;
@@ -99,3 +99,39 @@ struct globopts {
 #define	INACTIVEBORDBACK	30
 #define	ACTIVEBORDFORE		31
 #define	ACTIVEBORDBACK		32
+#define	WHOLEEVBG			33
+#define	WHOLETODOBG			34
+#define	COL_WHOLEBG				101
+#define	COL_CALBG					102
+#define	COL_EVENTBG				103
+#define	COL_TODOBG				104
+#define	COL_CALTITLEFORE		105
+#define	COL_CALTITLEBACK		106
+#define	COL_CALWEEKFORE			107
+#define	COL_CALWEEKBACK			108
+#define	COL_CALFORE				109
+#define	COL_CALBACK				110
+#define	COL_TODOTITLEFORE		111
+#define	COL_TODOTITLEBACK		112
+#define	COL_TODOLINEFORE		113
+#define	COL_TODOLINEBACK		114
+#define	COL_TODOFORE				115
+#define	COL_TODOBACK				116
+#define	COL_EVTITLEFORE			117
+#define	COL_EVTITLEBACK			118
+#define	COL_EVLINEFORE			119
+#define	COL_EVLINEBACK			120
+#define	COL_EVFORE				121
+#define	COL_EVBACK				122
+#define	COL_TITLEFORE			123
+#define	COL_TITLEBACK			124
+#define	COL_BOTFORE				125
+#define	COL_BOTBACK				126
+#define	COL_WARNINGFORE			127
+#define	COL_WARNINGBACK			128
+#define	COL_INACTIVEBORDFORE	129
+#define	COL_INACTIVEBORDBACK	130
+#define	COL_ACTIVEBORDFORE		131
+#define	COL_ACTIVEBORDBACK		132
+#define	COL_WHOLEEVBG			133
+#define	COL_WHOLETODOBG			134
