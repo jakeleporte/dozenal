@@ -127,50 +127,148 @@ int proc_options(char *s, int *moonphases, char **nat, char **relig,
 		} else if (strstr(line,"WHOLE_BG")) {
 			ind = find_color_ind(line);
 			holder = get_impstr(line);
-			proc_color(line+holder,ind);
+			proc_color(line+holder,line,ind);
+		} else if (strstr(line,"CALENDAR_BG")) {
+			ind = find_color_ind(line);
+			holder = get_impstr(line);
+			proc_color(line+holder,line,ind);
+		} else if (strstr(line,"EVENT_BG")) {
+			ind = find_color_ind(line);
+			holder = get_impstr(line);
+			proc_color(line+holder,line,ind);
+		} else if (strstr(line,"TODO_BG")) {
+			ind = find_color_ind(line);
+			holder = get_impstr(line);
+			proc_color(line+holder,line,ind);
+		} else if (strstr(line,"CAL_TITLE_FORE")) {
+			ind = find_color_ind(line);
+			holder = get_impstr(line);
+			proc_color(line+holder,line,ind);
+		} else if (strstr(line,"CAL_TITLE_BACK")) {
+			ind = find_color_ind(line);
+			holder = get_impstr(line);
+			proc_color(line+holder,line,ind);
+		} else if (strstr(line,"CAL_WEEK_FORE")) {
+			ind = find_color_ind(line);
+			holder = get_impstr(line);
+			proc_color(line+holder,line,ind);
+		} else if (strstr(line,"CAL_WEEK_BACK")) {
+			ind = find_color_ind(line);
+			holder = get_impstr(line);
+			proc_color(line+holder,line,ind);
+		} else if (strstr(line,"TODO_TITLE_FORE")) {
+			ind = find_color_ind(line);
+			holder = get_impstr(line);
+			proc_color(line+holder,line,ind);
+		} else if (strstr(line,"TODO_TITLE_BACK")) {
+			ind = find_color_ind(line);
+			holder = get_impstr(line);
+			proc_color(line+holder,line,ind);
+		} else if (strstr(line,"TODO_LINE_FORE")) {
+			ind = find_color_ind(line);
+			holder = get_impstr(line);
+			proc_color(line+holder,line,ind);
+		} else if (strstr(line,"TODO_LINE_BACK")) {
+			ind = find_color_ind(line);
+			holder = get_impstr(line);
+			proc_color(line+holder,line,ind);
+		} else if (strstr(line,"TODO_FORE")) {
+			ind = find_color_ind(line);
+			holder = get_impstr(line);
+			proc_color(line+holder,line,ind);
+		} else if (strstr(line,"TODO_BACK")) {
+			ind = find_color_ind(line);
+			holder = get_impstr(line);
+			proc_color(line+holder,line,ind);
+		} else if (strstr(line,"EV_TITLE_FORE")) {
+			ind = find_color_ind(line);
+			holder = get_impstr(line);
+			proc_color(line+holder,line,ind);
+		} else if (strstr(line,"EV_TITLE_BACK")) {
+			ind = find_color_ind(line);
+			holder = get_impstr(line);
+			proc_color(line+holder,line,ind);
+		} else if (strstr(line,"EV_LINE_FORE")) {
+			ind = find_color_ind(line);
+			holder = get_impstr(line);
+			proc_color(line+holder,line,ind);
+		} else if (strstr(line,"EV_LINE_BACK")) {
+			ind = find_color_ind(line);
+			holder = get_impstr(line);
+			proc_color(line+holder,line,ind);
+		} else if (strstr(line,"EV_FORE")) {
+			ind = find_color_ind(line);
+			holder = get_impstr(line);
+			proc_color(line+holder,line,ind);
+		} else if (strstr(line,"EV_BACK")) {
+			ind = find_color_ind(line);
+			holder = get_impstr(line);
+			proc_color(line+holder,line,ind);
+		} else if (strstr(line,"TITLE_FORE")) {
+			ind = find_color_ind(line);
+			holder = get_impstr(line);
+			proc_color(line+holder,line,ind);
+		} else if (strstr(line,"TITLE_BACK")) {
+			ind = find_color_ind(line);
+			holder = get_impstr(line);
+			proc_color(line+holder,line,ind);
+		} else if (strstr(line,"BOT_FORE")) {
+			ind = find_color_ind(line);
+			holder = get_impstr(line);
+			proc_color(line+holder,line,ind);
+		} else if (strstr(line,"BOT_BACK")) {
+			ind = find_color_ind(line);
+			holder = get_impstr(line);
+			proc_color(line+holder,line,ind);
+		} else if (strstr(line,"WARNING_FORE")) {
+			ind = find_color_ind(line);
+			holder = get_impstr(line);
+			proc_color(line+holder,line,ind);
+		} else if (strstr(line,"WARNING_BACK")) {
+			ind = find_color_ind(line);
+			holder = get_impstr(line);
+			proc_color(line+holder,line,ind);
+		} else if (strstr(line,"INACTIVE_BORDER_FORE")) {
+			ind = find_color_ind(line);
+			holder = get_impstr(line);
+			proc_color(line+holder,line,ind);
+		} else if (strstr(line,"INACTIVE_BORDER_BACK")) {
+			ind = find_color_ind(line);
+			holder = get_impstr(line);
+			proc_color(line+holder,line,ind);
+		} else if (strstr(line,"ACTIVE_BORDER_FORE")) {
+			ind = find_color_ind(line);
+			holder = get_impstr(line);
+			proc_color(line+holder,line,ind);
+		} else if (strstr(line,"ACTIVE_BORDER_BACK")) {
+			ind = find_color_ind(line);
+			holder = get_impstr(line);
+			proc_color(line+holder,line,ind);
+		} else if (strstr(line,"WHOLE_EV_BG")) {
+			ind = find_color_ind(line);
+			holder = get_impstr(line);
+			proc_color(line+holder,line,ind);
+		} else if (strstr(line,"WHOLE_TODO_BG")) {
+			ind = find_color_ind(line);
+			holder = get_impstr(line);
+			proc_color(line+holder,line,ind);
+		} else if (strstr(line,"CAL_FORE")) {
+			ind = find_color_ind(line);
+			holder = get_impstr(line);
+			proc_color(line+holder,line,ind);
+		} else if (strstr(line,"CAL_BACK")) {
+			ind = find_color_ind(line);
+			holder = get_impstr(line);
+			proc_color(line+holder,line,ind);
 		}
-/*	strcpy(allopts[NOCOLOR].opt,"NOCOLOR");
-	strcpy(allopts[WHOLEBG].opt,"WHOLE_BG");
-	strcpy(allopts[CALBG].opt,"CALENDAR_BG");
-	strcpy(allopts[EVENTBG].opt,"EVENT_BG");
-	strcpy(allopts[TODOBG].opt,"TODO_BG");
-	strcpy(allopts[CALTITLEFORE].opt,"CAL_TITLE_FORE");
-	strcpy(allopts[CALTITLEBACK].opt,"CAL_TITLE_BACK");
-	strcpy(allopts[CALWEEKFORE].opt,"CAL_WEEK_FORE");
-	strcpy(allopts[CALWEEKBACK].opt,"CAL_WEEK_BACK");
-	strcpy(allopts[TODOTITLEFORE].opt,"TODO_TITLE_FORE");
-	strcpy(allopts[TODOTITLEBACK].opt,"TODO_TITLE_BACK");
-	strcpy(allopts[TODOLINEFORE].opt,"TODO_LINE_FORE");
-	strcpy(allopts[TODOLINEBACK].opt,"TODO_LINE_BACK");
-	strcpy(allopts[TODOFORE].opt,"TODO_FORE");
-	strcpy(allopts[TODOBACK].opt,"TODO_BACK");
-	strcpy(allopts[EVTITLEFORE].opt,"EV_TITLE_FORE");
-	strcpy(allopts[EVTITLEBACK].opt,"EV_TITLE_BACK");
-	strcpy(allopts[EVLINEFORE].opt,"EV_LINE_FORE");
-	strcpy(allopts[EVLINEBACK].opt,"EV_LINE_BACK");
-	strcpy(allopts[EVFORE].opt,"EV_FORE");
-	strcpy(allopts[EVBACK].opt,"EV_BACK");
-	strcpy(allopts[TITLEFORE].opt,"TITLE_FORE");
-	strcpy(allopts[TITLEBACK].opt,"TITLE_BACK");
-	strcpy(allopts[BOTFORE].opt,"BOT_FORE");
-	strcpy(allopts[BOTBACK].opt,"BOT_BACK");
-	strcpy(allopts[WARNINGFORE].opt,"WARNING_FORE");
-	strcpy(allopts[WARNINGBACK].opt,"WARNING_BACK");
-	strcpy(allopts[INACTIVEBORDFORE].opt,"INACTIVE_BORDER_FORE");
-	strcpy(allopts[INACTIVEBORDBACK].opt,"INACTIVE_BORDER_BACK");
-	strcpy(allopts[ACTIVEBORDFORE].opt,"ACTIVE_BORDER_FORE");
-	strcpy(allopts[ACTIVEBORDBACK].opt,"ACTIVE_BORDER_BACK");
-	strcpy(allopts[WHOLEEVBG].opt,"WHOLE_EV_BG");
-	strcpy(allopts[WHOLETODOBG].opt,"WHOLE_TODO_BG");
-	strcpy(allopts[CALFORE].opt,"CAL_FORE");
-	strcpy(allopts[CALBACK].opt,"CAL_BACK");*/
+/*	strcpy(allopts[NOCOLOR].opt,"NOCOLOR"); */
 	}
 	free(line);
 	fclose(fp);
 	return 0;
 }
 
-int proc_color(char *s, int ind)
+int proc_color(char *s, char *t, int ind)
 {
 	int result; int errornum;
 	int r, g, b;
@@ -196,6 +294,7 @@ int proc_color(char *s, int ind)
 	} else if (strstr(s,"cyan")) {
 		allopts[ind].r = 0; allopts[ind].g = 1000; allopts[ind].b = 1000;
 	} else {
+		upper_str(s);
 		if ((errornum = regcomp(&regone,colpat,0)) != 0) {
 			regerror(errornum,&regone,err,MAX_ERR_LENGTH);
 			return -1;
@@ -203,7 +302,7 @@ int proc_color(char *s, int ind)
 		result = regexec(&regone,s,4,pmatch,0);
 		regfree(&regone);
 		if (result != 0) {		/* no match */
-			if (strstr(s,"FORE")) {
+			if (strstr(t,"FORE")) {
 				allopts[ind].r = 1000; allopts[ind].g = 1000;
 				allopts[ind].b = 1000;
 			} else {
@@ -231,7 +330,7 @@ int find_color_ind(char *s)
 {
 	int i;
 	int stop;
-	char buffer[SHORTLEN];
+	char buffer[SHORTLEN+SHORTLEN];
 
 	for (i = 0; s[i] != ':'; ++i)
 		buffer[i] = s[i];

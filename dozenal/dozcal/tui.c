@@ -691,12 +691,18 @@ int equalize_colors()
 	int i;
 
 	for (i = 1; i < numopts; ++i) {
-		if (allopts[i].r > 0)
+		if (allopts[i].r > 499)
 			allopts[i].r = 1000;
-		if (allopts[i].g > 0)
+		else
+			allopts[i].r = 0;
+		if (allopts[i].g > 499)
 			allopts[i].g = 1000;
-		if (allopts[i].b > 0)
+		else
+			allopts[i].g = 0;
+		if (allopts[i].b > 499)
 			allopts[i].b = 1000;
+		else
+			allopts[i].b = 0;
 		if ((allopts[i].r == 0) && (allopts[i].g == 0) &&
 		(allopts[i].b == 0))
 			allopts[i].colconst = COLOR_BLACK;

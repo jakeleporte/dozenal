@@ -206,6 +206,16 @@ int lower_str(char *s)
 	return 0;
 }
 
+int upper_str(char *s)
+{
+	int i;
+
+	for (i = 0; s[i] != '\0'; ++i) {
+		s[i] = toupper(s[i]);
+	}
+	return 0;
+}
+
 int add_event(int starttime, int endtime, int thisdate,
 	char *title, char *class, char *categories, char
 	*location)
