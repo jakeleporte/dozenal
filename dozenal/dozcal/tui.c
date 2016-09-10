@@ -250,8 +250,6 @@ int print_warn(char *s)
 {
 	int x,y,i;
 
-	fprintf(stderr,"%d %d\n",allopts[WARNINGFORE].colconst,
-		allopts[WARNINGBACK].colconst);
 	getmaxyx(stdscr,y,x);
 	init_pair(5,allopts[WARNINGFORE].colconst,allopts[WARNINGBACK].colconst);
 	attron(A_BOLD);
