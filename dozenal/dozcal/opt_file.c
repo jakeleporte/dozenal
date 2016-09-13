@@ -260,8 +260,9 @@ int proc_options(char *s, int *moonphases, char **nat, char **relig,
 			ind = find_color_ind(line);
 			holder = get_impstr(line);
 			proc_color(line+holder,line,ind);
+		} else if (strstr(line,"NOCOLOR")) {
+			allopts[NOCOLOR].colconst = -1;
 		}
-/*	strcpy(allopts[NOCOLOR].opt,"NOCOLOR"); */
 	}
 	free(line);
 	fclose(fp);
@@ -293,6 +294,10 @@ int proc_color(char *s, char *t, int ind)
 		allopts[ind].r = 1000; allopts[ind].g = 0; allopts[ind].b = 1000;
 	} else if (strstr(s,"cyan")) {
 		allopts[ind].r = 0; allopts[ind].g = 1000; allopts[ind].b = 1000;
+	} else if (strstr(s,"black")) {
+		allopts[ind].r = 0; allopts[ind].g = 0; allopts[ind].b = 0;
+	} else if (strstr(s,"white")) {
+		allopts[ind].r = 1000; allopts[ind].g = 1000; allopts[ind].b = 1000;
 	} else {
 		upper_str(s);
 		if ((errornum = regcomp(&regone,colpat,0)) != 0) {

@@ -44,14 +44,15 @@ char *todo_form)
 		print_warn("ERROR:  Terminal does not support color; "
 			"using default colors...");
 	}
-	start_color();
+	if (allopts[NOCOLOR].colconst != -1)
+		start_color();
 	if (can_change_color() == FALSE) {
 		equalize_colors();
 	} else {
 		define_colors();
 	}
 	init_pair(7,COLOR_WHITE,allopts[WHOLEBG].colconst);
-	wbkgd(stdscr,COLOR_PAIR(7));
+//	wbkgd(stdscr,COLOR_PAIR(7));
 	refresh();
 	getmaxyx(stdscr,y,x);
 	ewidth = x - cwidth - 2;
@@ -240,9 +241,14 @@ int clear_warn()
 {
 	int x,y,i;
 
+	init_pair(5,allopts[WARNINGFORE].colconst,allopts[WARNINGBACK].colconst);
 	getmaxyx(stdscr,y,x);
+	attron(A_BOLD);
+	attron(COLOR_PAIR(5));
 	for (i = 0; i <= x; ++i)
 		mvprintw(y-1,i," ");
+	attroff(COLOR_PAIR(5));
+	attroff(A_BOLD);
 	return 0;
 }
 
@@ -255,8 +261,8 @@ int print_warn(char *s)
 	attron(A_BOLD);
 	attron(COLOR_PAIR(5));
 	mvprintw(y-1,0,"%s",s);
-	attroff(A_BOLD);
 	attroff(COLOR_PAIR(5));
+	attroff(A_BOLD);
 	return 0;
 }
 	
@@ -384,6 +390,9 @@ WINDOW *evtitle, WINDOW *todotitle)
 	wattron(evtitle,COLOR_PAIR(12));
 	wborder(evtitle,' ',' ',' ',ACS_HLINE,' ',' ',' ',' ');
 	wattroff(evtitle,COLOR_PAIR(12));
+	init_pair(11,allopts[TODOTITLEFORE].colconst,
+		allopts[TODOTITLEBACK].colconst);
+	wbkgd(todotitle,COLOR_PAIR(11));
 	init_pair(13,allopts[TODOLINEFORE].colconst,
 		allopts[TODOLINEBACK].colconst);
 	wattron(todotitle,COLOR_PAIR(13));
@@ -392,13 +401,9 @@ WINDOW *evtitle, WINDOW *todotitle)
 	init_pair(10,allopts[EVTITLEFORE].colconst,
 		allopts[EVTITLEBACK].colconst);
 	wattron(evtitle,COLOR_PAIR(10));
-	wbkgd(evtitle,COLOR_PAIR(10));
 	center_line(evtitle,0,"Events");
 	wattroff(evtitle,COLOR_PAIR(10));
-	init_pair(11,allopts[TODOTITLEFORE].colconst,
-		allopts[TODOTITLEBACK].colconst);
 	wattron(todotitle,COLOR_PAIR(11));
-	wbkgd(todotitle,COLOR_PAIR(11));
 	center_line(todotitle,0,"Todos");
 	wattroff(todotitle,COLOR_PAIR(11));
 	wrefresh(evtitle);
@@ -451,6 +456,9 @@ WINDOW *currwin, WINDOW *evtitle, WINDOW *todotitle)
 	wattron(evtitle,COLOR_PAIR(12));
 	wborder(evtitle,' ',' ',' ',ACS_HLINE,' ',' ',' ',' ');
 	wattroff(evtitle,COLOR_PAIR(12));
+	init_pair(11,allopts[TODOTITLEFORE].colconst,
+		allopts[TODOTITLEBACK].colconst);
+	wbkgd(todotitle,COLOR_PAIR(11));
 	init_pair(13,allopts[TODOLINEFORE].colconst,
 		allopts[TODOLINEBACK].colconst);
 	wattron(todotitle,COLOR_PAIR(13));
@@ -459,13 +467,9 @@ WINDOW *currwin, WINDOW *evtitle, WINDOW *todotitle)
 	init_pair(10,allopts[EVTITLEFORE].colconst,
 		allopts[EVTITLEBACK].colconst);
 	wattron(evtitle,COLOR_PAIR(10));
-	wbkgd(evtitle,COLOR_PAIR(10));
 	center_line(evtitle,0,"Events");
 	wattroff(evtitle,COLOR_PAIR(10));
-	init_pair(11,allopts[TODOTITLEFORE].colconst,
-		allopts[TODOTITLEBACK].colconst);
 	wattron(todotitle,COLOR_PAIR(11));
-	wbkgd(todotitle,COLOR_PAIR(11));
 	center_line(todotitle,0,"Todos");
 	wattroff(todotitle,COLOR_PAIR(11));
 	wrefresh(evtitle);

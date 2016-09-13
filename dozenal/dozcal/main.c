@@ -194,6 +194,7 @@ int main(int argc, char **argv)
 			usetui = 1;
 			break;
 		case 'C':
+			allopts[0].colconst = -1;
 			break;
 		case 'E':
 			ifevent = 0;
