@@ -1,6 +1,7 @@
 /* + AMDG */
 
 #include<stdio.h>
+#include<stdlib.h>
 #include<ncurses.h>
 #include<time.h>
 #include<string.h>
@@ -283,7 +284,7 @@ char *ev_form, char *date_form, char *time_form, int datenum)
 	wattron(evconts,COLOR_PAIR(14));
 	for (i = 0; i < (recordnums-1); ++i) {
 		if (event_list[i].thisdate == (datenum-1)) {
-			fill_event(ev_form,i,date_form,time_form,outfile);
+			fill_event(ev_form,i,date_form,time_form,stdout);
 			numrecs++;
 		}
 	}
@@ -317,7 +318,7 @@ char *todo_form, char *date_form, char *time_form)
 		allopts[TODOBACK].colconst);
 	wattron(todoconts,COLOR_PAIR(19));
 	for (i = 0; i < (todonums-1); ++i) {
-			fill_todo(todo_form,i,date_form,time_form,outfile);
+		fill_todo(todo_form,i,date_form,time_form,stdout);
 	}
 	for (i = 1; i < numtodos; ++i) {
 		numnewlines += countchars(*(todolines+i),'\n');

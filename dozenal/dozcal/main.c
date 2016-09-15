@@ -95,6 +95,7 @@ int main(int argc, char **argv)
 	int usetui = 0;
 
 	build_globopts_struct();
+	allopts[NOCOLOR].colconst = 1;
 	if ((evlines = malloc(1 * sizeof(char *))) == NULL) {
 		fprintf(stderr,"dozcal:  insufficient memory to store "
 			"the formatted event lines\n");
@@ -194,7 +195,7 @@ int main(int argc, char **argv)
 			usetui = 1;
 			break;
 		case 'C':
-			allopts[0].colconst = -1;
+			allopts[NOCOLOR].colconst = -1;
 			break;
 		case 'E':
 			ifevent = 0;
@@ -372,7 +373,7 @@ int main(int argc, char **argv)
 	if (usetui == 1) {
 		qsort(todo_list,todonums-1,sizeof(struct todo),todocomp);
 		build_tui(ev_form,date_form,time_form,todo_form);
-		exit(EXIT_SUCCESS);
+		goto clean;
 	}
 	if (ifevent == 1) {
 		for (i = 0; i < (recordnums-1); ++i) {
@@ -393,6 +394,7 @@ int main(int argc, char **argv)
 			}
 		}
 	}
+	clean:
 	free(event_list);
 	free(todo_list);
 	free(ev_form);
@@ -409,6 +411,7 @@ int main(int argc, char **argv)
 	for (i = 1; i < numtodos; ++i)
 		free(*(todolines+i));
 	free(todolines);
+	free(allopts);
 	return 0;
 }
 
@@ -619,6 +622,10 @@ int print_events()
 
 int clear_events()
 {
+	int i;
+
+	for (i = 1; i < (numevs); ++i)
+		free(*(evlines+i));
 	numevs = 1;
 	if ((evlines = realloc(evlines,(1 * sizeof(char *)))) == NULL) {
 		fprintf(stderr,"dozcal:  insufficient memory to store "
@@ -630,6 +637,10 @@ int clear_events()
 
 int clear_todos()
 {
+	int i;
+
+	for (i = 1; i < (numtodos); ++i)
+		free(*(todolines+i));
 	numtodos = 1;
 	if ((todolines = realloc(todolines,(1 * sizeof(char *)))) == NULL) {
 		fprintf(stderr,"dozcal:  insufficient memory to store "
