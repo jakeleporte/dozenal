@@ -5,7 +5,7 @@
 .SH NAME
 dozdc \- arbitrary precision dozenal calculator
 .SH SYNOPSIS
-.B dozdc [-ezdr] [-k 
+.B dozdc [-Vezdr] [-k 
 .I precision
 .B ] [
 .I equation
@@ -23,6 +23,12 @@ Perl/Tk.  Obviously, this requires a working version of Perl
 and the Tk libraries.  gdozdc is pretty self-explanatory;
 its differences are described below.
 .SH OPTIONS
+.IP \-V
+Print version and licensing information and quit successfully.
+.IP \-v
+Run the visual version of the calculator.  Works in infix
+notation and can be operated by keyboard, mouse, or a
+combination.  See the section below.
 .IP -z
 Indicates that those functions which take angles as
 arguments (trigonometric functions in particular) will take

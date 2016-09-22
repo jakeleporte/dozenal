@@ -52,7 +52,9 @@ int main(int argc, char *argv[])
 	int type = NUM;
 	char print = NOTPRINT;
 	double answer;
+	int numargs; char **args;
 
+	numargs = argc; args = argv;
 	while (--argc > 0 && (*++argv)[0] == '-') {
 		while (c = *++argv[0])
 			switch (c) {
@@ -91,7 +93,11 @@ int main(int argc, char *argv[])
 				operate(ZENIPI,&places,&print);
 				break;
 			case 'v':
-				printf("dozdc v3.2\n");
+				xdozbc(numargs,args);
+				return 0;
+				break;
+			case 'V':
+				printf("dozdc v4.0\n");
 				printf("Copyright (C) 2010-2015  Donald P. Goodman III\n");
 				printf("License GPLv3+:  GNU GPL version 3 or "
 				"later <http://gnu.org/licenses/gpl.html>\n");

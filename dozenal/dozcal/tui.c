@@ -45,12 +45,13 @@ char *todo_form)
 		print_warn("ERROR:  Terminal does not support color; "
 			"using default colors...");
 	}
-	if (allopts[NOCOLOR].colconst != -1)
+	if (allopts[NOCOLOR].colconst != -1) {
 		start_color();
-	if (can_change_color() == FALSE) {
-		equalize_colors();
-	} else {
-		define_colors();
+		if (can_change_color() == FALSE) {
+			equalize_colors();
+		} else {
+			define_colors();
+		}
 	}
 	init_pair(7,COLOR_WHITE,allopts[WHOLEBG].colconst);
 //	wbkgd(stdscr,COLOR_PAIR(7));
@@ -487,8 +488,8 @@ int make_titlebar()
 	getmaxyx(stdscr,y,x);
 	lenlft = strlen(lftstr);
 	lenrgt = strlen(rgtstr);
-	init_pair(3,allopts[TITLEFORE].colconst,
-		allopts[TITLEBACK].colconst);
+	init_pair(3,allopts[TITLEBACK].colconst,
+		allopts[TITLEFORE].colconst);
 	attron(A_BOLD);
 	attron(COLOR_PAIR(3));
 	mvprintw(0,0,"%s",lftstr);
@@ -510,8 +511,8 @@ int make_botbar()
 	getmaxyx(stdscr,y,x);
 	lenlft = strlen(lftstr);
 	lenrgt = strlen(rgtstr);
-	init_pair(4,allopts[BOTFORE].colconst,
-		allopts[BOTBACK].colconst);
+	init_pair(4,allopts[BOTBACK].colconst,
+		allopts[BOTFORE].colconst);
 	attron(A_BOLD);
 	attron(COLOR_PAIR(4));
 	mvprintw(y-2,0,"%s",lftstr);

@@ -12,18 +12,28 @@ binmode = 755
 dirmode = 755
 IDIR =../include
 CC = gcc
-objects = main.o getop.o vars.o stack.o
+objects = main.o getop.o vars.o stack.o shunt.o xdozbc.o dozbc.o
 binobjects = dozdc gdozdc
 
 all: bin
 
-dozdc : main.o ../dec/dec.o $(IDIR)/dozdc.h getop.o stack.o vars.o
+dozdc : main.o ../dec/dec.o $(IDIR)/dozdc.h getop.o stack.o vars.o \
+	shunt.o xdozbc.o dozbc.o
 	$(CC) -I$(IDIR) -g -lm -o dozdc main.o ../conv/conv.o \
 		../doz/doz.o ../dec/dec.o getop.o stack.o $(IDIR)/stack.h \
-		vars.o $(IDIR)/vars.h
+		vars.o $(IDIR)/vars.h shunt.o xdozbc.o dozbc.o -lforms
 
 main.o : main.c ../dec/dec.o $(IDIR)/dozdc.h stack.o vars.o
 	$(CC) -I$(IDIR) -g -c main.c
+
+xdozbc.o : dozbc.c dozbc.h xdozbc.c shunt.c
+	$(CC) -I$(IDIR) -g -lm -c xdozbc.c shunt.o dozbc.o -lforms
+
+dozbc.o : dozbc.c dozbc.h
+	$(CC) -I$(DIR) -g -lm -c dozbc.c
+
+shunt.o : shunt.c
+	$(CC) -I$(DIR) -g -c shunt.c
 
 getop.o : getop.c ../conv/conv.o ../doz/doz.o ../dec/dec.o \
 		$(IDIR)/dozdc.h stack.o vars.o
