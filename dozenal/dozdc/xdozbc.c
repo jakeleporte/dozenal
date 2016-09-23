@@ -8,10 +8,12 @@ char line[256];
 int xdozbc(int num, char *args[])
 {
 	FD_calculator *calc;
+	Window whole;
 	
 	fl_initialize(&num,args,"xdozbc",0,0);
 	calc = create_form_calculator();
-	fl_show_form(calc->calculator,FL_PLACE_MOUSE,FL_TRANSIENT,"xdozbc");
+	whole = fl_show_form(calc->calculator,FL_PLACE_MOUSE,
+		FL_FULLBORDER,"xdozbc");
 	line[0] = '\0';
 	fl_do_forms();
 	fl_finish();
@@ -127,6 +129,12 @@ void operator( FL_OBJECT * button, long arg )
 		case 'v': /* square root */
 			strcat(line," v(");
 			break;
+		case 'g': /* gcf */
+			strcat(line," gcf(");
+			break;
+		case 'L':
+			strcat(line," lcm(");
+			break;
 		}
 	}
 	fl_set_object_label(fd_foo->ansfield,line);
@@ -138,6 +146,29 @@ void grouping( FL_OBJECT * button, long arg )
 
 void erase( FL_OBJECT * button, long arg )
 {
+	FD_calculator *fd_foo = button->form->fdui;
+	int len = 0;
+
+	if (arg == 'c') {
+		line[0] = '\0';
+	}
+	if (arg == '<') {
+		len = strlen(line);
+		while (line[len] == ' ')
+			--len;
+		if (line[len-1] == '(') {
+			while ((line[len] != ' ') && (len >= 0))
+				--len;
+			++len;
+		} else {
+			--len;
+		}
+		while (line[len] == ' ')
+			--len;
+		if (len < 0) len = 0;
+		line[len] = '\0';
+	}
+	fl_set_object_label(fd_foo->ansfield,line);
 }
 
 void unitangle( FL_OBJECT * button, long arg )
