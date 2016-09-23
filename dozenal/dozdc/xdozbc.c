@@ -12,6 +12,8 @@ int xdozbc(int num, char *args[])
 	
 	fl_initialize(&num,args,"xdozbc",0,0);
 	calc = create_form_calculator();
+	fl_set_object_helper(calc->comma,"Separates arguments to "
+		"functions\nShortcut:  ','");
 	whole = fl_show_form(calc->calculator,FL_PLACE_MOUSE,
 		FL_FULLBORDER,"xdozbc");
 	line[0] = '\0';
@@ -69,12 +71,15 @@ void proc_num( FL_OBJECT * button, long arg )
 void operator( FL_OBJECT * button, long arg )
 {
 	int index;
+	char rpn[256];
+	char infix[256];
+
 	FD_calculator *fd_foo = button->form->fdui;
 
 	index = strlen(line);
 	if ((arg == '+') || (arg == '-') || (arg == '*') ||
 	(arg == '/') || (arg == '^') || (arg == '%') ||
-	(arg == '!')) {
+	(arg == '!') || (arg == ',')) {
 		line[index] = ' ';
 		line[index+1] = arg;
 		line[index+2] = ' ';
@@ -135,13 +140,73 @@ void operator( FL_OBJECT * button, long arg )
 		case 'L':
 			strcat(line," lcm(");
 			break;
+		case '=':
+			regularize_line();
+			shunt(rpn,line);
+			line[0] = '\0';
+			strcpy(line,rpn);
+			break;
 		}
 	}
 	fl_set_object_label(fd_foo->ansfield,line);
 }
 
+int regularize_line()
+{
+	int len;
+	int i,j;
+	char fixed[256];
+
+	len = strlen(line);
+	fixed[0] = '\0';
+	j = 0;
+	for (i = 0; line[i] != '\0'; ++i) {
+		if (line[i] == '(') {
+			fixed[j++] = ' ';
+			fixed[j++] = '(';
+			fixed[j++] = ' ';
+		} else if (line[i] == ')') {
+			fixed[j++] = ' ';
+			fixed[j++] = ')';
+			fixed[j++] = ' ';
+		} else {
+			fixed[j++] = line[i];
+		}
+	}
+	fixed[j] = '\0';
+	line[0] = '\0';
+	strcpy(line,fixed);
+	j = 0; fixed[j] = '\0';
+	for (i = 0; line[i] != '\0'; ++i) {
+		if (line[i] == ' ') {
+			if (line[i-1] != ' ') {
+				fixed[j++] = line[i];
+			}
+		} else {
+			fixed[j++] = line[i];
+		}
+	}
+	fixed[j] = '\0';
+	line[0] = '\0';
+	strcpy(line,fixed);
+	return 0;
+}
+
 void grouping( FL_OBJECT * button, long arg )
 {
+	FD_calculator *fd_foo = button->form->fdui;
+	int index;
+
+	index = strlen(line);
+	if (arg == '(') {
+		line[index] = ' ';
+		line[index+1] = arg;
+		line[index+2] = '\0';
+	} else if (arg == ')') {
+		line[index] = arg;
+		line[index+1] = '\0';
+	}
+	fl_set_object_label(fd_foo->ansfield,line);
 }
 
 void erase( FL_OBJECT * button, long arg )
@@ -173,8 +238,16 @@ void erase( FL_OBJECT * button, long arg )
 
 void unitangle( FL_OBJECT * button, long arg )
 {
+	FD_calculator *fd_foo = button->form->fdui;
+	int index;
+
+	index = strlen(line);
 }
 
 void memory( FL_OBJECT * button, long arg )
 {
+	FD_calculator *fd_foo = button->form->fdui;
+	int index;
+
+	index = strlen(line);
 }
