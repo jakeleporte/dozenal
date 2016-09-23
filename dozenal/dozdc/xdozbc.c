@@ -1,9 +1,14 @@
 /* +AMDG */ 
 #include<stdio.h>
 #include<stdlib.h>
+#include<float.h>
 #include"dozbc.h"
+#include"dozdc.h"
 
 char line[256];
+int places = 4;
+
+double commandcalc(char *word, int type, int places, char expnot);
 
 int xdozbc(int num, char *args[])
 {
@@ -14,6 +19,103 @@ int xdozbc(int num, char *args[])
 	calc = create_form_calculator();
 	fl_set_object_helper(calc->comma,"Separates arguments to "
 		"functions\nShortcut:  ','");
+	fl_set_object_helper(calc->dit,"The fractional point\n"
+		"Shortcut:  ';'");
+	fl_set_object_helper(calc->neg,"A negative sign\n"
+		"Shortcut:  'n'");
+	fl_set_object_helper(calc->exp,"Use exponential notation; "
+		"separates integral from mantissa\n"
+		"Shortcut:  'E'");
+	fl_set_object_helper(calc->div,"Division\n"
+		"Shortcut:  '/'");
+	fl_set_object_helper(calc->times,"Multiplication\n"
+		"Shortcut:  '*'");
+	fl_set_object_helper(calc->minus,"Subtraction\n"
+		"Shortcut:  '-'");
+	fl_set_object_helper(calc->plus,"Addition\n"
+		"Shortcut:  '+'");
+	fl_set_object_helper(calc->equals,"Equals; evaluates the "
+		"expression and prints the answer\n"
+		"Shortcut:  '='");
+	fl_set_object_helper(calc->sqrt,"Square root\n"
+		"Shortcut:  'v'");
+	fl_set_object_helper(calc->expon,"Exponentiation; raises "
+		"one power by another\n"
+		"Shortcut:  '^'");
+	fl_set_object_helper(calc->closeparen,"Close parentheses; "
+		"standard grouping symbol\n"
+		"Shortcut:  ')'");
+	fl_set_object_helper(calc->openparen,"Open parentheses; "
+		"standard grouping symbol\n"
+		"Shortcut:  '('");
+	fl_set_object_helper(calc->mod,"Modules; like division, "
+		"but yields the remainder, not the quotient\n"
+		"Shortcut:  '%'");
+	fl_set_object_helper(calc->sin,"Sine\n"
+		"Shortcut:  's'");
+	fl_set_object_helper(calc->cosine,"Cosine\n"
+		"Shortcut:  'c'");
+	fl_set_object_helper(calc->tangent,"Tangent\n"
+		"Shortcut:  't'");
+	fl_set_object_helper(calc->asin,"Arcsin\n"
+		"Shortcut:  'S'");
+	fl_set_object_helper(calc->acos,"Arccosine\n"
+		"Shortcut:  'C'");
+	fl_set_object_helper(calc->atan,"Arctangent\n"
+		"Shortcut:  'T'");
+	fl_set_object_helper(calc->hysin,"Hyperbolic sine\n"
+		"Shortcut:  'h'");
+	fl_set_object_helper(calc->hycos,"Hyperbolic cosine\n"
+		"Shortcut:  'H'");
+	fl_set_object_helper(calc->hytan,"Hyperbolic tangent\n"
+		"Shortcut:  'y'");
+	fl_set_object_helper(calc->dozlog,"Logarithm (to base twelve)\n"
+		"Shortcut:  'l'");
+	fl_set_object_helper(calc->declog,"Base-X logarithm\n"
+		"Shortcut:  'x'");
+	fl_set_object_helper(calc->natlog,"Natural logarithm\n"
+		"Shortcut:  'n'");
+	fl_set_object_helper(calc->baselog,"Logarithm to an "
+		"arbitrary base; first argument is the value, second "
+		"the base\n"
+		"Shortcut:  'b'");
+	fl_set_object_helper(calc->dublog,"Base-two logarithm (\"dublog\")\n"
+		"Shortcut:  'D'");
+	fl_set_object_helper(calc->recip,"Reciprocal\n"
+		"Shortcut:  'r'");
+	fl_set_object_helper(calc->clear,"Clear the problem field\n"
+		"Shortcut:  'w'");
+	fl_set_object_helper(calc->backspace,"Clear the rightmost term\n"
+		"Shortcut:  '<'");
+	fl_set_object_helper(calc->factorial,"Factorial\n"
+		"Shortcut:  '!'");
+	fl_set_object_helper(calc->pi,"Pi; inserts value of pi\n"
+		"Shortcut:  'p'");
+	fl_set_object_helper(calc->euler,"Inserts value of "
+		"Euler's constant\n"
+		"Shortcut:  'u'");
+	fl_set_object_helper(calc->angleunit,"Sets type of angle "
+		"to be used:  unciaPis, radians, or degrees\n"
+		"Shortcut:  'z'");
+	fl_set_object_helper(calc->greatcommfact,"Yields the "
+		"greatest common factor of its two arguments\n"
+		"Shortcut:  'g'");
+	fl_set_object_helper(calc->leastcommult,"Yields the "
+		"least common multiple of its two arguments\n"
+		"Shortcut:  'L'");
+	fl_set_object_helper(calc->memappend,"Appends the problem "
+		"field's contents to memory\n"
+		"Shortcut:  'A'");
+	fl_set_object_helper(calc->memadd,"Adds the current "
+		"contents to memory to the problem field\n"
+		"Shortcut:  'a'");
+	fl_set_object_helper(calc->memrep,"Replaces the current "
+		"contents of the problem field with the contents of "
+		"memory\n"
+		"Shortcut:  'R'");
+	fl_set_object_helper(calc->clearmem,"Wipes the current "
+		"contents of memory\n"
+		"Shortcut:  'k'");
 	whole = fl_show_form(calc->calculator,FL_PLACE_MOUSE,
 		FL_FULLBORDER,"xdozbc");
 	line[0] = '\0';
@@ -73,6 +175,10 @@ void operator( FL_OBJECT * button, long arg )
 	int index;
 	char rpn[256];
 	char infix[256];
+	char word[256];
+	int type = NUM;
+	int numrun = 0;
+	double answer;
 
 	FD_calculator *fd_foo = button->form->fdui;
 
@@ -145,6 +251,19 @@ void operator( FL_OBJECT * button, long arg )
 			shunt(rpn,line);
 			line[0] = '\0';
 			strcpy(line,rpn);
+			index = strlen(line);
+			line[index] = ' ';
+			line[index+1] = '=';
+			line[index+2] = ' ';
+			line[index+3] = '\0';
+			numrun = 0;
+			while ((type = graphops(line,word,&numrun)) != EOF) {
+				answer = commandcalc(word, type, places, 0);
+			}
+			sprintf(word,"%.*f",DBL_MAX_10_EXP,answer);
+			doz(word,word,places,0);
+			line[0] = '\0';
+			strcpy(line,word);
 			break;
 		}
 	}
