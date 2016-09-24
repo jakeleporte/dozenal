@@ -223,5 +223,9 @@ int isfunction(char *s)
 		return TRUE;
 	if (!strcmp(s,"v"))
 		return TRUE;
+	if (!strcmp(s,"gcf"))
+		return TRUE;
+	if (!strcmp(s,"lcm"))
+		return TRUE;
 	return FALSE;
 }
