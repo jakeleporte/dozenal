@@ -179,6 +179,7 @@ void operator( FL_OBJECT * button, long arg )
 	int type = NUM;
 	int numrun = 0;
 	double answer;
+	int i; int j = 0;
 
 	FD_calculator *fd_foo = button->form->fdui;
 
@@ -262,6 +263,12 @@ void operator( FL_OBJECT * button, long arg )
 			}
 			sprintf(word,"%.*f",DBL_MAX_10_EXP,answer);
 			doz(word,word,places,0);
+			for (i = 0; word[i] != ';' && word[i] != '\0'; ++i);
+			if (word[i] == ';') {
+				for (j = 0;  j < places; ++j)
+					++i;
+				word[++i] = '\0';
+			}
 			line[0] = '\0';
 			strcpy(line,word);
 			break;
@@ -369,4 +376,9 @@ void memory( FL_OBJECT * button, long arg )
 	int index;
 
 	index = strlen(line);
+}
+
+void set_prec(FL_OBJECT *spinner, long arg)
+{
+	places = (int) fl_get_spinner_value(spinner);
 }
