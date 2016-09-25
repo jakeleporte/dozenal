@@ -116,31 +116,6 @@ int gettype(char *s)
 }
 
 /* the same as gettype, but for command-line args */
-int commandops(char *s, char *word)
-{
-	static int i = 0;
-	int j = 0;
-	int type = NUM;
-
-	while (isspace(s[i]))
-		++i;
-	while (s[i] != '\0') {
-		while (!isspace(s[i]))
-			word[j++] = s[i++];
-		word[j] = '\0';
-		for (j=0; word[j] != '\0'; ++j) {
-			if (!isdozdig(word[j]) && word[j] != '-') {
-				type = OP;
-			} else if (word[j] == '-') {
-				if (!isdozdig(word[j+1]))
-					type = OP;
-			}
-		}
-		return type;
-	}
-	return EOF;
-}
-
 int graphops(char *s, char *word, int *i)
 {
 	int j = 0;

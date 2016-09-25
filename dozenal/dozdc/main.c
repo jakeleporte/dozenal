@@ -116,7 +116,8 @@ int main(int argc, char *argv[])
 		strcpy(s,*argv);
 		s[strlen(s)+1] = '\0';
 		s[strlen(s)] = ' ';
-		while ((type = commandops(s,word)) != EOF)
+		int i = 0;
+		while ((type = graphops(s,word,&i)) != EOF)
 			answer = commandcalc(word, type, places, expnot);
 		sprintf(word,"%.*f",DBL_MAX_10_EXP,answer);
 		doz(word,word,places,expnot);
