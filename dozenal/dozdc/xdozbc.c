@@ -14,6 +14,7 @@ int xdozbc(int num, char *args[])
 {
 	FD_calculator *calc;
 	Window whole;
+	Window othwhole;
 	
 	fl_initialize(&num,args,"xdozbc",0,0);
 	calc = create_form_calculator();
@@ -116,6 +117,14 @@ int xdozbc(int num, char *args[])
 	fl_set_object_helper(calc->clearmem,"Wipes the current "
 		"contents of memory\n"
 		"Shortcut:  'k'");
+
+/*	Pixmap pm, mask;
+	unsigned int w, h;
+	pm = fl_read_pixmapfile(fl_root,"logo_shapes_dozenal.xpm",
+		&w,&h,&mask,0,0,0);
+	fl_set_form_icon(calc->calculator,pm,mask);
+	othwhole = fl_prepare_form_window(calc->calculator,
+		FL_PLACE_MOUSE,FL_FULLBORDER,"xdozbc");*/
 	whole = fl_show_form(calc->calculator,FL_PLACE_MOUSE,
 		FL_FULLBORDER,"xdozbc");
 	line[0] = '\0';
