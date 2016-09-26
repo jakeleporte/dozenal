@@ -93,7 +93,9 @@ int main(int argc, char *argv[])
 				operate(ZENIPI,&places,&print);
 				break;
 			case 'v':
+				#ifdef XFORMS
 				xdozbc(numargs,args);
+				#endif
 				return 0;
 				break;
 			case 'V':

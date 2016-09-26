@@ -18,6 +18,11 @@ int xdozbc(int num, char *args[])
 	
 	fl_initialize(&num,args,"xdozbc",0,0);
 	calc = create_form_calculator();
+	fl_set_object_return(calc->precisionval,FL_RETURN_CHANGED);
+	fl_set_spinner_bounds(calc->precisionval,FL_nint(0.0),
+		FL_nint(15.0));
+	fl_set_spinner_step(calc->precisionval,FL_nint(1.0));
+	fl_set_spinner_value(calc->precisionval,FL_nint(4.0));
 	fl_set_object_helper(calc->comma,"Separates arguments to "
 		"functions\nShortcut:  ','");
 	fl_set_object_helper(calc->dit,"The fractional point\n"
@@ -118,15 +123,16 @@ int xdozbc(int num, char *args[])
 		"contents of memory\n"
 		"Shortcut:  'k'");
 
-/*	Pixmap pm, mask;
+	Pixmap pm, mask;
 	unsigned int w, h;
-	pm = fl_read_pixmapfile(fl_root,"logo_shapes_dozenal.xpm",
-		&w,&h,&mask,0,0,0);
-	fl_set_form_icon(calc->calculator,pm,mask);
+	pm = fl_read_pixmapfile(fl_default_window(),"logo_shapes_dozenal.xpm",
+		&w,&h,NULL,0,0,0);
 	othwhole = fl_prepare_form_window(calc->calculator,
-		FL_PLACE_MOUSE,FL_FULLBORDER,"xdozbc");*/
+		FL_PLACE_MOUSE,FL_FULLBORDER,"xdozbc");
 	whole = fl_show_form(calc->calculator,FL_PLACE_MOUSE,
 		FL_FULLBORDER,"xdozbc");
+//	fl_set_form_icon(calc->calculator,pm,mask);
+	fl_winicon(whole,pm,0);
 	line[0] = '\0';
 	fl_do_forms();
 	fl_finish();
