@@ -78,3 +78,8 @@
 #define GCF 35
 #define LCM 36
 #define ATAN2 37
+#define CEIL 38
+#define FLOOR 39
+#define MAX 40
+#define MIN 41
+#define PRPOP 42

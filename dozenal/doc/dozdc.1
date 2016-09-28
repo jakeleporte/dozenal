@@ -81,6 +81,10 @@ unless you put in an "=" and hit that.  This allows long
 calculations to be split between lines without having
 intermediate results, which may not be interesting, printed
 unless you want them to be.
+.IP p
+Pops and prints the top of the stack, then pushes that
+number back onto the stack.  Helps for printing intermediate
+values without having to manually refill the stack.
 .IP "+, -, *, /"
 The basic arithmetic operators; they are all binary.  They
 work precisely as one would expect them to.  "-" and "/"
@@ -208,6 +212,16 @@ two arguments.
 .IP lcm
 A binary operator; gives the "least common multiple" of its
 two arguments.
+.IP "ceil, floor"
+Unary operators.  Both take their single argument and return
+it without any fractional part; \fIceil\fR returns the next
+highest integer, while \fIfloor\fR returns the next lowest.
+Numbers without fractional parts and returned unchanged.
+.IP "max, min"
+Binary operators.  Both take their two arguments and compare
+them; \fImax\fR returns the higher value, \fImin\fR returns
+the lower.  Of course, if they are equal, the same value
+will be returned in either case.
 .SH CONSTANTS
 dozdc provides a number of constants.  These are the classic
 "transcendental" numbers, or at least a few of them.  Of

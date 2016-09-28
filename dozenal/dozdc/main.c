@@ -142,10 +142,15 @@ double commandcalc(char *word, int type, int places, char expnot)
 		push(doztodec(word));
 	} else if (type == OP) {
 		operator = getop(word);
-		if (operator == -1)
+		if (operator == -1) {
 			fprintf(stderr,"dozdc:  unknown operator %s\n",word);
-		else
+		} else {
 			answer = operate(operator,&places,&print);
+			if (operator == PRPOP) {
+				sprintf(s,"%.*f",DBL_MAX_10_EXP,answer);
+				doz(s,s,places,expnot);
+			}
+		}
 	}
 	return answer;
 }

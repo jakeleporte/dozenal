@@ -75,6 +75,11 @@ char *ops[] = {
 	"gcf", /* greatest common factor */
 	"lcm", /* least common multiple */
 	"atan2", /* uses two values to determine correct quadrant */
+	"ceil", /* returns next integer value above */
+	"floor", /* returns next integer value below */
+	"max", /* returns highest of two values */
+	"min", /* returns lowest of two values */
+	"p", /* answer, but push it back onto the stack */
 };
 
 /* refer to ops[] array to determine what operator to use;
@@ -177,6 +182,7 @@ int lcm(double num, double othnum)
 double operate(int operator, int *places, char *print)
 {
 	double tmp;
+	double othtmp;
 	char s[MAXLINE];
 	static char angletype = 2;
 	long i, longtmp;
@@ -391,7 +397,35 @@ double operate(int operator, int *places, char *print)
 	case LCM:
 		push(lcm(pop(),pop()));
 		break;
+	case CEIL:
+		push(ceil(pop()));
+		break;
+	case FLOOR:
+		push(floor(pop()));
+		break;
+	case MAX:
+		tmp = pop();
+		othtmp = pop();
+		if (tmp > othtmp)
+			push(tmp);
+		else
+			push(othtmp);
+		break;
+	case MIN:
+		tmp = pop();
+		othtmp = pop();
+		if (tmp < othtmp)
+			push(tmp);
+		else
+			push(othtmp);
+		break;
 	case VAR:
+		break;
+	case PRPOP:	/* pop the top, print it, then push it back */
+		*print = PRINT;
+		tmp = pop();
+		push(tmp);
+		return tmp;
 		break;
 	case EQUALS:
 		*print = PRINT;
