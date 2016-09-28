@@ -112,14 +112,16 @@ immediately before them as their argument.  By default, they
 operate on zeniPis; this can be changed.  See the command
 "rad" and the command-line option "r", as well as "d" and
 the command-line option "d".
-.IP "asin, acos, atan"
+.IP "asin, acos, atan, atan2"
 Inverse trigonometric functions.  Unary; used like the
 normal trigonometric functions.  Naturally, these must be in
 the range of -1 to 1 (except for atan, which can take any
 real number); if they are fed a different value, they
 politely cough it back onto the stack and let the user know.
 They emit values in radians or degrees, depending on the
-current angle setting.
+current angle setting.  The last is a binary operator; it
+uses its two arguments to determine the proper tangent of
+the result.
 .IP "sinh, cosh, tanh"
 Hyperbolic trigonometric functions.  Unary; used like the
 normal and inverse ones.

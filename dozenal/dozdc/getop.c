@@ -74,6 +74,7 @@ char *ops[] = {
 	"dlg", /* dublog */
 	"gcf", /* greatest common factor */
 	"lcm", /* least common multiple */
+	"atan2", /* uses two values to determine correct quadrant */
 };
 
 /* refer to ops[] array to determine what operator to use;
@@ -372,6 +373,10 @@ double operate(int operator, int *places, char *print)
 	case LOGB:
 		tmp = pop();
 		push(log10(pop()) / log10(tmp));
+		break;
+	case ATAN2:
+		tmp = pop();
+		push(atan2(pop(),tmp));
 		break;
 	case DLG:
 		push(log10(pop()) / log10(2));

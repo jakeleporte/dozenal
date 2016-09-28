@@ -77,3 +77,4 @@
 #define DLG 34
 #define GCF 35
 #define LCM 36
+#define ATAN2 37

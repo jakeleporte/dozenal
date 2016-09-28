@@ -102,6 +102,10 @@ int xdozbc(int num, char *args[])
 		"Shortcut:  'C'");
 	fl_set_object_helper(calc->atan,"Arctangent\n"
 		"Shortcut:  'T'");
+	fl_set_object_helper(calc->atantwo,"Arctangent2\n"
+		"takes two arguments and takes the arctangent of "
+		"each to determine the proper quadrant\n"
+		"Shortcut:  'N'");
 	fl_set_object_helper(calc->hysin,"Hyperbolic sine\n"
 		"Shortcut:  'h'");
 	fl_set_object_helper(calc->hycos,"Hyperbolic cosine\n"
@@ -247,6 +251,9 @@ void operator( FL_OBJECT * button, long arg )
 			break;
 		case 'T': /* arctangent */
 			strcat(line," atan(");
+			break;
+		case 'N': /* atan2 */
+			strcat(line," atan2(");
 			break;
 		case 'h': /* hyperbolic sine */
 			strcat(line," sinh(");

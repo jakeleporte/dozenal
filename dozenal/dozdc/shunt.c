@@ -203,6 +203,8 @@ int isfunction(char *s)
 		return TRUE;
 	if (!strcmp(s,"atan"))
 		return TRUE;
+	if (!strcmp(s,"atan2"))
+		return TRUE;
 	if (!strcmp(s,"sinh"))
 		return TRUE;
 	if (!strcmp(s,"cosh"))
