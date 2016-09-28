@@ -7,6 +7,7 @@
 
 char line[256];
 int places = 4;
+char angletype = 'z';
 
 double commandcalc(char *word, int type, int places, char expnot);
 
@@ -18,6 +19,14 @@ int xdozbc(int num, char *args[])
 	
 	fl_initialize(&num,args,"xdozbc",0,0);
 	calc = create_form_calculator();
+
+	Pixmap mask; int w; int h;
+	Pixmap pm = fl_read_pixmapfile(fl_root,"logo_shapes_dozenal.xpm",
+		&w, &h, NULL, NULL, NULL, 0);
+	fl_set_form_icon(calc->calculator,pm,None);
+
+	whole = fl_show_form(calc->calculator,FL_PLACE_MOUSE,
+		FL_FULLBORDER,"xdozbc");
 	fl_set_object_return(calc->precisionval,FL_RETURN_CHANGED);
 	fl_set_spinner_bounds(calc->precisionval,FL_nint(0.0),
 		FL_nint(15.0));
@@ -122,20 +131,9 @@ int xdozbc(int num, char *args[])
 	fl_set_object_helper(calc->clearmem,"Wipes the current "
 		"contents of memory\n"
 		"Shortcut:  'k'");
-
-	Pixmap pm, mask;
-	unsigned int w, h;
-	pm = fl_read_pixmapfile(fl_default_window(),"logo_shapes_dozenal.xpm",
-		&w,&h,NULL,0,0,0);
-	othwhole = fl_prepare_form_window(calc->calculator,
-		FL_PLACE_MOUSE,FL_FULLBORDER,"xdozbc");
-	whole = fl_show_form(calc->calculator,FL_PLACE_MOUSE,
-		FL_FULLBORDER,"xdozbc");
-//	fl_set_form_icon(calc->calculator,pm,mask);
-	fl_winicon(whole,pm,0);
 	line[0] = '\0';
 	fl_do_forms();
-	fl_finish();
+//	fl_finish();
 	return 0;
 }
 
@@ -266,7 +264,8 @@ void operator( FL_OBJECT * button, long arg )
 			regularize_line();
 			shunt(rpn,line);
 			line[0] = '\0';
-			strcpy(line,rpn);
+			line[0] = angletype; line[1] = ' '; line[2] = '\0';
+			strcat(line,rpn);
 			index = strlen(line);
 			line[index] = ' ';
 			line[index+1] = '=';
@@ -382,7 +381,19 @@ void unitangle( FL_OBJECT * button, long arg )
 	FD_calculator *fd_foo = button->form->fdui;
 	int index;
 
-	index = strlen(line);
+	if (angletype == 'd') {
+		operate(ZENIPI,&places,PRINT);
+		fl_set_object_label(button,"Z/r/d");
+		angletype = 'z';
+	} else if (angletype == 'z') {
+		operate(RADIANS,&places,PRINT);
+		fl_set_object_label(button,"z/R/d");
+		angletype = 'r';
+	} else if (angletype == 'r') {
+		operate(DEGREES,&places,PRINT);
+		fl_set_object_label(button,"z/r/D");
+		angletype = 'd';
+	}
 }
 
 void memory( FL_OBJECT * button, long arg )
@@ -396,4 +407,10 @@ void memory( FL_OBJECT * button, long arg )
 void set_prec(FL_OBJECT *spinner, long arg)
 {
 	places = (int) fl_get_spinner_value(spinner);
+}
+
+void quitfunc(FL_OBJECT *button, long arg)
+{
+	fl_finish();
+	exit(0);
 }
