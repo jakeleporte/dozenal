@@ -55,7 +55,6 @@ sub preamble($)
 		\\usepackage{graphicx}
 		\\usepackage{eso-pic}
 		\\usepackage{calc}
-		\\usepackage{transparent}
 		\\def\\Biggie{\\fontsize{17pt}{19pt}\\selectfont}
 		\\def\\Big{\\fontsize{14pt}{17pt}\\selectfont}
 		\\def\\yearlytitsty{\\fontsize{18pt}{18pt}\\selectfont\\bfseries}
@@ -84,6 +83,11 @@ sub preamble($)
 		\\def\\halfcolor#1{\\itshape\\fontsize{8pt}{10pt}\\selectfont#1}
 		\\def\\ls{\\hskip0.2em}
 		\\def\\shorts{\\hskip0.1em}
+END
+	if (!$opt_w) {
+		$preamble .= "\\includepackage{transparent}";
+	}
+	$preamble .= <<END;
 		\\begin{document}
 		\\newlength\\daywidth
 		\\setlength{\\daywidth}{10in/7 - 3.19986pt/7}
@@ -1402,7 +1406,7 @@ sub weeklies($)
 			last if (&day(11,$i,$_[0]-1) eq "MON");
 		}
 	}
-	$firstday = $firstday - $i;#(30 - --$i);
+	$firstday = $firstday - (30 - --$i);
 	$i = 0;
 	$j = 0;
 	for ($j = 0; $j < 434; $j=$j+3) {
