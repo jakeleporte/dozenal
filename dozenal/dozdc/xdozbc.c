@@ -29,7 +29,10 @@
 #include"dozbc.h"
 #include"dozdc.h"
 
-char line[256];
+#define LINELEN 256
+
+char line[LINELEN];
+char memline[LINELEN];
 int places = 4;
 char angletype = 'z';
 
@@ -40,7 +43,8 @@ int xdozbc(int num, char *args[])
 	FD_calculator *calc;
 	Window whole;
 	Window othwhole;
-	
+
+	memline[0] = '\0';
 	fl_initialize(&num,args,"xdozbc",0,0);
 	calc = create_form_calculator();
 
@@ -214,9 +218,9 @@ void proc_num( FL_OBJECT * button, long arg )
 void operator( FL_OBJECT * button, long arg )
 {
 	int index;
-	char rpn[256];
-	char infix[256];
-	char word[256];
+	char rpn[LINELEN];
+	char infix[LINELEN];
+	char word[LINELEN];
 	int type = NUM;
 	int numrun = 0;
 	double answer;
@@ -326,7 +330,7 @@ int regularize_line()
 {
 	int len;
 	int i,j;
-	char fixed[256];
+	char fixed[LINELEN];
 
 	len = strlen(line);
 	fixed[0] = '\0';
@@ -431,8 +435,38 @@ void memory( FL_OBJECT * button, long arg )
 {
 	FD_calculator *fd_foo = button->form->fdui;
 	int index;
+	int i, j;
 
 	index = strlen(line);
+	if (arg == '+') { /* append line to memory */
+		if ((strlen(memline) + index) > LINELEN) {
+			fprintf(stderr,"dozdc:  line is too long for memory to "
+			"be appended to it; adding maximum number of "
+			"characters...\n");
+		}
+		for (i = strlen(memline), j = 0; (i < LINELEN) && 
+		(line[j] != '\0'); ++i, ++j)
+			memline[i] = line[j];
+		memline[i] = '\0';
+		fprintf(stderr,"dozdc:  memory contents: \"%s\"\n",memline);
+	} else if (arg == 'A') { /* append memory to line */
+		if ((strlen(memline) + index) > LINELEN) {
+			fprintf(stderr,"dozdc:  memory is too long for line to "
+			"be appended to it; adding maximum number of "
+			"characters...\n");
+		}
+		for (i = index, j = 0; (i < LINELEN) && (memline[j] != '\0'); 
+		++i, ++j)
+			line[i] = memline[j];
+		line[i] = '\0';
+		fprintf(stderr,"dozdc:  memory contents: %s\n",memline);
+	} else if (arg == 'r') { /* replace current line with memory */
+		line[0] = '\0';
+		strcpy(line,memline);
+	} else if (arg == 'c') { /* clears memory */
+		memline[0] = '\0';
+	}
+	fl_set_object_label(fd_foo->ansfield,line);
 }
 
 void set_prec(FL_OBJECT *spinner, long arg)
