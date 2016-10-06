@@ -17,8 +17,14 @@ notation) calculator which works in dozenal (base-12).  All
 normal arithmetic functions, plus trigonometry, some basic
 constants (pi, euler, phi), logarithms, and other functions.
 Supports variables of arbitrary user-defined names.
-
-There is also a graphical version, gdozdc, written in
+.PP
+There is a graphical version, opened by running \fBdozdc\fR
+with the \fI\-v\fR option.  It's pretty self-explanatory for
+the most part, and each button has a tooltip explaining its
+function which appears on mouseover.  This works in
+\fIinfix\fR notation, not RPN.
+.PP
+There is also another graphical version, gdozdc, written in
 Perl/Tk.  Obviously, this requires a working version of Perl
 and the Tk libraries.  gdozdc is pretty self-explanatory;
 its differences are described below.
@@ -28,9 +34,10 @@ Print version and licensing information and quit successfully.
 .IP \-v
 Run the visual version of the calculator.  Works in infix
 notation and can be operated by keyboard, mouse, or a
-combination.  See the section below.  If you don't have the
+combination.  If you don't have the
 \fIxforms\fR library, or don't want the graphical program,
-change the "-DXFORMS" to "-UXFORMS" in the makefile.
+change the "-DXFORMS" to "-UXFORMS" in the makefile when
+compiling.
 .IP -z
 Indicates that those functions which take angles as
 arguments (trigonometric functions in particular) will take
@@ -293,39 +300,45 @@ correct result while still allowing the helpful whitespace.
 .SH OTHER COMMANDS
 .IP quit
 Quits the program.  'Nuff said.
-.SH GRAPHICAL VERSION, gdozdc
-gdozdc is the graphical version of dozdc, and it differs in
-some significant points.  Specifically, it's 
-.I infix,
+.SH GRAPHICAL VERSIONS, \fBdozdc -v\fR and \fBgdozdc\fR
+These are the graphical versions of dozdc, and they differ in
+some significant points.  Specifically, they're
+\fIinfix\fR,
 not postfix; that means that you enter your equations in
 the same way you learned to write them down in school, with
 your binary operators (the ones that take two arguments,
 like the basic arithmetic functions) in between their two
-arguments.  E.g., you write "4 + 5", rather than dozdc's "4
-5 +".
-
+arguments.  E.g., you write "4 + 5", rather than
+\fBdozdc\fR's "4 5 +".
+.PP
 This system is not particularly extensible; that is, it only
 works with binary operators, and it's inherently ambiguous.
-gdozdc therefore offers the usual infix disambiguation
-operators, parentheses, which can be used to group
-operations however might be necessary.  This applies to
-*all* binary operators, even ones where this behavior might
-be surprising; e.g., for arbitrary base logarithms, one
-inputs the base, "logb", then the number; so for the
-logarithm of three to base two, one writes "2 logb 3".
-
-Non-binary operations work as they do in dozdc; that is,
-they are postfix.  This is typical even for modern infix
-calculators.  For example, one writes "5 !" for factorial
-five, and "0;6 sin" for the sine of 0;6.
-
-gdozdc also implements some memory functions.  "CM" means to
+These graphiccal calculators therefore offer the usual infix
+disambiguation operators, parentheses, which can be used to
+group operations however might be necessary.
+.PP
+In \fBdozdc \-v\fR, functions simply have their arguments in
+parentheses, separated by commas if there are more than one.
+For example, \fIsin(0;3)\fR or \fIlogb(2,3)\fR.  This
+shouldn't surprise anyone.
+.PP
+In \fBgdozdc\fR, binary operators take their arguments the
+same way as arithmetic operators; e.g., for arbitrary base
+logarithms, one inputs the base, "logb", then the number; so
+for the logarithm of three to base two, one writes \fI2 logb
+3\fR.  Non-binary operations work as they do in
+\fBdozdc\fR's RPN forms; that is, they are postfix.  This is
+typical even for modern infix calculators.  For example, one
+writes \fI5 !\fR for factorial five, and \fI0;6 sin\fR for
+the sine of 0;6.
+.PP
+Both programs also implements some memory functions.  "CM" means to
 clear memory; "M" means to save the current field to memory
 (this is the whole field, not the result of the operations
 contained in it); "M+" means to replace the current field
 with the contents of the memory; and "M++" means to append
 the contents of the memory to the current field.
-
+.PP
 Hovering over a button will give the keyboard shortcut in a
 small popup balloon, as well as list it and a brief
 explanation in the lower bar.
