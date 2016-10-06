@@ -1,0 +1,1079 @@
+Magic: 15000
+
+Internal Form Definition File
+    (do not change)
+
+Number of forms: 1
+Unit of measure: FL_COORD_PIXEL
+SnapGrid: 1
+
+=============== FORM ===============
+Name: calculator
+Width: 562
+Height: 250
+Number of Objects: 59
+
+--------------------
+class: FL_BOX
+type: FL_FLAT_BOX
+box: 0 0 562 250
+boxtype: FL_ROUNDED_BOX
+colors: FL_COL1 FL_COL1
+alignment: FL_ALIGN_CENTER
+style: FL_NORMAL_STYLE
+size: FL_DEFAULT_SIZE
+lcol: FL_BLACK
+label: 
+shortcut: 
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: 
+callback: 
+argument: 
+
+--------------------
+class: FL_BUTTON
+type: FL_NORMAL_BUTTON
+box: 70 50 40 40
+boxtype: FL_UP_BOX
+colors: FL_COL1 FL_COL1
+alignment: FL_ALIGN_CENTER
+style: FL_TIMESBOLD_STYLE
+size: FL_DEFAULT_SIZE
+lcol: FL_BLACK
+label: ;
+shortcut: ;
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: dit
+callback: proc_num
+argument: ';'
+
+--------------------
+class: FL_BUTTON
+type: FL_NORMAL_BUTTON
+box: 30 50 40 40
+boxtype: FL_UP_BOX
+colors: FL_COL1 FL_COL1
+alignment: FL_ALIGN_CENTER
+style: FL_TIMESBOLD_STYLE
+size: FL_DEFAULT_SIZE
+lcol: FL_BLACK
+label: +/-
+shortcut: n
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: neg
+callback: proc_num
+argument: '-'
+
+--------------------
+class: FL_BUTTON
+type: FL_NORMAL_BUTTON
+box: 30 90 40 40
+boxtype: FL_UP_BOX
+colors: FL_COL1 FL_COL1
+alignment: FL_ALIGN_CENTER
+style: FL_TIMESBOLD_STYLE
+size: FL_DEFAULT_SIZE
+lcol: FL_BLACK
+label: 9
+shortcut: 9
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: nine
+callback: proc_num
+argument: '9'
+
+--------------------
+class: FL_BUTTON
+type: FL_NORMAL_BUTTON
+box: 70 90 40 40
+boxtype: FL_UP_BOX
+colors: FL_COL1 FL_COL1
+alignment: FL_ALIGN_CENTER
+style: FL_TIMESBOLD_STYLE
+size: FL_DEFAULT_SIZE
+lcol: FL_BLACK
+label: X
+shortcut: x
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: ten
+callback: proc_num
+argument: 'X'
+
+--------------------
+class: FL_BUTTON
+type: FL_NORMAL_BUTTON
+box: 30 130 40 40
+boxtype: FL_UP_BOX
+colors: FL_COL1 FL_COL1
+alignment: FL_ALIGN_CENTER
+style: FL_TIMESBOLD_STYLE
+size: FL_DEFAULT_SIZE
+lcol: FL_BLACK
+label: 6
+shortcut: 6
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: six
+callback: proc_num
+argument: '6'
+
+--------------------
+class: FL_BUTTON
+type: FL_NORMAL_BUTTON
+box: 70 130 40 40
+boxtype: FL_UP_BOX
+colors: FL_COL1 FL_COL1
+alignment: FL_ALIGN_CENTER
+style: FL_TIMESBOLD_STYLE
+size: FL_DEFAULT_SIZE
+lcol: FL_BLACK
+label: 7
+shortcut: 7
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: seven
+callback: proc_num
+argument: '7'
+
+--------------------
+class: FL_BUTTON
+type: FL_NORMAL_BUTTON
+box: 30 170 40 40
+boxtype: FL_UP_BOX
+colors: FL_COL1 FL_COL1
+alignment: FL_ALIGN_CENTER
+style: FL_TIMESBOLD_STYLE
+size: FL_DEFAULT_SIZE
+lcol: FL_BLACK
+label: 3
+shortcut: 3
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: three
+callback: proc_num
+argument: '3'
+
+--------------------
+class: FL_BUTTON
+type: FL_NORMAL_BUTTON
+box: 70 170 40 40
+boxtype: FL_UP_BOX
+colors: FL_COL1 FL_COL1
+alignment: FL_ALIGN_CENTER
+style: FL_TIMESBOLD_STYLE
+size: FL_DEFAULT_SIZE
+lcol: FL_BLACK
+label: 4
+shortcut: 4
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: four
+callback: proc_num
+argument: '4'
+
+--------------------
+class: FL_BUTTON
+type: FL_NORMAL_BUTTON
+box: 30 210 40 40
+boxtype: FL_UP_BOX
+colors: FL_COL1 FL_COL1
+alignment: FL_ALIGN_CENTER
+style: FL_TIMESBOLD_STYLE
+size: FL_DEFAULT_SIZE
+lcol: FL_BLACK
+label: 0
+shortcut: 0
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: zero
+callback: proc_num
+argument: '0'
+
+--------------------
+class: FL_BUTTON
+type: FL_NORMAL_BUTTON
+box: 70 210 40 40
+boxtype: FL_UP_BOX
+colors: FL_COL1 FL_COL1
+alignment: FL_ALIGN_CENTER
+style: FL_TIMESBOLD_STYLE
+size: FL_DEFAULT_SIZE
+lcol: FL_BLACK
+label: 1
+shortcut: 1
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: one
+callback: proc_num
+argument: '1'
+
+--------------------
+class: FL_BUTTON
+type: FL_NORMAL_BUTTON
+box: 110 210 40 40
+boxtype: FL_UP_BOX
+colors: FL_COL1 FL_COL1
+alignment: FL_ALIGN_CENTER
+style: FL_TIMESBOLD_STYLE
+size: FL_DEFAULT_SIZE
+lcol: FL_BLACK
+label: 2
+shortcut: 2
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: two
+callback: proc_num
+argument: '2'
+
+--------------------
+class: FL_BUTTON
+type: FL_NORMAL_BUTTON
+box: 110 170 40 40
+boxtype: FL_UP_BOX
+colors: FL_COL1 FL_COL1
+alignment: FL_ALIGN_CENTER
+style: FL_TIMESBOLD_STYLE
+size: FL_DEFAULT_SIZE
+lcol: FL_BLACK
+label: 5
+shortcut: 5
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: five
+callback: proc_num
+argument: '5'
+
+--------------------
+class: FL_BUTTON
+type: FL_NORMAL_BUTTON
+box: 110 130 40 40
+boxtype: FL_UP_BOX
+colors: FL_COL1 FL_COL1
+alignment: FL_ALIGN_CENTER
+style: FL_TIMESBOLD_STYLE
+size: FL_DEFAULT_SIZE
+lcol: FL_BLACK
+label: 8
+shortcut: 8
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: eight
+callback: proc_num
+argument: '8'
+
+--------------------
+class: FL_BUTTON
+type: FL_NORMAL_BUTTON
+box: 110 90 40 40
+boxtype: FL_UP_BOX
+colors: FL_COL1 FL_COL1
+alignment: FL_ALIGN_CENTER
+style: FL_TIMESBOLD_STYLE
+size: FL_DEFAULT_SIZE
+lcol: FL_BLACK
+label: E
+shortcut: e
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: elv
+callback: proc_num
+argument: 'E'
+
+--------------------
+class: FL_BUTTON
+type: FL_NORMAL_BUTTON
+box: 110 50 40 40
+boxtype: FL_UP_BOX
+colors: FL_COL1 FL_COL1
+alignment: FL_ALIGN_CENTER
+style: FL_TIMESBOLD_STYLE
+size: FL_DEFAULT_SIZE
+lcol: FL_BLACK
+label: e
+shortcut: E
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: exp
+callback: proc_num
+argument: 'e'
+
+--------------------
+class: FL_BUTTON
+type: FL_NORMAL_BUTTON
+box: 150 50 40 40
+boxtype: FL_UP_BOX
+colors: FL_COL1 FL_COL1
+alignment: FL_ALIGN_CENTER
+style: FL_TIMESBOLD_STYLE
+size: FL_DEFAULT_SIZE
+lcol: FL_BLACK
+label: /
+shortcut: /
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: div
+callback: operator
+argument: '/'
+
+--------------------
+class: FL_BUTTON
+type: FL_NORMAL_BUTTON
+box: 150 90 40 40
+boxtype: FL_UP_BOX
+colors: FL_COL1 FL_COL1
+alignment: FL_ALIGN_CENTER
+style: FL_TIMESBOLD_STYLE
+size: FL_DEFAULT_SIZE
+lcol: FL_BLACK
+label: *
+shortcut: *
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: times
+callback: operator
+argument: '*'
+
+--------------------
+class: FL_BUTTON
+type: FL_NORMAL_BUTTON
+box: 150 130 40 40
+boxtype: FL_UP_BOX
+colors: FL_COL1 FL_COL1
+alignment: FL_ALIGN_CENTER
+style: FL_TIMESBOLD_STYLE
+size: FL_DEFAULT_SIZE
+lcol: FL_BLACK
+label: -
+shortcut: -
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: minus
+callback: operator
+argument: '-'
+
+--------------------
+class: FL_BUTTON
+type: FL_NORMAL_BUTTON
+box: 150 170 40 40
+boxtype: FL_UP_BOX
+colors: FL_COL1 FL_COL1
+alignment: FL_ALIGN_CENTER
+style: FL_TIMESBOLD_STYLE
+size: FL_DEFAULT_SIZE
+lcol: FL_BLACK
+label: +
+shortcut: +
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: plus
+callback: operator
+argument: '+'
+
+--------------------
+class: FL_BUTTON
+type: FL_NORMAL_BUTTON
+box: 150 210 40 40
+boxtype: FL_UP_BOX
+colors: FL_COL1 FL_COL1
+alignment: FL_ALIGN_CENTER
+style: FL_TIMESBOLD_STYLE
+size: FL_DEFAULT_SIZE
+lcol: FL_BLACK
+label: =
+shortcut: =
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: equals
+callback: operator
+argument: '='
+
+--------------------
+class: FL_BUTTON
+type: FL_NORMAL_BUTTON
+box: 190 210 40 40
+boxtype: FL_UP_BOX
+colors: FL_COL1 FL_COL1
+alignment: FL_ALIGN_CENTER
+style: FL_TIMESBOLD_STYLE
+size: FL_DEFAULT_SIZE
+lcol: FL_BLACK
+label: sqrt
+shortcut: v
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: sqrt
+callback: operator
+argument: 'v'
+
+--------------------
+class: FL_BUTTON
+type: FL_NORMAL_BUTTON
+box: 190 170 40 40
+boxtype: FL_UP_BOX
+colors: FL_COL1 FL_COL1
+alignment: FL_ALIGN_CENTER
+style: FL_TIMESBOLD_STYLE
+size: FL_DEFAULT_SIZE
+lcol: FL_BLACK
+label: Exp
+shortcut: ^^
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: expon
+callback: operator
+argument: '^'
+
+--------------------
+class: FL_BUTTON
+type: FL_NORMAL_BUTTON
+box: 190 130 40 40
+boxtype: FL_UP_BOX
+colors: FL_COL1 FL_COL1
+alignment: FL_ALIGN_CENTER
+style: FL_TIMESBOLD_STYLE
+size: FL_DEFAULT_SIZE
+lcol: FL_BLACK
+label: )
+shortcut: )
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: closeparen
+callback: grouping
+argument: ')'
+
+--------------------
+class: FL_BUTTON
+type: FL_NORMAL_BUTTON
+box: 190 90 40 40
+boxtype: FL_UP_BOX
+colors: FL_COL1 FL_COL1
+alignment: FL_ALIGN_CENTER
+style: FL_TIMESBOLD_STYLE
+size: FL_DEFAULT_SIZE
+lcol: FL_BLACK
+label: (
+shortcut: (
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: openparen
+callback: grouping
+argument: '('
+
+--------------------
+class: FL_BUTTON
+type: FL_NORMAL_BUTTON
+box: 190 50 40 40
+boxtype: FL_UP_BOX
+colors: FL_COL1 FL_COL1
+alignment: FL_ALIGN_CENTER
+style: FL_TIMESBOLD_STYLE
+size: FL_DEFAULT_SIZE
+lcol: FL_BLACK
+label: %
+shortcut: %
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: mod
+callback: operator
+argument: '%'
+
+--------------------
+class: FL_BUTTON
+type: FL_NORMAL_BUTTON
+box: 230 50 40 40
+boxtype: FL_UP_BOX
+colors: FL_COL1 FL_COL1
+alignment: FL_ALIGN_CENTER
+style: FL_TIMESBOLD_STYLE
+size: FL_DEFAULT_SIZE
+lcol: FL_BLACK
+label: sin
+shortcut: s
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: sin
+callback: operator
+argument: 's'
+
+--------------------
+class: FL_BUTTON
+type: FL_NORMAL_BUTTON
+box: 230 90 40 40
+boxtype: FL_UP_BOX
+colors: FL_COL1 FL_COL1
+alignment: FL_ALIGN_CENTER
+style: FL_TIMESBOLD_STYLE
+size: FL_DEFAULT_SIZE
+lcol: FL_BLACK
+label: cos
+shortcut: c
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: cosine
+callback: operator
+argument: 'c'
+
+--------------------
+class: FL_BUTTON
+type: FL_NORMAL_BUTTON
+box: 230 130 40 40
+boxtype: FL_UP_BOX
+colors: FL_COL1 FL_COL1
+alignment: FL_ALIGN_CENTER
+style: FL_TIMESBOLD_STYLE
+size: FL_DEFAULT_SIZE
+lcol: FL_BLACK
+label: tan
+shortcut: t
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: tangent
+callback: operator
+argument: 't'
+
+--------------------
+class: FL_BUTTON
+type: FL_NORMAL_BUTTON
+box: 230 170 40 40
+boxtype: FL_UP_BOX
+colors: FL_COL1 FL_COL1
+alignment: FL_ALIGN_CENTER
+style: FL_TIMESBOLD_STYLE
+size: FL_DEFAULT_SIZE
+lcol: FL_BLACK
+label: log
+shortcut: l
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: dozlog
+callback: operator
+argument: 'l'
+
+--------------------
+class: FL_BUTTON
+type: FL_NORMAL_BUTTON
+box: 230 210 40 40
+boxtype: FL_UP_BOX
+colors: FL_COL1 FL_COL1
+alignment: FL_ALIGN_CENTER
+style: FL_TIMESBOLD_STYLE
+size: FL_DEFAULT_SIZE
+lcol: FL_BLACK
+label: logx
+shortcut: d
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: declog
+callback: operator
+argument: 'x'
+
+--------------------
+class: FL_BUTTON
+type: FL_NORMAL_BUTTON
+box: 270 210 40 40
+boxtype: FL_UP_BOX
+colors: FL_COL1 FL_COL1
+alignment: FL_ALIGN_CENTER
+style: FL_TIMESBOLD_STYLE
+size: FL_DEFAULT_SIZE
+lcol: FL_BLACK
+label: nl
+shortcut: n
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: natlog
+callback: operator
+argument: 'n'
+
+--------------------
+class: FL_BUTTON
+type: FL_NORMAL_BUTTON
+box: 270 170 40 40
+boxtype: FL_UP_BOX
+colors: FL_COL1 FL_COL1
+alignment: FL_ALIGN_CENTER
+style: FL_TIMESBOLD_STYLE
+size: FL_DEFAULT_SIZE
+lcol: FL_BLACK
+label: logb
+shortcut: b
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: baselog
+callback: operator
+argument: 'b'
+
+--------------------
+class: FL_BUTTON
+type: FL_NORMAL_BUTTON
+box: 270 130 40 40
+boxtype: FL_UP_BOX
+colors: FL_COL1 FL_COL1
+alignment: FL_ALIGN_CENTER
+style: FL_TIMESBOLD_STYLE
+size: FL_DEFAULT_SIZE
+lcol: FL_BLACK
+label: atan
+shortcut: T
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: atan
+callback: operator
+argument: 'T'
+
+--------------------
+class: FL_BUTTON
+type: FL_NORMAL_BUTTON
+box: 270 90 40 40
+boxtype: FL_UP_BOX
+colors: FL_COL1 FL_COL1
+alignment: FL_ALIGN_CENTER
+style: FL_TIMESBOLD_STYLE
+size: FL_DEFAULT_SIZE
+lcol: FL_BLACK
+label: acos
+shortcut: C
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: acos
+callback: operator
+argument: 'C'
+
+--------------------
+class: FL_BUTTON
+type: FL_NORMAL_BUTTON
+box: 270 50 40 40
+boxtype: FL_UP_BOX
+colors: FL_COL1 FL_COL1
+alignment: FL_ALIGN_CENTER
+style: FL_TIMESBOLD_STYLE
+size: FL_DEFAULT_SIZE
+lcol: FL_BLACK
+label: asin
+shortcut: S
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: asin
+callback: operator
+argument: 'S'
+
+--------------------
+class: FL_BUTTON
+type: FL_NORMAL_BUTTON
+box: 310 210 40 40
+boxtype: FL_UP_BOX
+colors: FL_COL1 FL_COL1
+alignment: FL_ALIGN_CENTER
+style: FL_TIMESBOLD_STYLE
+size: FL_DEFAULT_SIZE
+lcol: FL_BLACK
+label: 1/x
+shortcut: r
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: recip
+callback: operator
+argument: 'r'
+
+--------------------
+class: FL_BUTTON
+type: FL_NORMAL_BUTTON
+box: 310 170 40 40
+boxtype: FL_UP_BOX
+colors: FL_COL1 FL_COL1
+alignment: FL_ALIGN_CENTER
+style: FL_TIMESBOLD_STYLE
+size: FL_DEFAULT_SIZE
+lcol: FL_BLACK
+label: dlg
+shortcut: D
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: dublog
+callback: operator
+argument: 'D'
+
+--------------------
+class: FL_BUTTON
+type: FL_NORMAL_BUTTON
+box: 310 130 40 40
+boxtype: FL_UP_BOX
+colors: FL_COL1 FL_COL1
+alignment: FL_ALIGN_CENTER
+style: FL_TIMESBOLD_STYLE
+size: FL_DEFAULT_SIZE
+lcol: FL_BLACK
+label: tanh
+shortcut: y
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: hytan
+callback: operator
+argument: 'y'
+
+--------------------
+class: FL_BUTTON
+type: FL_NORMAL_BUTTON
+box: 310 90 40 40
+boxtype: FL_UP_BOX
+colors: FL_COL1 FL_COL1
+alignment: FL_ALIGN_CENTER
+style: FL_TIMESBOLD_STYLE
+size: FL_DEFAULT_SIZE
+lcol: FL_BLACK
+label: cosh
+shortcut: H
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: hycos
+callback: operator
+argument: 'H'
+
+--------------------
+class: FL_BUTTON
+type: FL_NORMAL_BUTTON
+box: 310 50 40 40
+boxtype: FL_UP_BOX
+colors: FL_COL1 FL_COL1
+alignment: FL_ALIGN_CENTER
+style: FL_TIMESBOLD_STYLE
+size: FL_DEFAULT_SIZE
+lcol: FL_BLACK
+label: sinh
+shortcut: h
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: hysin
+callback: operator
+argument: 'h'
+
+--------------------
+class: FL_BUTTON
+type: FL_NORMAL_BUTTON
+box: 390 50 40 40
+boxtype: FL_UP_BOX
+colors: FL_COL1 FL_COL1
+alignment: FL_ALIGN_CENTER
+style: FL_TIMESBOLD_STYLE
+size: FL_DEFAULT_SIZE
+lcol: FL_BLACK
+label: Cl
+shortcut: w
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: clear
+callback: erase
+argument: 'c'
+
+--------------------
+class: FL_BUTTON
+type: FL_NORMAL_BUTTON
+box: 390 90 40 40
+boxtype: FL_UP_BOX
+colors: FL_COL1 FL_COL1
+alignment: FL_ALIGN_CENTER
+style: FL_TIMESBOLD_STYLE
+size: FL_DEFAULT_SIZE
+lcol: FL_BLACK
+label: <-
+shortcut: <
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: backspace
+callback: erase
+argument: '<'
+
+--------------------
+class: FL_BUTTON
+type: FL_NORMAL_BUTTON
+box: 350 130 40 40
+boxtype: FL_UP_BOX
+colors: FL_COL1 FL_COL1
+alignment: FL_ALIGN_CENTER
+style: FL_TIMESBOLD_STYLE
+size: FL_DEFAULT_SIZE
+lcol: FL_BLACK
+label: !
+shortcut: !
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: factorial
+callback: operator
+argument: '!'
+
+--------------------
+class: FL_BUTTON
+type: FL_NORMAL_BUTTON
+box: 350 170 40 40
+boxtype: FL_UP_BOX
+colors: FL_COL1 FL_COL1
+alignment: FL_ALIGN_CENTER
+style: FL_TIMESBOLD_STYLE
+size: FL_DEFAULT_SIZE
+lcol: FL_BLACK
+label: pi
+shortcut: p
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: pi
+callback: proc_num
+argument: 'p'
+
+--------------------
+class: FL_BUTTON
+type: FL_NORMAL_BUTTON
+box: 350 210 40 40
+boxtype: FL_UP_BOX
+colors: FL_COL1 FL_COL1
+alignment: FL_ALIGN_CENTER
+style: FL_TIMESBOLDITALIC_STYLE
+size: FL_DEFAULT_SIZE
+lcol: FL_BLACK
+label: e
+shortcut: u
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: euler
+callback: proc_num
+argument: 'u'
+
+--------------------
+class: FL_BUTTON
+type: FL_NORMAL_BUTTON
+box: 390 170 40 40
+boxtype: FL_UP_BOX
+colors: FL_COL1 FL_COL1
+alignment: FL_ALIGN_CENTER
+style: FL_TIMESBOLD_STYLE
+size: FL_DEFAULT_SIZE
+lcol: FL_BLACK
+label: Z/r/d
+shortcut: z
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: angleunit
+callback: unitangle
+argument: 0
+
+--------------------
+class: FL_BUTTON
+type: FL_NORMAL_BUTTON
+box: 430 90 40 40
+boxtype: FL_UP_BOX
+colors: FL_COL1 FL_COL1
+alignment: FL_ALIGN_CENTER
+style: FL_TIMESBOLD_STYLE
+size: FL_DEFAULT_SIZE
+lcol: FL_BLACK
+label: M++
+shortcut: A
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: memappend
+callback: memory
+argument: 'A'
+
+--------------------
+class: FL_BUTTON
+type: FL_NORMAL_BUTTON
+box: 430 50 40 40
+boxtype: FL_UP_BOX
+colors: FL_COL1 FL_COL1
+alignment: FL_ALIGN_CENTER
+style: FL_TIMESBOLD_STYLE
+size: FL_DEFAULT_SIZE
+lcol: FL_BLACK
+label: M+
+shortcut: a
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: memadd
+callback: memory
+argument: '+'
+
+--------------------
+class: FL_TEXT
+type: FL_NORMAL_TEXT
+box: 70 16 400 34
+boxtype: FL_DOWN_BOX
+colors: FL_ALICEBLUE FL_BLACK
+alignment: FL_ALIGN_RIGHT|FL_ALIGN_INSIDE
+style: FL_TIMESBOLD_STYLE
+size: FL_DEFAULT_SIZE
+lcol: FL_BLACK
+label: 
+shortcut: 
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: ansfield
+callback: 
+argument: 0
+
+--------------------
+class: FL_TEXT
+type: FL_NORMAL_TEXT
+box: 34 20 35 26
+boxtype: FL_FLAT_BOX
+colors: FL_COL1 FL_MCOL
+alignment: FL_ALIGN_LEFT|FL_ALIGN_INSIDE
+style: FL_TIMESBOLD_STYLE
+size: FL_DEFAULT_SIZE
+lcol: FL_BLACK
+label: 
+shortcut: 
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: angletype
+callback: 
+argument: 
+
+--------------------
+class: FL_BUTTON
+type: FL_NORMAL_BUTTON
+box: 350 50 40 40
+boxtype: FL_UP_BOX
+colors: FL_COL1 FL_COL1
+alignment: FL_ALIGN_CENTER
+style: FL_TIMESBOLD_STYLE
+size: FL_DEFAULT_SIZE
+lcol: FL_BLACK
+label: gcf
+shortcut: g
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: greatcommfact
+callback: operator
+argument: 'g'
+
+--------------------
+class: FL_BUTTON
+type: FL_NORMAL_BUTTON
+box: 350 90 40 40
+boxtype: FL_UP_BOX
+colors: FL_COL1 FL_COL1
+alignment: FL_ALIGN_CENTER
+style: FL_TIMESBOLD_STYLE
+size: FL_DEFAULT_SIZE
+lcol: FL_BLACK
+label: lcm
+shortcut: L
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: leastcommult
+callback: operator
+argument: 'L'
+
+--------------------
+class: FL_BUTTON
+type: FL_NORMAL_BUTTON
+box: 430 210 40 40
+boxtype: FL_UP_BOX
+colors: FL_COL1 FL_COL1
+alignment: FL_ALIGN_CENTER
+style: FL_TIMESBOLD_STYLE
+size: FL_DEFAULT_SIZE
+lcol: FL_BLACK
+label: Quit
+shortcut: q
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: quitbutton
+callback: quitfunc
+argument: 0
+
+--------------------
+class: FL_BUTTON
+type: FL_NORMAL_BUTTON
+box: 390 210 40 40
+boxtype: FL_UP_BOX
+colors: FL_COL1 FL_COL1
+alignment: FL_ALIGN_CENTER
+style: FL_TIMESBOLD_STYLE
+size: FL_DEFAULT_SIZE
+lcol: FL_BLACK
+label: atan2
+shortcut: N
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: atantwo
+callback: operator
+argument: 'N'
+
+--------------------
+class: FL_BUTTON
+type: FL_NORMAL_BUTTON
+box: 390 130 40 40
+boxtype: FL_UP_BOX
+colors: FL_COL1 FL_COL1
+alignment: FL_ALIGN_CENTER
+style: FL_TIMESBOLD_STYLE
+size: FL_DEFAULT_SIZE
+lcol: FL_BLACK
+label: ,
+shortcut: ,
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: comma
+callback: operator
+argument: ','
+
+--------------------
+class: FL_BUTTON
+type: FL_NORMAL_BUTTON
+box: 430 130 40 40
+boxtype: FL_UP_BOX
+colors: FL_COL1 FL_COL1
+alignment: FL_ALIGN_CENTER
+style: FL_TIMESBOLD_STYLE
+size: FL_DEFAULT_SIZE
+lcol: FL_BLACK
+label: M
+shortcut: R
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: memrep
+callback: memory
+argument: 'r'
+
+--------------------
+class: FL_BUTTON
+type: FL_NORMAL_BUTTON
+box: 430 170 40 40
+boxtype: FL_UP_BOX
+colors: FL_COL1 FL_COL1
+alignment: FL_ALIGN_CENTER
+style: FL_TIMESBOLD_STYLE
+size: FL_DEFAULT_SIZE
+lcol: FL_BLACK
+label: CM
+shortcut: k
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: clearmem
+callback: memory
+argument: 'c'
+
+--------------------
+class: FL_SPINNER
+type: FL_INT_SPINNER
+box: 33 18 37 32
+boxtype: FL_NO_BOX
+colors: FL_COL1 FL_MCOL
+alignment: FL_ALIGN_LEFT
+style: FL_TIMESBOLD_STYLE
+size: FL_DEFAULT_SIZE
+lcol: FL_BLACK
+label: 
+shortcut: 
+resize: FL_RESIZE_ALL
+gravity: FL_NoGravity FL_NoGravity
+name: precisionval
+callback: set_prec
+argument: 0
+
+==============================
+create_the_forms
