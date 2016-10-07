@@ -49,7 +49,7 @@ int xdozbc(int num, char *args[])
 	calc = create_form_calculator();
 
 	Pixmap mask; int w; int h;
-	Pixmap pm = fl_read_pixmapfile(fl_root,"logo_shapes.xpm",
+	Pixmap pm = fl_read_pixmapfile(fl_root,"logo_shapes_dozenal.xpm",
 		&w, &h, NULL, NULL, NULL, 0);
 	fl_set_form_icon(calc->calculator,pm,None);
 

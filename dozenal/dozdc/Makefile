@@ -7,6 +7,7 @@
 # Changes 12/2014 by Nathan Fisher <nfisher.sr@gmx.com>
 
 prefix ?= /usr/local
+imgdir ?= /usr/share/pixmaps
 bindir ?= $(prefix)/bin
 binmode = 755
 dirmode = 755
@@ -70,6 +71,7 @@ bin: $(binobjects)
 installbin: $(binobjects)
 	for obj in $(binobjects) ; do \
 		install -m $(binmode) $${obj} $(bindir) ; done
+	cp logo_shapes_dozenal.xpm $(imgdir)
 
 install: installbin
 
