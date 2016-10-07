@@ -9,14 +9,14 @@ SnapGrid: 1
 
 =============== FORM ===============
 Name: calculator
-Width: 562
-Height: 250
+Width: 504
+Height: 252
 Number of Objects: 59
 
 --------------------
 class: FL_BOX
 type: FL_FLAT_BOX
-box: 0 0 562 250
+box: 0 0 504 252
 boxtype: FL_ROUNDED_BOX
 colors: FL_COL1 FL_COL1
 alignment: FL_ALIGN_CENTER
