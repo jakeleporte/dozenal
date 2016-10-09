@@ -68,7 +68,8 @@ int proc_options(char *s, int *moonphases, char **nat, char **relig,
 	}
 	while ((read = getline(&line, &len, fp)) != -1) {
 		chomp(line);
-		check_line(line);
+		if (check_line(line) == 1)
+			continue;
 		if (strstr(line,"MOON")) {
 			if (strstr(line,"major"))
 				*moonphases = 2;
@@ -263,6 +264,9 @@ int proc_options(char *s, int *moonphases, char **nat, char **relig,
 			proc_color(line+holder,line,ind);
 		} else if (strstr(line,"NOCOLOR")) {
 			allopts[NOCOLOR].colconst = -1;
+		} else {
+			fprintf(stderr,"dozcal:  option \"%s\" is not "
+				"recognized; skipping...\n",line);
 		}
 	}
 	free(line);
@@ -368,5 +372,7 @@ int check_line(char *s)
 			"recognized, or\n\tis not properly formed; "
 			"format is \"OPTION:  value\";\n\tskipping malformed "
 			"option...\n",s);
+		return 1;
 	}
+	return 0;
 }
