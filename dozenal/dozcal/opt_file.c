@@ -68,6 +68,7 @@ int proc_options(char *s, int *moonphases, char **nat, char **relig,
 	}
 	while ((read = getline(&line, &len, fp)) != -1) {
 		chomp(line);
+		check_line(line);
 		if (strstr(line,"MOON")) {
 			if (strstr(line,"major"))
 				*moonphases = 2;
@@ -346,4 +347,26 @@ int find_color_ind(char *s)
 		}
 	}
 	return -1;
+}
+
+int check_line(char *s)
+{
+	int result; int errornum;
+	char err[MAX_ERR_LENGTH+1];
+	regmatch_t pmatch[4];
+	regex_t regone;
+	char *optpat = "[A-Z_][A-Z_]*:[\t ]";
+
+	if ((errornum = regcomp(&regone,optpat,0)) != 0) {
+		regerror(errornum,&regone,err,MAX_ERR_LENGTH);
+		return -1;
+	}
+	result = regexec(&regone,s,4,pmatch,0);
+	regfree(&regone);
+	if (result != 0) {		/* no match */
+		fprintf(stderr,"dozcal:  option line \"%s\" is not "
+			"recognized, or\n\tis not properly formed; "
+			"format is \"OPTION:  value\";\n\tskipping malformed "
+			"option...\n",s);
+	}
 }
