@@ -68,7 +68,23 @@ int proc_options(char *s, int *moonphases, char **nat, char **relig,
 	}
 	while ((read = getline(&line, &len, fp)) != -1) {
 		chomp(line);
-		if (check_line(line) == 1)
+		if (strstr(line,"PRINT_TODOS")) {
+			*iftodo = 1;
+			continue;
+		} else if (strstr(line,"UTCTIME")) {
+			utc = 1;
+			continue;
+		} else if (strstr(line,"NO_EVENT")) {
+			*ifevent = 0;
+			continue;
+		} else if (strstr(line,"WEEKLY")) {
+			*weekout = 1;
+			continue;
+		} else if (strstr(line,"NOCOLOR")) {
+			allopts[NOCOLOR].colconst = -1;
+			continue;
+		}
+		if (check_line(line) >= 1)
 			continue;
 		if (strstr(line,"MOON")) {
 			if (strstr(line,"major"))
@@ -115,14 +131,6 @@ int proc_options(char *s, int *moonphases, char **nat, char **relig,
 		} else if (strstr(line,"SCRIPT")) {
 			holder = get_impstr(line);
 			call_lua(line+holder);
-		} else if (strstr(line,"PRINT_TODOS")) {
-			*iftodo = 1;
-		} else if (strstr(line,"UTCTIME")) {
-			utc = 1;
-		} else if (strstr(line,"NO_EVENT")) {
-			*ifevent = 0;
-		} else if (strstr(line,"WEEKLY")) {
-			*weekout = 1;
 		} else if (strstr(line,"FIRST_DOW")) {
 			holder = get_impstr(line);
 			*fdow = first_dow(line+holder);
@@ -262,8 +270,6 @@ int proc_options(char *s, int *moonphases, char **nat, char **relig,
 			ind = find_color_ind(line);
 			holder = get_impstr(line);
 			proc_color(line+holder,line,ind);
-		} else if (strstr(line,"NOCOLOR")) {
-			allopts[NOCOLOR].colconst = -1;
 		} else {
 			fprintf(stderr,"dozcal:  option \"%s\" is not "
 				"recognized; skipping...\n",line);
@@ -353,6 +359,8 @@ int find_color_ind(char *s)
 	return -1;
 }
 
+/* if -1, error; if 0, line is fine; if 1, line is bad; if
+ * 2, line is blank */
 int check_line(char *s)
 {
 	int result; int errornum;
@@ -360,7 +368,16 @@ int check_line(char *s)
 	regmatch_t pmatch[4];
 	regex_t regone;
 	char *optpat = "[A-Z_][A-Z_]*:[\t ]";
+	char *blank = "^[ \t\n]*$";
 
+	if ((errornum = regcomp(&regone,blank,0)) != 0) {
+		regerror(errornum,&regone,err,MAX_ERR_LENGTH);
+		return -1;
+	}
+	result = regexec(&regone,s,4,pmatch,0);
+	regfree(&regone);
+	if (result == 0)
+		return 2;
 	if ((errornum = regcomp(&regone,optpat,0)) != 0) {
 		regerror(errornum,&regone,err,MAX_ERR_LENGTH);
 		return -1;
