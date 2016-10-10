@@ -536,7 +536,7 @@ int shift,WINDOW *evconts)
 	date->tm_year = *year-1900; date->tm_mon = *mon;
 		date->tm_mday = *currday; mktime(date);
 	jdn = datenum_to_jdn(get_datenum(date));
-	jdn += shift + 2;
+	jdn += shift;
 	date = broken_date(jdn_to_datenum(jdn));
 	*currday = date->tm_mday; *mon = date->tm_mon;
 		*year = date->tm_year + 1900;
@@ -604,7 +604,7 @@ WINDOW *evconts)
 		date->tm_mday +=1; mktime(date);
 	}
 	wattroff(win,COLOR_PAIR(20));
-	date->tm_mday = currday + 2; date->tm_mon -= 1; mktime(date);
+	date->tm_mday = currday + 1; date->tm_mon -= 1; mktime(date);
 	return get_datenum(date);
 }
 
