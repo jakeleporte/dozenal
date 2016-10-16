@@ -55,6 +55,7 @@ int main(int argc, char *argv[])
 	char *convstring = NULL;
 	double decimal;
 	int i; int j; int k;
+	int lastdot = 0;
 
 	while ((c = getopt(argc,argv,"c:vsnx:e:p:")) != -1) {
 		switch (c) {
@@ -74,7 +75,7 @@ int main(int argc, char *argv[])
 			padchar = *optarg;
 			break;
 		case 'v':
-			printf("dozstring v1.1\n");
+			printf("dozstring v1.2\n");
 			printf("Copyright (C) 2013  Donald P. Goodman III\n");
 			printf("License GPLv3+:  GNU GPL version 3 or "
 			"later <http://gnu.org/licenses/gpl.html>\n");
@@ -102,7 +103,6 @@ int main(int argc, char *argv[])
 	i = 0;
 	if (convstring != NULL) {
 		int k = -1;
-/*		for (j = 0; convstring[j] != '\0'; ++j) {*/
 		do {
 			k += 1;
 			c = convstring[k];
@@ -110,10 +110,11 @@ int main(int argc, char *argv[])
 			case '0': case '1': case '2': case '3': case '4':
 			case '5': case '6': case '7': case '8': case '9':
 			case '.':
-				if ((c == '.') && (i == 0))
+				if ((c == '.') && (i == 0)) {
 					printf("%c",c);
-				else
+				} else {
 					decnum[i++] = c;
+				}
 				break;
 			default:
 				decnum[i] = '\0';
@@ -125,6 +126,11 @@ int main(int argc, char *argv[])
 					continue;
 				}
 				if (i > 0) {
+					if (decnum[strlen(decnum)-1] == '.') {
+						decnum[strlen(decnum)-1] = '\0';
+						lastdot = 1;
+						--i;
+					}
 					decimal = atof(decnum);
 					dectodoz(doznum,decimal);
 					for (j = 0; doznum[j] != '\0'; ++j);
@@ -150,6 +156,8 @@ int main(int argc, char *argv[])
 						}
 					}
 					printf("%s",doznum);
+					if (lastdot == 1)
+						printf(".");
 					printf("%c",c);
 					i = 0;
 				} else {
@@ -182,6 +190,11 @@ int main(int argc, char *argv[])
 				continue;
 			}
 			if (i > 0) {
+				if (decnum[strlen(decnum)-1] == '.') {
+					decnum[strlen(decnum)-1] = '\0';
+					lastdot = 1;
+					--i;
+				}
 				decimal = atof(decnum);
 				dectodoz(doznum,decimal);
 				for (j = 0; doznum[j] != '\0'; ++j);
@@ -207,6 +220,10 @@ int main(int argc, char *argv[])
 					}
 				}
 				printf("%s",doznum);
+				if (lastdot == 1) {
+					lastdot = 0;
+					printf(".");
+				}
 				printf("%c",c);
 				i = 0;
 			} else {
