@@ -135,7 +135,7 @@ int main(int argc, char *argv[])
 						doznum[j] = '\0';
 						reverse(doznum);
 					} else if (j > i) {
-						doznum[i-1] = '\0';
+						doznum[i] = '\0';
 					}
 					if (tenchar != 'X') {
 						for (i = 0; doznum[i] != '\0'; ++i) {
@@ -192,7 +192,7 @@ int main(int argc, char *argv[])
 					doznum[j] = '\0';
 					reverse(doznum);
 				} else if (j > i) {
-					doznum[i-1] = '\0';
+					doznum[i] = '\0';
 				}
 				if (tenchar != 'X') {
 					for (i = 0; doznum[i] != '\0'; ++i) {
