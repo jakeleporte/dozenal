@@ -74,7 +74,7 @@ int main(int argc, char *argv[])
 			padchar = *optarg;
 			break;
 		case 'v':
-			printf("dozstring v1.0\n");
+			printf("dozstring v1.1\n");
 			printf("Copyright (C) 2013  Donald P. Goodman III\n");
 			printf("License GPLv3+:  GNU GPL version 3 or "
 			"later <http://gnu.org/licenses/gpl.html>\n");
