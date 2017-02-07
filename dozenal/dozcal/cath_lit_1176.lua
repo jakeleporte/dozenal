@@ -1911,7 +1911,6 @@ function fill_year(year,returntab,index)
 		end
 		firstjdn = firstjdn + 1
 	end
-	print(index)
 	return index
 end
 
@@ -1927,5 +1926,3 @@ end
 function dozcal_return_ev_num()
 	return fill_year(2017,returntab,index)
 end
-
-dozcal_return_ev_num()
