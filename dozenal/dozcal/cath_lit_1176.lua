@@ -21,6 +21,9 @@ function ifinret(element)
 	local i = 1
 	local j = 0
 	for i = #returntab,1,-1 do
+		if (returntab[i] == nil) then
+			break;
+		end
 		local v = returntab[i]
 		for key,val in pairs(v) do
 			if (key == "START_DATE") then
@@ -1908,6 +1911,7 @@ function fill_year(year,returntab,index)
 		end
 		firstjdn = firstjdn + 1
 	end
+	print(index)
 	return index
 end
 
@@ -1921,5 +1925,7 @@ function dozcal_return_ev()
 end
 
 function dozcal_return_ev_num()
-	return fill_year(2016,returntab,index)
+	return fill_year(2017,returntab,index)
 end
+
+dozcal_return_ev_num()
