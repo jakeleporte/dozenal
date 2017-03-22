@@ -19,7 +19,7 @@ $mw->title('gdozdc v1.0');
 #$mw->Icon(-image=>$icon);
 $mw->Icon(
 	-image=>$mw->Bitmap(
-		-file=>'logo_shapes_dozenal.xbm'
+		-file=>'logo_shapes_mask.xbm'
 	),
 );
 #my $icon = $mw->Bitmap(-file=>'logo_shapes_dozenal.xbm');
