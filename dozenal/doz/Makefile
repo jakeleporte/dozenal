@@ -21,7 +21,7 @@ binobjects = doz
 all: bin
 
 doz : $(objects) ../conv/conv.o ../dec/dec.o
-	$(CC) -g -lm -o doz main.o ../conv/conv.o doz.o ../dec/dec.o
+	$(CC) -g -o doz  main.o ../conv/conv.o doz.o ../dec/dec.o -lm 
 
 main.o : main.c ../conv/conv.o doz.o ../dec/dec.o
 	$(CC) -I$(IDIR) -g -lm -c main.c

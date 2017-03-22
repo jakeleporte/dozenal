@@ -26,8 +26,8 @@ binobjects = dozcal
 all: bin
 
 dozcal: $(objects) ../doz/doz.o ../dec/dec.o ../conv/conv.o event_struct.h $(LOCALLIBS)
-	$(CC) -I$(IDIR) -std=c99 -g -lm -lhdate -o dozcal ../conv/conv.o \
-		../doz/doz.o ../dec/dec.o $(objects) $(LUALIB) $(CURSLIB)
+	$(CC) -I$(IDIR) -std=c99 -g -o dozcal ../conv/conv.o \
+		../doz/doz.o ../dec/dec.o $(objects) $(LUALIB) $(CURSLIB) -lm -lhdate 
 
 main.o: main.c tui.o ../conv/conv.o ../doz/doz.o ../dec/dec.o ../conv/conv.o $(LOCALLIBS)
 	$(CC) -I$(IDIR) -g -lm -c main.c ../dec/dec.c ../conv/conv.c \

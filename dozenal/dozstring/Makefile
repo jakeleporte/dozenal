@@ -18,8 +18,8 @@ binobjects = dozstring
 all: bin
 
 dozstring : main.o ../doz/doz.o ../dec/dec.o
-	$(CC) -I$(IDIR) -g -lm main.o ../conv/conv.o ../doz/doz.o \
-		../dec/dec.o -o dozstring
+	$(CC) -I$(IDIR) -g main.o ../conv/conv.o ../doz/doz.o \
+		../dec/dec.o -o dozstring -lm 
 
 main.o : main.c ../conv/conv.o ../doz/doz.o ../dec/dec.o
 	$(CC) -I$(IDIR) -g -c main.c
