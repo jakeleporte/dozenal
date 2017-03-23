@@ -15,7 +15,7 @@ binobjects = dozword
 all: bin
 
 dozword: dozword.c ../conv/conv.o ../doz/doz.o ../dec/dec.o
-	$(CC) -I$(IDIR) -lm -o dozword dozword.c ../conv/conv.o ../dec/dec.o ../doz/doz.o
+	$(CC) -I$(IDIR) -o dozword dozword.c ../conv/conv.o ../dec/dec.o ../doz/doz.o -lm 
 
 ../conv/conv.o: ../conv/conv.c $(IDIR)/conv.h
 	$(MAKE) -C ../conv

@@ -13,8 +13,8 @@ all: bin
 
 tgmconv: main.o ../doz/doz.o ../dec/dec.o tgm.o $(IDIR)/tgmconv.h \
 		../conv/conv.o
-	$(CC) -I$(IDIR) -g -lm -o tgmconv main.o tgm.o ../doz/doz.o \
-		../dec/dec.o ../conv/conv.o
+	$(CC) -I$(IDIR) -g -o tgmconv main.o tgm.o ../doz/doz.o \
+		../dec/dec.o ../conv/conv.o -lm
 
 main.o: main.c $(IDIR)/tgmconv.h ../dec/dec.o ../doz/doz.o ../conv/conv.c
 	$(CC) -I$(IDIR) -g -c main.c

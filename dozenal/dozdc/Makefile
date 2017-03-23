@@ -28,9 +28,9 @@ all: bin
 
 dozdc : main.o ../dec/dec.o $(IDIR)/dozdc.h getop.o stack.o vars.o \
 	$(XFORM_OBJS)
-	$(CC) $(XFORMS_FLAGS) -I$(IDIR) -g -lm -o dozdc main.o ../conv/conv.o \
+	$(CC) $(XFORMS_FLAGS) -I$(IDIR) -g -o dozdc main.o ../conv/conv.o \
 		../doz/doz.o ../dec/dec.o getop.o stack.o $(IDIR)/stack.h \
-		vars.o $(IDIR)/vars.h $(XFORM_OBJS) $(XFORM_LIBS)
+		vars.o $(IDIR)/vars.h $(XFORM_OBJS) $(XFORM_LIBS) -lm
 	cp dozdc dozbc
 
 main.o : main.c ../dec/dec.o $(IDIR)/dozdc.h stack.o vars.o

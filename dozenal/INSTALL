@@ -1,3 +1,6 @@
+Instructions
+============
+
 To compile the programs, just type "make". Alternatively, programs can
 be compiled individually by running "make" in their corresponding
 subdirectory.
@@ -9,3 +12,42 @@ The commands can of course be combined as "make install installhtml".
 Certain paths can be adjusted at install time by setting variables on the
 command line, as in:
 %make prefix=/usr mandir=/usr/man htmldir=/usr/share/doc/html
+
+Dependencies
+============
+
+Several of the programs have dependencies in order to compile and/or run.  Included are some command line instructions for installing these dependencies that could help on an Ubuntu Linux system:
+
+dozdate
+-------
+
+Requires the ``hdate`` library::
+
+    $ sudo apt-get install libhdate-dev
+
+dozcal
+------
+
+Requires ``Lua`` 5.2 develompent libraries::
+
+    $ sudo apt-get install liblua5.2-dev
+
+gdozdc
+------
+
+Requires some Perl modules::
+
+    $ cpan
+    cpan> install Tk
+    cpan> install PAR
+
+dozdc
+-----
+
+Graphical version requires the ``xforms`` library, can manually modify the Makefile to build non-graphical version without it.
+
+``xforms`` is available at http://download.savannah.nongnu.org/releases/xforms/
+
+``xforms`` in turn requires the ``xpm`` library::
+
+    $ sudo apt-get install libxpm-dev

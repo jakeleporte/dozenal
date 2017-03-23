@@ -21,8 +21,8 @@ binobjects = dozdate
 all: bin
 
 dozdate: $(objects) ../doz/doz.o ../dec/dec.o ../conv/conv.o
-	$(CC) -I$(IDIR) -std=c99 -g -lm -o dozdate main.o ../conv/conv.o \
-		../doz/doz.o ../dec/dec.o process_date.o get_symmdate.o
+	$(CC) -I$(IDIR) -std=c99 -g -o dozdate main.o ../conv/conv.o \
+		../doz/doz.o ../dec/dec.o process_date.o get_symmdate.o -lm 
 
 main.o: main.c ../conv/conv.o ../doz/doz.o process_date.o \
 		$(IDIR)/process_date.h $(IDIR)/get_symmdate.h get_symmdate.o
