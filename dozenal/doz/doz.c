@@ -45,7 +45,7 @@ int expnotate(char *s);
 int negexp(char *s, int zenspot);
 int posexp(char *s, int zenspot);
 
-int doz(char *s, char *t, int places, int expnot)
+int doz(char *s, char *t, int places, int expnot, int new)
 {
 	double decnum;
 	int i;
@@ -79,7 +79,8 @@ int doz(char *s, char *t, int places, int expnot)
 				putchar(s[i]);
 		}
 	}
-	putchar('\n');
+	if (new == 1)
+		putchar('\n');
 	return 0;
 }
 

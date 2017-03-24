@@ -27,7 +27,7 @@
 
 #define MAXLINE 1000
 
-int doz(char *s, char *t, int places, int expnot);
+int doz(char *s, char *t, int places, int expnot, int new);
 double doztodec(char *s);
 int dec(char *p, int places, char expnot);
 void reverse(char *s);

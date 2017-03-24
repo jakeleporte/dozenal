@@ -306,7 +306,7 @@ void operator( FL_OBJECT * button, long arg )
 				answer = commandcalc(word, type, places, 0);
 			}
 			sprintf(word,"%.*f",DBL_MAX_10_EXP,answer);
-			doz(word,word,places,0);
+			doz(word,word,places,0,1);
 			for (i = 0; word[i] != ';' && word[i] != '\0'; ++i);
 			if (word[i] == ';') {
 				for (j = 0;  j < places; ++j)

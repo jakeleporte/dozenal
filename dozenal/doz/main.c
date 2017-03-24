@@ -92,10 +92,10 @@ int main(int argc, char *argv[])
 			}
 	}
 	if (argc >= 1) {
-		doz(doznum,*argv,places,expnot);
+		doz(doznum,*argv,places,expnot,1);
 		return 0;
 	}
 	while (getword(doznum,MAXLINE) != EOF)
-		doz(doznum,doznum,places,expnot);
+		doz(doznum,doznum,places,expnot,1);
 	return 0;
 }

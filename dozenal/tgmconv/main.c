@@ -156,7 +156,7 @@ int main(int argc, char *argv[])
 		value = doztodec(*argv);
 		value = getanswer(outp,inp,value);
 		sprintf(doznum,"%.*f",DBL_MAX_10_EXP,value);
-		doz(doznum,doznum,places,expnot);
+		doz(doznum,doznum,places,expnot,1);
 		return 0;
 	}
 	while (getword(doznum,MAXLINE) != EOF) {
@@ -167,7 +167,7 @@ int main(int argc, char *argv[])
 		value = doztodec(doznum);
 		value = getanswer(outp,inp,value);
 		sprintf(doznum,"%.*f",DBL_MAX_10_EXP,value);
-		doz(doznum,doznum,places,expnot);
+		doz(doznum,doznum,places,expnot,1);
 	}
 	return 0;
 }

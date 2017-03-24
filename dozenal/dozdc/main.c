@@ -133,7 +133,7 @@ int main(int argc, char *argv[])
 		while ((type = graphops(s,word,&i)) != EOF)
 			answer = commandcalc(word, type, places, expnot);
 		sprintf(word,"%.*f",DBL_MAX_10_EXP,answer);
-		doz(word,word,places,expnot);
+		doz(word,word,places,expnot,1);
 		clean();
 		return 0;
 	}
@@ -159,7 +159,7 @@ double commandcalc(char *word, int type, int places, char expnot)
 			answer = operate(operator,&places,&print);
 			if (operator == PRPOP) {
 				sprintf(s,"%.*f",DBL_MAX_10_EXP,answer);
-				doz(s,s,places,expnot);
+				doz(s,s,places,expnot,1);
 			}
 		}
 	}
@@ -185,9 +185,12 @@ int runcalc(int places, char expnot)
 			else
 				answer = operate(operator,&places,&print);
 		}
-		if (print == PRINT) {
+		if ((print == PRINT) || (print == PRINTNONEW)) {
 			sprintf(s,"%.*f",DBL_MAX_10_EXP,answer);
-			doz(s,s,places,expnot);
+			if (print == PRINT)
+				doz(s,s,places,expnot,1);
+			else
+				doz(s,s,places,expnot,0);
 			print = NOTPRINT;
 		}
 	}

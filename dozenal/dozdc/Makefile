@@ -72,7 +72,6 @@ bin: $(binobjects)
 installbin: $(binobjects)
 	for obj in $(binobjects) ; do \
 		install -m $(binmode) $${obj} $(bindir) ; done
-	cp logo_shapes_dozenal.xpm $(imgdir)
 
 install: installbin
 

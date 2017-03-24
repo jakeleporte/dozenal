@@ -80,6 +80,7 @@ char *ops[] = {
 	"max", /* returns highest of two values */
 	"min", /* returns lowest of two values */
 	"p", /* answer, but push it back onto the stack */
+	"n", /* equivalent to "=" */
 };
 
 /* refer to ops[] array to determine what operator to use;
@@ -428,6 +429,10 @@ double operate(int operator, int *places, char *print)
 		tmp = pop();
 		push(tmp);
 		return tmp;
+		break;
+	case DCPOP:
+		*print = PRINTNONEW;
+		return pop();
 		break;
 	case EQUALS:
 		*print = PRINT;

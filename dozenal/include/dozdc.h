@@ -30,8 +30,9 @@
  */
 
 /* define these for main.c and getop.c */
-#define PRINT 1		/* print answer or not */
-#define NOTPRINT 0
+#define PRINTNONEW 2	/* print answer, without newline */
+#define PRINT 1		/* print answer, with newline */
+#define NOTPRINT 0	/* don't print the answer */
 
 /* constants referring to numbers or operators */
 #define NUM 0
@@ -83,3 +84,4 @@
 #define MAX 40
 #define MIN 41
 #define PRPOP 42
+#define DCPOP 43
