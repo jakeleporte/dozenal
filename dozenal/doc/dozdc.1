@@ -87,11 +87,18 @@ after hitting "enter"; however, no answer will be printed
 unless you put in an "=" and hit that.  This allows long
 calculations to be split between lines without having
 intermediate results, which may not be interesting, printed
-unless you want them to be.
+unless you want them to be.  This is printed with a trailing
+newline.
 .IP p
-Pops and prints the top of the stack, then pushes that
-number back onto the stack.  Helps for printing intermediate
-values without having to manually refill the stack.
+Pops and prints the top of the stack, with a newline, then
+pushes that number back onto the stack.  Helps for printing
+intermediate values without having to manually refill the
+stack.
+.IP n
+Pops and prints the top of the stack, without a newline.
+Does \fInot\fR push the value back onto the stack.
+Essentially, this is equivalent to \fI=\fR except for the
+lack of newline.
 .IP "+, -, *, /"
 The basic arithmetic operators; they are all binary.  They
 work precisely as one would expect them to.  "-" and "/"
@@ -107,6 +114,15 @@ as such, it works on floating-point numbers as well as
 integers.  Like "/", one cannot divide by zero; trying will
 emit an error message, and the numbers will be pushed back
 onto the stack, as they were before the attempt.
+.IP ~
+Very similar to the modulus (\fI%\fR), except that it
+performs both division and modulation.  So the top two
+values are popped from the stack; the quotient of the two is
+computed, and the result of that is pushed onto the stack;
+then the modulus of the two is computed, and the result of
+that is pushed onto the stack.  This results in the two
+numbers on the top of the stack being replaced with their
+quotient and modulus.
 .IP k
 Precision; this is a unary operator.  As such, its argument
 comes prior to it.  It pops the last number and makes that

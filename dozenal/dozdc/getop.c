@@ -81,6 +81,7 @@ char *ops[] = {
 	"min", /* returns lowest of two values */
 	"p", /* answer, but push it back onto the stack */
 	"n", /* equivalent to "=" */
+	"~", /* divide, push both quotient and remainder */
 };
 
 /* refer to ops[] array to determine what operator to use;
@@ -208,6 +209,17 @@ double operate(int operator, int *places, char *print)
 			push(tmp);
 		} else {
 			push(pop() / tmp);
+		}
+		break;
+	case TILDE:
+		tmp = pop();
+		if (tmp == 0) {
+			fprintf(stderr,"dozdc:  cannot divide by 0\n");
+			push(tmp);
+		} else {
+			othtmp = pop();
+			push(othtmp / tmp);
+			push(fmod(othtmp,tmp));
 		}
 		break;
 	case MOD:
