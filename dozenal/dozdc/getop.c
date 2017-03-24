@@ -108,6 +108,8 @@ int gettype(char *s)
 	int type = NUM;
 
 	while (getword(s,MAXLINE-1) != EOF) {
+		if (!strcmp(s,""))
+			continue;
 		for (i=0; s[i] != '\0'; ++i)
 			if (!isdozdig(s[i]) && s[i] != '-') {
 				type = OP;

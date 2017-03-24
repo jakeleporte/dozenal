@@ -48,11 +48,6 @@ int xdozbc(int num, char *args[])
 	fl_initialize(&num,args,"xdozbc",0,0);
 	calc = create_form_calculator();
 
-	Pixmap mask; int w; int h;
-	Pixmap pm = fl_read_pixmapfile(fl_root,"logo_shapes_dozenal.xpm",
-		&w, &h, NULL, NULL, NULL, 0);
-	fl_set_form_icon(calc->calculator,pm,None);
-
 	whole = fl_show_form(calc->calculator,FL_PLACE_MOUSE,
 		FL_FULLBORDER,"xdozbc");
 	fl_set_object_return(calc->precisionval,FL_RETURN_CHANGED);
