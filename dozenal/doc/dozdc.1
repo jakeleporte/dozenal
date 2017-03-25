@@ -79,7 +79,7 @@ on).  So, for example, rather than writing "1 + 1", one
 writes "1 1 +"; rather than writing cos(30), one writes "30
 cos".  This has the benefit of being unambiguous (no
 parentheses are necessary).
-.SH OPERATORS
+.SH STACK OPERATORS
 .IP =
 Pops and prints the top of the stack; in other words, gives
 you your answer.  The operations you request will be done
@@ -99,6 +99,23 @@ Pops and prints the top of the stack, without a newline.
 Does \fInot\fR push the value back onto the stack.
 Essentially, this is equivalent to \fI=\fR except for the
 lack of newline.
+.IP f
+Prints the entirety of the stack, with each number separated
+by spaces, followed by a newline.  Makes no changes to the
+stack itself.  Useful for seeing where exactly you are.  If
+the stack is empty, prints a message saying so.
+.IP c
+Clears the stack entirely, leaving it empty.
+.IP dupe
+Duplicates the top value of the stack and pushes it, making
+the top two items on the stack identical.  Prints an error
+if the stack is empty.
+.IP swap
+Swaps the top two values on the stack, so that the top value
+is now the second-to-top, and the second-to-top is now the
+top.  Prints an error if there are less than two values on
+the stack.
+.SH  ARITHMETICAL OPERATORS
 .IP "+, -, *, /"
 The basic arithmetic operators; they are all binary.  They
 work precisely as one would expect them to.  "-" and "/"

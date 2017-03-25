@@ -86,3 +86,7 @@
 #define PRPOP 42
 #define DCPOP 43
 #define TILDE 44
+#define CLEARSTACK 45
+#define DOUBLETOP 46
+#define SWAP 47
+#define PRINTSTACK 48

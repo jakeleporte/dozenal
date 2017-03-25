@@ -31,6 +31,8 @@
 
 #include<stdio.h>
 #include<stdlib.h>
+#include<float.h>
+#include"conv.h"
 
 #define INCREMENT 100			/* maximum depth of val stack */
 
@@ -70,10 +72,62 @@ double pop(void)
 		fprintf(stderr,"dozdc:  no values left on stack\n");
 }
 
+int clear_stack(void)
+{
+	sp = 0;
+	return 0;
+}
+
+int print_stack(void)
+{
+	int tmp;
+	char word[MAXLINE];
+	char decword[MAXLINE];
+
+	tmp = 0;
+	if (sp == 0) {
+		printf("dozdc:  stack empty\n");
+		return 0;
+	}
+	while (tmp < sp) {
+		sprintf(word,"%.*f",DBL_MAX_10_EXP,stack[tmp++]);
+		doz(word,word,4,0,0);
+		printf(" ");
+	}
+	printf("\n");
+	return 0;
+}
+
+int dupe_top(void)
+{
+	if (sp == 0) {
+		fprintf(stderr,"dozdc:  nothing on stack to duplicate\n");
+		return 0;
+	}
+	stack[sp] = stack[sp-1];
+	++sp;
+	return 0;
+}
+
+int swap_top(void)
+{
+	if (sp < 2) {
+		fprintf(stderr,"dozdc:  cannot swap, less than two "
+			"items on stack\n");
+		return 0;
+	}
+	double tmp;
+	tmp = stack[sp-1];
+	stack[sp-1] = stack[sp-2];
+	stack[sp-2] = tmp;
+	return 0;
+}
+
 int clean(void)
 {
 	int i;
 
 	free(stack);
 	stack = NULL;
+	return 0;
 }

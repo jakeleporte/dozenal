@@ -80,8 +80,12 @@ char *ops[] = {
 	"max", /* returns highest of two values */
 	"min", /* returns lowest of two values */
 	"p", /* answer, but push it back onto the stack */
-	"n", /* equivalent to "=" */
+	"n", /* equivalent to "=", but with no newline */
 	"~", /* divide, push both quotient and remainder */
+	"c", /* clear the stack */
+	"dupe", /* double the top of the stack */
+	"swap", /* swap the top two values on the stack */
+	"f", /* print the stack, without changing it */
 };
 
 /* refer to ops[] array to determine what operator to use;
@@ -449,6 +453,18 @@ double operate(int operator, int *places, char *print)
 	case EQUALS:
 		*print = PRINT;
 		return pop();
+		break;
+	case CLEARSTACK:
+		clear_stack();
+		break;
+	case DOUBLETOP:
+		dupe_top();
+		break;
+	case SWAP:
+		swap_top();
+		break;
+	case PRINTSTACK:
+		print_stack();
 		break;
 	}
 }
