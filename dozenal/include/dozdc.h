@@ -90,3 +90,6 @@
 #define DOUBLETOP 46
 #define SWAP 47
 #define PRINTSTACK 48
+
+int xdozbc(int num, char *args[]);
+int shunt(char *postfix, char *infix);

@@ -35,8 +35,10 @@
 #include<string.h>
 #include<math.h>
 #include "conv.h"
+#include "doz.h"
 #include "dozdc.h"
 #include "stack.h"
+#include "getop.h"
 #include<float.h>
 
 int runcalc(int places, char expnot);

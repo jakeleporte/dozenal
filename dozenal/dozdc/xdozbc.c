@@ -28,6 +28,8 @@
 #include<float.h>
 #include"dozbc.h"
 #include"dozdc.h"
+#include"getop.h"
+#include"conv.h"
 
 #define LINELEN 256
 
@@ -37,6 +39,16 @@ int places = 4;
 char angletype = 'z';
 
 double commandcalc(char *word, int type, int places, char expnot);
+void quitfunc(FL_OBJECT *button, long arg);
+void set_prec(FL_OBJECT *spinner, long arg);
+void memory( FL_OBJECT * button, long arg );
+void unitangle( FL_OBJECT * button, long arg );
+void erase( FL_OBJECT * button, long arg );
+void grouping( FL_OBJECT * button, long arg );
+int regularize_line();
+void operator( FL_OBJECT * button, long arg );
+void proc_num( FL_OBJECT * button, long arg );
+int in_curr_word(char c);
 
 int xdozbc(int num, char *args[])
 {
@@ -410,17 +422,18 @@ void unitangle( FL_OBJECT * button, long arg )
 {
 	FD_calculator *fd_foo = button->form->fdui;
 	int index;
+	char *c; *c = 1;
 
 	if (angletype == 'd') {
-		operate(ZENIPI,&places,PRINT);
+		operate(ZENIPI,&places,c);
 		fl_set_object_label(button,"Z/r/d");
 		angletype = 'z';
 	} else if (angletype == 'z') {
-		operate(RADIANS,&places,PRINT);
+		operate(RADIANS,&places,c);
 		fl_set_object_label(button,"z/R/d");
 		angletype = 'r';
 	} else if (angletype == 'r') {
-		operate(DEGREES,&places,PRINT);
+		operate(DEGREES,&places,c);
 		fl_set_object_label(button,"z/r/D");
 		angletype = 'd';
 	}
@@ -474,5 +487,3 @@ void quitfunc(FL_OBJECT *button, long arg)
 	fl_finish();
 	exit(0);
 }
-
-

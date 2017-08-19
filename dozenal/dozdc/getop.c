@@ -28,7 +28,9 @@
 #include<stdlib.h>
 #include<math.h>
 #include<float.h>
+#include<ctype.h>
 #include "conv.h"
+#include "doz.h"
 #include "dozdc.h"
 #include "stack.h"
 #include "vars.h"
@@ -87,6 +89,10 @@ char *ops[] = {
 	"swap", /* swap the top two values on the stack */
 	"f", /* print the stack, without changing it */
 };
+
+int lcm(double num, double othnum);
+int gcf(double num, double othnum);
+double operate(int operator, int *places, char *print);
 
 /* refer to ops[] array to determine what operator to use;
  * pass it back to the calling function, or -1 if an error */

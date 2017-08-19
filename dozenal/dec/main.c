@@ -34,6 +34,8 @@
 #include<string.h>
 #include<math.h>
 #include<float.h>
+#include<ctype.h>
+#include "dec.h"
 #include "conv.h"
 
 int main(int argc, char *argv[])
@@ -102,4 +104,3 @@ int main(int argc, char *argv[])
 		dec(doznum,places,expnot);
 	return 0;
 }
-

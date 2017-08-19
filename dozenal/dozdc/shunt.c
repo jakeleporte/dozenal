@@ -27,6 +27,16 @@ struct opprec {
 };
 int numops = 5;
 
+int isfunction(char *s);
+int isrightparen(char *s);
+int isleftparen(char *s);
+int getassoc(char *s);
+int getprec(char *s);
+int isoperator(char *s);
+int isnumber(char *s);
+int xpop(char *holder, char stack[][16], int *index);
+int xpush(char *s, char stack[][16], int *index);
+
 int shunt(char *postfix, char *infix)
 {
 	int i; int j;

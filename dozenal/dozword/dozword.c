@@ -33,7 +33,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
+#include <ctype.h>
 #include <unistd.h>
+#include "conv.h"
 
 int printwords(char *number,char scheme);
 

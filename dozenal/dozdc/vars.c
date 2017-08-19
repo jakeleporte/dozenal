@@ -46,6 +46,8 @@ struct var {
 static struct var vars[MAXVARS];
 static int varindex = 0; /* variable stack index */
 
+int newvar(char *s);
+
 int dealvar(char *s)
 {
 	int i;

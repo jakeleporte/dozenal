@@ -36,6 +36,7 @@
 #include<limits.h>
 #include<ctype.h>
 #include<float.h>
+#include "doz.h"
 #include "conv.h"
 
 int main(int argc, char *argv[])
