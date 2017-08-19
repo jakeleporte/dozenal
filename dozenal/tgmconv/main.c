@@ -35,12 +35,15 @@
 #include<string.h>
 #include<stdlib.h>
 #include<float.h>
+#include<ctype.h>
 #include "tgmconv.h"
+#include "doz.h"
 #include "conv.h"
 
 #define MAXLEN 20
 
 int getunit(char *s, char *inp);
+int helpfunc(void);
 
 int main(int argc, char *argv[])
 {

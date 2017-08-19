@@ -39,6 +39,11 @@
 
 #define MAXLINE 1000
 
+int dozpret(char *number,char *spacer,char *zenpoint,
+		int spaces, int xflag);
+int prettify(char *number, char *spacer, int spaces);
+int fixtrans(char *number, char *ten, char *elv);
+
 int main(int argc, char *argv[])
 {
 	int i;

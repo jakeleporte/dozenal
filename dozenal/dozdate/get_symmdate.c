@@ -50,6 +50,16 @@
 long get_judate(struct tm *thetime);
 long symnewyear(int symyear);
 long symmtofixed(struct tm *thetime);
+int symm_errcheck(struct tm *thetime);
+int symmtoweekday(long judate, int firstday, struct tm *thetime);
+int getgregdate(long judate, struct tm *thetime);
+long symmtofixed(struct tm *thetime);
+long get_judate(struct tm *thetime);
+long symnewyear(int symyear);
+int fixed_to_symyear(long judate,long *firstday);
+int issymleapyear(int symyear);
+int daysbfmonth(int symmonth);
+int convtosym(struct tm *thetime, long judate, int symyear, int firstday);
 
 int get_symmdate(struct tm *thetime,int *usesymm)
 {

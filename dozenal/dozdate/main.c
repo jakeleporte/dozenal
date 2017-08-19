@@ -36,6 +36,7 @@
 #include<stdlib.h>
 #include<time.h>
 #include<string.h>
+#include<ctype.h>
 #include "conv.h"
 #include "process_date.h"
 #include "error_codes.h"
@@ -49,6 +50,16 @@
 #define BOTH 3				/* end symm output and input vars */
 
 int padding(char *s, int numpad, char charpad);
+int tgmify(char *s, struct tm *thetime);
+int padding(char *s, int numpad, char charpad);
+int tgminsert(char *full, char *insert, int inspoint);
+int dectoirv(char *buffer,struct tm *thetime);
+int irvtojan(char *buffer,struct tm *thetime);
+int breakup(char *s, struct tm *thetime, int usesymm);
+int tokenize(char *s);
+int convert(char *number, char *theans, char *tok);
+int sectotim(char *s, struct tm *thetime);
+int dateinsert(char *s, char *t, int pos);
 
 int main(int argc, char *argv[])
 {
@@ -225,7 +236,7 @@ int breakup(char *s, struct tm *thetime, int usesymm)
 
 /* inserts the normal date conversion (%alpha) into the
  * final string */
-dateinsert(char *s, char *t, int pos)
+int dateinsert(char *s, char *t, int pos)
 {
 	int i;
 	size_t len, len2;

@@ -37,6 +37,7 @@
 #include<stdlib.h>
 #include<string.h>
 #include<math.h>
+#include<ctype.h>
 #include "conv.h"
 #include "error_codes.h"
 
@@ -78,6 +79,22 @@ struct monthdays {
 	"December", "Dec", 11,
 	"Irvember", "Irv", 12,
 };
+
+int parse_for_weekday(char *s, struct tm *thetime);
+int parse_for_alpha_month(char *s, struct tm *thetime);
+int parse_for_weekday(char *s, struct tm *thetime);
+int parse_for_year(char *s, struct tm *thetime);
+int parse_for_slash_month(char *s, struct tm *thetime);
+int parse_for_hyphen_month(char *s, struct tm *thetime);
+int parse_for_slash_month(char *s, struct tm *thetime);
+int parse_sexa_time(char *s, struct tm *thetime);
+int parse_tgm_time(char *s, struct tm *thetime);
+int ydays_from_date(struct tm *thetime);
+int dayofweek(int year, int month, int day);
+int errorcheck(char *s, struct tm *thetime);
+int timtosec(char *s,struct tm *thetime);
+int leapyear(int cent, int year);
+int date_from_ydays(int dayyear, struct tm *thetime);
 
 /* governing function, calls others */
 int process_date(char *s,struct tm *thetime,int usesymm)
@@ -639,7 +656,7 @@ int parse_for_weekday(char *s, struct tm *thetime)
 			dayyear = (7 - (abs(tmp - tmp2))) * -1;
 		if (dayyear < 0) {
 			thetime->tm_year -= 1;
-			dayyear += (leapyear(thetime->tm_year+1900)) ? 366	: 367;
+			dayyear += (leapyear(0,thetime->tm_year+1900)) ? 366	: 367;
 			thetime->tm_mon = 0;
 		}
 	} else {
