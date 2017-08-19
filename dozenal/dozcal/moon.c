@@ -36,11 +36,16 @@
 #include<math.h>
 #include<time.h>
 #include<string.h>
+#include"utility.h"
+#include"conv.h"
 #include"errcodes.h"
 #include"event_struct.h"
 
 extern struct event *event_list;
 extern int recordnums;
+
+int julian_day(int year, int month, int day);
+int moonphase(int year,int month,int day);
 
 int get_moonphases(int datenum, int moonphases)
 {

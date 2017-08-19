@@ -36,6 +36,7 @@
 #include<string.h>
 #include<time.h>
 #include<math.h>
+#include<ctype.h>
 #include<sys/stat.h>
 #include"event_struct.h"
 #include"errcodes.h"
@@ -44,6 +45,9 @@ extern struct event *event_list;
 extern int recordnums;
 extern struct todo *todo_list;
 extern int todonums;
+
+int get_datenum(struct tm *date);
+int mkdaynum(time_t datenum);
 
 int chomp(char *s)
 {
@@ -305,4 +309,45 @@ int countchars(char *s, char c)
 		}
 	}
 	return num;
+}
+
+int first_dow(char *s)
+{
+	int ret;
+
+	if (isdigit(s[0])) {
+		ret = atoi(s);
+		if ((ret < 7) && (ret >= 0)) {
+			return ret;
+		} else {
+			fprintf(stderr,"dozcal:  invalid value for "
+				"the first day of week; must be the name of "
+				"a day or a number 0--7, but value is \"%s\"\n",
+				s);
+			exit(BAD_FDOW);
+		}
+	} else {
+		lower_str(s);
+		if (strstr(s,"sun"))
+			return 0;
+		else if (strstr(s,"mon"))
+			return 1;
+		else if (strstr(s,"tue"))
+			return 2;
+		else if (strstr(s,"wed"))
+			return 3;
+		else if (strstr(s,"thu"))
+			return 4;
+		else if (strstr(s,"fri"))
+			return 5;
+		else if (strstr(s,"sat"))
+			return 6;
+		else {
+			fprintf(stderr,"dozcal:  invalid value for "
+				"the first day of week; must be the name of "
+				"a day or a number 0--7, but value is \"%s\"\n",
+				s);
+			exit(BAD_FDOW);
+		}
+	}
 }

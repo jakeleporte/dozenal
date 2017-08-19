@@ -33,3 +33,25 @@
 
 char *front_chomp(char *s);
 struct tm *broken_date(int daynum);
+int lower_str(char *s);
+int upper_str(char *s);
+int dozendig(char c);
+int get_impstr(char *s);
+int add_event(int starttime, int endtime, int thisdate,
+	char *title, char *class, char *categories, char
+	*location);
+int add_todo(int duedate,int starttime,int priority,
+	int compflag, int pergross, char *title, char *class,
+	char *categories, char *location);
+int file_exist(char *s);
+int add_to_event(char *title, int datenum, char *cat);
+int first_dow(char *s);
+int mkdaynum(time_t datenum);
+int get_weekday(int datenum);
+int chomp(char *s);
+int get_datenum(struct tm *date);
+int not_in(int date, int exceptions[], int len);
+int first_of_next(struct tm *date);
+int last_wday_of_month(int datenum, int wday);
+int wday_of_month(int datenum, int wday, int num);
+int countchars(char *s, char c);

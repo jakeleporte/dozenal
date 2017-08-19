@@ -49,6 +49,8 @@ double to_degs(char *s, int latlong);
 double dodegree(char *s);
 double dounciaPis(char *s);
 
+int errcheck(char *s, int latlong, double degs);
+
 int proc_geog(char *s)
 {
 	char buffer[SHORTLEN];

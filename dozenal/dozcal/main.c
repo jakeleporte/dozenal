@@ -36,12 +36,18 @@
 #include<unistd.h>
 #include<string.h>
 #include<time.h>
+#include<ctype.h>
 #include<errno.h>
 #include<limits.h>
 #include"utility.h"
+#include"libholidays.h"
+#include"main_func.h"
+#include"tui.h"
+#include"moon.h"
 #include"errcodes.h"
 #include"conv.h"
 #include"event_struct.h"
+#include"proc_date.h"
 
 #define NUM_EVENTS (sizeof(event_list) / sizeof(event_list[0]))
 
@@ -60,6 +66,15 @@ int numopts = 35;
 
 int comparator(const void *evone, const void *evtwo);
 int todocomp(const void *todoone, const void *todotwo);
+int fill_todo(char *s, int index, char *date_format, char
+	*time_format,FILE *outfile);
+int fill_event(char *s, int index, char *date_format, char
+	*time_format, FILE *outfile);
+int print_todos();
+int clear_todos();
+int print_events();
+int clear_events();
+int build_globopts_struct();
 
 int main(int argc, char **argv)
 {
@@ -713,47 +728,6 @@ int comparator(const void *evone, const void *evtwo)
 			return -1;
 		} else {
 			return strcmp(itemone,itemtwo);
-		}
-	}
-}
-
-int first_dow(char *s)
-{
-	int ret;
-
-	if (isdigit(s[0])) {
-		ret = atoi(s);
-		if ((ret < 7) && (ret >= 0)) {
-			return ret;
-		} else {
-			fprintf(stderr,"dozcal:  invalid value for "
-				"the first day of week; must be the name of "
-				"a day or a number 0--7, but value is \"%s\"\n",
-				s);
-			exit(BAD_FDOW);
-		}
-	} else {
-		lower_str(s);
-		if (strstr(s,"sun"))
-			return 0;
-		else if (strstr(s,"mon"))
-			return 1;
-		else if (strstr(s,"tue"))
-			return 2;
-		else if (strstr(s,"wed"))
-			return 3;
-		else if (strstr(s,"thu"))
-			return 4;
-		else if (strstr(s,"fri"))
-			return 5;
-		else if (strstr(s,"sat"))
-			return 6;
-		else {
-			fprintf(stderr,"dozcal:  invalid value for "
-				"the first day of week; must be the name of "
-				"a day or a number 0--7, but value is \"%s\"\n",
-				s);
-			exit(BAD_FDOW);
 		}
 	}
 }

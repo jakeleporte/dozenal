@@ -37,7 +37,9 @@
 #include<errno.h>
 #include<regex.h>
 #include"conv.h"
+#include"utility.h"
 #include"errcodes.h"
+#include"main_func.h"
 #include"event_struct.h"
 
 #define MAX_ERR_LENGTH 256
@@ -48,6 +50,10 @@ extern double tzoffset;
 extern int utc;
 extern struct globopts *allopts;
 extern int numopts;
+
+int proc_color(char *s, char *t, int ind);
+int find_color_ind(char *s);
+int check_line(char *s);
 
 int proc_options(char *s, int *moonphases, char **nat, char **relig,
 					char **date_form, char **time_form, char **ev_form,

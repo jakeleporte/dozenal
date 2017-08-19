@@ -1,8 +1,8 @@
 # +AMDG
-# This document was begun on 7 February 2010, Sexagesima
-# Sunday, and it is humbly dedicated to the Immaculate Heart
-# of Mary for her prayers, and to the Sacred Heart of Jesus
-# for His mercy.
+# This document was remade on 16 August 1201, the feast of
+# St. Agapitus, M, and it is humbly dedicated to him and to
+# the Immaculate Heart of Mary for her prayers, and to the
+# Sacred Heart of Jesus for His mercy.
 
 prefix ?= /usr/local
 bindir ?= $(prefix)/bin

@@ -33,10 +33,14 @@
  */
 
 #include<stdio.h>
+#include<stdlib.h>
 #include<math.h>
 #include<time.h>
 #include<string.h>
 #include"utility.h"
+#include"conv.h"
+
+int frac_to_secs(double jdn);
 
 double datenum_to_jdn(int datenum)
 {

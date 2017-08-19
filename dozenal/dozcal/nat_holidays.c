@@ -35,9 +35,21 @@
 #include<stdio.h>
 #include<string.h>
 #include<time.h>
+#include"utility.h"
+#include"libholidays.h"
 
 extern struct event *event_list;
 extern int recordnums;
+
+int usa_holidays(int datenum);
+int england_holidays(int datenum);
+int wales_holidays(int datenum);
+int scot_holidays(int datenum);
+int nire_holidays(int datenum);
+int rire_holidays(int datenum);
+int austral_holidays(int datenum);
+int canada_holidays(int datenum);
+int nz_holidays(int datenum);
 
 int nat_holidays(char *s, int datenum)
 {

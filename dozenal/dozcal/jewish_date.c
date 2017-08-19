@@ -35,6 +35,9 @@
 #include<string.h>
 #include<time.h>
 #include<hdate.h>
+#include"utility.h"
+
+int get_israel_holydays(int daynum);
 
 int jew_holidays(int daynum)
 {
@@ -166,5 +169,5 @@ int get_israel_holydays(int daynum)
 		add_to_event("Hanukkah",get_datenum(date) + i,"religious");
 	hebyear -= 1;
 	delete_hdate(h);
-	return mkdaynum(date);
+	return 0;
 }

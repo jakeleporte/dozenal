@@ -35,7 +35,8 @@ dozword \
 dozpret \
 dozdate \
 dozstring \
-dozcal
+dozcal \
+doman
 
 all: $(subdirs)
 

@@ -39,10 +39,14 @@
 #include<limits.h>
 #include<errno.h>
 #include<string.h>
+#include<ctype.h>
 #include"conv.h"
+#include"utility.h"
 #include"errcodes.h"
 
 #define MAX_ERR_LENGTH 256
+
+int month_string(char *s);
 
 char *datepats[] = {
 	"\\([0-9XE][0-9XE][0-9XE][0-9XE]\\)[-/]\\([0-9XE][0-9XE]*\\)[-/]\\([0-9XE][0-9XE]*\\)",

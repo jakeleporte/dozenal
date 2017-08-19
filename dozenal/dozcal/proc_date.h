@@ -2,15 +2,15 @@
  * +AMDG
  */
 /*
- * This document was begun on 10 Aug 1200, the feast of St.
- * Clare, V, and it is humbly dedicated to her and to the
- * Immaculate Heart of Mary for their prayers, and to the
- * Sacred Heart of Jesus for His mercy.
+ * This document was begun on 16 Aug 1201, the feast of St.
+ * St. Agapitus, M, and it is humbly dedicated to
+ * him and to the Immaculate Heart of Mary for their
+ * prayers, and to the Sacred Heart of Jesus for His mercy.
  *
  * dozcal:  keeps a calendar with a specific internal format
  * in dozenal
  *
- * (C) Copyright 2016  Donald P. Goodman III
+ * (C) Copyright 2017  Donald P. Goodman III
  *
  * This file is part of dozcal.
  *
@@ -29,10 +29,9 @@
  * You should have received a copy of the GNU General Public
  * License along with dozcal.  If not, see
  * <http://www.gnu.org/licenses/>.
- * 
  */
 
-
-double datenum_to_jdn(int datenum);
-int set_time_str(char *s, double jdn);
-int jdn_to_datenum(double jdn);
+int proc_time(char *s);
+time_t proc_date(char *s);
+int secs_to_Tims(int time,char *timestr,char *time_format);
+int num_to_date(int datenum, char *datestr, char *dateform);

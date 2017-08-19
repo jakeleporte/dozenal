@@ -34,9 +34,13 @@
 #include<stdio.h>
 #include<math.h>
 #include<time.h>
+#include"utility.h"
 
 extern struct event *event_list;
 extern int recordnums;
+
+int date_easter(int year);
+int orth_easter(int year);
 
 int west_holidays(int datenum)
 {

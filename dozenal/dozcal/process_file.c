@@ -39,6 +39,7 @@
 #include"errcodes.h"
 #include"event_struct.h"
 #include"utility.h"
+#include"proc_date.h"
 #include"conv.h"
 
 #define NUM_EVENTS (sizeof(*event_list) / sizeof(*event_list[0]))
@@ -47,6 +48,11 @@ extern struct event *event_list;
 extern int recordnums;
 extern struct todo *todo_list;
 extern int todonums;
+
+int is_mon(char *s);
+int is_num(char *s);
+int is_wkday(char *s);
+int proc_rec(char buffer[][MAXLEN+1],int lines);
 
 int process_file(char *s)
 {

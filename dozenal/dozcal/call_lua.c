@@ -35,11 +35,15 @@
 #include<stdlib.h>
 #include<string.h>
 #include"errcodes.h"
+#include"utility.h"
+#include"conv.h"
+#include"proc_date.h"
 #include<lua5.2/lua.h>
 #include<lua5.2/lauxlib.h>
 #include<lua5.2/lualib.h>
 
 void bail(lua_State *L, int err_code, char *filename);
+int file_prefix(char **s, char *t);
 
 int call_lua(char *s)
 {
@@ -93,15 +97,15 @@ int call_lua(char *s)
 			if (strcmp(key,"TITLE") == 0) {
 				strncpy(title,val,MAXLEN); 
 			} else if (strcmp(key,"START_DATE") == 0) {
-				thisdate = mkdaynum(proc_date(val)) + 1;
+				thisdate = mkdaynum(proc_date((char *)val)) + 1;
 			} else if (strcmp(key,"DUE_DATE") == 0) {
-				thisdate = mkdaynum(proc_date(val)); 
+				thisdate = mkdaynum(proc_date((char *)val)); 
 			} else if (strcmp(key,"START_TIME") == 0) {
-				starttime = proc_time(val); 
+				starttime = proc_time((char *)val); 
 			} else if (strcmp(key,"DUE_TIME") == 0) {
-				starttime = proc_time(val); 
+				starttime = proc_time((char *)val); 
 			} else if (strcmp(key,"END_TIME") == 0) {
-				endtime = proc_time(val); 
+				endtime = proc_time((char *)val); 
 			} else if (strcmp(key,"LOCATION") == 0) {
 				strncpy(location,val,MAXLEN); 
 			} else if (strcmp(key,"CLASS") == 0) {
@@ -109,9 +113,9 @@ int call_lua(char *s)
 			} else if (strcmp(key,"CATEGORY") == 0) {
 				strncpy(categories,val,MAXLEN); 
 			} else if (strcmp(key,"PRIORITY") == 0) {
-				priority = (int)doztodec(val);
+				priority = (int)doztodec((char *)val);
 			} else if (strcmp(key,"PERGROSS") == 0) {
-				pergross = (int)doztodec(val);
+				pergross = (int)doztodec((char *)val);
 			} else if (strcmp(key,"COMPFLAG") == 0) {
 				compflag = atoi(val);
 			} else {

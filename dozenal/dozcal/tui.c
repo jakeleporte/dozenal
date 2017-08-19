@@ -1,4 +1,32 @@
 /* + AMDG */
+/*
+ * This document is humbly dedicated to him and to the
+ * Immaculate Heart of Mary for their prayers, and to the
+ * Sacred Heart of Jesus for His mercy.
+ *
+ * dozcal:  keeps a calendar with a specific internal format
+ * in dozenal
+ *
+ * (C) Copyright 2016  Donald P. Goodman III
+ *
+ * This file is part of dozcal.
+ *
+ * dozcal is free software:  you can redistribute it and/or
+ * modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any
+ * later version.
+ *
+ * dozcal is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the
+ * implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE.  See the GNU General Public License
+ * for more details.
+ *
+ * You should have received a copy of the GNU General Public
+ * License along with dozcal.  If not, see
+ * <http://www.gnu.org/licenses/>.
+ */
 
 #include<stdio.h>
 #include<stdlib.h>
@@ -8,6 +36,7 @@
 #include"event_struct.h"
 #include"julday.h"
 #include"utility.h"
+#include"main_func.h"
 #include"conv.h"
 
 extern char **evlines; extern int numevs;
@@ -23,6 +52,30 @@ WINDOW *switch_win(WINDOW *cal,WINDOW *ev, WINDOW *todo,
 	WINDOW *currwin, WINDOW *evtitle, WINDOW *todotitle);
 WINDOW *switch_back_win(WINDOW *cal,WINDOW *ev, WINDOW *todo, 
 	WINDOW *currwin, WINDOW *evtitle, WINDOW *todotitle);
+
+int define_colors();
+int equalize_colors();
+int center_line(WINDOW *win, int y, char *s);
+int print_wdayline(WINDOW *win,int fdow);
+int print_monline(WINDOW *win,int mon, int year);
+int print_cal(WINDOW *win, int mon, int year, int fdow, int currday,
+	WINDOW *evconts);
+int clear_cal(WINDOW *win);
+int change_cal(WINDOW *win, int *currday, int *mon, int *year, 
+	int shift,WINDOW *evconts);
+int make_botbar();
+int make_titlebar();
+WINDOW *switch_back_win(WINDOW *cal, WINDOW *ev, WINDOW *todo,
+	WINDOW *currwin, WINDOW *evtitle, WINDOW *todotitle);
+WINDOW *switch_win(WINDOW *cal, WINDOW *ev, WINDOW *todo,WINDOW *currwin,
+	WINDOW *evtitle, WINDOW *todotitle);
+int clear_evconts(WINDOW *evconts);
+int load_todos(WINDOW *todoconts,int theight, int twidth,
+	char *todo_form, char *date_form, char *time_form);
+int load_evconts(WINDOW *evconts,int eheight, int ewidth,
+	char *ev_form, char *date_form, char *time_form, int datenum);
+int print_warn(char *s);
+int clear_warn();
 
 int build_tui(char *ev_form,char *date_form,char *time_form, 
 char *todo_form)

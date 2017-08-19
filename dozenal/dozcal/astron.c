@@ -47,6 +47,8 @@
 #include"errcodes.h"
 #include"utility.h"
 #include"julday.h"
+#include"proc_date.h"
+#include"conv.h"
 
 extern double latitude;
 extern double longitude;
@@ -55,6 +57,10 @@ extern int utc;
 
 double degtorad(double degs);
 double radtodeg(double rads);
+
+int dec_to_mins(double number, char *s);
+int suntimes(double jdn);
+int seasons(double jdn);
 
 int astron(char *s, int startdate, int enddate)
 {

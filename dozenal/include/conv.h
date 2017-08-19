@@ -29,6 +29,7 @@
 
 int doz(char *s, char *t, int places, int expnot, int new);
 double doztodec(char *s);
+int dectodoz(char *doznum, double decnum);
 int dec(char *p, int places, char expnot);
 void reverse(char *s);
 int getword(char *s, int lim);

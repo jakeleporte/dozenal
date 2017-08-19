@@ -1,9 +1,7 @@
+/* + AMDG */
 /*
- * +AMDG
- */
-/*
- * This document was begun on 10 Aug 1200, the feast of St.
- * Clare, V, and it is humbly dedicated to her and to the
+ * This document was begun on 16 Aug 1201, the feast of St.
+ * Agapitus, M, and it is humbly dedicated to him and to the
  * Immaculate Heart of Mary for their prayers, and to the
  * Sacred Heart of Jesus for His mercy.
  *
@@ -29,10 +27,19 @@
  * You should have received a copy of the GNU General Public
  * License along with dozcal.  If not, see
  * <http://www.gnu.org/licenses/>.
- * 
  */
 
-
-double datenum_to_jdn(int datenum);
-int set_time_str(char *s, double jdn);
-int jdn_to_datenum(double jdn);
+int call_lua(char *s);
+int astron(char *s, int startdate, int enddate);
+int proc_options(char *s, int *moonphases, char **nat, char **relig,
+					char **date_form, char **time_form, char **ev_form,
+					char **todo_form, int *iftodo, int *ifevent,
+					int *weekout, int *fdow, char **astro);
+int process_file(char *s);
+int proc_geog(char *s);
+int clear_events();
+int clear_todos();
+int fill_todo(char *s, int index, char *date_format, char
+	*time_format,FILE *outfile);
+int fill_event(char *s, int index, char *date_format, char
+	*time_format, FILE *outfile);

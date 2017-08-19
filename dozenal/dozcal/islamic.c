@@ -36,12 +36,17 @@
 #include<string.h>
 #include<time.h>
 #include<math.h>
+#include"utility.h"
 
 struct isldate {
 	int iday;
 	int imonth;
 	int iyear;
 };
+
+int isl_date(struct tm *date, struct isldate *now);
+int add_eidaladha(struct tm *date, struct isldate *now);
+int add_ramadan(struct tm *date, struct isldate *now);
 
 int islamic_holidays(int daynum)
 {

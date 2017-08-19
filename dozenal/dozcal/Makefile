@@ -17,7 +17,7 @@ IDIR =../include
 LUALIB = -llua5.2
 CURSLIB = -lncurses
 CC = gcc
-LOCALLIBS = event_struct.h errcodes.h
+LOCALLIBS = event_struct.h errcodes.h proc_date.h
 objects = main.o utility.o proc_date.o process_file.o moon.o opt_file.o \
 	easter.o nat_holidays.o jewish_date.o islamic.o call_lua.o julday.o \
 	astron.o geog.o sunriset.o tui.o
