@@ -9,3 +9,4 @@
 #define SUCCESS 0
 #define OPT_REQ_ARG 1
 #define UNREC_OPT 2
+#define MISMATCHED_RANKS_SYMS 3
