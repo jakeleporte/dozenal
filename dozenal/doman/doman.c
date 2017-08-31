@@ -30,7 +30,6 @@ int main(int argc, char **argv)
 	char answer[MAXLEN] = "";
 	char c;
 	int numranks;
-	int numlets;
 	char *token;
 	/* initialize the default ranks and lets */
 	ranks = (int *)malloc(8 * sizeof(int));

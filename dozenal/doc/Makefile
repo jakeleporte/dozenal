@@ -33,7 +33,8 @@ dozpret \
 dozstring \
 dozword \
 tgmconv \
-dozcal
+dozcal \
+doman
 
 all:
 
