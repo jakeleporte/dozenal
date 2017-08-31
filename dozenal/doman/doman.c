@@ -11,6 +11,7 @@
 #include<string.h>
 #include<unistd.h>
 #include"errors.h"
+#include"conv.h"
 
 #define MAXLEN 256
 
@@ -57,7 +58,7 @@ int main(int argc, char **argv)
 			exit(SUCCESS);
 			break;
 		case 'R':
-			ex = atoi(optarg);
+			ex = (int)doztodec(optarg);
 			break;
 		case 'r':
 			numranks = count_commas(optarg) + 2;
@@ -65,7 +66,8 @@ int main(int argc, char **argv)
 			i = 0;
 			token = strtok(optarg,",");
 			while (token != NULL) {
-				ranks[i++] = atoi(token);
+//				ranks[i++] = atoi(token);
+				ranks[i++] = (int)doztodec(token);
 				token = strtok(NULL,",");
 			}
 			ranks[i] = 0;
@@ -100,7 +102,7 @@ int main(int argc, char **argv)
 		}
 	}
 	check_args();
-	printf("%d = ",ex);
+	printf("EX:  %d = ",ex);
 	for (i = 0; ranks[i] != 0; ++i) {
 		mod = change_vals(&ex,ranks[i]);
 		for (j = 0; j < mod; ++j)
