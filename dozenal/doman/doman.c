@@ -30,8 +30,8 @@ int main(int argc, char **argv)
 	char answer[MAXLEN] = "";
 	char c;
 	int numranks;
-	int shortlim = 1; /* how many symbols induces short treatment */
-	char shortcut = 0;
+	int shortlim = 4; /* how many symbols induces short treatment */
+	char shortcut = 1;
 	int diff = 0;
 	char *token;
 	/* initialize the default ranks and lets */
@@ -94,7 +94,7 @@ int main(int argc, char **argv)
 			shortlim = (int)doztodec(optarg);
 			break;
 		case 'l':
-			shortcut = 1;
+			shortcut = 0;
 			break;
 		case '?':
 			if ((optopt == 'r') || (optopt == 'R') ||
