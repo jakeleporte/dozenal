@@ -1,16 +1,18 @@
 ." +AMDG
 ." Process with:
 ." groff -man -Tascii doman.1
-.TH doman 1 "January 2010" Linux "User Manuals"
+.TH doman 1 "Septemberr 2017" Linux "User Manuals"
 .SH NAME
 doman \- convert dozenal integers to arbitrary non-place-value systems
 .SH SYNOPSIS
-.B doman [-R 
+.B doman [-V] [-l] [-R 
 .I dozenal integer
 .B ] [-r
 .I ranks
 .B ] [-s
 .I symbols
+.B ] [-m
+.I shortnum
 .B ]
 .SH DESCRIPTION
 .B doman
@@ -21,6 +23,14 @@ symbols; e.g., to duplicate Roman numerals, use
 \fB-s"M,D,C,L,X,V,I" -r"6E4,358,84,42,X,5,1"\fR.  Any character
 or string of characters may be used as a symbol.
 .SH OPTIONS
+.TP
+.BR -V
+Print program and version information and exit successfully.
+.TP
+.BR -l
+Print results in "long form"; that is, without any shortcut.
+See the \fB-m\fR option for more information about shortcut
+printing.  By default, shortcut printing is turned \fIon\fR.
 .TP
 .BR "-R integer"
 The number you wish \fBdoman\fR to convert.
@@ -52,6 +62,31 @@ characters) are fine.
 .RS
 Note that there must be the same number of ranks as symbols;
 if there isn't, \fBdoman\fR will emit an error and die.
+.RE
+.TP
+.BR "-m shortnum"
+Often, non-place-value numerals have a shortcut.  For
+example, consider Roman numerals; frequently, rather than
+stringing four of a symbol together, one instead
+\fIprefixes\fR the next-lowest symbol and puts in one of the
+next higher.  So rather than "XXXX", one sees "XL".
+.RS
+.PP
+\fIshortnum\fR is the number of symbols you're not willing to
+see; when your number has \fIshortnum\fR of the same symbol,
+it will instead implement the shortcut.  To duplicate Roman
+numerals, for example, you'd say \fI-m 4\fR; once you get to
+four of the same symbol, the shortcut is performed, instead.
+.PP
+Note that, depending on your setting, this might result in
+multiple prefixed symbols.  E.g., in dozenal Roman numerals,
+we see "I, II, III, IIV, IV, V".  \fBdoman\fR can handle
+this without trouble.
+.PP
+Note also that \fBdoman\fR silently truncates any fractional
+part that this shortcut might require.  So if your ranks are
+not even factors of one another, this might confuse
+\fBdoman\fR and not give you the results you expect.
 .RE
 .SH BUGS
 .SH AUTHOR

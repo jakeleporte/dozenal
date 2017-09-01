@@ -30,6 +30,9 @@ int main(int argc, char **argv)
 	char answer[MAXLEN] = "";
 	char c;
 	int numranks;
+	int shortlim = 1; /* how many symbols induces short treatment */
+	char shortcut = 0;
+	int diff = 0;
 	char *token;
 	/* initialize the default ranks and lets */
 	ranks = (int *)malloc(8 * sizeof(int));
@@ -44,7 +47,7 @@ int main(int argc, char **argv)
 	strcpy(lets[6],"Ii"); strcpy(lets[7],"\0");
 		
 	opterr = 0;
-	while ((c = getopt(argc,argv,"R:r:s:V")) != -1) {
+	while ((c = getopt(argc,argv,"lm:R:r:s:V")) != -1) {
 		switch(c) {
 		case 'V':
 			printf("doman v1.0\n");
@@ -65,7 +68,6 @@ int main(int argc, char **argv)
 			i = 0;
 			token = strtok(optarg,",");
 			while (token != NULL) {
-//				ranks[i++] = atoi(token);
 				ranks[i++] = (int)doztodec(token);
 				token = strtok(NULL,",");
 			}
@@ -88,8 +90,15 @@ int main(int argc, char **argv)
 			*(lets+i) = malloc(2 * sizeof(char));
 			strcpy(*(lets+i),"\0");
 			break;
+		case 'm':
+			shortlim = (int)doztodec(optarg);
+			break;
+		case 'l':
+			shortcut = 1;
+			break;
 		case '?':
-			if ((optopt == 'r') || (optopt == 'l')) {
+			if ((optopt == 'r') || (optopt == 'R') ||
+				(optopt == 'm') || (optopt == 's')) {
 				fprintf(stderr,"doman:  option \"%c\" requires "
 					"an argument\n",optopt);
 				exit(OPT_REQ_ARG);
@@ -102,10 +111,23 @@ int main(int argc, char **argv)
 	}
 	check_args();
 	printf("EX:  %d = ",ex);
+	/* here's the action */
 	for (i = 0; ranks[i] != 0; ++i) {
 		mod = change_vals(&ex,ranks[i]);
-		for (j = 0; j < mod; ++j)
-			strcat(answer,lets[i]);
+		if (shortcut == 0) {
+			for (j = 0; j < mod; ++j)
+				strcat(answer,lets[i]);
+		} else { /* shortcut code:  FIXME */
+			if (mod >= shortlim) {
+				diff = (ranks[i-1] / ranks[i]) - mod;
+				for (j = 0; j < diff; ++j)
+					strcat(answer,lets[i]);
+				strcat(answer,lets[i-1]);
+			} else {
+				for (j = 0; j < mod; ++j)
+					strcat(answer,lets[i]);
+			}
+		}
 	}
 	printf("|%s|\n",answer);
 	free(ranks);
