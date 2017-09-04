@@ -306,7 +306,12 @@ void operator( FL_OBJECT * button, long arg )
 			regularize_line();
 			shunt(rpn,line);
 			line[0] = '\0';
-			line[0] = angletype; line[1] = ' '; line[2] = '\0';
+			if (angletype == 'r') {
+				strcat(line,"rad ");
+			} else {
+				line[0] = angletype;
+				line[1] = ' '; line[2] = '\0';
+			}
 			strcat(line,rpn);
 			index = strlen(line);
 			line[index] = ' ';
