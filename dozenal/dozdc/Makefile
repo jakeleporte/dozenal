@@ -7,7 +7,6 @@
 # Changes 12/2014 by Nathan Fisher <nfisher.sr@gmx.com>
 
 prefix ?= /usr/local
-imgdir ?= /usr/share/pixmaps
 bindir ?= $(prefix)/bin
 binmode = 755
 dirmode = 755
