@@ -31,20 +31,28 @@ int main(int argc, char **argv)
 	char c;
 	int numranks;
 	int shortlim = 4; /* how many symbols induces short treatment */
+	int prefix = 2; /* number of symbols that may be prefixed */
 	char shortcut = 1;
-	int diff = 0;
 	char *token;
 	/* initialize the default ranks and lets */
-	ranks = (int *)malloc(8 * sizeof(int));
-	ranks[0] = 1000; ranks[1] = 500; ranks[2] = 100;
-	ranks[3] = 50; ranks[4] = 10; ranks[5] = 5;
-	ranks[6] = 1; ranks[7] = 0;
-	lets = malloc(8 * sizeof(char *));
-	for (i = 0; i < 8; ++i)
-		*(lets+i) = malloc(3 * sizeof(char));
-	strcpy(lets[0],"Mm"); strcpy(lets[1],"Dd"); strcpy(lets[2],"Cc");
-	strcpy(lets[3],"Ll"); strcpy(lets[4],"Xx"); strcpy(lets[5],"Vv");
-	strcpy(lets[6],"Ii"); strcpy(lets[7],"\0");
+	ranks = (int *)malloc(20 * sizeof(int));
+	ranks[0] = 1728; ranks[1] = 1584; ranks[2] = 1440;
+	ranks[3] = 864; ranks[4] = 720; ranks[5] = 576;
+	ranks[6] = 144; ranks[7] = 132; ranks[8] = 120;
+	ranks[9] = 72; ranks[10] = 60; ranks[11] = 48;
+	ranks[12] = 12; ranks[13] = 11; ranks[14] = 10;
+	ranks[15] = 6; ranks[16] = 5; ranks[17] = 4;
+	ranks[18] = 1; ranks[19] = 0;
+	lets = malloc(20 * sizeof(char *));
+	for (i = 0; i < 20; ++i)
+		*(lets+i) = malloc(4 * sizeof(char));
+	strcpy(lets[0],"M"); strcpy(lets[1],"CM"); strcpy(lets[2],"CCM");
+	strcpy(lets[3],"D"); strcpy(lets[4],"CD"); strcpy(lets[5],"CCD");
+	strcpy(lets[6],"C"); strcpy(lets[7],"XC"); strcpy(lets[8],"XXC");
+	strcpy(lets[9],"L"); strcpy(lets[10],"XL"); strcpy(lets[11],"XXL");
+	strcpy(lets[12],"X"); strcpy(lets[13],"IX"); strcpy(lets[14],"IIX");
+	strcpy(lets[15],"V"); strcpy(lets[16],"IV"); strcpy(lets[17],"IIV");
+	strcpy(lets[18],"I"); strcpy(lets[19],"\0");
 		
 	opterr = 0;
 	while ((c = getopt(argc,argv,"lm:R:r:s:V")) != -1) {
@@ -110,26 +118,13 @@ int main(int argc, char **argv)
 		}
 	}
 	check_args();
-	printf("EX:  %d = ",ex);
 	/* here's the action */
 	for (i = 0; ranks[i] != 0; ++i) {
 		mod = change_vals(&ex,ranks[i]);
-		if (shortcut == 0) {
-			for (j = 0; j < mod; ++j)
-				strcat(answer,lets[i]);
-		} else { /* shortcut code:  FIXME */
-			if (mod >= shortlim) {
-				diff = (ranks[i-1] / ranks[i]) - mod;
-				for (j = 0; j < diff; ++j)
-					strcat(answer,lets[i]);
-				strcat(answer,lets[i-1]);
-			} else {
-				for (j = 0; j < mod; ++j)
-					strcat(answer,lets[i]);
-			}
-		}
+		for (j = 0; j < mod; ++j)
+			strcat(answer,lets[i]);
 	}
-	printf("|%s|\n",answer);
+	printf("%s\n",answer);
 	free(ranks);
 	for (i = 0; strcmp(lets[i],"\0"); ++i)
 		free(lets[i]);
