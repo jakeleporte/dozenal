@@ -17,10 +17,20 @@ no other.
 
 Download and Installation
 
-The dozenal suite can be downloaded and installed in a number of ways,
-for GNU/Linux and other Unix-like operating systems. There is also a
-version compiled for x86 Windows versions; it can be compiled for other
-Windows systems, as well.
+For real details, see the INSTALL file.  However, for the
+majority of cases, the following should work pretty simply.
+Open the release, enter the dozenal directory, and run:
+
+	make
+	make install
+
+And that should do the trick.  You should be root if you
+want to run "make install".
+
+If you do not want the GUI program for dozdc, you should
+enter the dozdc directory and manually modify its Makefile,
+changing the line "XFORMS_FLAGS =-DXFORMS" to read instead
+"XFORMS_FLAGS =-UXFORMS".
 
 Programs
 
@@ -45,3 +55,7 @@ dozstring --- a simple byte converter; absorbs a string either from
    standard input or a command line argument, leaving it identical but
    for the numbers, which it converts into dozenal. Options for padding
    and for not converting specific numbers.
+doman --- a converter which takes a dozenal integer and
+	emits its equivalent in a non-place-value system, such as
+	Roman numerals.  Arbitrary ranks and symbols may be used.
+	Defaults to dozenal Roman numerals.

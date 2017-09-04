@@ -117,18 +117,8 @@ int main(int argc, char *argv[])
 			}
 	}
 	if (argc >= 1) {
-		if (strstr(argv[-1],"dozbc"))
-			infix = 1;
 		char s[MAXLINE+1];
-		if (infix == 1) {
-			shunt(s,*argv);
-			s[strlen(s)+2] = '\0';
-			s[strlen(s)+1] = '=';
-			s[strlen(s)] = ' ';
-			printf("|%s|\n",s);
-		} else {
-			strcpy(s,*argv);
-		}
+		strcpy(s,*argv);
 		s[strlen(s)+1] = '\0';
 		s[strlen(s)] = ' ';
 		int i = 0;
