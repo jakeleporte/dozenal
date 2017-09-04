@@ -1,0 +1,61 @@
+dozenal
+
+A complete suite of dozenal (base twelve) programs, including a converter
+from decimal to dozenal and vice-versa, a complete scientific calculator
+which operates in dozenal, and a converter for the TGM dozenal metric
+system to and from either imperial/customary or SI units. Written in C;
+licensed under the GNU GPL v3.
+
+Note that the dozenal suite was produced by an amateur C programmer
+because he wanted programs that performed these functions. They are not
+guaranteed to work. They work well enough for the author's purposes, and
+he's quite pleased with them; but please, thoroughly vet them yourself
+before relying on them. Really, the better thing to do would be to find
+a better programmer and rewrite them all. But for those like the author,
+these programs may prove useful, and they are released in that hope and
+no other.
+
+Download and Installation
+
+For real details, see the INSTALL file.  However, for the
+majority of cases, the following should work pretty simply.
+Open the release, enter the dozenal directory, and run:
+
+	make
+	make install
+
+And that should do the trick.  You should be root if you
+want to run "make install".
+
+If you do not want the GUI program for dozdc, you should
+enter the dozdc directory and manually modify its Makefile,
+changing the line "XFORMS_FLAGS =-DXFORMS" to read instead
+"XFORMS_FLAGS =-UXFORMS".
+
+Programs
+
+doz --- a converter; converts decimal numbers into dozenal. Accepts
+   input in standard or exponential notation (i.e., "1492.2" or "1.4922e3").
+dec --- a converter; converts dozenal numbers into decimal. Accepts input
+   in standard or exponential notation (i.e., "X44;4" or "X;444e2").
+dozword --- converts a dozenal number (integers only) into words,
+   according to the Pendlebury system.
+dozdc --- a full-featured scientific calculator which works in the
+   dozenal base. RPN command line; also include a GUI which works in infix
+   notation, gdozdc.
+tgmconv --- a converter for all standard measurements; converts to and
+   from TGM, Imperial, customary, and SI metric.
+dozpret --- a pretty-printer for dozenal numbers; inserts spacing (or
+   other characters) as desired, and can also transform transdecimal digits
+   from 'X' to 'E' into any character or sequence of characters desired.
+dozdate --- a more-or-less drop-in replacement for GNU and BSD date, it
+   outputs the date and time in dozenal, as well as containing some TGM
+   extensions.
+dozstring --- a simple byte converter; absorbs a string either from
+   standard input or a command line argument, leaving it identical but
+   for the numbers, which it converts into dozenal. Options for padding
+   and for not converting specific numbers.
+doman --- a converter which takes a dozenal integer and
+	emits its equivalent in a non-place-value system, such as
+	Roman numerals.  Arbitrary ranks and symbols may be used.
+	Defaults to dozenal Roman numerals.
