@@ -422,8 +422,14 @@ void unitangle( FL_OBJECT * button, long arg )
 {
 	FD_calculator *fd_foo = button->form->fdui;
 	int index;
-	char *c; *c = 1;
+	char *c; 
 
+	if ((c = malloc(1 * sizeof(char))) == NULL) {
+		fprintf(stderr,"dozdc:  error:  insufficient memory "
+				"to proceed\n");
+		exit(1);
+	}
+	*c = 1;
 	if (angletype == 'd') {
 		operate(ZENIPI,&places,c);
 		fl_set_object_label(button,"Z/r/d");
@@ -437,6 +443,7 @@ void unitangle( FL_OBJECT * button, long arg )
 		fl_set_object_label(button,"z/r/D");
 		angletype = 'd';
 	}
+	free(c);
 }
 
 void memory( FL_OBJECT * button, long arg )
