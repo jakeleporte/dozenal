@@ -56,6 +56,6 @@ dozstring --- a simple byte converter; absorbs a string either from
    for the numbers, which it converts into dozenal. Options for padding
    and for not converting specific numbers.
 doman --- a converter which takes a dozenal integer and
-	emits its equivalent in a non-place-value system, such as
-	Roman numerals.  Arbitrary ranks and symbols may be used.
-	Defaults to dozenal Roman numerals.
+   emits its equivalent in a non-place-value system, such as
+   Roman numerals.  Arbitrary ranks and symbols may be used.
+   Defaults to dozenal Roman numerals.
