@@ -35,6 +35,7 @@
 #include <errno.h>
 #include <ctype.h>
 #include <unistd.h>
+#include <getopt.h>
 #include "conv.h"
 
 int printwords(char *number,char scheme);
@@ -197,4 +198,5 @@ int printwords(char *number,char scheme)
 		else if ((i == 0) && (scheme == 's'))
 			printsdn(len);
 	}
+	return 0;
 }

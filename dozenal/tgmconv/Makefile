@@ -6,6 +6,7 @@ binmode = 755
 dirmode = 755
 IDIR = ../include
 CC = gcc
+GCCFLAGS = -Wall -std=c99 -pedantic
 objects = main.o tgm.o
 binobjects = tgmconv
 
@@ -13,14 +14,14 @@ all: bin
 
 tgmconv: main.o ../doz/doz.o ../dec/dec.o tgm.o $(IDIR)/tgmconv.h \
 		../conv/conv.o
-	$(CC) -I$(IDIR) -g -o tgmconv main.o tgm.o ../doz/doz.o \
+	$(CC) $(GCCFLAGS) -I$(IDIR) -g -o tgmconv main.o tgm.o ../doz/doz.o \
 		../dec/dec.o ../conv/conv.o -lm
 
 main.o: main.c $(IDIR)/tgmconv.h ../dec/dec.o ../doz/doz.o ../conv/conv.c
-	$(CC) -I$(IDIR) -g -c main.c
+	$(CC) $(GCCFLAGS) -I$(IDIR) -g -c main.c
 
 tgm.o: tgm.c $(IDIR)/tgmconv.h $(IDIR)/conv.h ../conv/conv.c
-	$(CC) -I$(IDIR) -g -c tgm.c
+	$(CC) $(GCCFLAGS) -I$(IDIR) -g -c tgm.c
 
 ../doz/doz.o: ../doz/doz.c ../conv/conv.o
 	$(MAKE) -C ../doz

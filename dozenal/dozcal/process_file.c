@@ -31,6 +31,10 @@
  * <http://www.gnu.org/licenses/>.
  */
 
+/* to get getline() defined */
+#define _POSIX_C_SOURCE >= 200809L || _XOPEN_SOURCE >= 700
+#define _GNU_SOURCE
+
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
@@ -60,8 +64,6 @@ int process_file(char *s)
 	char buffer[MAXLINES][MAXLEN+1];
 	int linesread = 0;
 	int currlineno = 0;
-	char *t;
-	int i;
 
 	if ((fp = fopen(s,"r")) == NULL) {
 		fprintf(stderr,"dozcal:  unable to open file "
@@ -84,7 +86,6 @@ int process_file(char *s)
 				strcpy(buffer[currlineno++],"TODO");
 		} else if (!strstr(line,"[EVENT]") && !strstr(line,"[TODO]") && 
 		(currlineno < MAXLINES)) {
-			t = strchr(line,':') + 1;
 			strncpy(buffer[currlineno++],line,MAXLEN);
 		}
 		linesread++;
@@ -105,7 +106,6 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 	char class[SHORTLEN+1];
 	char freq[SHORTLEN][MAXLEN+1];
 	time_t startdate; int startday;
-	time_t duetime;
 	time_t enddate = -1; int endday = -1;
 	int exceptions[MAXLEN+1];
 	int j = 0;
@@ -117,7 +117,7 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 	int pergross = 0;
 	struct tm *date;
 	struct tm *othdate;
-	int year; int mon; int day; int wday; int nday;
+	int mon; int wday; int nday;
 	int numfreq = 0;
 
 	categories[0] = '\0';
@@ -193,9 +193,9 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 				date = broken_date(startday);
 			}
 			lower_str(freq[i]);
-			if (wday = is_wkday(freq[i])) {
-				if (nday = is_num(freq[i])) {
-					if (mon = is_mon(freq[i])) {
+			if ((wday = is_wkday(freq[i]))) {
+				if ((nday = is_num(freq[i]))) {
+					if ((mon = is_mon(freq[i]))) {
 						date = broken_date(startday);
 						date->tm_mon = mon - 1; mktime(date);
 						holder = get_datenum(date);
@@ -248,7 +248,7 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 						}
 					}
 				} else {//wday but no ordinal
-					if (mon = is_mon(freq[i])) { // wkday, no ordinal, month
+					if ((mon = is_mon(freq[i]))) { // wkday, no ordinal, month
 						date = broken_date(startday);
 						holder = get_datenum(date);
 						holder = wday_of_month(holder,wday-1,1);
@@ -296,7 +296,6 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 				}
 			} else if (strstr(freq[i],"monthly")) {
 				date = broken_date(startday);
-				year = date->tm_year;
 				holder = get_datenum(date);
 				while (holder < endday) {
 					if (strstr(buffer[0],"EVENT")) {
@@ -311,7 +310,6 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 				}
 			} else if (strstr(freq[i],"yearly")) {
 				date = broken_date(startday);
-				year = date->tm_year;
 				holder = get_datenum(date);
 				while (holder < endday) {
 					if (strstr(buffer[0],"EVENT")) {

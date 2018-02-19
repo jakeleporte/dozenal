@@ -46,7 +46,6 @@ int fixtrans(char *number, char *ten, char *elv);
 
 int main(int argc, char *argv[])
 {
-	int i;
 	int xflag = 0;
 	char transdec = 0, needfreesp = 0, needfreept = 0;
 	char needfreeten = 0, needfreeelv = 0;
@@ -62,7 +61,7 @@ int main(int argc, char *argv[])
 	while (--argc > 0 && (*++argv)[0] == '-') {
 		if (isdigit(argv[0][1]) || argv[0][1] == '.')
 			break; /* negative numbers are not optional args */
-		while (c = *++argv[0])
+		while ((c = *++argv[0]))
 			switch (c) {
 			case '1': case '2': case '3': case '4': case '5':
 			case '6': case '7': case '8': case '9': case '0':
@@ -274,7 +273,7 @@ int main(int argc, char *argv[])
 
 int dozpret(char *number,char *spacer,char *zenpoint, int spaces, int xflag)
 {
-	int i, j, k, len, both = 0;
+	int i, len, both = 0;
 	char fracpart[MAXLINE]; /* fractional part of number */
 
 	if (strchr(number,';') == NULL)
@@ -332,12 +331,11 @@ int prettify(char *number, char *spacer, int spaces)
 
 int fixtrans(char *number, char *ten, char *elv)
 {
-	int i, j, k;
-	size_t lenstr,len,chunk;
+	int i, j;
+	size_t lenstr,chunk;
 	char *digit;
 	char trans;
 
-	len = strlen(number);
 	for (i=0; i<=1; i++) {
 		lenstr = (i == 0) ? strlen(ten) : strlen(elv);
 		digit = (i == 0) ? ten : elv;

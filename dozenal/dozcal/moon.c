@@ -49,7 +49,6 @@ int moonphase(int year,int month,int day);
 
 int get_moonphases(int datenum, int moonphases)
 {
-	int julday;
 	int phase;
 	struct tm *date;
 	time_t daynumber;

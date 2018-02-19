@@ -50,7 +50,6 @@ int doz(char *s, char *t, int places, int expnot, int new)
 	double decnum;
 	int i;
 	int precise;
-	size_t length;
 
 	decnum = atof(t);
 	if (decnum > (DBL_MAX)) {
@@ -183,11 +182,12 @@ char dozenify(char num)
 	case 11:
 		return 'E';
 	}
+	return '?';
 }
 
 int dectodoz(char *doznum, double decnum)
 {
-	int i = 0; int sign = 0; int j = 0;
+	int i = 0; int sign = 0;
 	double wholedec; /* whole number portion of decnum */
 	double partholder; /* someplace for modf to dump integral */
 

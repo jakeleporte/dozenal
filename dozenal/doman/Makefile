@@ -10,12 +10,13 @@ binmode = 755
 dirmode = 755
 IDIR =../include
 CC = gcc
+GCCFLAGS = -Wall -std=c99 -pedantic
 binobjects = doman
 
 all: bin
 
 doman: doman.c ../conv/conv.o ../doz/doz.o ../dec/dec.o
-	$(CC) -Wall -I$(IDIR) -g -o doman doman.c ../conv/conv.o ../dec/dec.o ../doz/doz.o -lm 
+	$(CC) $(GCCFLAGS) -I$(IDIR) -g -o doman doman.c ../conv/conv.o ../dec/dec.o ../doz/doz.o -lm 
 
 ../conv/conv.o: ../conv/conv.c $(IDIR)/conv.h
 	$(MAKE) -C ../conv

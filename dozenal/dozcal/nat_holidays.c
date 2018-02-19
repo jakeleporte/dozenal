@@ -82,11 +82,10 @@ int nat_holidays(char *s, int datenum)
 
 int canada_holidays(int datenum)
 {
-	time_t datesecs; time_t rawtime;
+	time_t rawtime;
 	struct tm *date;
 	int holiday;
 
-	datesecs = datenum * 86400;
 	time(&rawtime);
 	date = localtime(&rawtime);
 	date->tm_mon = 0; date->tm_mday = 1; mktime(date);
@@ -140,11 +139,10 @@ int canada_holidays(int datenum)
 
 int nz_holidays(int datenum)
 {
-	time_t datesecs; time_t rawtime;
+	time_t rawtime;
 	struct tm *date;
 	int holiday;
 
-	datesecs = datenum * 86400;
 	time(&rawtime);
 	date = localtime(&rawtime);
 	date->tm_mon = 0; date->tm_mday = 1; mktime(date);
@@ -235,11 +233,10 @@ int nz_holidays(int datenum)
 
 int austral_holidays(int datenum)
 {
-	time_t datesecs; time_t rawtime;
+	time_t rawtime;
 	struct tm *date;
 	int holiday;
 
-	datesecs = datenum * 86400;
 	time(&rawtime);
 	date = localtime(&rawtime);
 	date->tm_mon = 0; date->tm_mday = 1; mktime(date);
@@ -303,11 +300,10 @@ int austral_holidays(int datenum)
 
 int england_holidays(int datenum)
 {
-	time_t datesecs; time_t rawtime;
+	time_t rawtime;
 	struct tm *date;
 	int holiday;
 
-	datesecs = datenum * 86400;
 	time(&rawtime);
 	date = localtime(&rawtime);
 	date->tm_mon = 0; date->tm_mday = 1; mktime(date);
@@ -410,11 +406,10 @@ int england_holidays(int datenum)
 
 int wales_holidays(int datenum)
 {
-	time_t datesecs; time_t rawtime;
+	time_t rawtime;
 	struct tm *date;
 	int holiday;
 
-	datesecs = datenum * 86400;
 	time(&rawtime);
 	date = localtime(&rawtime);
 	date->tm_mon = 0; date->tm_mday = 1; mktime(date);
@@ -523,11 +518,10 @@ int wales_holidays(int datenum)
 
 int scot_holidays(int datenum)
 {
-	time_t datesecs; time_t rawtime;
+	time_t rawtime;
 	struct tm *date;
 	int holiday;
 
-	datesecs = datenum * 86400;
 	time(&rawtime);
 	date = localtime(&rawtime);
 	date->tm_mon = 0; date->tm_mday = 1; mktime(date);
@@ -636,11 +630,10 @@ int scot_holidays(int datenum)
 
 int rire_holidays(int datenum)
 {
-	time_t datesecs; time_t rawtime;
+	time_t rawtime;
 	struct tm *date;
 	int holiday;
 
-	datesecs = datenum * 86400;
 	time(&rawtime);
 	date = localtime(&rawtime);
 	date->tm_mon = 0; date->tm_mday = 1; mktime(date);
@@ -727,11 +720,10 @@ int rire_holidays(int datenum)
 
 int nire_holidays(int datenum)
 {
-	time_t datesecs; time_t rawtime;
+	time_t rawtime;
 	struct tm *date;
 	int holiday;
 
-	datesecs = datenum * 86400;
 	time(&rawtime);
 	date = localtime(&rawtime);
 	date->tm_mon = 0; date->tm_mday = 1; mktime(date);
@@ -846,11 +838,10 @@ int nire_holidays(int datenum)
 
 int usa_holidays(int datenum)
 {
-	time_t datesecs; time_t rawtime;
+	time_t rawtime;
 	struct tm *date;
 	int holiday;
 
-	datesecs = datenum * 86400;
 	time(&rawtime);
 	date = localtime(&rawtime);
 	date->tm_mon = 0; date->tm_mday = 1;

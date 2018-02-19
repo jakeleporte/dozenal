@@ -66,7 +66,6 @@ int get_symmdate(struct tm *thetime,int *usesymm)
 	long firstday;	 	/* first day of year */
 	long judate;		/* Julian day */
 	int symyear;
-	int wday;
 
 	if ((*usesymm == IN) || (*usesymm == BOTH)) {
 		if (*usesymm == BOTH)
@@ -99,10 +98,6 @@ int get_symmdate(struct tm *thetime,int *usesymm)
 int symm_errcheck(struct tm *thetime)
 {
 	char tmp[12];
-	char *tmp2;
-	int symyear, firstday;
-	long judate;
-	char c;
 
 	if ((issymleapyear(thetime->tm_year+1900) == 0) &&
 	(thetime->tm_mon > 11)) {
@@ -190,7 +185,6 @@ long symnewyear(int symyear)
 int fixed_to_symyear(long judate,long *firstday)
 {
 	int symyear;
-	long startyearday;
 	long startnextyear;
 
 	symyear = (int)(((judate - symepoch) / cyclemeanyear) + 1.0);
@@ -232,7 +226,6 @@ int convtosym(struct tm *thetime, long judate, int symyear, int firstday)
 	int weekofyear;
 	int currquart;
 	int dayofquart;
-	int weekofquart;
 	int monthofquart;
 	int symmonth;
 	int symday;
@@ -243,7 +236,6 @@ int convtosym(struct tm *thetime, long judate, int symyear, int firstday)
 	weekofyear = (int)(dayofyear / 7.0 + 1.0);
 	currquart = (int)(4.0 / 53.0 * weekofyear + 1.0);
 	dayofquart = dayofyear - 91.0 * (currquart - 1.0);
-	weekofquart = (int)(dayofquart / 7.0 + 1.0);
 	monthofquart = (int)((2.0 / 61.0) * dayofquart + 1.0);
 	symmonth = 3 * (currquart - 1) + monthofquart;
 	thetime->tm_mon = symmonth - 1;

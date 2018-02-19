@@ -55,11 +55,10 @@ int main(int argc, char *argv[])
 	char print = NOTPRINT;
 	double answer;
 	int numargs; char **args;
-	char infix = 0;  /* if 1, use infix */
 
 	numargs = argc; args = argv;
 	while (--argc > 0 && (*++argv)[0] == '-') {
-		while (c = *++argv[0])
+		while ((c = *++argv[0]))
 			switch (c) {
 			case '1': case '2': case '3': case '4': case '5':
 			case '6': case '7': case '8': case '9': case '0':
@@ -146,7 +145,7 @@ double commandcalc(char *word, int type, int places, char expnot)
 	} else if (type == OP) {
 		operator = getop(word);
 		if (operator == -1) {
-			fprintf(stderr,"dozdc:  unknown operator %s\n",word);
+			fprintf(stderr,"dozdc:  unknown operator \"%s\"\n",word);
 		} else {
 			answer = operate(operator,&places,&print);
 			if (operator == PRPOP) {
@@ -160,7 +159,6 @@ double commandcalc(char *word, int type, int places, char expnot)
 
 int runcalc(int places, char expnot)
 {
-	int i;
 	int type;
 	int operator;
 	char s[MAXLINE];
@@ -173,7 +171,7 @@ int runcalc(int places, char expnot)
 		} else if (type == OP) {
 			operator = getop(s);
 			if (operator == -1)
-				fprintf(stderr,"dozdc:  unknown operator %s\n",s);
+				fprintf(stderr,"dozdc:  unknown operator \"%s\"\n",s);
 			else
 				answer = operate(operator,&places,&print);
 		}

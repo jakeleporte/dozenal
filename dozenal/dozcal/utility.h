@@ -31,6 +31,12 @@
  * <http://www.gnu.org/licenses/>.
  */
 
+#ifndef M_PI
+	#define M_PI 3.14159265358979323846
+#endif
+
+#include<time.h>
+
 char *front_chomp(char *s);
 struct tm *broken_date(int daynum);
 int lower_str(char *s);
@@ -55,3 +61,5 @@ int first_of_next(struct tm *date);
 int last_wday_of_month(int datenum, int wday);
 int wday_of_month(int datenum, int wday, int num);
 int countchars(char *s, char c);
+int __sunriset__( int year, int month, int day, double lon, double lat,
+                  double altit, int upper_limb, double *rise, double *set );

@@ -15,24 +15,25 @@ binmode = 755
 dirmode = 755
 IDIR =../include
 CC = gcc
+GCCFLAGS = -Wall -std=c99 -pedantic
 objects = main.o get_symmdate.o process_date.o
 binobjects = dozdate
 
 all: bin
 
 dozdate: $(objects) ../doz/doz.o ../dec/dec.o ../conv/conv.o
-	$(CC) -I$(IDIR) -std=c99 -g -o dozdate main.o ../conv/conv.o \
+	$(CC) $(GCCFLAGS) -I$(IDIR) -std=c99 -g -o dozdate main.o ../conv/conv.o \
 		../doz/doz.o ../dec/dec.o process_date.o get_symmdate.o -lm 
 
 main.o: main.c ../conv/conv.o ../doz/doz.o process_date.o \
 		$(IDIR)/process_date.h $(IDIR)/get_symmdate.h get_symmdate.o
-	$(CC) -I$(IDIR) -g -lm -c main.c
+	$(CC) $(GCCFLAGS) -I$(IDIR) -g -lm -c main.c
 
 get_symmdate.o: get_symmdate.c ../conv/conv.o $(IDIR)/get_symmdate.h
-	$(CC) -I$(IDIR) -g -lm -c get_symmdate.c
+	$(CC) $(GCCFLAGS) -I$(IDIR) -g -lm -c get_symmdate.c
 
 process_date.o: process_date.c ../conv/conv.c $(IDIR)/process_date.h
-	$(CC) -I$(IDIR) -g -lm -c process_date.c ../conv/conv.c
+	$(CC) $(GCCFLAGS) -I$(IDIR) -g -lm -c process_date.c ../conv/conv.c
 
 ../doz/doz.o: ../conv/conv.o ../doz/doz.c
 	$(MAKE) -C ../doz

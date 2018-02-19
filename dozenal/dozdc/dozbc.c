@@ -3,8 +3,6 @@
 #include <stdlib.h>
 #include "dozbc.h"
 
-
-
 /***************************************
  ***************************************/
 
@@ -239,12 +237,12 @@ create_form_calculator( void )
     fdui->pi = obj = fl_add_button( FL_NORMAL_BUTTON, 350, 170, 40, 40, "pi" );
     fl_set_button_shortcut( obj, "p", 1 );
     fl_set_object_lstyle( obj, FL_TIMESBOLD_STYLE );
-    fl_set_object_callback( obj, proc_num, 'p' );
+    fl_set_object_callback( obj, operator, 'p' );
 
     fdui->euler = obj = fl_add_button( FL_NORMAL_BUTTON, 350, 210, 40, 40, "e" );
     fl_set_button_shortcut( obj, "u", 1 );
     fl_set_object_lstyle( obj, FL_TIMESBOLDITALIC_STYLE );
-    fl_set_object_callback( obj, proc_num, 'u' );
+    fl_set_object_callback( obj, operator, 'u' );
 
     fdui->angleunit = obj = fl_add_button( FL_NORMAL_BUTTON, 390, 170, 40, 40, "Z/r/d" );
     fl_set_button_shortcut( obj, "z", 1 );

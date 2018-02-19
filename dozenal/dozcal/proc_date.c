@@ -66,7 +66,7 @@ time_t proc_date(char *s)
 	int i; int result; int errornum; int impstr;
 	char err[MAX_ERR_LENGTH+1];
 	struct tm *date;
-	regmatch_t pmatch[4]; size_t nmatch = 4;
+	regmatch_t pmatch[4];
 	regex_t regone;
 	char holder[5];
 	time_t returnval;
@@ -162,7 +162,7 @@ int proc_time(char *s)
 {
 	int i; int result; int errornum;
 	char err[MAX_ERR_LENGTH+1];
-	regmatch_t pmatch[3]; size_t nmatch = 3;
+	regmatch_t pmatch[3];
 	regex_t regone;
 	char holder[5]; int holdnum;
 	const int tims = 20736; /* number of Tims in hr */
@@ -227,10 +227,9 @@ int num_to_date(int datenum, char *datestr, char *dateform)
 {
 	time_t unixdate;
 	struct tm *broken;
-	int i; int j; int k; char holder[6];
+	int i; int j; char holder[6];
 	char buffer[MAXLEN+1];
 	char doznum[6]; char formdoz[6];
-	int diff;
 	const char *padding="000000000000000000000000000";
 	int padlen;
 
@@ -239,7 +238,7 @@ int num_to_date(int datenum, char *datestr, char *dateform)
 	broken = localtime(&unixdate);
 	strftime(buffer,255,dateform,broken);
 	for (i = 0; buffer[i] != '\0'; ++i) {
-		j = 0; k = 0;
+		j = 0;
 		if (isdigit(buffer[i])) {
 			while ((buffer[i] != '\0') && (isdigit(buffer[i])) && (j < 6))
 				holder[j++] = buffer[i++];
@@ -261,12 +260,9 @@ int num_to_date(int datenum, char *datestr, char *dateform)
 int secs_to_Tims(int time,char *timestr,char *time_format)
 {
 	int i; int j; int k;
-	const int tims = 20736; /* number of Tims in hr */
 	char hours[3]; char timpart[5];
 	char holder[5]; int len = -1;
 	char buffer[MAXLEN+1];
-	const char *padding="000000000000000000000000000";
-	int padlen;
 
 	if (time < 0)
 		return -1;

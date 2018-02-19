@@ -18,12 +18,12 @@ struct opprec {
 	int precedence;
 	int assoc;
 } allops[] = {
-	'^',4,RIGHT,
-	'%',3,LEFT,
-	'*',3,LEFT,
-	'/',3,LEFT,
-	'+',2,LEFT,
-	'-',2,LEFT
+	{'^',4,RIGHT},
+	{'%',3,LEFT},
+	{'*',3,LEFT},
+	{'/',3,LEFT},
+	{'+',2,LEFT},
+	{'-',2,LEFT}
 };
 int numops = 5;
 
@@ -39,7 +39,7 @@ int xpush(char *s, char stack[][16], int *index);
 
 int shunt(char *postfix, char *infix)
 {
-	int i; int j;
+	int i;
 	char *token;
 	char delim[2] = " ";
 	char outstack[256][16]; int outind = 0;
@@ -125,12 +125,14 @@ int xpush(char *s, char stack[][16], int *index)
 {
 	strcpy(stack[*index],s);
 	++(*index);
+	return 0;
 }
 
 int xpop(char *holder, char stack[][16], int *index)
 {
 	--(*index);
 	strcpy(holder,stack[*index]);
+	return 0;
 }
 
 int isnumber(char *s)
@@ -140,6 +142,10 @@ int isnumber(char *s)
 	(*s == '8') || (*s == '9') || (*s == 'X') || (*s == 'E')) {
 		return TRUE;
 	}
+	if (strstr(s,"pi") != NULL)
+		return TRUE;
+	if (strstr(s,"eul") != NULL)
+		return TRUE;
 	return FALSE;
 }
 
@@ -165,6 +171,7 @@ int getprec(char *s)
 		if (allops[i].operator == c)
 			return allops[i].precedence;
 	}
+	return 0;
 }
 
 int getassoc(char *s)
@@ -177,6 +184,7 @@ int getassoc(char *s)
 		if (allops[i].operator == c)
 			return allops[i].assoc;
 	}
+	return 0;
 }
 
 int isleftparen(char *s)

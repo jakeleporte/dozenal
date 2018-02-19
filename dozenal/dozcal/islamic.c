@@ -50,10 +50,8 @@ int add_ramadan(struct tm *date, struct isldate *now);
 
 int islamic_holidays(int daynum)
 {
-	time_t datesecs; time_t rawtime;
+	time_t rawtime;
 	struct tm *date;
-	int hijdays;
-	int holiday;
 	struct isldate *now;
 
 	now = malloc(1 * sizeof(struct isldate));
@@ -133,8 +131,7 @@ int add_eidaladha(struct tm *date, struct isldate *now)
 /* algorithm from http://oriold.uzh.ch/static/hegira.html */
 int isl_date(struct tm *date, struct isldate *now)
 {
-	time_t datesecs; time_t rawtime;
-	int d, m, y, i, jd, j, l, n;
+	int d, m, y, jd, j, l, n;
 	
 	d = date->tm_mday;
 	m = date->tm_mon;

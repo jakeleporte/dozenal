@@ -87,7 +87,7 @@ int suntimes(double jdn)
 	date = broken_date(jdn_to_datenum(jdn));
 	sunset = sun_rise_set(date->tm_year+1900,date->tm_mon+1,date->tm_mday,
 		longitude,latitude,&risetime,&settime);
-	if (utc == 0) {
+/*	if (utc == 0) {
 		if (tzoffset < -50.0) {
 			risetime += date->tm_gmtoff/60/60;
 			settime += date->tm_gmtoff/60/60;
@@ -95,7 +95,7 @@ int suntimes(double jdn)
 			risetime += tzoffset;
 			settime += tzoffset;
 		}
-	}
+	}*/
 	dec_to_mins(settime,bufs);
 	dec_to_mins(risetime,bufr);
 	if (sunset == 0) {
@@ -110,11 +110,10 @@ int suntimes(double jdn)
 
 int dec_to_mins(double number, char *s)
 {
-	int i; int j = 0;
+	int i;
 	double hrs, mns, frac;
 	int hours, mins;
 	char bufhr[SHORTLEN]; char bufmn[SHORTLEN];
-	char dbufhr[SHORTLEN]; char dbufmn[SHORTLEN];
 
 	s[0] = '\0'; bufhr[0] = '\0'; bufmn[0] = '\0';
 	frac = modf(number,&hrs);
@@ -134,7 +133,6 @@ int seasons(double jdn)
 {
 	double m, ve, ss, ae, ws;
 	struct tm *date;
-	int hours,mins, secs;
 	char buf[8];
 
 	date = broken_date(jdn_to_datenum(jdn));

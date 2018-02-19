@@ -53,7 +53,6 @@ int main(int argc, char *argv[])
 	int places = 4;
 	char expnot = 0;
 	double value = 0.001928;
-	int i = 0;
 	char c;
 	char nounit = 0;
 
@@ -63,7 +62,7 @@ int main(int argc, char *argv[])
 	while (--argc > 0 && (*++argv)[0] == '-') {
 		if (isdigit(argv[0][1]) || argv[0][1] == '.')
 			break; /* negative numbers are not optional args */
-		while (c = *++argv[0])
+		while ((c = *++argv[0]))
 			switch (c) {
 			case 'e':
 				expnot = 1;
@@ -177,7 +176,7 @@ int main(int argc, char *argv[])
 
 int getunit(char *s, char *inp)
 {
-	int i, n = 0;
+	int i;
 
 	while (isdozdig(*(s++)))
 		continue;

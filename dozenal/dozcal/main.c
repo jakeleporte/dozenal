@@ -34,6 +34,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<unistd.h>
+#include<getopt.h>
 #include<string.h>
 #include<time.h>
 #include<ctype.h>
@@ -81,8 +82,6 @@ int main(int argc, char **argv)
 	char c; int i;
 	int tmpctr;					/* for looping without changing recordnums */
 	int moonphases = 0;		/* if 0, no phases; if 1, yes */
-	int seasons = 0;			/* if 0, no seasons, if 1, yes */
-	int numevents = 0;
 	int startdate = -1; int enddate = -1;
 	char *ev_form;
 	const char *def_form = "%d | %s | %c | %e | %t | %C | %l";
@@ -106,7 +105,6 @@ int main(int argc, char **argv)
 	int weekout = 0;
 	int fdow = 0;
 	FILE *outfile = stdout;
-	int filedesc[2];
 	int usetui = 0;
 
 	build_globopts_struct();
@@ -264,7 +262,7 @@ int main(int argc, char **argv)
 			proc_geog(optarg);
 			break;
 		case 'f':
-			numevents = process_file(optarg);
+			process_file(optarg);
 			break;
 		case 'c':
 			proc_options(optarg,&moonphases,&nat,&relig,&date_form,
@@ -436,7 +434,6 @@ int fill_todo(char *s, int index, char *date_format, char
 	int i; int j;
 	char holder[6];
 	int len = MAXLEN + 1;
-	char *ptr;
 	char datestr[MAXLEN+1];
 	char buffer[SHORTLEN];
 	char othbuf[MAXLEN+1];
@@ -541,7 +538,6 @@ int fill_event(char *s, int index, char *date_format, char
 	int i; int j;
 	char holder[6];
 	int len = MAXLEN + 1;
-	char *ptr;
 	char datestr[MAXLEN+1];
 	char buffer[MAXLEN+1];
 	char othbuf[MAXLEN+1];
@@ -672,8 +668,6 @@ int todocomp(const void *todoone, const void *todotwo)
 	int timeone = 0; int timetwo = 0;
 	char *itemone; char *itemtwo;
 
-	const struct todo *firsttodo = (struct todo*) todoone;
-	const struct todo *sectodo = (struct todo*) todotwo;
 	priorone = ((struct todo*) todoone)->priority;
 	priortwo = ((struct todo*) todotwo)->priority;
 	dateone = ((struct todo*) todoone)->duedate;
@@ -709,8 +703,6 @@ int comparator(const void *evone, const void *evtwo)
 	int timeone = 0; int timetwo = 0;
 	char *itemone; char *itemtwo;
 
-	const struct event *firstev = (struct event*) evone;
-	const struct event *secev = (struct event*) evtwo;
 	dateone = ((struct event*) evone)->thisdate;
 	datetwo = ((struct event*) evtwo)->thisdate;
 	timeone = ((struct event*) evone)->starttime;

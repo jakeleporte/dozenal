@@ -42,7 +42,6 @@
 int main(int argc, char *argv[])
 {
 	int c;
-	int i = 0;
 	char doznum[MAXLINE];
 	int places = 4; /* post-zenimal digits of accuracy */
 	char expnot = 0; /* exponential notation flag; default no */
@@ -50,7 +49,7 @@ int main(int argc, char *argv[])
 	while (--argc > 0 && (*++argv)[0] == '-') {
 		if (isdigit(argv[0][1]) || argv[0][1] == '.')
 			break; /* negative numbers are not optional args */
-		while (c = *++argv[0])
+		while ((c = *++argv[0]))
 			switch (c) {
 			case '1': case '2': case '3': case '4': case '5':
 			case '6': case '7': case '8': case '9': case '0':

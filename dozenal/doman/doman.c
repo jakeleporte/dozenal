@@ -10,6 +10,7 @@
 #include<stdlib.h>
 #include<string.h>
 #include<unistd.h>
+#include<getopt.h>
 #include"errors.h"
 #include"conv.h"
 
@@ -30,9 +31,6 @@ int main(int argc, char **argv)
 	char answer[MAXLEN] = "";
 	char c;
 	int numranks;
-	int shortlim = 4; /* how many symbols induces short treatment */
-	int prefix = 2; /* number of symbols that may be prefixed */
-	char shortcut = 1;
 	char *token;
 	/* initialize the default ranks and lets */
 	ranks = (int *)malloc(20 * sizeof(int));
@@ -55,7 +53,7 @@ int main(int argc, char **argv)
 	strcpy(lets[18],"I"); strcpy(lets[19],"\0");
 		
 	opterr = 0;
-	while ((c = getopt(argc,argv,"lm:R:r:s:V")) != -1) {
+	while ((c = getopt(argc,argv,"m:R:r:s:V")) != -1) {
 		switch(c) {
 		case 'V':
 			printf("doman v1.0\n");
@@ -98,14 +96,8 @@ int main(int argc, char **argv)
 			*(lets+i) = malloc(2 * sizeof(char));
 			strcpy(*(lets+i),"\0");
 			break;
-		case 'm':
-			shortlim = (int)doztodec(optarg);
-			break;
-		case 'l':
-			shortcut = 0;
-			break;
 		case '?':
-			if ((optopt == 'r') || (optopt == 'R') ||
+			if ((optopt == 'R') ||
 				(optopt == 'm') || (optopt == 's')) {
 				fprintf(stderr,"doman:  option \"%c\" requires "
 					"an argument\n",optopt);

@@ -48,21 +48,15 @@ int file_prefix(char **s, char *t);
 int call_lua(char *s)
 {
 	const char *key; const char *val;
-	int evto = 0;			/* 0 for event, 1 for todo */
 	char title[256];		/* title of the event */
 	int thisdate = 0;		/* the date */
 	int starttime = 0;	/* starting time, in Tims from midnight */
 	int endtime = 0;		/* ending time, in Tims from midnight */
-	int relatedto = 0;	/* idnum of other events or todos */
 	char location[256];	/* the location of the event */
 	char evclass[16];		/* e.g., "private" */
 	char categories[256];/* categories event fits into; e.g., "business" */
-	char transp = 0;		/* '0' if opaque, 1 if transp */
 	int cnt = 0;
 	int numreturns = 1;
-	int priority = 0;
-	int compflag = 0;
-	int pergross = 0;
 	int i;
 	char *filename = NULL;
 
@@ -112,12 +106,6 @@ int call_lua(char *s)
 				strncpy(evclass,val,SHORTLEN); 
 			} else if (strcmp(key,"CATEGORY") == 0) {
 				strncpy(categories,val,MAXLEN); 
-			} else if (strcmp(key,"PRIORITY") == 0) {
-				priority = (int)doztodec((char *)val);
-			} else if (strcmp(key,"PERGROSS") == 0) {
-				pergross = (int)doztodec((char *)val);
-			} else if (strcmp(key,"COMPFLAG") == 0) {
-				compflag = atoi(val);
 			} else {
 				fprintf(stderr,"dozcal:  error from lua "
 					"script \"%s\":  unknown key \"%s\"\n",

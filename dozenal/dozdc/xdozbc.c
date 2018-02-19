@@ -53,14 +53,12 @@ int in_curr_word(char c);
 int xdozbc(int num, char *args[])
 {
 	FD_calculator *calc;
-	Window whole;
-	Window othwhole;
 
 	memline[0] = '\0';
 	fl_initialize(&num,args,"xdozbc",0,0);
 	calc = create_form_calculator();
 
-	whole = fl_show_form(calc->calculator,FL_PLACE_MOUSE,
+	fl_show_form(calc->calculator,FL_PLACE_MOUSE,
 		FL_FULLBORDER,"xdozbc");
 	fl_set_object_return(calc->precisionval,FL_RETURN_CHANGED);
 	fl_set_spinner_bounds(calc->precisionval,FL_nint(0.0),
@@ -203,7 +201,6 @@ int in_curr_word(char c)
 void proc_num( FL_OBJECT * button, long arg )
 {
 	int index;
-	char c[2];
 	FD_calculator *fd_foo = button->form->fdui;
 
 	index = strlen(line);
@@ -226,7 +223,6 @@ void operator( FL_OBJECT * button, long arg )
 {
 	int index;
 	char rpn[LINELEN];
-	char infix[LINELEN];
 	char word[LINELEN];
 	int type = NUM;
 	int numrun = 0;
@@ -245,6 +241,12 @@ void operator( FL_OBJECT * button, long arg )
 		line[index+3] = '\0';
 	} else {
 		switch (arg) {
+		case 'p': /* pi */
+			strcat(line," pi ");
+			break;
+		case 'u': /* Euler's number */
+			strcat(line," eul ");
+			break;
 		case 's': /* sine */
 			strcat(line," sin(");
 			break;
@@ -340,11 +342,9 @@ void operator( FL_OBJECT * button, long arg )
 
 int regularize_line()
 {
-	int len;
 	int i,j;
 	char fixed[LINELEN];
 
-	len = strlen(line);
 	fixed[0] = '\0';
 	j = 0;
 	for (i = 0; line[i] != '\0'; ++i) {
@@ -425,8 +425,6 @@ void erase( FL_OBJECT * button, long arg )
 
 void unitangle( FL_OBJECT * button, long arg )
 {
-	FD_calculator *fd_foo = button->form->fdui;
-	int index;
 	char *c; 
 
 	if ((c = malloc(1 * sizeof(char))) == NULL) {

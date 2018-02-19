@@ -53,31 +53,31 @@ struct nameday {
 	char *shortname;		/* abbreviation */
 	int num;				/* number (0-6) */
 } weekdays[] = {
-	"Sunday", "Sun", 0,
-	"Monday", "Mon", 1,
-	"Tuesday", "Tue", 2,
-	"Wednesday", "Wed", 3,
-	"Thursday", "Thu", 4,
-	"Friday", "Fri", 5,
-	"Saturday", "Sat", 6,
+	{"Sunday", "Sun", 0},
+	{"Monday", "Mon", 1},
+	{"Tuesday", "Tue", 2},
+	{"Wednesday", "Wed", 3},
+	{"Thursday", "Thu", 4},
+	{"Friday", "Fri", 5},
+	{"Saturday", "Sat", 6},
 };
 struct monthdays {
 	char *longname; char *shortname;
 	int num;
 } months[] = {
-	"January", "Jan", 0,
-	"February", "Feb", 1,
-	"March", "Mar", 2,
-	"April", "Apr", 3,
-	"May", "May", 4,
-	"June", "Jun", 5,
-	"July", "Jul", 6,
-	"August", "Aug", 7,
-	"September", "Sep", 8,
-	"October", "Oct", 9,
-	"November", "Nov", 10,
-	"December", "Dec", 11,
-	"Irvember", "Irv", 12,
+	{"January", "Jan", 0},
+	{"February", "Feb", 1},
+	{"March", "Mar", 2},
+	{"April", "Apr", 3},
+	{"May", "May", 4},
+	{"June", "Jun", 5},
+	{"July", "Jul", 6},
+	{"August", "Aug", 7},
+	{"September", "Sep", 8},
+	{"October", "Oct", 9},
+	{"November", "Nov", 10},
+	{"December", "Dec", 11},
+	{"Irvember", "Irv", 12},
 };
 
 int parse_for_weekday(char *s, struct tm *thetime);
@@ -100,7 +100,6 @@ int date_from_ydays(int dayyear, struct tm *thetime);
 int process_date(char *s,struct tm *thetime,int usesymm)
 {
 	int i,j,k;
-	char *monpointer;
 	int month;
 
 	k = parse_for_year(s,thetime);
@@ -179,7 +178,6 @@ int timtosec(char *s,struct tm *thetime)
 {
 	double tim;
 	int sec;
-	int min;
 
 	tim = doztodec(s);
 	sec = round(tim *	0.1736111111111111111111111111111111111111111111);
@@ -293,7 +291,7 @@ int parse_for_slash_month(char *s, struct tm *thetime)
  * if found, -1 if not */
 int parse_sexa_time(char *s, struct tm *thetime)
 {
-	int i,j,k;
+	int i,j;
 	char hour[3] = "";
 	char min[3] = "";
 	char sec[3] = "";
@@ -340,7 +338,7 @@ int parse_sexa_time(char *s, struct tm *thetime)
 	}
 	if (secpoint != NULL) {
 		j=0;
-		while (*secpoint != ':' && *secpoint != '\0' & j < 2)
+		while ((*secpoint != ':' && *secpoint != '\0' && j < 2))
 			if ((isdigit(*secpoint) || *secpoint == 'X' ||
 			*secpoint == 'E') && (j <= 1))
 				sec[j++] = *(secpoint++);
@@ -365,7 +363,6 @@ int parse_sexa_time(char *s, struct tm *thetime)
  * but harmless, the relative date options were used */
 int ydays_from_date(struct tm *thetime)
 {
-	int i;
 	int ydays = 0;
 
 	switch (thetime->tm_mon) {
@@ -467,6 +464,7 @@ int errorcheck(char *s, struct tm *thetime)
 		"large\n");
 		exit(BAD_SEC);
 	}
+	return 0;
 }
 
 /* ensures that weekday given matches the dates, etc.,
@@ -546,6 +544,7 @@ int symm_errorcheck(char *s, struct tm *thetime)
 		"large\n");
 		exit(BAD_SEC);
 	}
+	return 0;
 }
 
 /* find a four-digit number; if doesn't start with ;,
@@ -722,20 +721,20 @@ int dayofweek(int year, int month, int day)
 		int twocent;
 		int firstday;
 	} centuries[] = {
-		17, 4,
-		18, 2,
-		19, 0,
-		20, 6,
-		21, 4,
-		22, 2,
-		23, 0,
-		24, 6,
-		25, 4,
-		26, 2,
+		{17, 4},
+		{18, 2},
+		{19, 0},
+		{20, 6},
+		{21, 4},
+		{22, 2},
+		{23, 0},
+		{24, 6},
+		{25, 4},
+		{26, 2},
 	};
 	int theweekday = 0;		/* the answer */
 	int thefirstday = 0;		/* the first day of the year */
-	int tmp, cent;
+	int cent;
 	int i;
 
 	if ((year >= 2600) || (year <= 1700)) {
@@ -818,4 +817,5 @@ int printdate(struct tm *thetime)
 			monthstring = months[i].longname;
 	printf("%s, %d %s %d\n",daystring,thetime->tm_mday,monthstring, 
 		thetime->tm_year+1900);
+	return 0;
 }

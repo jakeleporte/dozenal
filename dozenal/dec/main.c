@@ -53,7 +53,7 @@ int main(int argc, char *argv[])
 		argv[0][1] == 'E' || argv[0][1] == 'B' ||
 		argv[0][1] == 'b')
 			break; /* negative numbers are not optional args */
-		while (c = *++argv[0])
+		while ((c = *++argv[0]))
 			switch (c) {
 			case '1': case '2': case '3': case '4': case '5':
 			case '6': case '7': case '8': case '9': case '0':

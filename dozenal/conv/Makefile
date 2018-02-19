@@ -21,11 +21,12 @@
 
 IDIR =../include
 CC=gcc
+GCCFLAGS=-Wall -std=c99 -pedantic
 
 all: conv.o
 
 conv.o: conv.c
-	$(CC) -I$(IDIR) -c conv.c
+	$(CC) $(GCCFLAGS) -I$(IDIR) -c conv.c
 
 clean:
 	rm -f conv.o

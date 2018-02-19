@@ -13,6 +13,7 @@ dirmode = 755
 IDIR =../include
 XFORMS_FLAGS =-DXFORMS
 CC = gcc
+GCCFLAGS = -Wall -std=c99 -pedantic
 objects = main.o getop.o vars.o stack.o shunt.o xdozbc.o dozbc.o
 binobjects = dozdc gdozdc
 ifeq ($(XFORMS_FLAGS),-DXFORMS)
@@ -27,25 +28,27 @@ all: bin
 
 dozdc : main.o ../dec/dec.o $(IDIR)/dozdc.h getop.o stack.o vars.o \
 	$(XFORM_OBJS)
-	$(CC) $(XFORMS_FLAGS) -I$(IDIR) -g -o dozdc main.o ../conv/conv.o \
-		../doz/doz.o ../dec/dec.o getop.o stack.o $(IDIR)/stack.h \
-		vars.o $(IDIR)/vars.h $(XFORM_OBJS) $(XFORM_LIBS) -lm
+	$(CC) $(GCCFLAGS) $(XFORMS_FLAGS) -I$(IDIR) -g -o dozdc main.o \
+		../conv/conv.o ../doz/doz.o ../dec/dec.o getop.o stack.o \
+		$(IDIR)/stack.h vars.o $(IDIR)/vars.h $(XFORM_OBJS) \
+		$(XFORM_LIBS) -lm
 
 main.o : main.c ../dec/dec.o $(IDIR)/dozdc.h stack.o vars.o
-	$(CC) $(XFORMS_FLAGS) -I$(IDIR) -g -c main.c
+	$(CC) $(GCCFLAGS) $(XFORMS_FLAGS) -I$(IDIR) -g -c main.c
 
 xdozbc.o : dozbc.o dozbc.h xdozbc.c shunt.c
-	$(CC) $(XFORMS_FLAGS) -I$(IDIR) -g -lm -c xdozbc.c shunt.o dozbc.o -lforms
+	$(CC) $(GCCFLAGS) $(XFORMS_FLAGS) -I$(IDIR) -g -c xdozbc.c \
+		-lforms -lm
 
 dozbc.o : dozbc.c dozbc.h
-	$(CC) $(XFORMS_FLAGS) -I$(DIR) -g -lm -c dozbc.c
+	$(CC) $(GCCFLAGS) $(XFORMS_FLAGS) -I$(DIR) -g -c dozbc.c -lm
 
 shunt.o : shunt.c
-	$(CC) $(XFORMS_FLAGS) -I$(DIR) -g -c shunt.c
+	$(CC) $(GCCFLAGS) $(XFORMS_FLAGS) -I$(DIR) -g -c shunt.c
 
 getop.o : getop.c ../conv/conv.o ../doz/doz.o ../dec/dec.o \
 		$(IDIR)/dozdc.h stack.o vars.o
-	$(CC) $(XFORMS_FLAGS) -I$(IDIR) -g -lm -c getop.c
+	$(CC) $(GCCFLAGS) $(XFORMS_FLAGS) -I$(IDIR) -g -c getop.c -lm
 
 ../doz/doz.o: ../conv/conv.o ../doz/doz.c
 	$(MAKE) -C ../doz
@@ -57,10 +60,10 @@ getop.o : getop.c ../conv/conv.o ../doz/doz.o ../dec/dec.o \
 	$(MAKE) -C ../conv
 
 vars.o : vars.c $(IDIR)/vars.h stack.o
-	$(CC) $(XFORMS_FLAGS) -I$(IDIR) -g -c vars.c
+	$(CC) $(GCCFLAGS) $(XFORMS_FLAGS) -I$(IDIR) -g -c vars.c
 
 stack.o : stack.c $(IDIR)/stack.h
-	$(CC) $(XFORMS_FLAGS) -I$(IDIR) -g -c stack.c
+	$(CC) $(GCCFLAGS) $(XFORMS_FLAGS) -I$(IDIR) -g -c stack.c
 
 gdozdc : gdozdc.pl
 	cp gdozdc.pl gdozdc

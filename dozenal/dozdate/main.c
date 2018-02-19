@@ -32,6 +32,7 @@
  */
 
 #include<unistd.h>
+#include<getopt.h>
 #include<stdio.h>
 #include<stdlib.h>
 #include<time.h>
@@ -64,7 +65,6 @@ int dateinsert(char *s, char *t, int pos);
 int main(int argc, char *argv[])
 {
 	char c; int i;
-	int opterr = 0;
 	char *date = NULL; char *format = NULL;
 	char buffer[MAXNUM];
 	char buffer2[MAXNUM];
@@ -192,11 +192,12 @@ int main(int argc, char *argv[])
 					irvtojan(buffer,thetime);
 				printf("%s\n",buffer);
 				usesymm = oldusesymm;
-				if (uflag == 1)
+				if (uflag == 1) {
 					if ((usesymm == IN) || (usesymm == BOTH))
 					thetime = gmtime(&curtime);
-				else
+				} else {
 					thetime = localtime(&curtime);
+				}
 				i = 0;
 			}
 		}
@@ -211,13 +212,12 @@ int main(int argc, char *argv[])
  * date units and handles them one by one */
 int breakup(char *s, struct tm *thetime, int usesymm)
 {
-	int i, j, k;
+	int i, j;
 	char tmp[SIZE];
 	char tmp2[SIZE];
 
 	for (i=0; s[i] != '\0'; ++i) {
 		if (s[i] == '%') {
-			k = i;
 			for (j=0; !isalpha(s[i]); ++j, ++i)
 				tmp[j] = s[i];
 			tmp[j++] = s[i];
@@ -255,7 +255,7 @@ int dateinsert(char *s, char *t, int pos)
 int tokenize(char *s)
 {
 	char *tok = NULL;
-	int i; int j = 0;
+	int i;
 	char *tokchars = " ,.:;\t\n\'\"/!#$%^&*()%";
 	char number[MAXNUM];
 	char num[MAXNUM];
@@ -280,15 +280,13 @@ int tokenize(char *s)
  * tokenize() */
 int convert(char *number, char *theans, char *tok)
 {
-	int i,j;
+	int i;
 	size_t len1, len2;
 	char *spot;
-	int newspot;
 
 	len1 = strlen(tok);
 	len2 = strlen(number);
 	spot = strstr(theans,tok);
-	newspot = theans - spot;
 	if (len1 > len2) {
 		memmove(number+(len1-len2),number,len2+1);
 		for(i=0; i<(len1-len2); ++i)
@@ -325,11 +323,9 @@ int tgmify(char *s, struct tm *thetime)
 	int i,j,k;
 	char tmp[SIZE];
 	char tmp2[SIZE];
-	size_t len;
 	int numpad = 0;
 	char charpad = '0';
 
-	len = strlen(s);
 	for (i=0; s[i] != '\0'; ++i) {
 		if (s[i] == '@') {
 /*			for (j=i; !isalpha(s[j]) && (j-i) <= 4; ++j) {*/
@@ -386,7 +382,6 @@ int tgmify(char *s, struct tm *thetime)
 				break;
 			case 't': /* number of Tims since last hour */
 				sectotim(tmp,thetime);
-				len = strlen(tmp);
 				if (numpad == 0) {
 					numpad = 4;
 					charpad = '0';
@@ -470,7 +465,7 @@ int padding(char *s, int numpad, char charpad)
 int tgminsert(char *full, char *insert, int inspoint)
 {
 	size_t len, lenfull;
-	int i, j;
+	int i;
 
 	len = strlen(insert);
 	lenfull = strlen(full);
@@ -485,7 +480,7 @@ int dectoirv(char *buffer,struct tm *thetime)
 {
 	char *monthstart;
 
-	if (monthstart = strstr(buffer,"January")) {
+	if ((monthstart = strstr(buffer,"January"))) {
 		memmove(monthstart+1,monthstart,strlen(monthstart)+1);
 		*monthstart = 'I';
 		*(monthstart+1) = 'r';
@@ -495,7 +490,7 @@ int dectoirv(char *buffer,struct tm *thetime)
 		*(monthstart+5) = 'b';
 		*(monthstart+6) = 'e';
 		*(monthstart+7) = 'r';
-	} else if (monthstart = strstr(buffer,"Jan")) {
+	} else if ((monthstart = strstr(buffer,"Jan"))) {
 		*monthstart = 'I';
 		*(monthstart+1) = 'r';
 		*(monthstart+2) = 'v';
@@ -509,7 +504,7 @@ int irvtojan(char *buffer,struct tm *thetime)
 {
 	char *monthstart;
 
-	if (monthstart = strstr(buffer,"Irvember")) {
+	if ((monthstart = strstr(buffer,"Irvember"))) {
 		memmove(monthstart,monthstart+1,strlen(monthstart)+1);
 		*monthstart = 'J';
 		*(monthstart+1) = 'a';
@@ -518,7 +513,7 @@ int irvtojan(char *buffer,struct tm *thetime)
 		*(monthstart+4) = 'a';
 		*(monthstart+5) = 'r';
 		*(monthstart+6) = 'y';
-	} else if (monthstart = strstr(buffer,"Irv")) {
+	} else if ((monthstart = strstr(buffer,"Irv"))) {
 		*monthstart = 'J';
 		*(monthstart+1) = 'a';
 		*(monthstart+2) = 'n';

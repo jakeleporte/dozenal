@@ -31,6 +31,10 @@
  * <http://www.gnu.org/licenses/>.
  */
 
+/* to get getline() defined */
+#define _POSIX_C_SOURCE >= 200809L || _XOPEN_SOURCE >= 700
+#define _GNU_SOURCE
+
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
@@ -60,7 +64,7 @@ int proc_options(char *s, int *moonphases, char **nat, char **relig,
 					char **todo_form, int *iftodo, int *ifevent,
 					int *weekout, int *fdow, char **astro)
 {
-	FILE *fp; int holder; int implen;
+	FILE *fp; int holder;
 	char *line = NULL; size_t len = 0; ssize_t read;
 	int ind;
 
@@ -289,10 +293,9 @@ int proc_options(char *s, int *moonphases, char **nat, char **relig,
 int proc_color(char *s, char *t, int ind)
 {
 	int result; int errornum;
-	int r, g, b;
 	char holder[SHORTLEN];
 	char err[MAX_ERR_LENGTH+1];
-	regmatch_t pmatch[4]; size_t nmatch = 4;
+	regmatch_t pmatch[4];
 	regex_t regone;
 	char *colpat = 
 		"\\([0-9XE][0-9XE]*\\),\\([0-9XE][0-9XE]*\\),\\([0-9XE][0-9XE]*\\)";
@@ -351,7 +354,6 @@ int proc_color(char *s, char *t, int ind)
 int find_color_ind(char *s)
 {
 	int i;
-	int stop;
 	char buffer[SHORTLEN+SHORTLEN];
 
 	for (i = 0; s[i] != ':'; ++i)

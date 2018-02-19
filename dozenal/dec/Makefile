@@ -15,22 +15,23 @@ binmode = 755
 dirmode = 755
 IDIR =../include
 CC = gcc
+GCCFLAGS = -Wall -std=c99 -pedantic
 binobjects = dec
 objects = main.o dec.o
 
 all: bin
 
 dec: main.o ../conv/conv.o dec.o
-	$(CC) -lm -o dec main.o ../conv/conv.o dec.o
+	$(CC) $(GCCFLAGS) -lm -o dec main.o ../conv/conv.o dec.o
 
 main.o: main.c ../conv/conv.o dec.o
-	$(CC) -I$(IDIR) -c main.c
+	$(CC) $(GCCFLAGS) -I$(IDIR) -c main.c
 
 ../conv/conv.o:
 	$(MAKE) -C ../conv
 
 dec.o: ../conv/conv.o dec.c
-	$(CC) -I$(IDIR) -c dec.c
+	$(CC) $(GCCFLAGS) -I$(IDIR) -c dec.c
 
 bin: $(binobjects)
 

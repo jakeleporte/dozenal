@@ -37,7 +37,6 @@
 #define INCREMENT 100			/* maximum depth of val stack */
 
 static int sp = 0;				/* next free stack position */
-static double val[INCREMENT]; /*	value stack */
 static double *stack;			/* value stack */
 static int multiple = 1;		/* for memory reallocation */
 
@@ -70,6 +69,7 @@ double pop(void)
 		return stack[--sp];
 	else
 		fprintf(stderr,"dozdc:  no values left on stack\n");
+	return 0;
 }
 
 int clear_stack(void)
@@ -82,7 +82,6 @@ int print_stack(void)
 {
 	int tmp;
 	char word[MAXLINE];
-	char decword[MAXLINE];
 
 	tmp = 0;
 	if (sp == 0) {
@@ -125,8 +124,6 @@ int swap_top(void)
 
 int clean(void)
 {
-	int i;
-
 	free(stack);
 	stack = NULL;
 	return 0;

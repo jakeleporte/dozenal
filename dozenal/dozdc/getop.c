@@ -37,6 +37,9 @@
 
 /* the variable necessary for doing the operations */
 #define NUMOPS 15
+#ifndef M_PI
+	#define M_PI 3.14159265358979323846
+#endif
 
 char *ops[] = {
 	"+",
@@ -129,7 +132,6 @@ int gettype(char *s)
 				if (!isdozdig(s[i+1]))
 					type = OP;
 			}
-		s[0] == '\0';
 		return type;
 	}
 	return EOF;
@@ -162,9 +164,7 @@ int graphops(char *s, char *word, int *i)
 
 int gcf(double num, double othnum)
 {
-	double quotient;
 	int remainder = -1;
-	int gcf;
 	double large;
 	double small;
 
@@ -199,7 +199,7 @@ double operate(int operator, int *places, char *print)
 	double othtmp;
 	char s[MAXLINE];
 	static char angletype = 2;
-	long i, longtmp;
+	long i;
 
 	switch (operator) {
 	case ADD:
@@ -473,4 +473,5 @@ double operate(int operator, int *places, char *print)
 		print_stack();
 		break;
 	}
+	return 0;
 }

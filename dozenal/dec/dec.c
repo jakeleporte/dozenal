@@ -148,7 +148,7 @@ int errorclear(char *s)
 
 double doztodec(char *s)
 {
-	int i, j;
+	int i;
 	long endpoint;
 	double decnum = 0.0;
 	char sign = 0;

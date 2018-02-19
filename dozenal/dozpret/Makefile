@@ -12,16 +12,17 @@ binmode = 755
 dirmode = 755
 IDIR = ../include
 CC = gcc
+GCCFLAGS = -Wall -std=c99 -pedantic
 objects = dozpret.o conv.h.gch
 binobjects = dozpret
 
 all: bin
 
 dozpret: dozpret.o ../conv/conv.o
-	$(CC) -I$(IDIR) -o dozpret dozpret.o conv.o
+	$(CC) $(GCCFLAGS) -I$(IDIR) -o dozpret dozpret.o conv.o
 
 dozpret.o: dozpret.c ../conv/conv.o
-	$(CC) -I$(IDIR) -c dozpret.c $(IDIR)/conv.h ../conv/conv.c
+	$(CC) $(GCCFLAGS) -I$(IDIR) -c dozpret.c $(IDIR)/conv.h ../conv/conv.c
 
 ../conv/conv.o: ../conv/conv.c $(IDIR)/conv.h
 	$(MAKE) -C ../conv

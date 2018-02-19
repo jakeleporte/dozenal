@@ -66,7 +66,7 @@ int chomp(char *s)
 
 char *front_chomp(char *s)
 {
-	int i; int j = 0;
+	int i;
 	char *t;
 
 	t = s;
@@ -79,7 +79,7 @@ char *front_chomp(char *s)
 /* checks if variable is in array; if not, return 0, else 1 */
 int not_in(int date, int exceptions[], int len)
 {
-	int i; int j;
+	int i;
 
 	for (i = 0; i <= len; ++i) {
 		if (date == exceptions[i])
@@ -128,6 +128,7 @@ int add_to_event(char *title, int datenum, char *cat)
 	event_list[recordnums-1].relatedto = -1;
 	event_list[recordnums-1].transp = 1;
 	recordnums++;
+	return 0;
 }
 
 int get_weekday(int datenum)

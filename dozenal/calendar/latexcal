@@ -29,6 +29,7 @@ sub preamble($)
 		\\documentclass{minimal}
 		\\usepackage[typeone]{dozenal}
 		\\usepackage{lettrine}
+		\\usepackage{xellipsis}
 		\\usepackage{xfrac}
 		\\usepackage[absolute,overlay]{textpos}
 		\\usepackage[T1]{fontenc}
@@ -85,7 +86,7 @@ sub preamble($)
 		\\def\\shorts{\\hskip0.1em}
 END
 	if (!$opt_w) {
-		$preamble .= "\\includepackage{transparent}";
+		$preamble .= "\\usepackage{transparent}";
 	}
 	$preamble .= <<END;
 		\\begin{document}
@@ -768,29 +769,29 @@ sub run_month($$)
 		facingpage("andrews_f_emerson.png",
 		"I can promise the ones who wish to stretch their
 		minds a bit further that they will not go
-		unrewarded.\\ldots Modern mathematicians generally
+		unrewarded.\\xelip Modern mathematicians generally
 		admit that `the duodecimal system' would be better
-		than our present decimal system.\\ldots [Dozenal]
+		than our present decimal system.\\xelip [Dozenal]
 		promises to be mathematics' next great step forward
 		--- the adoption of an efficient number system.", "F.\
 		Emerson Andrews","\\textheight") if $mymon == -1;
 		facingpage("beard_ralph.jpg",
 		"Literally, the decimal base is
 		unsatis\\textsc{factor}y because
-		it has \\textsc{not enough factors}.\\ldots [N]o
+		it has \\textsc{not enough factors}.\\xelip [N]o
 		change should be forced, and we urge no mandated
-		change.\\ldots But people of understanding should
+		change.\\xelip But people of understanding should
 		learn to use duodecimals to facilitate their thinking,
-		their computations and their measurings.\\ldots In any
+		their computations and their measurings.\\xelip In any
 		operation, the most advantageous base should be
-		used\\ldots If this were done, duodecimals would
+		used\\xelip If this were done, duodecimals would
 		progressively earn their way into general
 		popularity.","Ralph Beard","\\textheight") if $mymon == 0;
 		facingpage("logo_shapes_dozenal.mps",
 		"The offspring of the dozen serve us well.  Five of
 		the six possible figures are convex polygons and four
 		of these are essential to engineering and
-		mathematics.\\ldots Need we search any further for a
+		mathematics.\\xelip Need we search any further for a
 		rational, serviceable number-base?  Can there possibly
 		be a better?","Troy, DSGB","0.6\\textheight") if $mymon == 1;
 		facingpage("dozenal_fractions.png","[T]welve is a highly
@@ -799,23 +800,23 @@ sub run_month($$)
 		arithmetic, and simplifies the natural fractions.",
 		"Michael deVlieger","0.75\\textheight") if $mymon == 2;
 		facingpage("schiffman_jay.jpg","One dozen is the
-		\\emph{initial abundant number}.\\ldots The dozen is
-		\\emph{hypercomposite}.\\ldots The dozen represents
+		\\emph{initial abundant number}.\\xelip The dozen is
+		\\emph{hypercomposite}.\\xelip The dozen represents
 		the first number which is \\emph{neither a Converse
 		Lagrange Theorem group} (CLT) \\emph{nor
-		supersolvable}.\\ldots One dozen is the first natural
+		supersolvable}.\\xelip One dozen is the first natural
 		number having a \\emph{perfect number of divisors}
 		(six).","Prof.\ Jay Schiffman","0.8\\textheight") if
 		$mymon == 3;
 		facingpage("times_table.mps","Because twelve
 		has six divisors, with the smallest four consecutive,
 		it presents a multiplication table featuring brief
-		patterns in the product lines of many numbers.\\ldots
+		patterns in the product lines of many numbers.\\xelip
 		[U]sers of duodecimal enjoy two other divisor product
 		lines in the multiplication table.","Michael
 		deVlieger","0.65\\textheight") if $mymon == 4;
 		facingpage("keyb_doz.mps","\\emph{There are twelve
-		equal notes in an octave}.\\ldots [They are]
+		equal notes in an octave}.\\xelip [They are]
 		logarithms to base two.  Expressed in dozenal
 		numeration they form a unique system for handling
 		ratios, with simplicities not found in any other
@@ -825,7 +826,7 @@ sub run_month($$)
 		facingpage("pendlebury_only.jpg","[Five] is not a multiple of
 		two or three, so [it] does not normally crop up in
 		calculations unless deliberately or unwittingly put
-		there by us.\\ldots Every third number in counting is
+		there by us.\\xelip Every third number in counting is
 		a multiple of three, yet this vast category skips
 		every power of ten!  All over the world every day by
 		rounding off to hundreds, thousands, etc[.] people are
@@ -844,12 +845,12 @@ sub run_month($$)
 		from combinations of lower values; in fact, if we
 		needed to go only as far as a dozen[], the 1[] weight
 		would be superfluous.  Including the 1[], therefore,
-		allows further weighing up to and including 2\\ldots
+		allows further weighing up to and including 2\\xelip
 		\\emph{without the need for a 2[] piece}.  If the 2[]
 		is included, the range extends to 4[]
-		\\emph{inclusive}.\\ldots while the binary misses by
-		\\sfrac{1}{2}.\\ldots The decimal set\\ldots involves
-		nine weights rather than seven\\ldots","Troy, DSGB","\\textheight")
+		\\emph{inclusive}.\\xelip while the binary misses by
+		\\sfrac{1}{2}.\\xelip The decimal set\\xelip involves
+		nine weights rather than seven\\xelip","Troy, DSGB","\\textheight")
 		if $mymon == 7;
 		facingpage("prime_circle.mps",'Hence, the set of
 		natural numbers terminating with 1, 5, 7 or \\e\\ must
@@ -858,20 +859,20 @@ sub run_month($$)
 		is the \\emph{minimum} set to contain \\emph{all}
 		primes greater than 3.  Rearranging the terminal
 		digits as 5, 7 and \\e, 1 shows the set to be of the
-		form:  $(6n\\pm1)$\\ldots The fact [is] that
+		form:  $(6n\\pm1)$\\xelip The fact [is] that
 		prime-number positions are \\emph{completely}
 		controlled by 6 (itself the product of 2 and 3, and
 		the companion of our dozenal base).',"Don
 		Hammond",'0.65\\textheight') if $mymon == 8;
 		facingpage("newcansort.mps",'Packing in dozens shows an
-		immediate advantage\\ldots [t]he cost per can (or
+		immediate advantage\\xelip [t]he cost per can (or
 		other object) of cardboard increases by more than
 		\\x\\ per gross (over 7 per cent in decimal terms) by
-		changing from dozens to decimal packing.\\ldots The
+		changing from dozens to decimal packing.\\xelip The
 		really decisive example is the two-layer form (allowed
 		by the factorability of the dozen) in which the
 		\\emph{total} enclosure area is less than the
-		requirement for ten.\\ldots [S]uch cans are so much
+		requirement for ten.\\xelip [S]uch cans are so much
 		more cheaply packed by the dozen than in tens that a
 		twelve-pack with two empty spaces actually costs less
 		than a ten-pack completely filled!',"Troy,
@@ -1213,13 +1214,13 @@ sub buildweek($$$)
 	print "} % end the second thumbnail vbox\n";
 	print "} % end the thumbnail hbox\n";
 	print "\t\\hskip-2\\daywidth\\vbox to1.35\\dayheight{\\vfill%\n";
-	print "\t\t\\hfill\\weektitlsty\\ldots $dozplthree\\ $fmonths[$dayplthree[1]-1]%\n";
+	print "\t\t\\hfill\\weektitlsty\\xelip $dozplthree\\ $fmonths[$dayplthree[1]-1]%\n";
 	print "\t}%\n";
 	print "}% end the top bar hbox for odd pages\n";
 	print "}{% if even, week title\n";
 	print "\\hbox to\\linewidth{%\n";
 	print "\t\\vbox to1.35\\dayheight{\\vfill%\n";
-	print "\t\t\\weektitlsty $dozday\\ $fmonths[$month-1] to\\ldots%\n";
+	print "\t\t\\weektitlsty $dozday\\ $fmonths[$month-1] to\\xelip%\n";
 	print "\t}\\hskip-2\\daywidth%\n";
 	print "\\hbox to\\daywidth{\\hfill% the thumbnail hbox\n";
 	print "\t\\vbox to1.35\\dayheight{%\n";
@@ -1675,8 +1676,8 @@ sub copypage($)
 system of thinking of numbers in twelves, rather than tens.
 Twelve is a much more versatile number, having four even
 divisors---2, 3, 4, and 6---as opposed to only two for ten.
-This means that such hatefulness as ``0.333\\ldots'' for
-\\sfrac{1}{3} and ``0.1666\\ldots'' for \\sfrac{1}{6} are
+This means that such hatefulness as ``0.333\\xelip'' for
+\\sfrac{1}{3} and ``0.1666\\xelip'' for \\sfrac{1}{6} are
 things of the past, replaced by easy ``0;4'' and
 ``0;2.''\\hfil
 \\vskip\\baselineskip
@@ -1684,9 +1685,9 @@ things of the past, replaced by easy ``0;4'' and
 four, five, six, seven, eight, nine, ten, elv, dozen; dozen
 one, dozen two, dozen three, dozen four, dozen five, dozen
 six, dozen seven, dozen eight, dozen nine, dozen ten, dozen
-elv, two dozen, two dozen one\\ldots''  It's written as
+elv, two dozen, two dozen one\\xelip''  It's written as
 such:  1, 2, 3, 4, 5, 6, 7, 8, 9, \\x, \\e, 10, 11, 12, 13,
-14, 15, 16, 17, 18, 19, 1\\x, 1\\e, 20, 21\\ldots\\hfil
+14, 15, 16, 17, 18, 19, 1\\x, 1\\e, 20, 21\\xelip\\hfil
 \\vskip\\baselineskip
 Dozenal counting is at once much more efficient and much
 easier than decimal counting, and takes only a little bit of
