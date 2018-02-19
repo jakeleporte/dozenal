@@ -25,10 +25,11 @@ int count_commas(char *s);
 
 int main(int argc, char **argv)
 {
-	int ex = 7584;
+	int ex = -1;
 	int mod;
 	int i, j;
 	char answer[MAXLEN] = "";
+	char doznum[MAXLEN] = "";
 	char c;
 	int numranks;
 	char *token;
@@ -67,6 +68,11 @@ int main(int argc, char **argv)
 			break;
 		case 'R':
 			ex = (int)doztodec(optarg);
+			if (ex < 1) {
+				fprintf(stderr,"doman:  These numeral systems do "
+					"not work with negatives; making it positive");
+				ex *= -1;
+			}
 			break;
 		case 'r':
 			numranks = count_commas(optarg) + 2;
@@ -111,12 +117,25 @@ int main(int argc, char **argv)
 	}
 	check_args();
 	/* here's the action */
-	for (i = 0; ranks[i] != 0; ++i) {
-		mod = change_vals(&ex,ranks[i]);
-		for (j = 0; j < mod; ++j)
-			strcat(answer,lets[i]);
+	if (ex > 0) {
+		for (i = 0; ranks[i] != 0; ++i) {
+			mod = change_vals(&ex,ranks[i]);
+			for (j = 0; j < mod; ++j)
+				strcat(answer,lets[i]);
+		}
+		printf("%s\n",answer);
+	} else {
+		while (getword(doznum,MAXLINE) != EOF) {
+			ex = (int)doztodec(doznum);
+			for (i = 0; ranks[i] != 0; ++i) {
+				mod = change_vals(&ex,ranks[i]);
+				for (j = 0; j < mod; ++j)
+					strcat(answer,lets[i]);
+			}
+			printf("%s\n",answer);
+			answer[0] = '\0';
+		}
 	}
-	printf("%s\n",answer);
 	free(ranks);
 	for (i = 0; strcmp(lets[i],"\0"); ++i)
 		free(lets[i]);
