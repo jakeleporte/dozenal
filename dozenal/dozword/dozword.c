@@ -39,17 +39,20 @@
 #include "conv.h"
 
 int printwords(char *number,char scheme);
+int validate_num(char *number);
 
 #define NUMLEN 36 
 #define SUCCESS 0
 #define BAD_OPTION 1
 #define OPT_REQ_ARG 2
+#define BAD_CHAR 3
 
 int main(int argc, char *argv[])
 {
 	char c; char scheme = 's';
 	char number[NUMLEN];
 
+	number[0] = '\0';
 	opterr = 0;
 	while ((c = getopt(argc,argv,"Vpsn:")) != -1) {
 		switch (c) {
@@ -124,6 +127,8 @@ int printnumword(char *number)
 		printf("ten ");
 	else if (*number == 'E')
 		printf("elv ");
+	else if (*number == ';')
+		printf("dit ");
 	return 0;
 }
 
@@ -187,16 +192,40 @@ int printwords(char *number,char scheme)
 {
 	int i; int len;
 
+	validate_num(number);
 	for (i = 0; number[i] != '\0' && (isdigit(number[i]) ||
 	(number[i] == 'X') || (number[i] == 'E')); ++i);
-	number[i] = '\0';
-	len = strlen(number);
-	for (i = 0; i <= len; ++i) {
+	len = i;
+	for (i = 0; number[i] != '\0'; ++i) {
 		printnumword(number+i);
-		if ((i == 0) && (scheme == 'p'))
-			printpend(len);
-		else if ((i == 0) && (scheme == 's'))
-			printsdn(len);
+		if (len > 0) {
+			if ((i == 0) && (scheme == 'p'))
+				printpend(len);
+			else if ((i == 0) && (scheme == 's'))
+				printsdn(len);
+		}
+	}
+	return 0;
+}
+
+int validate_num(char *number)
+{
+	int i;
+
+	for (i = 0; number[i] != '\0'; ++i) {
+		if (isdigit(number[i]) || (number[i] == 'X') ||
+			(number[i] == 'E') || (number[i] == 'T') ||
+			(number[i] == 'B') || (number[i] == ';') ||
+			(number[i] == 'A')) {
+			if ((number[i] == 'T') || (number[i] == 'A'))
+				number[i] = 'X';
+			if ((number[i] == 'B'))
+				number[i] = 'E';
+		} else {
+			fprintf(stderr,"dozword:  character \"%c\" is "
+					"not a valid dozenal character\n",number[i]);
+			exit(BAD_CHAR);
+		}
 	}
 	return 0;
 }

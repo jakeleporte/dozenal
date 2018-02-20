@@ -10,19 +10,20 @@ dozword \- convert dozenal integers into words
 .B ]
 .SH DESCRIPTION
 .B dozword
-converts a dozenal integer, such as "X44", into words, such
+converts a dozenal number, such as "X44", into words, such
 as "Ten biqua four four", according to either System Dozenal
 Nomenclature (SDN) or the Pendlebury system.  Fractional
-parts are ignored, because they are totally uninteresting
-(they can be pronounced simply, for example, "dit four seven
-nine elv").
+parts may be included, using ";" as a dozenal point.
 .PP
 If the number of digits in the number exceeds EE EEEE,
 \fBdozword\fR will silently truncate that number, and thus
 incorrectly print its output.  Thus, the answer will be
-incorrect.  Otherwise, however, very large
-integers won't ruin the program, and beneath this limit, any
-integer will be correctly output.
+incorrect.  Otherwise, however, very large integers won't
+ruin the program, and beneath this limit, any integer will
+be correctly output.
+.PP
+If a character other than 0-9, X, T, E, B, or A is given to
+\fBdozword\fR, it will complain about it and die.
 .SH OPTIONS
 .TP
 .BR \-s
