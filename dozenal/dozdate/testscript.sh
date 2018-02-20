@@ -4,7 +4,7 @@
 sed -i -e 's/EST/EDT/g' results;
 diff results answers.txt;
 if [ $? == 0 ]; then
-	printf "Works!";
+	printf "Works!\n";
 else
-	printf "Doesn't work!";
+	printf "Doesn't work!\n";
 fi

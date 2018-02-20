@@ -316,10 +316,12 @@ int parse_sexa_time(char *s, struct tm *thetime)
 		j=0;
 		while (*hourpoint != ':' && *hourpoint != '\0' && j < 2)
 			if (isdigit(*hourpoint) || *hourpoint == 'X' ||
-			*hourpoint == 'E')
+			*hourpoint == 'E') {
 				hour[j++] = *(hourpoint++);
-			else
-				++hourpoint; ++j;
+			} else {
+				++hourpoint;
+			}
+		++j;
 		hour[j] = '\0';
 		if (hour[0] != '\0')
 			thetime->tm_hour = (int)doztodec(hour);
@@ -328,10 +330,12 @@ int parse_sexa_time(char *s, struct tm *thetime)
 		j=0;
 		while (*minpoint != ':' && *minpoint != '\0' && j < 2)
 			if ((isdigit(*minpoint) || *minpoint == 'X' ||
-			*minpoint == 'E') && (j <= 1))
+			*minpoint == 'E') && (j <= 1)) {
 				min[j++] = *(minpoint++);
-			else
-				++minpoint; ++j;
+			} else {
+				++minpoint;
+			}
+		++j;
 		min[j] = '\0';
 		if (min[0] != '\0')
 			thetime->tm_min = (int)doztodec(min);
@@ -340,10 +344,12 @@ int parse_sexa_time(char *s, struct tm *thetime)
 		j=0;
 		while ((*secpoint != ':' && *secpoint != '\0' && j < 2))
 			if ((isdigit(*secpoint) || *secpoint == 'X' ||
-			*secpoint == 'E') && (j <= 1))
+			*secpoint == 'E') && (j <= 1)) {
 				sec[j++] = *(secpoint++);
-			else
-				++secpoint; ++j;
+			} else {
+				++secpoint;
+			}
+		++j;
 		sec[j] = '\0';
 		if (sec[0] != '\0')
 			thetime->tm_sec = (int)doztodec(sec);
