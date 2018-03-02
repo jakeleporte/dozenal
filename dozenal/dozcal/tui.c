@@ -80,7 +80,7 @@ int clear_warn();
 int build_tui(char *ev_form,char *date_form,char *time_form, 
 char *todo_form)
 {
-	int mon = 9; int year = 2016;
+	int mon = 1; int year = 2018;
 	WINDOW *calendar,*eventswin,*todowin,*evtitle,*todotitle,
 		*evconts,*todoconts,*win;
 	const int cheight = 10; const int cwidth = 24;

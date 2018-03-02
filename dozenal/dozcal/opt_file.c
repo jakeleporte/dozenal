@@ -99,7 +99,7 @@ int proc_options(char *s, int *moonphases, char **nat, char **relig,
 		if (strstr(line,"MOON")) {
 			if (strstr(line,"major"))
 				*moonphases = 2;
-			if (strstr(line,"all"))
+			else if (strstr(line,"all"))
 				*moonphases = 1;
 		} else if (strstr(line,"RELIG")) {
 			holder = get_impstr(line);

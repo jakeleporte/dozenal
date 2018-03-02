@@ -10,7 +10,7 @@
  * dozcal:  keeps a calendar with a specific internal format
  * in dozenal
  *
- * (C) Copyright 20SHORTLEN+1  Donald P. Goodman III
+ * (C) Copyright 2016  Donald P. Goodman III
  *
  * This file is part of dozcal.
  *
