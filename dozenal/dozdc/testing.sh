@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/local/bin/bash
 # +AMDG
 
 echo "One quarter:			`./dozdc \"1 4 / =\"`";

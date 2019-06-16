@@ -11,14 +11,14 @@ bindir ?= $(prefix)/bin
 binmode = 755
 dirmode = 755
 IDIR =../include
-XFORMS_FLAGS =-DXFORMS
+XFORMS_FLAGS =-UXFORMS
 CC = gcc
 GCCFLAGS = -Wall -std=c99 -pedantic
 objects = main.o getop.o vars.o stack.o shunt.o xdozbc.o dozbc.o
 binobjects = dozdc gdozdc
 ifeq ($(XFORMS_FLAGS),-DXFORMS)
 	XFORM_OBJS = shunt.o dozbc.o xdozbc.o
-	XFORM_LIBS = -lforms
+	XFORM_LIBS = -lforms -lX11
 else
 	XFORM_OBJS = 
 	XFORM_LIBS = 
@@ -38,10 +38,11 @@ main.o : main.c ../dec/dec.o $(IDIR)/dozdc.h stack.o vars.o
 
 xdozbc.o : dozbc.o dozbc.h xdozbc.c shunt.c
 	$(CC) $(GCCFLAGS) $(XFORMS_FLAGS) -I$(IDIR) -g -c xdozbc.c \
-		-lforms -lm
+		$(XFORM_LIBS) -lm
 
 dozbc.o : dozbc.c dozbc.h
-	$(CC) $(GCCFLAGS) $(XFORMS_FLAGS) -I$(DIR) -g -c dozbc.c -lm
+	$(CC) $(GCCFLAGS) $(XFORMS_FLAGS) -I$(DIR) -g -c dozbc.c -lm \
+		$(XFORM_LIBS)
 
 shunt.o : shunt.c
 	$(CC) $(GCCFLAGS) $(XFORMS_FLAGS) -I$(DIR) -g -c shunt.c
