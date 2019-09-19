@@ -18,6 +18,7 @@ LUALIB = -llua5.2
 CURSLIB = -lncurses
 CC = gcc
 GCCFLAGS = -Wall -std=c99 -pedantic
+GNUFLAG = -DTARGGNU
 LOCALLIBS = errcodes.h event_struct.h julday.h libholidays.h \
 	main_func.h moon.h proc_date.h tui.h utility.h
 objects = main.o utility.o proc_date.o process_file.o moon.o opt_file.o \
@@ -70,13 +71,13 @@ julday.o: julday.c utility.c $(LOCALLIBS)
 	$(CC) $(GCCFLAGS) -I$(IDIR) -g -lm -c julday.c utility.c
 
 process_file.o: process_file.c utility.c ../conv/conv.o ../doz/doz.o ../dec/dec.o $(LOCALLIBS)
-	$(CC) $(GCCFLAGS) -I$(IDIR) -g -lm -c process_file.c utility.c ../dec/dec.c ../conv/conv.c
+	$(CC) $(GCCFLAGS) $(GNUFLAG) -I$(IDIR) -g -lm -c process_file.c utility.c ../dec/dec.c ../conv/conv.c
 
 proc_date.o:  proc_date.c utility.c ../conv/conv.o ../doz/doz.o ../dec/dec.o $(LOCALLIBS)
 	$(CC) $(GCCFLAGS) -I$(IDIR) -g -lm -c proc_date.c utility.c ../dec/dec.c ../conv/conv.c ../doz/doz.c
 
 opt_file.o: opt_file.c utility.c ../conv/conv.o ../dec/dec.o $(LOCALLIBS)
-	$(CC) $(GCCFLAGS) -I$(IDIR) -g -lm -c opt_file.c utility.c ../dec/dec.c ../conv/conv.c
+	$(CC) $(GCCFLAGS) $(GNUFLAG) -I$(IDIR) -g -lm -c opt_file.c utility.c ../dec/dec.c ../conv/conv.c
 
 utility.o: utility.c $(LOCALLIBS)
 	$(CC) $(GCCFLAGS) -I$(IDIR) -g -lm -c utility.c

@@ -32,8 +32,10 @@
  */
 
 /* to get getline() defined */
-#define _POSIX_C_SOURCE >= 200809L || _XOPEN_SOURCE >= 700
-#define _GNU_SOURCE
+#ifdef TARGGNU
+	#define _POSIX_C_SOURCE >= 200809L || _XOPEN_SOURCE >= 700
+	#define _GNU_SOURCE
+#endif
 
 #include<stdio.h>
 #include<stdlib.h>

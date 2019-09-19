@@ -11,7 +11,7 @@ bindir ?= $(prefix)/bin
 binmode = 755
 dirmode = 755
 IDIR =../include
-XFORMS_FLAGS =-UXFORMS
+XFORMS_FLAGS =-DXFORMS
 CC = gcc
 GCCFLAGS = -Wall -std=c99 -pedantic
 objects = main.o getop.o vars.o stack.o shunt.o xdozbc.o dozbc.o
