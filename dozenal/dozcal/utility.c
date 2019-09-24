@@ -246,7 +246,7 @@ int add_event(int starttime, int endtime, int thisdate,
 
 int add_todo(int duedate,int starttime,int priority,
 	int compflag, int pergross, char *title, char *class,
-	char *categories, char *location)
+	char *categories, char *location, char *url)
 {
 	todo_list = realloc(todo_list,(todonums *
 		sizeof(struct todo)));
@@ -264,6 +264,7 @@ int add_todo(int duedate,int starttime,int priority,
 	strncpy(todo_list[todonums-1].todoclass,class,SHORTLEN);
 	strncpy(todo_list[todonums-1].categories,categories,MAXLEN);
 	strncpy(todo_list[todonums-1].location,location,MAXLEN);
+	strncpy(todo_list[todonums-1].url,url,MAXLEN);
 	todonums++;
 	return 0;
 }

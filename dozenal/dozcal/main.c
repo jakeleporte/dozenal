@@ -497,6 +497,10 @@ int fill_todo(char *s, int index, char *date_format, char
 				if (len == 0)
 					len = strlen(todo_list[index].todoclass);
 				sprintf(tmpbuf,"%*.*s",len,len,todo_list[index].todoclass);
+			} else if (s[i] == 'u') {
+				if (len == 0)
+					len = strlen(todo_list[index].url);
+				sprintf(tmpbuf,"%*.*s",len,len,todo_list[index].url);
 			} else {
 				fprintf(stderr,"dozcal:  unrecognized conversion "
 					"character \"%%%c\" in todo form string, "

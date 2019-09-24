@@ -58,6 +58,7 @@ struct todo {
 	char location[MAXLEN+1];
 	int completed;			/* '0' if not completed, 1 if completed */
 	int pergross;			/* 0-144 completed amount */
+	char url[MAXLEN+1];		/* URL associated with event */
 };
 
 struct globopts {

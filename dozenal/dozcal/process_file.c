@@ -228,7 +228,7 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 							} if (strstr(buffer[0],"TODO")) {
 								add_todo(holder, starttime, priority, 
 									compflag, pergross, title, class, 
-									categories, location);
+									categories, location, url);
 							}
 							date->tm_year += interval; mktime(date);
 							holder = get_datenum(date);
@@ -253,7 +253,7 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 							} if (strstr(buffer[0],"TODO")) {
 								add_todo(holder, starttime, priority, 
 									compflag, pergross, title, class, 
-									categories, location);
+									categories, location, url);
 							}
 							date->tm_mon += interval; mktime(date);
 							holder = get_datenum(date);
@@ -282,7 +282,7 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 								} if (strstr(buffer[0],"TODO")) {
 									add_todo(holder, starttime, priority, 
 										compflag, pergross, title, class, 
-										categories, location);
+										categories, location, url);
 								}
 							}
 							date->tm_mday += (interval * 7); mktime(date);
@@ -304,7 +304,7 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 							} if (strstr(buffer[0],"TODO")) {
 								add_todo(holder, starttime, priority, 
 									compflag, pergross, title, class, 
-									categories, location);
+									categories, location, url);
 							}
 							date->tm_mday += (interval * 7); mktime(date);
 							holder += (interval * 7);
@@ -320,7 +320,7 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 							categories, location, transp, attendees, url);
 					} if (strstr(buffer[0],"TODO")) {
 						add_todo(holder, starttime, priority, compflag, pergross,
-							title, class, categories, location);
+							title, class, categories, location, url);
 					}
 					date->tm_mon += interval; mktime(date);
 					holder = get_datenum(date);
@@ -334,7 +334,7 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 							categories, location,transp,attendees,url);
 					} if (strstr(buffer[0],"TODO")) {
 						add_todo(holder, starttime, priority, compflag, pergross,
-							title, class, categories, location);
+							title, class, categories, location, url);
 					}
 					date->tm_year += interval; mktime(date);
 					holder = get_datenum(date);
@@ -355,7 +355,7 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 					categories, location, transp, attendees, url);
 			} if (strstr(buffer[0],"TODO")) {
 				add_todo(holder, starttime, priority, compflag, pergross,
-					title, class, categories, location);
+					title, class, categories, location, url);
 			}
 		}
 		if (currinterval == holder)
