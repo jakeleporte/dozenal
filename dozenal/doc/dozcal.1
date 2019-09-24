@@ -336,6 +336,13 @@ The event's class.
 .TP
 .BR %l
 The event's location.
+.TP
+.BR %T
+The event's transparency setting.  0 is opaque, 1 is
+transparent.
+.TP
+.BR %a
+The list of the event's attendees.
 .PP
 Event formats can also include newlines, specified in the
 usual way as \fI\\n\fR, and tabs, specified in the usual way
@@ -377,7 +384,7 @@ The location of the todo.
 .BR %C
 The todo's list of categories.
 .TP
-.BR %t
+.BR %T
 The todo's class.
 .PP
 Event formats can also include newlines, specified in the
@@ -555,6 +562,15 @@ Typically just describes the type of the event; for example,
 "personal".  If you put this in your formatting string,
 multiple categories will be printed together, separated by a
 a comma.
+.TP
+.BR TRANSPARENT:
+This specifies whether the event should be visible when
+determing busy times or not.
+.TP
+.BR ATTENDEES:
+Simply lists attendees at an event, if any exist.  At some
+point, the ability to send emails to those listed here will
+be added.  A comma-separated list, like categories.
 .RE
 .PP
 An example record:
