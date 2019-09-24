@@ -121,8 +121,11 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 	struct tm *othdate;
 	int mon; int wday; int nday;
 	int numfreq = 0;
+	int transp = 1;
+	char attendees[MAXLEN+1];
 
 	categories[0] = '\0';
+	attendees[0] = '\0';
 	class[0] = '\0';
 	title[0] = '\0';
 	location[0] = '\0';
@@ -176,6 +179,12 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 		} if (strstr(buffer[i],"FREQ")) {
 			holder = get_impstr(buffer[i]);
 			strncpy(freq[numfreq++],buffer[i]+holder,MAXLEN);
+		} if (strstr(buffer[i],"TRANSPARENT")) {
+			holder = get_impstr(buffer[i]);
+			transp = atoi(buffer[i]+holder);
+		} if (strstr(buffer[i],"ATTENDEES")) {
+			holder = get_impstr(buffer[i]);
+			strncpy(attendees,buffer[i]+holder,MAXLEN);
 		}
 	}
 	if (enddate == -1)
@@ -210,7 +219,7 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 						while (holder < endday) {
 							if (strstr(buffer[0],"EVENT")) {
 								add_event(starttime, endtime, holder, title, class, 
-									categories, location);
+									categories, location, transp, attendees);
 							} if (strstr(buffer[0],"TODO")) {
 								add_todo(holder, starttime, priority, 
 									compflag, pergross, title, class, 
@@ -235,7 +244,7 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 						while (holder < endday) {
 							if (strstr(buffer[0],"EVENT")) {
 								add_event(starttime, endtime, holder, title, class, 
-									categories, location);
+									categories, location, transp, attendees);
 							} if (strstr(buffer[0],"TODO")) {
 								add_todo(holder, starttime, priority, 
 									compflag, pergross, title, class, 
@@ -262,8 +271,9 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 						while (holder < endday) {
 							if (date->tm_mon == (mon - 1)) {
 								if (strstr(buffer[0],"EVENT")) {
-									add_event(starttime, endtime, holder, title, class, 
-										categories, location);
+									add_event(starttime, endtime, holder, title,
+											class, categories, location,
+											transp, attendees);
 								} if (strstr(buffer[0],"TODO")) {
 									add_todo(holder, starttime, priority, 
 										compflag, pergross, title, class, 
@@ -285,7 +295,7 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 						while (holder < endday) {
 							if (strstr(buffer[0],"EVENT")) {
 								add_event(starttime, endtime, holder, title, class, 
-									categories, location);
+									categories, location, transp, attendees);
 							} if (strstr(buffer[0],"TODO")) {
 								add_todo(holder, starttime, priority, 
 									compflag, pergross, title, class, 
@@ -302,7 +312,7 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 				while (holder < endday) {
 					if (strstr(buffer[0],"EVENT")) {
 						add_event(starttime, endtime, holder, title, class, 
-							categories, location);
+							categories, location, transp, attendees);
 					} if (strstr(buffer[0],"TODO")) {
 						add_todo(holder, starttime, priority, compflag, pergross,
 							title, class, categories, location);
@@ -316,7 +326,7 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 				while (holder < endday) {
 					if (strstr(buffer[0],"EVENT")) {
 						add_event(starttime, endtime, holder, title, class, 
-							categories, location);
+							categories, location,transp,attendees);
 					} if (strstr(buffer[0],"TODO")) {
 						add_todo(holder, starttime, priority, compflag, pergross,
 							title, class, categories, location);
@@ -337,7 +347,7 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 		(currinterval == holder)) {
 			if (strstr(buffer[0],"EVENT")) {
 				add_event(starttime, endtime, holder, title, class, 
-					categories, location);
+					categories, location, transp, attendees);
 			} if (strstr(buffer[0],"TODO")) {
 				add_todo(holder, starttime, priority, compflag, pergross,
 					title, class, categories, location);
