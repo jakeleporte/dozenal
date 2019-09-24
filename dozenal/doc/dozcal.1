@@ -512,7 +512,7 @@ if you gave no \fIEND_DATE\fR).  An example would be
 "the last Thursday".
 .PP
 If it finds a weekday but no ordinal or month name, it
-interprets this as that ordinal day every month between
+interprets this as that weekday every month between
 \fISTART_DATE\fR and \fIEND_DATE\fR, or for the start date's
 month if there is not \fIEND_DATE\fR.  An example might be
 "Wednesdays".
@@ -525,7 +525,10 @@ from \fISTART_DATE\fR to \fIEND_DATE\fR (or to the end of
 the following year if there is no \fIEND_DATE\fR).  If it
 finds "yearly", it will do the same every year.
 .PP
-\fIFREQ\fR does respect \fIINTERVAL\fR; so if your interval
+If you want something repeated daily, or at some interval of
+days, don't bother with \fIFREQ\fR at all; just use
+\fIINTERVAL\fR, which assumes that it's working with days.
+However, does respect \fIINTERVAL\fR; so if your interval
 is "3", and your \fIFREQ\fR is "monthly", \fBdozcal\fR will
 place the event on the appropriate date every third month.
 .PP
