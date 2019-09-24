@@ -48,14 +48,15 @@ int file_prefix(char **s, char *t);
 int call_lua(char *s)
 {
 	const char *key; const char *val;
-	char title[256];		/* title of the event */
+	char title[MAXLEN+1];		/* title of the event */
 	int thisdate = 0;		/* the date */
 	int starttime = 0;	/* starting time, in Tims from midnight */
 	int endtime = 0;		/* ending time, in Tims from midnight */
-	char location[256];	/* the location of the event */
-	char evclass[16];		/* e.g., "private" */
-	char categories[256];/* categories event fits into; e.g., "business" */
-	char attendees[256];/* attendees of the event */
+	char location[MAXLEN+1];	/* the location of the event */
+	char evclass[SHORTLEN+1];		/* e.g., "private" */
+	char categories[MAXLEN+1];/* categories event fits into; e.g., "business" */
+	char attendees[MAXLEN+1];/* attendees of the event */
+	char url[MAXLEN+1];/* attendees of the event */
 	int cnt = 0;
 	int numreturns = 1;
 	int i;
@@ -84,7 +85,7 @@ int call_lua(char *s)
 	lua_pushnil(L);
 	for (i = 0; i < numreturns; ++i) {
 		title[0] = '\0'; location[0] = '\0'; evclass[0] = '\0';
-		categories[0] = '\0'; attendees[0] = '\0';
+		categories[0] = '\0'; attendees[0] = '\0'; url[0] = '\0';
 		while (lua_next(L,-(1+numreturns - i))) {
 			val = lua_tostring(L,-1);
 			lua_pop(L,1);
@@ -120,7 +121,7 @@ int call_lua(char *s)
 			}
 			if (cnt == 9) {
 				add_event(starttime, endtime, thisdate, title, evclass, 
-					categories, location, transp, attendees);
+					categories, location, transp, attendees, url);
 				cnt = 0;
 			}
 		}

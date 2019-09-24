@@ -100,9 +100,9 @@ int suntimes(double jdn)
 	dec_to_mins(risetime,bufr);
 	if (sunset == 0) {
 		add_event(proc_time(bufr), 0, jdn_to_datenum(jdn), "Sunrise",
-			"solar", "astronomical,solar", "", 1, "");
+			"solar", "astronomical,solar", "", 0, "", "");
 		add_event(proc_time(bufs), 0, jdn_to_datenum(jdn), "Sunset",
-			"solar", "astronomical,solar", "", 1, "");
+			"solar", "astronomical,solar", "", 0, "", "");
 	} else if (sunset == -1) {
 	}
 	return 0;
@@ -147,16 +147,16 @@ int seasons(double jdn)
 		0.00823 * m * m * m + 0.00032 * m * m * m * m;
 	set_time_str(buf,ve);
 	add_event(proc_time(buf), 0, jdn_to_datenum(ve), "March Equinox",
-		"astronomical", "astronomical,seasons", "", 1, "");
+		"astronomical", "astronomical,seasons", "", 0, "", "");
 	set_time_str(buf,ae);
 	add_event(proc_time(buf), 0, jdn_to_datenum(ae), "September Equinox",
-		"astronomical", "astronomical,seasons", "", 1, "");
+		"astronomical", "astronomical,seasons", "", 0, "", "");
 	set_time_str(buf,ss);
 	add_event(proc_time(buf), 0, jdn_to_datenum(ss), "June Solstice",
-		"astronomical", "astronomical,seasons", "", 1, "");
+		"astronomical", "astronomical,seasons", "", 0, "", "");
 	set_time_str(buf,ws);
 	add_event(proc_time(buf), 0, jdn_to_datenum(ws), "December Solstice",
-		"astronomical", "astronomical,seasons", "", 1, "");
+		"astronomical", "astronomical,seasons", "", 0, "", "");
 	return 0;
 }
 

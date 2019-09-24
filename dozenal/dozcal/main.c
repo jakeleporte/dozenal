@@ -604,6 +604,10 @@ int fill_event(char *s, int index, char *date_format, char
 				if (len == 0)
 					len = strlen(event_list[index].categories);
 				sprintf(buffer,"%*.*s",len,len,event_list[index].attendees);
+			} else if (s[i] == 'u') {
+				if (len == 0)
+					len = strlen(event_list[index].url);
+				sprintf(buffer,"%*.*s",len,len,event_list[index].url);
 			} else {
 				fprintf(stderr,"dozcal:  unrecognized conversion "
 					"character \"%%%c\" in event form string, "
