@@ -84,13 +84,13 @@ int main(int argc, char **argv)
 	int moonphases = 0;		/* if 0, no phases; if 1, yes */
 	int startdate = -1; int enddate = -1;
 	char *ev_form;
-	const char *def_form = "%d | %s | %c | %e | %t | %C | %l";
+	const char *def_form = "%d | %s | %c | %e | %t | %C | %l | %a | %u";
 	char *date_form;
 	const char *def_date = "%Y-%m-%d";
 	char *time_form;
 	const char *def_time = "%h;%4b";
 	char *todo_form;
-	const char *def_todo_form = "%p | %d | %t | %i | %c | %g | %T | %C | %l";
+	const char *def_todo_form = "%p | %d | %t | %i | %c | %g | %T | %C | %l | %u";
 	char *nat;
 	char *relig;
 	char *astro;

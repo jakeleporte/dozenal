@@ -127,6 +127,8 @@ int add_to_event(char *title, int datenum, char *cat)
 	event_list[recordnums-1].thisdate = datenum;
 	event_list[recordnums-1].relatedto = -1;
 	event_list[recordnums-1].transp = 1;
+	strcpy(event_list[recordnums-1].attendees,"");
+	strcpy(event_list[recordnums-1].url,"");
 	recordnums++;
 	return 0;
 }
