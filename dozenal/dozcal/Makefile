@@ -24,9 +24,12 @@ LOCALLIBS = errcodes.h event_struct.h julday.h libholidays.h \
 objects = main.o utility.o proc_date.o process_file.o moon.o opt_file.o \
 	easter.o nat_holidays.o jewish_date.o islamic.o call_lua.o julday.o \
 	astron.o geog.o sunriset.o tui.o
-binobjects = dozcal
+binobjects = dozcal ical
 
 all: bin
+
+ical: icaltodcal.c
+	$(CC) $(GCCFLAGS) -g -o icaltodcal icaltodcal.c
 
 dozcal: $(objects) ../doz/doz.o ../dec/dec.o ../conv/conv.o event_struct.h $(LOCALLIBS)
 	$(CC) $(GCCFLAGS) -I$(IDIR) -std=c99 -g -o dozcal ../conv/conv.o \
