@@ -8,12 +8,20 @@
  * the Sacred Heart of Jesus, for His mercy.
  */
 
+#define _POSIX_C_SOURCE 200809L
+#define _XOPEN_SOURCE 700
+
 #include<stdio.h>
 #include<stdlib.h>
 #include<errno.h>
 #include<string.h>
 #include<unistd.h>
 #include<getopt.h>
+
+int parse_date(char *s, int sorend);
+int strip_value(char *s);
+int clean_str(char *s);
+int parse_freq(char *s);
 
 #define START_DATE 0
 #define END_DATE 1
@@ -55,7 +63,7 @@ int main(int argc, char *argv[])
 			strip_value(nline = strstr(line,":")+1);
 			printf("%s\n",nline);
 		} else if (strstr(line,"CATEGORIES")) {
-			printf("CLASS:\t");
+			printf("CATEGORY:\t");
 			strip_value(nline = strstr(line,":")+1);
 			printf("%s\n",nline);
 		} else if (strstr(line,"LOCATION") || strstr(line,"GEO:")) {
@@ -74,24 +82,75 @@ int main(int argc, char *argv[])
 			printf("TRANSPARENT:\t");
 			strip_value(nline = strstr(line,":")+1);
 			printf("%s\n",nline);
-		} else if (strstr(line,"FREQ:")) {
-			printf("TRANSPARENT:\t");
-			parse_freq(strip_value(nline = strstr(line,":")+1));
-			printf("%s\n",nline);
+		} else if (strstr(line,"FREQ=")) {
+			parse_freq(line);
 		}
 	}
 	fclose(fp);
 	return 0;
 }
 
+char *get_end_range(char *s, char c, int *num)
+{
+	char *e;
+	int i;
+
+	e = s;
+	for (i = 0; (s[i] != '\0') && (s[i] != c); ++i)
+		++e;
+	*num = i;
+	if (e == '\0')
+		return NULL;
+	return e;
+}
+
 int parse_freq(char *s)
 {
+	char *eq;
+	char *p;
+	char *st;
+	int n;
+
+	eq = strstr(s,"FREQ=") + 5;
+	if (strstr(eq,"MONTHLY"))
+		printf("FREQ:\tmonthly");
+	if (strstr(eq,"YEARLY"))
+		printf("FREQ:\tyearly");
+	if (strstr(eq,"WEEKLY")) {
+		printf("FREQ:\t");
+		if (strstr(eq,"BYDAY=SU")) {
+			printf(" Sunday ");
+		} else if (strstr(eq,"BYDAY=MO")) {
+			printf(" Monday ");
+		} else if (strstr(eq,"BYDAY=TU")) {
+			printf(" Tuesday ");
+		} else if (strstr(eq,"BYDAY=WE")) {
+			printf(" Wednesday ");
+		} else if (strstr(eq,"BYDAY=TH")) {
+			printf(" Thursday ");
+		} else if (strstr(eq,"BYDAY=FR")) {
+			printf(" Friday ");
+		} else if (strstr(eq,"BYDAY=SA")) {
+			printf(" Saturday ");
+		}
+		printf("\nINTERVAL:  7");
+	}
+	if ((st = strstr(eq,"UNTIL=")) != NULL) {
+		p = get_end_range(st+strlen("UNTIL=")+1,';',&n);
+		if (p == NULL)
+			p = get_end_range(st,':',&n);
+		printf("\tEND_DATE:\t%.*s\n",n,st+6);
+	}
+	printf("\n");
+	printf("\n\tFREQ:  %s\n",eq);
+	if ((p = strstr(eq,"INTERVAL=")) != NULL) {
+		printf("INTERVAL:\t%c\n",*(p+9));
+	}
 	return 0;
 }
 
 int clean_str(char *s)
 {
-	int i;
 	char *src, *dst;
 
 	for (src = dst = s; *src != '\0'; ++src) {
@@ -104,7 +163,6 @@ int clean_str(char *s)
 
 int strip_value(char *s)
 {
-	int i;
 	char *src, *dst;
 	for (src = dst = s; *src != '\0'; ++src) {
 		*dst = *src;
@@ -117,7 +175,7 @@ int strip_value(char *s)
 
 int parse_date(char *s, int sorend)
 {
-	int year,mon,day,hr,min,sec;
+	int year,mon,day,hr,min;
 
 	sscanf(s,"%4d%2d%2dT%2d%2d",&year,&mon,&day,&hr,&min);
 	printf("%04d-%02d-%02d\n",year,mon,day);
