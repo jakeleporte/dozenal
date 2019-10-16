@@ -123,10 +123,12 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 	int mon; int wday; int nday;
 	int numfreq = 0;
 	int transp = 0;
-	char attendees[MAXLEN+1];
+//	char attendees[MAXLEN+1];
+	char *attendees;
 	char url[MAXLEN+1];
 
 	categories[0] = '\0';
+	attendees = malloc(sizeof(char) + 1);
 	attendees[0] = '\0';
 	url[0] = '\0';
 	class[0] = '\0';
@@ -187,6 +189,7 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 			transp = atoi(buffer[i]+holder);
 		} if (strstr(buffer[i],"ATTENDEES")) {
 			holder = get_impstr(buffer[i]);
+			addto_str(attendees,buffer[i]+holder);
 			strncpy(attendees,buffer[i]+holder,MAXLEN);
 		} if (strstr(buffer[i],"URL")) {
 			holder = get_impstr(buffer[i]);
@@ -195,8 +198,10 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 	}
 	if (enddate == -1)
 		enddate = startdate;
-	if (startdate == -1)
+	if (startdate == -1) {
+		free(attendees);
 		return -1;
+	}
 	startday = mkdaynum(startdate) + 1;
 	endday = mkdaynum(enddate) + 1;
 	currinterval = startday;
@@ -346,7 +351,7 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 				exit(BAD_FREQ);
 			}
 		}
-		return 0;
+		goto cleanup;
 	}
 	for (holder = startday; holder <= endday; ++holder) {
 		if ((not_in(holder,exceptions,j-1) == 0) &&
@@ -362,6 +367,8 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 		if (currinterval == holder)
 			currinterval += interval;
 	}
+	cleanup:
+	free(attendees);
 	return 0;
 }
 

@@ -74,9 +74,8 @@ int main(int argc, char *argv[])
 			printf("URL:\t");
 			strip_value(nline = strstr(line,":")+1);
 			printf("%s\n",nline);
-		} else if (strstr(line,"ATTENDEES:")) {
-			printf("ATTENDEES:\t");
-			strip_value(nline = strstr(line,":")+1);
+		} else if (strstr(line,"ATTENDEE")) {
+			parse_attendee(nline);
 			printf("%s\n",nline);
 		} else if (strstr(line,"TRANSPARENT:")) {
 			printf("TRANSPARENT:\t");
@@ -102,6 +101,28 @@ char *get_end_range(char *s, char c, int *num)
 	if (e == '\0')
 		return NULL;
 	return e;
+}
+
+int parse_attendee(char *s)
+{
+	char *t;
+	char *u;
+	int n;
+
+	printf("HERE:  ");
+	if ((t = strstr(s,"CN=")) != NULL) {
+		if ((u = get_end_range(t+4,'"',&n)) != NULL) {
+			printf("\"%.*s\" ",n,t+4);
+		}
+	}
+	if ((t = strstr(s,"mailto:")) != NULL) {
+		if ((u = get_end_range(t+7,'"',&n)) == NULL)
+			if ((u = get_end_range(t+7,';',&n)) == NULL)
+				if ((u = get_end_range(t+7,':',&n)) == NULL);
+		printf("<%.*s>",n,t+7);
+	}
+	printf("\n");
+	return 0;
 }
 
 int parse_freq(char *s)
@@ -169,7 +190,6 @@ int strip_value(char *s)
 		if ((*dst != '\\') && (*(dst+1) != '\\')) ++dst;
 	}
 	*dst = '\0';
-//	printf("%s\n",s);
 	return 0;
 }
 

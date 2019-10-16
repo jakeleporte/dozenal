@@ -359,3 +359,18 @@ int first_dow(char *s)
 		}
 	}
 }
+
+int reassign_str(char *s, char *t)
+{
+	s = realloc(s,sizeof(t) + 1);
+	s[0] = '\0';
+	strcat(s,t);
+	return 0;
+}
+
+int addto_str(char *s, char *t)
+{
+	s = realloc(s,sizeof(s) + sizeof(t) + 1);
+	strcat(s,t);
+	return 0;
+}
