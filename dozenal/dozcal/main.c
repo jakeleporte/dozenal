@@ -408,6 +408,10 @@ int main(int argc, char **argv)
 		}
 	}
 	clean:
+	for (i = 0; i < (recordnums-1); ++i) {
+		if (event_list[i].attendees != NULL)
+			free(event_list[i].attendees);
+	}
 	free(event_list);
 	free(todo_list);
 	free(ev_form);
@@ -606,7 +610,7 @@ int fill_event(char *s, int index, char *date_format, char
 				sprintf(buffer,"%*.*d",len,len,event_list[index].transp);
 			} else if (s[i] == 'a') {
 				if (len == 0)
-					len = strlen(event_list[index].categories);
+					len = strlen(event_list[index].attendees);
 				sprintf(buffer,"%*.*s",len,len,event_list[index].attendees);
 			} else if (s[i] == 'u') {
 				if (len == 0)

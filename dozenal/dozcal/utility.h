@@ -63,4 +63,4 @@ int wday_of_month(int datenum, int wday, int num);
 int countchars(char *s, char c);
 int __sunriset__( int year, int month, int day, double lon, double lat,
                   double altit, int upper_limb, double *rise, double *set );
-int addto_str(char *s, char *t);
+int addto_str(char **s, char *t);

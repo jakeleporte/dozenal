@@ -189,8 +189,9 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 			transp = atoi(buffer[i]+holder);
 		} if (strstr(buffer[i],"ATTENDEES")) {
 			holder = get_impstr(buffer[i]);
-			addto_str(attendees,buffer[i]+holder);
-			strncpy(attendees,buffer[i]+holder,MAXLEN);
+			addto_str(&attendees,buffer[i]+holder);
+//			strcat(attendees,buffer[i]+holder);
+//			strncpy(attendees,buffer[i]+holder,MAXLEN);
 		} if (strstr(buffer[i],"URL")) {
 			holder = get_impstr(buffer[i]);
 			strncpy(url,buffer[i]+holder,MAXLEN);

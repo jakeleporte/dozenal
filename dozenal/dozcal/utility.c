@@ -76,6 +76,29 @@ char *front_chomp(char *s)
 	return t;
 }
 
+int reassign_str(char *s, char *t)
+{
+	s = realloc(s,sizeof(t) + 1);
+	s[0] = '\0';
+	strcat(s,t);
+	return 0;
+}
+
+int addto_str(char **s, char *t)
+{
+	if (*s == NULL) {
+		*s = malloc(strlen(t) + 2);
+		*s[0] = '\0';
+		strcpy(*s,t);
+	} else {
+		*s = realloc(*s,strlen(*s) + strlen(t) + 4);
+		if (strlen(*s) != 0)
+			strcat(*s,", ");
+		strcat(*s,t);
+	}
+	return 0;
+}
+
 /* checks if variable is in array; if not, return 0, else 1 */
 int not_in(int date, int exceptions[], int len)
 {
@@ -127,8 +150,10 @@ int add_to_event(char *title, int datenum, char *cat)
 	event_list[recordnums-1].thisdate = datenum;
 	event_list[recordnums-1].relatedto = -1;
 	event_list[recordnums-1].transp = 1;
-	strcpy(event_list[recordnums-1].attendees,"");
-	strcpy(event_list[recordnums-1].url,"");
+//	strcpy(event_list[recordnums-1].attendees,"");
+	event_list[recordnums-1].attendees = NULL;
+	addto_str(&event_list[recordnums-1].attendees,"");
+//	strcpy(event_list[recordnums-1].url,"");
 	recordnums++;
 	return 0;
 }
@@ -240,8 +265,9 @@ int add_event(int starttime, int endtime, int thisdate,
 	event_list[recordnums-1].endtime = endtime;
 	event_list[recordnums-1].relatedto = -1;
 	event_list[recordnums-1].transp = 1;
-	strncpy(event_list[recordnums-1].attendees,attendees,MAXLEN);
 	strncpy(event_list[recordnums-1].url,url,MAXLEN);
+	event_list[recordnums-1].attendees = NULL;
+	addto_str(&event_list[recordnums-1].attendees,attendees);
 	recordnums++;
 	return 0;
 }
@@ -358,19 +384,4 @@ int first_dow(char *s)
 			exit(BAD_FDOW);
 		}
 	}
-}
-
-int reassign_str(char *s, char *t)
-{
-	s = realloc(s,sizeof(t) + 1);
-	s[0] = '\0';
-	strcat(s,t);
-	return 0;
-}
-
-int addto_str(char *s, char *t)
-{
-	s = realloc(s,sizeof(s) + sizeof(t) + 1);
-	strcat(s,t);
-	return 0;
 }

@@ -44,7 +44,8 @@ struct event {
 	char evclass[SHORTLEN+1];			/* e.g., "private" */
 	char categories[MAXLEN+1];/* categories; e.g., "business" */
 	char transp;				/* '0' if opaque, 1 if transp */
-	char attendees[MAXLEN+1]; /* list of attendees */
+//	char attendees[MAXLEN+1]; /* list of attendees */
+	char *attendees;
 	char url[MAXLEN+1];		/* URL associated with event */
 };
 

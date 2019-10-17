@@ -55,8 +55,8 @@ int call_lua(char *s)
 	char location[MAXLEN+1];	/* the location of the event */
 	char evclass[SHORTLEN+1];		/* e.g., "private" */
 	char categories[MAXLEN+1];/* categories event fits into; e.g., "business" */
-	char attendees[MAXLEN+1];/* attendees of the event */
-	char url[MAXLEN+1];/* attendees of the event */
+	char *attendees;/* attendees of the event */
+	char url[MAXLEN+1];/* url of the event */
 	int cnt = 0;
 	int numreturns = 1;
 	int i;
@@ -83,6 +83,7 @@ int call_lua(char *s)
 	if (lua_pcall(L,0,numreturns,0))
 		bail(L,LUA_ERROR,s);
 	lua_pushnil(L);
+	attendees = malloc(sizeof(char) * 2);
 	for (i = 0; i < numreturns; ++i) {
 		title[0] = '\0'; location[0] = '\0'; evclass[0] = '\0';
 		categories[0] = '\0'; attendees[0] = '\0'; url[0] = '\0';
@@ -112,7 +113,7 @@ int call_lua(char *s)
 			} else if (strcmp(key,"TRANSPARENT") == 0) {
 				transp = atoi(val);
 			} else if (strcmp(key,"ATTENDEES") == 0) {
-				strncpy(attendees,val,MAXLEN); 
+				addto_str(&attendees,(char *)val);
 			} else {
 				fprintf(stderr,"dozcal:  error from lua "
 					"script \"%s\":  unknown key \"%s\"\n",
@@ -129,6 +130,7 @@ int call_lua(char *s)
 	}
 	lua_close(L);
 	free(filename);
+	free(attendees);
 	return 0;
 }
 
