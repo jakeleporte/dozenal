@@ -104,8 +104,7 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 {
 	int i; int holder;
 	char title[MAXLEN+1];
-	char categories[MAXLEN+1];
-	char location[MAXLEN+1];
+	char *location;
 	char class[SHORTLEN+1];
 	char freq[SHORTLEN][MAXLEN+1];
 	time_t startdate; int startday;
@@ -123,17 +122,17 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 	int mon; int wday; int nday;
 	int numfreq = 0;
 	int transp = 0;
-//	char attendees[MAXLEN+1];
 	char *attendees;
-	char url[MAXLEN+1];
+	char *categories;
+	char *url;
+	int retval = 0;
 
-	categories[0] = '\0';
-	attendees = malloc(sizeof(char) + 1);
-	attendees[0] = '\0';
-	url[0] = '\0';
+	categories = malloc(sizeof(char) + 1); categories[0] = '\0';
+	attendees = malloc(sizeof(char) + 1); attendees[0] = '\0';
+	location = malloc(sizeof(char) + 1); location[0] = '\0';
+	url = malloc(sizeof(char) + 1); url[0] = '\0';
 	class[0] = '\0';
 	title[0] = '\0';
-	location[0] = '\0';
 	for (i = 0; i < SHORTLEN; ++i)
 		freq[i][0] = '\0';
 	for (i = 0; i < MAXLEN; ++i)
@@ -147,14 +146,10 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 			strncpy(class,buffer[i]+holder,SHORTLEN);
 		} if (strstr(buffer[i],"LOCATION")) {
 			holder = get_impstr(buffer[i]);
-			strncpy(location,buffer[i]+holder,MAXLEN);
+			addto_str(&location,buffer[i]+holder);
 		} if (strstr(buffer[i],"CATEGORY")) {
 			holder = get_impstr(buffer[i]);
-			if ((strlen(categories) + strlen(buffer[i]+holder) + 2) < MAXLEN) {
-				if (strlen(categories) > 0)
-					strcat(categories,",");
-				strcat(categories,buffer[i]+holder);
-			}
+			addto_str(&categories,buffer[i]+holder);
 		} if (strstr(buffer[i],"START_DATE")) {
 			startdate = proc_date(buffer[i]);
 		} if (strstr(buffer[i],"END_DATE")) {
@@ -190,18 +185,16 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 		} if (strstr(buffer[i],"ATTENDEES")) {
 			holder = get_impstr(buffer[i]);
 			addto_str(&attendees,buffer[i]+holder);
-//			strcat(attendees,buffer[i]+holder);
-//			strncpy(attendees,buffer[i]+holder,MAXLEN);
 		} if (strstr(buffer[i],"URL")) {
 			holder = get_impstr(buffer[i]);
-			strncpy(url,buffer[i]+holder,MAXLEN);
+			addto_str(&url,buffer[i]+holder);
 		}
 	}
 	if (enddate == -1)
 		enddate = startdate;
 	if (startdate == -1) {
-		free(attendees);
-		return -1;
+		retval = -1;
+		goto cleanup;
 	}
 	startday = mkdaynum(startdate) + 1;
 	endday = mkdaynum(enddate) + 1;
@@ -370,7 +363,10 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 	}
 	cleanup:
 	free(attendees);
-	return 0;
+	free(categories);
+	free(location);
+	free(url);
+	return retval;
 }
 
 /* return non-zero if there's a weekday, 0 if not */

@@ -411,6 +411,12 @@ int main(int argc, char **argv)
 	for (i = 0; i < (recordnums-1); ++i) {
 		if (event_list[i].attendees != NULL)
 			free(event_list[i].attendees);
+		if (event_list[i].url != NULL)
+			free(event_list[i].url);
+		if (event_list[i].categories != NULL)
+			free(event_list[i].categories);
+		if (event_list[i].location != NULL)
+			free(event_list[i].location);
 	}
 	free(event_list);
 	free(todo_list);

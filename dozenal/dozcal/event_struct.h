@@ -39,14 +39,13 @@ struct event {
 	int thisdate;				/* the date */
 	int starttime;				/* starting time, in Tims from midnight */
 	int endtime;				/* ending time, in Tims from midnight */
-	char location[MAXLEN+1];	/* the location of the event */
+	char *location;			/* the location of the event */
 	int relatedto;				/* idnum of other events or todos */
 	char evclass[SHORTLEN+1];			/* e.g., "private" */
-	char categories[MAXLEN+1];/* categories; e.g., "business" */
+	char *categories;				/* categories; e.g., "business" */
 	char transp;				/* '0' if opaque, 1 if transp */
-//	char attendees[MAXLEN+1]; /* list of attendees */
 	char *attendees;
-	char url[MAXLEN+1];		/* URL associated with event */
+	char *url;					/* URL associated with event */
 };
 
 struct todo {

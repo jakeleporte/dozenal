@@ -145,15 +145,17 @@ int add_to_event(char *title, int datenum, char *cat)
 	event_list[recordnums-1].endtime = -1;
 	strncpy(event_list[recordnums-1].title,title,MAXLEN);
 	strcpy(event_list[recordnums-1].evclass,"");
-	strcpy(event_list[recordnums-1].location,"");
-	strncpy(event_list[recordnums-1].categories,cat,MAXLEN);
+	event_list[recordnums-1].location = NULL;
+	addto_str(&event_list[recordnums-1].location,"");
+	event_list[recordnums-1].categories = NULL;
+	addto_str(&event_list[recordnums-1].categories,"");
 	event_list[recordnums-1].thisdate = datenum;
 	event_list[recordnums-1].relatedto = -1;
 	event_list[recordnums-1].transp = 1;
-//	strcpy(event_list[recordnums-1].attendees,"");
 	event_list[recordnums-1].attendees = NULL;
 	addto_str(&event_list[recordnums-1].attendees,"");
-//	strcpy(event_list[recordnums-1].url,"");
+	event_list[recordnums-1].url = NULL;
+	addto_str(&event_list[recordnums-1].url,"");
 	recordnums++;
 	return 0;
 }
@@ -258,16 +260,19 @@ int add_event(int starttime, int endtime, int thisdate,
 	event_list[recordnums-1].endtime = -1;
 	strncpy(event_list[recordnums-1].title,title,MAXLEN);
 	strncpy(event_list[recordnums-1].evclass,class,SHORTLEN);
-	strncpy(event_list[recordnums-1].categories,categories,MAXLEN);
-	strncpy(event_list[recordnums-1].location,location,MAXLEN);
+	event_list[recordnums-1].categories = NULL;
+	addto_str(&event_list[recordnums-1].categories,categories);
+	event_list[recordnums-1].location = NULL;
+	addto_str(&event_list[recordnums-1].location,location);
 	event_list[recordnums-1].thisdate = thisdate;
 	event_list[recordnums-1].starttime = starttime;
 	event_list[recordnums-1].endtime = endtime;
 	event_list[recordnums-1].relatedto = -1;
 	event_list[recordnums-1].transp = 1;
-	strncpy(event_list[recordnums-1].url,url,MAXLEN);
 	event_list[recordnums-1].attendees = NULL;
 	addto_str(&event_list[recordnums-1].attendees,attendees);
+	event_list[recordnums-1].url = NULL;
+	addto_str(&event_list[recordnums-1].url,url);
 	recordnums++;
 	return 0;
 }
