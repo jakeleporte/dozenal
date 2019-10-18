@@ -1,4 +1,4 @@
-#!/usr/local/bin/bash
+#!/bin/bash
 # +AMDG
 
 echo "One third:  `./doz 0.3333333333333333333333333`";
