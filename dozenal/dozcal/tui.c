@@ -534,7 +534,7 @@ WINDOW *currwin, WINDOW *evtitle, WINDOW *todotitle)
 int make_titlebar()
 {
 	int x, y,lenlft,lenrgt, i;
-	char *lftstr = "--dozcal, v0.9";
+	char *lftstr = "--dozcal, v1.6";
 	char *rgtstr = "dozenal--";
 
 	getmaxyx(stdscr,y,x);

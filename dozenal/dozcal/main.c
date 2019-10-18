@@ -195,8 +195,8 @@ int main(int argc, char **argv)
 	!= -1) {
 		switch(c) {
 		case 'V':
-			printf("dozcal v1.0\n");
-			printf("Copyright (C) 1200 (2016) by Donald P.  Goodman III\n");
+			printf("dozcal v1.6\n");
+			printf("Copyright (C) 1203 (2019) by Donald P.  Goodman III\n");
 			printf("License GPLv3+:  GNU GPL Version 3 or later "
 				"<http://gnu.org/licenses/gpl.html>\n");
 			printf("This is free software; you are free to change "
