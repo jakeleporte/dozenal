@@ -35,13 +35,13 @@
 
 struct event {
 	int id;						/* idnum of the event entry */
-	char title[MAXLEN+1];	/* title of the event */
+	char *title;				/* title of the event */
 	int thisdate;				/* the date */
 	int starttime;				/* starting time, in Tims from midnight */
 	int endtime;				/* ending time, in Tims from midnight */
 	char *location;			/* the location of the event */
 	int relatedto;				/* idnum of other events or todos */
-	char evclass[SHORTLEN+1];			/* e.g., "private" */
+	char *evclass;				/* e.g., "private" */
 	char *categories;				/* categories; e.g., "business" */
 	char transp;				/* '0' if opaque, 1 if transp */
 	char *attendees;

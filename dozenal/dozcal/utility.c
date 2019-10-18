@@ -49,6 +49,16 @@ extern int todonums;
 int get_datenum(struct tm *date);
 int mkdaynum(time_t datenum);
 
+int init_str(char **s)
+{
+	if ((*s = malloc(sizeof(char) + 1)) == NULL) {
+		fprintf(stderr,"dozcal:  error:  insufficient memory\n");
+		exit(INSUFF_MEM);
+	}
+	*s[0] = '\0';
+	return 0;
+}
+
 int chomp(char *s)
 {
 	int i; int j = 0;
@@ -143,8 +153,10 @@ int add_to_event(char *title, int datenum, char *cat)
 		sizeof(struct event)));
 	event_list[recordnums-1].starttime = -1;
 	event_list[recordnums-1].endtime = -1;
-	strncpy(event_list[recordnums-1].title,title,MAXLEN);
-	strcpy(event_list[recordnums-1].evclass,"");
+	event_list[recordnums-1].title = NULL;
+	addto_str(&event_list[recordnums-1].title,title);
+	event_list[recordnums-1].evclass = NULL;
+	addto_str(&event_list[recordnums-1].evclass,"");
 	event_list[recordnums-1].location = NULL;
 	addto_str(&event_list[recordnums-1].location,"");
 	event_list[recordnums-1].categories = NULL;
@@ -258,8 +270,10 @@ int add_event(int starttime, int endtime, int thisdate,
 		sizeof(struct event)));
 	event_list[recordnums-1].starttime = -1;
 	event_list[recordnums-1].endtime = -1;
-	strncpy(event_list[recordnums-1].title,title,MAXLEN);
-	strncpy(event_list[recordnums-1].evclass,class,SHORTLEN);
+	event_list[recordnums-1].title = NULL;
+	addto_str(&event_list[recordnums-1].title,title);
+	event_list[recordnums-1].evclass = NULL;
+	addto_str(&event_list[recordnums-1].evclass,class);
 	event_list[recordnums-1].categories = NULL;
 	addto_str(&event_list[recordnums-1].categories,categories);
 	event_list[recordnums-1].location = NULL;

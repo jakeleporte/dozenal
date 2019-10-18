@@ -409,6 +409,8 @@ int main(int argc, char **argv)
 	}
 	clean:
 	for (i = 0; i < (recordnums-1); ++i) {
+		if (event_list[i].title != NULL)
+			free(event_list[i].title);
 		if (event_list[i].attendees != NULL)
 			free(event_list[i].attendees);
 		if (event_list[i].url != NULL)
@@ -417,6 +419,8 @@ int main(int argc, char **argv)
 			free(event_list[i].categories);
 		if (event_list[i].location != NULL)
 			free(event_list[i].location);
+		if (event_list[i].evclass != NULL)
+			free(event_list[i].evclass);
 	}
 	free(event_list);
 	free(todo_list);

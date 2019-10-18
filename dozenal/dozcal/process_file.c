@@ -103,9 +103,9 @@ int process_file(char *s)
 int proc_rec(char buffer[][MAXLEN+1],int lines)
 {
 	int i; int holder;
-	char title[MAXLEN+1];
 	char *location;
-	char class[SHORTLEN+1];
+	char *title;
+	char *class;
 	char freq[SHORTLEN][MAXLEN+1];
 	time_t startdate; int startday;
 	time_t enddate = -1; int endday = -1;
@@ -127,12 +127,12 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 	char *url;
 	int retval = 0;
 
-	categories = malloc(sizeof(char) + 1); categories[0] = '\0';
-	attendees = malloc(sizeof(char) + 1); attendees[0] = '\0';
-	location = malloc(sizeof(char) + 1); location[0] = '\0';
-	url = malloc(sizeof(char) + 1); url[0] = '\0';
-	class[0] = '\0';
-	title[0] = '\0';
+	init_str(&categories);
+	init_str(&attendees);
+	init_str(&location);
+	init_str(&url);
+	init_str(&title);
+	init_str(&class);
 	for (i = 0; i < SHORTLEN; ++i)
 		freq[i][0] = '\0';
 	for (i = 0; i < MAXLEN; ++i)
@@ -140,10 +140,10 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 	for (i = 0; i <= lines; ++i) {
 		if (strstr(buffer[i],"TITLE")) {
 			holder = get_impstr(buffer[i]);
-			strncpy(title,buffer[i]+holder,MAXLEN);
+			addto_str(&title,buffer[i]+holder);
 		} if (strstr(buffer[i],"CLASS")) {
 			holder = get_impstr(buffer[i]);
-			strncpy(class,buffer[i]+holder,SHORTLEN);
+			addto_str(&class,buffer[i]+holder);
 		} if (strstr(buffer[i],"LOCATION")) {
 			holder = get_impstr(buffer[i]);
 			addto_str(&location,buffer[i]+holder);
@@ -362,6 +362,8 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 			currinterval += interval;
 	}
 	cleanup:
+	free(title);
+	free(class);
 	free(attendees);
 	free(categories);
 	free(location);
