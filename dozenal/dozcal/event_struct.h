@@ -49,16 +49,16 @@ struct event {
 };
 
 struct todo {
-	char item[MAXLEN+1];
-	char todoclass[SHORTLEN+1];
-	char categories[MAXLEN+1];/* categories todo fits into; e.g., "business" */
+	char *item;
+	char *todoclass;
+	char *categories;/* categories todo fits into; e.g., "business" */
 	int duedate;
 	int duetime;
 	int priority;			/* higher numbers have higher priority */
-	char location[MAXLEN+1];
+	char *location;
 	int completed;			/* '0' if not completed, 1 if completed */
 	int pergross;			/* 0-144 completed amount */
-	char url[MAXLEN+1];		/* URL associated with event */
+	char *url;		/* URL associated with event */
 };
 
 struct globopts {

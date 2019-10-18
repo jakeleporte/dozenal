@@ -423,6 +423,18 @@ int main(int argc, char **argv)
 			free(event_list[i].evclass);
 	}
 	free(event_list);
+	for (i = 0; i < (todonums-1); ++i) {
+		if (todo_list[i].item != NULL)
+			free(todo_list[i].item);
+		if (todo_list[i].todoclass != NULL)
+			free(todo_list[i].todoclass);
+		if (todo_list[i].categories != NULL)
+			free(todo_list[i].categories);
+		if (todo_list[i].location != NULL)
+			free(todo_list[i].location);
+		if (todo_list[i].url != NULL)
+			free(todo_list[i].url);
+	}
 	free(todo_list);
 	free(ev_form);
 	free(date_form);
