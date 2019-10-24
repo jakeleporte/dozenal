@@ -59,7 +59,7 @@ int main(int argc, char *argv[])
 			flag = 1;
 			bline = realloc(bline,(strlen(bline) + strlen(line) + 1)
 					* sizeof(char));
-			line[strlen(line)-1] = ' ';
+			line[strlen(line)-1] = '\0';
 			strcat(bline,line);
 			continue;
 		} else {
@@ -100,6 +100,7 @@ int main(int argc, char *argv[])
 			printf("%s\n",nline);
 		} else if (strstr(bline,"ATTENDEE")) {
 			printf("ATTENDEES:  ");
+			strip_value(nline = strstr(bline,":")+1);
 			parse_attendee(nline);
 		} else if (strstr(bline,"TRANSPARENT:")) {
 			printf("TRANSPARENT:\t");
@@ -212,7 +213,8 @@ int strip_value(char *s)
 	char *src, *dst;
 	for (src = dst = s; *src != '\0'; ++src) {
 		*dst = *src;
-		if ((*dst != '\\') && (*(dst+1) != '\\')) ++dst;
+		if ((*dst == '\\') && (*(dst+1) == '\\')) ++dst;
+		else ++dst;
 	}
 	*dst = '\0';
 	return 0;
