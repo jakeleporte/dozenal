@@ -64,7 +64,8 @@ char **evlines; int numevs = 1;
 char **todolines; int numtodos = 1;
 struct globopts *allopts;
 int numopts = 35;
-int itemnumber = 0;
+int geventid = -1;
+int gtodoid = -1;
 
 int comparator(const void *evone, const void *evtwo);
 int todocomp(const void *todoone, const void *todotwo);
@@ -530,9 +531,9 @@ int fill_todo(char *s, int index, char *date_format, char
 				sprintf(tmpbuf,"%*.*s",len,len,todo_list[index].url);
 			} else if (s[i] == 'N') {
 				if (len == 0)
-					sprintf(buffer,"%d",event_list[index].idnum);
+					sprintf(buffer,"%d",todo_list[index].idnum);
 				else
-					sprintf(buffer,"%*d",len,event_list[index].idnum);
+					sprintf(buffer,"%*d",len,todo_list[index].idnum);
 			} else {
 				fprintf(stderr,"dozcal:  unrecognized conversion "
 					"character \"%%%c\" in todo form string, "

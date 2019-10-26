@@ -45,9 +45,8 @@ extern struct event *event_list;
 extern int recordnums;
 extern struct todo *todo_list;
 extern int todonums;
-
-int eventid = 0;
-int todoid = 0;
+extern int geventid;
+extern int gtodoid;
 
 int get_datenum(struct tm *date);
 int mkdaynum(time_t datenum);
@@ -265,7 +264,7 @@ int add_event(int starttime, int endtime, int thisdate,
 	addto_str(&event_list[recordnums-1].attendees,attendees);
 	event_list[recordnums-1].url = NULL;
 	addto_str(&event_list[recordnums-1].url,url);
-	event_list[recordnums-1].idnum = eventid++;
+	event_list[recordnums-1].idnum = geventid;
 	recordnums++;
 	return 0;
 }
@@ -302,7 +301,7 @@ int add_todo(int duedate,int starttime,int priority,
 	addto_str(&todo_list[todonums-1].location,location);
 	todo_list[todonums-1].url = NULL;
 	addto_str(&todo_list[todonums-1].url,url);
-	todo_list[todonums-1].idnum = todoid;
+	todo_list[todonums-1].idnum = gtodoid;
 	todonums++;
 	return 0;
 }

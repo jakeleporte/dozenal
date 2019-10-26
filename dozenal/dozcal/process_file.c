@@ -55,7 +55,8 @@ extern struct event *event_list;
 extern int recordnums;
 extern struct todo *todo_list;
 extern int todonums;
-extern int itemnumber;
+extern int geventid;
+extern int gtodoid;
 
 int is_mon(char *s);
 int is_num(char *s);
@@ -84,10 +85,14 @@ int process_file(char *s)
 			if (linesread != 0)
 				proc_rec(buffer,currlineno);
 			currlineno = 0;
-			if (strstr(line,"[EVENT]"))
+			if (strstr(line,"[EVENT]")) {
 				strcpy(buffer[currlineno++],"EVENT");
-			if (strstr(line,"[TODO]"))
+				++geventid;
+			}
+			if (strstr(line,"[TODO]")) {
 				strcpy(buffer[currlineno++],"TODO");
+				++gtodoid;
+			}
 		} else if (!strstr(line,"[EVENT]") && !strstr(line,"[TODO]") && 
 		(currlineno < MAXLINES)) {
 			strncpy(buffer[currlineno++],line,MAXLEN);
