@@ -33,7 +33,7 @@
 
 #define MAXLEN 256
 #define SHORTLEN 16
-#define MAXLINES 16
+#define MAXLINES 256
 
 #define EXIT_SUCCESS 0
 #define OPT_REQ_ARG 1

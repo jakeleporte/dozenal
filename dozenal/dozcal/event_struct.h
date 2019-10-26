@@ -34,7 +34,7 @@
 #include"errcodes.h"
 
 struct event {
-	int id;						/* idnum of the event entry */
+	int idnum;					/* idnum of the event entry */
 	char *title;				/* title of the event */
 	int thisdate;				/* the date */
 	int starttime;				/* starting time, in Tims from midnight */
@@ -49,16 +49,17 @@ struct event {
 };
 
 struct todo {
+	int idnum;				/* idnum of the todo entry */
 	char *item;
 	char *todoclass;
-	char *categories;/* categories todo fits into; e.g., "business" */
+	char *categories;		/* categories todo fits into; e.g., "business" */
 	int duedate;
 	int duetime;
 	int priority;			/* higher numbers have higher priority */
 	char *location;
 	int completed;			/* '0' if not completed, 1 if completed */
 	int pergross;			/* 0-144 completed amount */
-	char *url;		/* URL associated with event */
+	char *url;				/* URL associated with event */
 };
 
 struct globopts {

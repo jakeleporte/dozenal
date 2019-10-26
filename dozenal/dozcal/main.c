@@ -64,6 +64,7 @@ char **evlines; int numevs = 1;
 char **todolines; int numtodos = 1;
 struct globopts *allopts;
 int numopts = 35;
+int itemnumber = 0;
 
 int comparator(const void *evone, const void *evtwo);
 int todocomp(const void *todoone, const void *todotwo);
@@ -84,13 +85,13 @@ int main(int argc, char **argv)
 	int moonphases = 0;		/* if 0, no phases; if 1, yes */
 	int startdate = -1; int enddate = -1;
 	char *ev_form;
-	const char *def_form = "%d | %s | %c | %e | %t | %C | %l | %a | %u";
+	const char *def_form = "%N | %d | %s | %c | %e | %t | %C | %l | %a | %u";
 	char *date_form;
 	const char *def_date = "%Y-%m-%d";
 	char *time_form;
 	const char *def_time = "%h;%4b";
 	char *todo_form;
-	const char *def_todo_form = "%p | %d | %t | %i | %c | %g | %T | %C | %l | %u";
+	const char *def_todo_form = "%N | %p | %d | %t | %i | %c | %g | %T | %C | %l | %u";
 	char *nat;
 	char *relig;
 	char *astro;
@@ -527,6 +528,11 @@ int fill_todo(char *s, int index, char *date_format, char
 				if (len == 0)
 					len = strlen(todo_list[index].url);
 				sprintf(tmpbuf,"%*.*s",len,len,todo_list[index].url);
+			} else if (s[i] == 'N') {
+				if (len == 0)
+					sprintf(buffer,"%d",event_list[index].idnum);
+				else
+					sprintf(buffer,"%*d",len,event_list[index].idnum);
 			} else {
 				fprintf(stderr,"dozcal:  unrecognized conversion "
 					"character \"%%%c\" in todo form string, "
@@ -634,6 +640,11 @@ int fill_event(char *s, int index, char *date_format, char
 				if (len == 0)
 					len = strlen(event_list[index].attendees);
 				sprintf(buffer,"%*.*s",len,len,event_list[index].attendees);
+			} else if (s[i] == 'N') {
+				if (len == 0)
+					sprintf(buffer,"%d",event_list[index].idnum);
+				else
+					sprintf(buffer,"%*d",len,event_list[index].idnum);
 			} else if (s[i] == 'u') {
 				if (len == 0)
 					len = strlen(event_list[index].url);

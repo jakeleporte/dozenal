@@ -55,6 +55,7 @@ extern struct event *event_list;
 extern int recordnums;
 extern struct todo *todo_list;
 extern int todonums;
+extern int itemnumber;
 
 int is_mon(char *s);
 int is_num(char *s);
