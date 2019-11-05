@@ -241,7 +241,8 @@ int upper_str(char *s)
 
 int add_event(int starttime, int endtime, int thisdate,
 	char *title, char *class, char *categories, char
-	*location, char transp, char *attendees, char *url)
+	*location, char transp, char *attendees, char *url,
+	char *description)
 {
 	event_list = realloc(event_list,(recordnums * 
 		sizeof(struct event)));
@@ -264,6 +265,8 @@ int add_event(int starttime, int endtime, int thisdate,
 	addto_str(&event_list[recordnums-1].attendees,attendees);
 	event_list[recordnums-1].url = NULL;
 	addto_str(&event_list[recordnums-1].url,url);
+	event_list[recordnums-1].description = NULL;
+	addto_str(&event_list[recordnums-1].description,description);
 	event_list[recordnums-1].idnum = geventid;
 	recordnums++;
 	return 0;
@@ -271,13 +274,14 @@ int add_event(int starttime, int endtime, int thisdate,
 
 int add_to_event(char *title, int datenum, char *cat)
 {
-	add_event(-1,-1,datenum,title,"",cat,"",1,"","");
+	add_event(-1,-1,datenum,title,"",cat,"",1,"","","");
 	return 0;
 }
 
 int add_todo(int duedate,int starttime,int priority,
 	int compflag, int pergross, char *title, char *class,
-	char *categories, char *location, char *url)
+	char *categories, char *location, char *url,
+	char *description)
 {
 	todo_list = realloc(todo_list,(todonums *
 		sizeof(struct todo)));
@@ -301,6 +305,8 @@ int add_todo(int duedate,int starttime,int priority,
 	addto_str(&todo_list[todonums-1].location,location);
 	todo_list[todonums-1].url = NULL;
 	addto_str(&todo_list[todonums-1].url,url);
+	todo_list[todonums-1].description = NULL;
+	addto_str(&todo_list[todonums-1].description,description);
 	todo_list[todonums-1].idnum = gtodoid;
 	todonums++;
 	return 0;

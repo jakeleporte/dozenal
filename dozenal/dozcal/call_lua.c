@@ -57,6 +57,7 @@ int call_lua(char *s)
 	char categories[MAXLEN+1];/* categories event fits into; e.g., "business" */
 	char *attendees;/* attendees of the event */
 	char url[MAXLEN+1];/* url of the event */
+	char description[MAXLEN+1];/* description of the event */
 	int cnt = 0;
 	int numreturns = 1;
 	int i;
@@ -87,6 +88,7 @@ int call_lua(char *s)
 	for (i = 0; i < numreturns; ++i) {
 		title[0] = '\0'; location[0] = '\0'; evclass[0] = '\0';
 		categories[0] = '\0'; attendees[0] = '\0'; url[0] = '\0';
+		description[0] = '\0';
 		while (lua_next(L,-(1+numreturns - i))) {
 			val = lua_tostring(L,-1);
 			lua_pop(L,1);
@@ -122,7 +124,8 @@ int call_lua(char *s)
 			}
 			if (cnt == 9) {
 				add_event(starttime, endtime, thisdate, title, evclass, 
-					categories, location, transp, attendees, url);
+					categories, location, transp, attendees, url,
+					description);
 				cnt = 0;
 			}
 		}

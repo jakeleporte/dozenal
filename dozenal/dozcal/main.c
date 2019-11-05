@@ -66,6 +66,8 @@ struct globopts *allopts;
 int numopts = 35;
 int geventid = -1;
 int gtodoid = -1;
+char **origevs = NULL;
+char **origtos = NULL;
 
 int comparator(const void *evone, const void *evtwo);
 int todocomp(const void *todoone, const void *todotwo);
@@ -86,13 +88,13 @@ int main(int argc, char **argv)
 	int moonphases = 0;		/* if 0, no phases; if 1, yes */
 	int startdate = -1; int enddate = -1;
 	char *ev_form;
-	const char *def_form = "%N | %d | %s | %c | %e | %t | %C | %l | %a | %u";
+	const char *def_form = "%N | %d | %s | %c | %e | %t | %D | %C | %l | %a | %u";
 	char *date_form;
 	const char *def_date = "%Y-%m-%d";
 	char *time_form;
 	const char *def_time = "%h;%4b";
 	char *todo_form;
-	const char *def_todo_form = "%N | %p | %d | %t | %i | %c | %g | %T | %C | %l | %u";
+	const char *def_todo_form = "%N | %p | %d | %t | %D | %i | %c | %g | %T | %C | %l | %u";
 	char *nat;
 	char *relig;
 	char *astro;
@@ -417,6 +419,8 @@ int main(int argc, char **argv)
 			free(event_list[i].attendees);
 		if (event_list[i].url != NULL)
 			free(event_list[i].url);
+		if (event_list[i].description != NULL)
+			free(event_list[i].description);
 		if (event_list[i].categories != NULL)
 			free(event_list[i].categories);
 		if (event_list[i].location != NULL)
@@ -436,7 +440,12 @@ int main(int argc, char **argv)
 			free(todo_list[i].location);
 		if (todo_list[i].url != NULL)
 			free(todo_list[i].url);
+		if (todo_list[i].description != NULL)
+			free(todo_list[i].description);
 	}
+//	for (i = 0; i < (geventid-3); ++i)
+//		free(origevs[i]);
+//	free(origevs);
 	free(todo_list);
 	free(ev_form);
 	free(date_form);
@@ -529,6 +538,10 @@ int fill_todo(char *s, int index, char *date_format, char
 				if (len == 0)
 					len = strlen(todo_list[index].url);
 				sprintf(tmpbuf,"%*.*s",len,len,todo_list[index].url);
+			} else if (s[i] == 'D') {
+				if (len == 0)
+					len = strlen(todo_list[index].description);
+				sprintf(tmpbuf,"%*.*s",len,len,todo_list[index].description);
 			} else if (s[i] == 'N') {
 				if (len == 0)
 					sprintf(buffer,"%d",todo_list[index].idnum);
@@ -569,28 +582,36 @@ int print_todos()
 	return 0;
 }
 
+int add_part(char **buf,int len, char *text)
+{
+	if (len == 0)
+		len = strlen(text);
+	*buf = realloc(*buf,strlen(text) + 2);
+	sprintf(*buf,"%*.*s",len,len,text);
+	return 0;
+}
+
 int fill_event(char *s, int index, char *date_format, char
 *time_format, FILE *outfile)
 {
 	int i; int j;
 	char holder[6];
+	char ohold[MAXLEN+1];
 	int len = MAXLEN + 1;
 	char datestr[MAXLEN+1];
-	char buffer[MAXLEN+1];
-	char othbuf[MAXLEN+1];
+	char *buffer;
+	char *othbuf;
 
+	buffer = malloc(1 * sizeof(char));
+	othbuf = malloc(1 * sizeof(char));
 	numevs++;
 	if ((evlines = realloc(evlines,(numevs * sizeof(char *)))) == NULL) {
 		fprintf(stderr,"dozcal:  insufficient memory to store "
 			"the formatted event lines\n");
 		exit(INSUFF_MEM);
 	}
-	if ((*(evlines+(numevs-1)) = malloc(MAXLEN * sizeof(char))) == NULL) {
-		fprintf(stderr,"dozcal:  insufficient memory to store "
-			"the formatted event lines\n");
-		exit(INSUFF_MEM);
-	}
 	othbuf[0] = '\0';
+	buffer[0] = '\0';
 	for (i = 0; s[i] != '\0'; ++i) {
 		if (s[i] == '%') {
 			j = 0; holder[0] = '\0'; len = 0; buffer[0] = '\0';
@@ -603,53 +624,47 @@ int fill_event(char *s, int index, char *date_format, char
 				num_to_date(event_list[index].thisdate,datestr,date_format);
 				if (len == 0)
 					len = strlen(datestr);
-				sprintf(buffer,"%*.*s",len,len,datestr);
+				sprintf(ohold,"%*.*s",len,len,datestr);
 				datestr[0] = '\0';
+				add_part(&buffer,len,ohold);
 			} else if (s[i] == 's') {
 				secs_to_Tims(event_list[index].starttime,datestr,time_format);
 				if (len == 0)
 					len = strlen(datestr);
-				sprintf(buffer,"%*.*s",len,len,datestr);
+				sprintf(ohold,"%*.*s",len,len,datestr);
 				datestr[0] = '\0';
+				add_part(&buffer,len,ohold);
 			} else if (s[i] == 'c') {
 				secs_to_Tims(event_list[index].endtime,datestr,time_format);
 				if (len == 0)
 					len = strlen(datestr);
-				sprintf(buffer,"%*.*s",len,len,datestr);
+				sprintf(ohold,"%*.*s",len,len,datestr);
 				datestr[0] = '\0';
+				add_part(&buffer,len,ohold);
 			} else if (s[i] == 'e') {
-				if (len == 0)
-					len = strlen(event_list[index].title);
-				sprintf(buffer,"%*.*s",len,len,event_list[index].title);
+				add_part(&buffer,len,event_list[index].title);
 			} else if (s[i] == 'C') {
-				if (len == 0)
-					len = strlen(event_list[index].categories);
-				sprintf(buffer,"%*.*s",len,len,event_list[index].categories);
+				add_part(&buffer,len,event_list[index].categories);
 			} else if (s[i] == 't') {
-				if (len == 0)
-					len = strlen(event_list[index].evclass);
-				sprintf(buffer,"%*.*s",len,len,event_list[index].evclass);
+				add_part(&buffer,len,event_list[index].evclass);
 			} else if (s[i] == 'l') {
-				if (len == 0)
-					len = strlen(event_list[index].location);
-				sprintf(buffer,"%*.*s",len,len,event_list[index].location);
+				add_part(&buffer,len,event_list[index].location);
 			} else if (s[i] == 'T') {
-				if (len == 0)
-					len = 1;
-				sprintf(buffer,"%*.*d",len,len,event_list[index].transp);
+				ohold[0] = event_list[index].transp;
+				ohold[1] = '\0';
+				add_part(&buffer,len,ohold);
 			} else if (s[i] == 'a') {
-				if (len == 0)
-					len = strlen(event_list[index].attendees);
-				sprintf(buffer,"%*.*s",len,len,event_list[index].attendees);
+				add_part(&buffer,len,event_list[index].attendees);
 			} else if (s[i] == 'N') {
 				if (len == 0)
-					sprintf(buffer,"%d",event_list[index].idnum);
+					sprintf(ohold,"%d",event_list[index].idnum);
 				else
-					sprintf(buffer,"%*d",len,event_list[index].idnum);
+					sprintf(ohold,"%*d",len,event_list[index].idnum);
+				add_part(&buffer,len,ohold);
 			} else if (s[i] == 'u') {
-				if (len == 0)
-					len = strlen(event_list[index].url);
-				sprintf(buffer,"%*.*s",len,len,event_list[index].url);
+				add_part(&buffer,len,event_list[index].url);
+			} else if (s[i] == 'D') {
+				add_part(&buffer,len,event_list[index].description);
 			} else {
 				fprintf(stderr,"dozcal:  unrecognized conversion "
 					"character \"%%%c\" in event form string, "
@@ -672,9 +687,18 @@ int fill_event(char *s, int index, char *date_format, char
 			}
 		}
 		len = MAXLEN + 1;
+		othbuf = realloc(othbuf,strlen(othbuf) + strlen(buffer) + 2);
 		strcat(othbuf,buffer);
 	}
-	strncpy(*(evlines+(numevs-1)),othbuf,MAXLEN);
+	if ((*(evlines+(numevs-1)) = malloc((strlen(othbuf) + 1) * sizeof(char))) == NULL) {
+		fprintf(stderr,"dozcal:  insufficient memory to store "
+			"the formatted event lines\n");
+		exit(INSUFF_MEM);
+	}
+	*(evlines+(numevs-1))[0] = '\0';
+	strcat(*(evlines+(numevs-1)),othbuf);
+	free(buffer);
+	free(othbuf);
 	return 0;
 }
 

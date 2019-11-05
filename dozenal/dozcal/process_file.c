@@ -57,6 +57,8 @@ extern struct todo *todo_list;
 extern int todonums;
 extern int geventid;
 extern int gtodoid;
+extern char **origevs;
+extern char **origtos;
 
 int is_mon(char *s);
 int is_num(char *s);
@@ -82,26 +84,52 @@ int process_file(char *s)
 			continue;
 		if ((strstr(line,"[EVENT]") || strstr(line,"[TODO]"))) {
 			strcpy(buffer[currlineno],"%%");
-			if (linesread != 0)
+			if (strstr(line,"[EVENT]")) ++geventid;
+			if (strstr(line,"[TODO]")) ++gtodoid;
+			if (linesread != 0) {
 				proc_rec(buffer,currlineno);
+//				make_whole_rec(buffer,currlineno);
+			}
 			currlineno = 0;
 			if (strstr(line,"[EVENT]")) {
 				strcpy(buffer[currlineno++],"EVENT");
-				++geventid;
 			}
 			if (strstr(line,"[TODO]")) {
 				strcpy(buffer[currlineno++],"TODO");
-				++gtodoid;
 			}
 		} else if (!strstr(line,"[EVENT]") && !strstr(line,"[TODO]") && 
 		(currlineno < MAXLINES)) {
-			strncpy(buffer[currlineno++],line,MAXLEN);
+			strncpy(buffer[currlineno],line,MAXLEN);
+			buffer[currlineno][MAXLEN] = '\0';
+			++currlineno;
 		}
 		linesread++;
 	}
 	strcpy(buffer[currlineno],"%%");
 	proc_rec(buffer,currlineno);
+//	make_whole_rec(buffer,currlineno);
 	free(line);
+	return 0;
+}
+
+int make_whole_rec(char buffer[][MAXLEN+1],int lines)
+{
+	int i;
+	int len = 0;
+
+	printf("YO:  %d\n",geventid);
+	if (origevs == NULL)
+		origevs = malloc(1000 * sizeof(char *));
+//	else
+//		origevs = realloc(origevs,(geventid+4) * sizeof(char *));
+	for (i = 0; i < lines; ++i)
+		len += strlen(buffer[i]);
+	origevs[geventid] = malloc((len + 1) * sizeof(char));
+	/* FIXME */
+//	*(origevs+(geventid))[0] = '\0';
+	for (i = 0; i < lines; ++i) {
+//		strcat(origevs[geventid],buffer[i]);
+	}
 	return 0;
 }
 
@@ -131,6 +159,7 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 	char *attendees;
 	char *categories;
 	char *url;
+	char *description;
 	int retval = 0;
 
 	init_str(&categories);
@@ -139,6 +168,7 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 	init_str(&url);
 	init_str(&title);
 	init_str(&class);
+	init_str(&description);
 	for (i = 0; i < SHORTLEN; ++i)
 		freq[i][0] = '\0';
 	for (i = 0; i < MAXLEN; ++i)
@@ -194,6 +224,9 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 		} if (strstr(buffer[i],"URL")) {
 			holder = get_impstr(buffer[i]);
 			addto_str(&url,buffer[i]+holder);
+		} if (strstr(buffer[i],"DESCRIPTION")) {
+			holder = get_impstr(buffer[i]);
+			addto_str(&description,buffer[i]+holder);
 		}
 	}
 	if (enddate == -1)
@@ -230,11 +263,13 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 						while (holder < endday) {
 							if (strstr(buffer[0],"EVENT")) {
 								add_event(starttime, endtime, holder, title, class, 
-									categories, location, transp, attendees, url);
+									categories, location, transp,
+									attendees, url, description);
 							} if (strstr(buffer[0],"TODO")) {
 								add_todo(holder, starttime, priority, 
 									compflag, pergross, title, class, 
-									categories, location, url);
+									categories, location, url,
+									description);
 							}
 							date->tm_year += interval; mktime(date);
 							holder = get_datenum(date);
@@ -255,11 +290,13 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 						while (holder < endday) {
 							if (strstr(buffer[0],"EVENT")) {
 								add_event(starttime, endtime, holder, title, class, 
-									categories, location, transp, attendees, url);
+									categories, location, transp,
+									attendees, url, description);
 							} if (strstr(buffer[0],"TODO")) {
 								add_todo(holder, starttime, priority, 
 									compflag, pergross, title, class, 
-									categories, location, url);
+									categories, location, url,
+									description);
 							}
 							date->tm_mon += interval; mktime(date);
 							holder = get_datenum(date);
@@ -284,11 +321,13 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 								if (strstr(buffer[0],"EVENT")) {
 									add_event(starttime, endtime, holder, title,
 											class, categories, location,
-											transp, attendees, url);
+											transp, attendees, url,
+											description);
 								} if (strstr(buffer[0],"TODO")) {
 									add_todo(holder, starttime, priority, 
 										compflag, pergross, title, class, 
-										categories, location, url);
+										categories, location, url,
+										description);
 								}
 							}
 							date->tm_mday += (interval * 7); mktime(date);
@@ -306,11 +345,13 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 						while (holder < endday) {
 							if (strstr(buffer[0],"EVENT")) {
 								add_event(starttime, endtime, holder, title, class, 
-									categories, location, transp, attendees, url);
+									categories, location, transp,
+									attendees, url, description);
 							} if (strstr(buffer[0],"TODO")) {
 								add_todo(holder, starttime, priority, 
 									compflag, pergross, title, class, 
-									categories, location, url);
+									categories, location, url,
+									description);
 							}
 							date->tm_mday += (interval * 7); mktime(date);
 							holder += (interval * 7);
@@ -323,10 +364,12 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 				while (holder < endday) {
 					if (strstr(buffer[0],"EVENT")) {
 						add_event(starttime, endtime, holder, title, class, 
-							categories, location, transp, attendees, url);
+							categories, location, transp,
+							attendees, url, description);
 					} if (strstr(buffer[0],"TODO")) {
 						add_todo(holder, starttime, priority, compflag, pergross,
-							title, class, categories, location, url);
+							title, class, categories, location,
+							url, description);
 					}
 					date->tm_mon += interval; mktime(date);
 					holder = get_datenum(date);
@@ -337,10 +380,13 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 				while (holder < endday) {
 					if (strstr(buffer[0],"EVENT")) {
 						add_event(starttime, endtime, holder, title, class, 
-							categories, location,transp,attendees,url);
+							categories,
+							location,transp,attendees,url,
+							description);
 					} if (strstr(buffer[0],"TODO")) {
 						add_todo(holder, starttime, priority, compflag, pergross,
-							title, class, categories, location, url);
+							title, class, categories, location,
+							url, description);
 					}
 					date->tm_year += interval; mktime(date);
 					holder = get_datenum(date);
@@ -358,10 +404,12 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 		(currinterval == holder)) {
 			if (strstr(buffer[0],"EVENT")) {
 				add_event(starttime, endtime, holder, title, class, 
-					categories, location, transp, attendees, url);
+					categories, location, transp, attendees, url,
+					description);
 			} if (strstr(buffer[0],"TODO")) {
 				add_todo(holder, starttime, priority, compflag, pergross,
-					title, class, categories, location, url);
+					title, class, categories, location, url,
+					description);
 			}
 		}
 		if (currinterval == holder)
@@ -374,6 +422,7 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 	free(categories);
 	free(location);
 	free(url);
+	free(description);
 	return retval;
 }
 
@@ -396,7 +445,6 @@ int is_wkday(char *s)
 		return 7;
 	else
 		return 0;
-
 }
 
 /* return non-zero if there's a month, 0 if not */

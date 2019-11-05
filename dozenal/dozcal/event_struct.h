@@ -46,6 +46,7 @@ struct event {
 	char transp;				/* '0' if opaque, 1 if transp */
 	char *attendees;
 	char *url;					/* URL associated with event */
+	char *description;		/* description of event */
 };
 
 struct todo {
@@ -60,6 +61,7 @@ struct todo {
 	int completed;			/* '0' if not completed, 1 if completed */
 	int pergross;			/* 0-144 completed amount */
 	char *url;				/* URL associated with event */
+	char *description;	/* description of todo */
 };
 
 struct globopts {
