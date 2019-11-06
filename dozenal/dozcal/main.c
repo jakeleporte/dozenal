@@ -80,6 +80,7 @@ int clear_todos();
 int print_events();
 int clear_events();
 int build_globopts_struct();
+int add_part(char **buf,int len, char *text);
 
 int main(int argc, char **argv)
 {
@@ -472,26 +473,22 @@ int fill_todo(char *s, int index, char *date_format, char
 	char holder[6];
 	int len = MAXLEN + 1;
 	char datestr[MAXLEN+1];
-	char buffer[SHORTLEN];
-	char othbuf[MAXLEN+1];
-	char tmpbuf[MAXLEN+1];
+	char *buffer;
+	char *othbuf;
+	char ohold[MAXLEN+1];
 
+	buffer = malloc(1 * sizeof(char));
+	othbuf = malloc(1 * sizeof(char));
 	numtodos++;
 	if ((todolines=realloc(todolines,(numtodos*sizeof(char *)))) == NULL) {
 		fprintf(stderr,"dozcal:  insufficient memory to store "
 			"the formatted event lines\n");
 		exit(INSUFF_MEM);
 	}
-	if ((*(todolines+(numtodos-1))=malloc(MAXLEN*sizeof(char))) == NULL) {
-		fprintf(stderr,"dozcal:  insufficient memory to store "
-			"the formatted event lines\n");
-		exit(INSUFF_MEM);
-	}
-	othbuf[0] = '\0';
+	othbuf[0] = '\0'; buffer[0] = '\0';
 	for (i = 0; s[i] != '\0'; ++i) {
-		tmpbuf[0] = '\0';
 		if (s[i] == '%') {
-			j = 0; holder[0] = '\0'; len = 0;
+			j = 0; holder[0] = '\0'; len = 0; buffer[0] = '\0';
 			while (dozendig(s[++i]))
 				holder[j++] = s[i];
 			holder[j] = '\0';
@@ -501,52 +498,43 @@ int fill_todo(char *s, int index, char *date_format, char
 				num_to_date(todo_list[index].duedate,datestr,date_format);
 				if (len == 0)
 					len = strlen(datestr);
-				sprintf(tmpbuf,"%*.*s",len,len,datestr);
+				sprintf(ohold,"%*.*s",len,len,datestr);
 				datestr[0] = '\0';
+				add_part(&buffer,len,ohold);
 			} else if (s[i] == 't') {
 				secs_to_Tims(todo_list[index].duetime,datestr,time_format);
 				if (len == 0)
 					len = strlen(datestr);
-				sprintf(tmpbuf,"%*.*s",len,len,datestr);
+				sprintf(ohold,"%*.*s",len,len,datestr);
 				datestr[0] = '\0';
+				add_part(&buffer,len,ohold);
 			} else if (s[i] == 'p') {
-				sprintf(tmpbuf,"%*d",len,todo_list[index].priority);
+				sprintf(ohold,"%*d",len,todo_list[index].priority);
+				add_part(&buffer,len,ohold);
 			} else if (s[i] == 'c') {
-				sprintf(tmpbuf,"%*d",len,todo_list[index].completed);
+				sprintf(ohold,"%*d",len,todo_list[index].completed);
+				add_part(&buffer,len,ohold);
 			} else if (s[i] == 'g') {
-				dectodoz(buffer,(double)todo_list[index].pergross);
-				if (len == 0)
-					len = strlen(buffer);
-				sprintf(tmpbuf,"%*.*s",len,len,buffer);
+				dectodoz(ohold,(double)todo_list[index].pergross);
+				add_part(&buffer,len,ohold);
 			} else if (s[i] == 'i') {
-				if (len == 0)
-					len = strlen(todo_list[index].item);
-				sprintf(tmpbuf,"%*.*s",len,len,todo_list[index].item);
+				add_part(&buffer,len,todo_list[index].item);
 			} else if (s[i] == 'l') {
-				if (len == 0)
-					len = strlen(todo_list[index].location);
-				sprintf(tmpbuf,"%*.*s",len,len,todo_list[index].location);
+				add_part(&buffer,len,todo_list[index].location);
 			} else if (s[i] == 'C') {
-				if (len == 0)
-					len = strlen(todo_list[index].categories);
-				sprintf(tmpbuf,"%*.*s",len,len,todo_list[index].categories);
+				add_part(&buffer,len,todo_list[index].categories);
 			} else if (s[i] == 'T') {
-				if (len == 0)
-					len = strlen(todo_list[index].todoclass);
-				sprintf(tmpbuf,"%*.*s",len,len,todo_list[index].todoclass);
+				add_part(&buffer,len,todo_list[index].todoclass);
 			} else if (s[i] == 'u') {
-				if (len == 0)
-					len = strlen(todo_list[index].url);
-				sprintf(tmpbuf,"%*.*s",len,len,todo_list[index].url);
+				add_part(&buffer,len,todo_list[index].url);
 			} else if (s[i] == 'D') {
-				if (len == 0)
-					len = strlen(todo_list[index].description);
-				sprintf(tmpbuf,"%*.*s",len,len,todo_list[index].description);
+				add_part(&buffer,len,todo_list[index].description);
 			} else if (s[i] == 'N') {
 				if (len == 0)
-					sprintf(buffer,"%d",todo_list[index].idnum);
+					sprintf(ohold,"%d",todo_list[index].idnum);
 				else
-					sprintf(buffer,"%*d",len,todo_list[index].idnum);
+					sprintf(ohold,"%*d",len,todo_list[index].idnum);
+				add_part(&buffer,len,ohold);
 			} else {
 				fprintf(stderr,"dozcal:  unrecognized conversion "
 					"character \"%%%c\" in todo form string, "
@@ -556,22 +544,31 @@ int fill_todo(char *s, int index, char *date_format, char
 		} else {
 			if (s[i] == '\\') {
 				if (s[i+1] == 'n') {
-					sprintf(tmpbuf,"\n");
+					sprintf(buffer,"\n");
 					++i;
 				} else if (s[i+1] == 't') {
-					sprintf(tmpbuf,"\t");
+					sprintf(buffer,"\t");
 					++i;
 				} else {
-					sprintf(tmpbuf,"\\");
+					sprintf(buffer,"\\");
 				}
 			} else {
-				sprintf(tmpbuf,"%c",s[i]);
+				sprintf(buffer,"%c",s[i]);
 			}
 		}
 		len = MAXLEN + 1;
-		strcat(othbuf,tmpbuf);
+		othbuf = realloc(othbuf,strlen(othbuf) + strlen(buffer) + 2);
+		strcat(othbuf,buffer);
 	}
-	strncpy(*(todolines+(numtodos-1)),othbuf,MAXLEN);
+	if ((*(todolines+(numtodos-1)) = malloc((strlen(othbuf) + 1) * sizeof(char))) == NULL) {
+		fprintf(stderr,"dozcal:  insufficient memory to store "
+			"the formatted event lines\n");
+		exit(INSUFF_MEM);
+	}
+	*(todolines+(numtodos-1))[0] = '\0';
+	strcat(*(todolines+(numtodos-1)),othbuf);
+	free(buffer);
+	free(othbuf);
 	return 0;
 }
 
@@ -586,7 +583,8 @@ int add_part(char **buf,int len, char *text)
 {
 	if (len == 0)
 		len = strlen(text);
-	*buf = realloc(*buf,strlen(text) + 2);
+	*buf = realloc(*buf,(len + 2) * sizeof(char));
+	*buf[0] = '\0';
 	sprintf(*buf,"%*.*s",len,len,text);
 	return 0;
 }
@@ -602,8 +600,8 @@ int fill_event(char *s, int index, char *date_format, char
 	char *buffer;
 	char *othbuf;
 
-	buffer = malloc(1 * sizeof(char));
-	othbuf = malloc(1 * sizeof(char));
+	buffer = malloc(MAXLEN * sizeof(char));
+	othbuf = malloc(MAXLEN * sizeof(char));
 	numevs++;
 	if ((evlines = realloc(evlines,(numevs * sizeof(char *)))) == NULL) {
 		fprintf(stderr,"dozcal:  insufficient memory to store "
