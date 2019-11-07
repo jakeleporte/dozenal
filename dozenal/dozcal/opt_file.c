@@ -80,6 +80,8 @@ int proc_options(char *s, int *moonphases, char **nat, char **relig,
 		return 0;
 	}
 	while ((read = getline(&line, &len, fp)) != -1) {
+		if (line[0] == '#')
+			continue;
 		chomp(line);
 		if (strstr(line,"PRINT_TODOS")) {
 			*iftodo = 1;
