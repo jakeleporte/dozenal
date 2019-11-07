@@ -79,6 +79,10 @@ int process_file(char *s)
 		exit(BAD_FILE);
 	}
 	while ((read = getline(&line, &len, fp)) != -1) {
+		if (line[0] == '#') {
+			printf("Skipping comment...\n");
+			continue;
+		}
 		chomp(line);
 		if (strlen(line) == 1)
 			continue;

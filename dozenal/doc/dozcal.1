@@ -346,6 +346,9 @@ The list of the event's attendees.
 .TP
 .BR %u
 A URL associated with the event.
+.TP
+.BR %D
+The event's description.
 .PP
 Event formats can also include newlines, specified in the
 usual way as \fI\\n\fR, and tabs, specified in the usual way
@@ -392,6 +395,9 @@ The todo's class.
 .TP
 .BR %u
 A URL associated with the todo.
+.TP
+.BR %D
+The todo's description.
 .PP
 Event formats can also include newlines, specified in the
 usual way as \fI\\n\fR, and tabs, specified in the usual way
@@ -447,7 +453,9 @@ control \fBdozcal\fR's behavior.
 specific format.  Each record begins with a line containing
 the string \fI[EVENT]\fR, \fI[TODO]\fR, or \fI[JOURNAL]\fR,
 and ends either at the end of the file or at the next line
-containing one of those strings; blank lines are ignored.
+containing one of those strings; blank lines are ignored, as
+are any lines with \fI#\fR as their first character (comment
+lines).
 .PP
 Within each event, you must specify at least a \fITITLE\fR
 and a \fISTART_DATE\fR.  The following are recognized
@@ -580,6 +588,13 @@ determing busy times or not.
 Simply lists attendees at an event, if any exist.  At some
 point, the ability to send emails to those listed here will
 be added.  A comma-separated list, like categories.
+.TP
+.BR URL:
+Gives a URL associated with the event.
+.TP
+.BR DESCRIPTION:
+A string of arbitrary length and content, describing what
+exactly the event is.
 .RE
 .PP
 An example record:
@@ -642,6 +657,15 @@ Same as for events.
 .BR PRIORITY:
 How important this todo is, expressed as an integer.  Lower
 integers are more important.
+.TP
+.BR URL:
+Same as for events.
+.TP
+.BR LOCATION:
+Same as for events.
+.TP
+.BR DESCRIPTION:
+Same as for events.
 .RE
 .PP
 Todos are sorted first by priority; then by due date; then
