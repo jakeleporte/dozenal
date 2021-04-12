@@ -238,8 +238,11 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 							holder = wday_of_month(holder,wday-1,nday);
 						else
 							holder = last_wday_of_month(holder,wday-1);
-						if (endday <= holder)
-							endday = holder + 1;
+						if (endday <= holder) {
+							endday = first_of_next(date);
+							endday += 3650;
+							date = broken_date(startday);
+						}
 						while (holder < endday) {
 							if (strstr(buffer[0],"EVENT")) {
 								add_event(starttime, endtime, holder, title, class, 
@@ -297,10 +300,9 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 							endday += 3650;
 							date = broken_date(startday);
 						}
+						date = broken_date(holder);
 						while (holder < endday) {
 							if (date->tm_mon == (mon - 1)) {
-								printf("HERE:  %d : %d\t",date->tm_mon, mon-1);
-							printf("%d-%d-%d\n",date->tm_year, date->tm_mon,date->tm_mday);
 								if (strstr(buffer[0],"EVENT")) {
 									add_event(starttime, endtime, holder, title,
 										class, categories, location,
@@ -326,6 +328,7 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 							endday += 3650;
 							date = broken_date(startday);
 						}
+						date = broken_date(holder);
 						while (holder < endday) {
 							if (strstr(buffer[0],"EVENT")) {
 								add_event(starttime, endtime, holder, title, class, 
