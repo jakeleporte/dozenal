@@ -515,22 +515,22 @@ would be "Third Tuesday of April."
 If it finds a weekday and an ordinal but not the name of a
 month, it interprets this as the ordinal of that weekday for
 every month in your range (from your given \fISTART_DATE\fR
-to your given \fIEND_DATE\fR, or for the given month
+to your given \fIEND_DATE\fR, or for the next ten years
 if you gave no \fIEND_DATE\fR).  An example would be
 "the last Thursday".
 .PP
 If it finds a weekday but no ordinal or month name, it
 interprets this as that weekday every month between
-\fISTART_DATE\fR and \fIEND_DATE\fR, or for the start date's
-month if there is not \fIEND_DATE\fR.  An example might be
-"Wednesdays".
+\fISTART_DATE\fR and \fIEND_DATE\fR, or for ten years from
+the start date month if there is no \fIEND_DATE\fR.  An
+example might be "Wednesdays".
 .PP
 If it finds no weekday, no ordinal, and no month name, it
 looks for the strings "monthly" or "yearly" (with no regard
 to capitalization; the search is case-insensitive).  It it
 finds "monthly", it will repeat the event every month
-from \fISTART_DATE\fR to \fIEND_DATE\fR (or to the end of
-the following year if there is no \fIEND_DATE\fR).  If it
+from \fISTART_DATE\fR to \fIEND_DATE\fR (or for the next
+ten years if there is no \fIEND_DATE\fR).  If it
 finds "yearly", it will do the same every year.
 .PP
 If you want something repeated daily, or at some interval of

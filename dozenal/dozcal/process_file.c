@@ -348,6 +348,11 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 			} else if (strstr(freq[i],"monthly")) {
 				date = broken_date(startday);
 				holder = get_datenum(date);
+				if (endday <= holder) {
+					endday = first_of_next(date);
+					endday += 3650;
+					date = broken_date(startday);
+				}
 				while (holder < endday) {
 					if (strstr(buffer[0],"EVENT")) {
 						add_event(starttime, endtime, holder, title, class, 
