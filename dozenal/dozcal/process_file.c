@@ -90,7 +90,6 @@ int process_file(char *s)
 			if (strstr(line,"[TODO]")) ++gtodoid;
 			if (linesread != 0) {
 				proc_rec(buffer,currlineno);
-//				make_whole_rec(buffer,currlineno);
 			}
 			currlineno = 0;
 			if (strstr(line,"[EVENT]")) {
@@ -109,29 +108,7 @@ int process_file(char *s)
 	}
 	strcpy(buffer[currlineno],"%%");
 	proc_rec(buffer,currlineno);
-//	make_whole_rec(buffer,currlineno);
 	free(line);
-	return 0;
-}
-
-int make_whole_rec(char buffer[][MAXLEN+1],int lines)
-{
-	int i;
-	int len = 0;
-
-	printf("YO:  %d\n",geventid);
-	if (origevs == NULL)
-		origevs = malloc(1000 * sizeof(char *));
-//	else
-//		origevs = realloc(origevs,(geventid+4) * sizeof(char *));
-	for (i = 0; i < lines; ++i)
-		len += strlen(buffer[i]);
-	origevs[geventid] = malloc((len + 1) * sizeof(char));
-	/* FIXME */
-//	*(origevs+(geventid))[0] = '\0';
-	for (i = 0; i < lines; ++i) {
-//		strcat(origevs[geventid],buffer[i]);
-	}
 	return 0;
 }
 
@@ -147,6 +124,7 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 	time_t enddate = -1; int endday = -1;
 	int exceptions[MAXLEN+1];
 	int j = 0;
+	int k = 0;
 	int starttime = -1; int endtime = -1;
 	int interval = 1;
 	int currinterval;
@@ -251,8 +229,8 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 			}
 			lower_str(freq[i]);
 			if ((wday = is_wkday(freq[i]))) {
-				if ((nday = is_num(freq[i]))) {
-					if ((mon = is_mon(freq[i]))) {
+				if ((nday = is_num(freq[i]))) { // weekday, ordinal
+					if ((mon = is_mon(freq[i]))) { // month name
 						date = broken_date(startday);
 						date->tm_mon = mon - 1; mktime(date);
 						holder = get_datenum(date);
@@ -280,7 +258,7 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 							else
 								holder = last_wday_of_month(holder,wday-1);
 						}
-					} else {
+					} else { // weekday, ordinal, no month name
 						date = broken_date(startday);
 						holder = get_datenum(date);
 						if (nday <= 5)
@@ -316,15 +294,18 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 						while (holder < startday) holder += 7;
 						if (endday <= holder) {
 							endday = first_of_next(date);
+							endday += 3650;
 							date = broken_date(startday);
 						}
 						while (holder < endday) {
 							if (date->tm_mon == (mon - 1)) {
+								printf("HERE:  %d : %d\t",date->tm_mon, mon-1);
+							printf("%d-%d-%d\n",date->tm_year, date->tm_mon,date->tm_mday);
 								if (strstr(buffer[0],"EVENT")) {
 									add_event(starttime, endtime, holder, title,
-											class, categories, location,
-											transp, attendees, url,
-											description);
+										class, categories, location,
+										transp, attendees, url,
+										description);
 								} if (strstr(buffer[0],"TODO")) {
 									add_todo(holder, starttime, priority, 
 										compflag, pergross, title, class, 
@@ -342,6 +323,7 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 						while (holder < startday) holder += 7;
 						if (endday <= holder) {
 							endday = first_of_next(date);
+							endday += 3650;
 							date = broken_date(startday);
 						}
 						while (holder < endday) {
@@ -382,8 +364,7 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 				while (holder < endday) {
 					if (strstr(buffer[0],"EVENT")) {
 						add_event(starttime, endtime, holder, title, class, 
-							categories,
-							location,transp,attendees,url,
+							categories, location,transp,attendees,url,
 							description);
 					} if (strstr(buffer[0],"TODO")) {
 						add_todo(holder, starttime, priority, compflag, pergross,
