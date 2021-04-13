@@ -124,7 +124,6 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 	time_t enddate = -1; int endday = -1;
 	int exceptions[MAXLEN+1];
 	int j = 0;
-	int k = 0;
 	int starttime = -1; int endtime = -1;
 	int interval = 1;
 	int currinterval;

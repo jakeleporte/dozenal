@@ -229,7 +229,7 @@ int num_to_date(int datenum, char *datestr, char *dateform)
 	struct tm *broken;
 	int i; int j; char holder[6];
 	char buffer[MAXLEN+1];
-	char doznum[6]; char formdoz[6];
+	char doznum[6]; char formdoz[24];
 	const char *padding="000000000000000000000000000";
 	int padlen;
 

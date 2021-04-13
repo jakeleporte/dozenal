@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
 	while ((read = getline(&line, &len, fp)) != -1) {
 		clean_str(line);
 		++linect;
-		fprintf(stderr,"Processing line %d, of %d chars...\n",linect,read);
+		fprintf(stderr,"Processing line %d, of %d chars...\n",linect,(int)read);
 		if (flag == 0)
 			bline[0] = '\0';
 		if ((c = fgetc(fp)) == '\t') {
@@ -125,7 +125,7 @@ char *get_end_range(char *s, char c, int *num)
 	for (i = 0; (s[i] != '\0') && (s[i] != c); ++i)
 		++e;
 	*num = i;
-	if (e == '\0')
+	if (*e == '\0')
 		return NULL;
 	return e;
 }

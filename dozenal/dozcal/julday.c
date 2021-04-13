@@ -98,7 +98,7 @@ int frac_to_secs(double jdn)
 {
 	double frac; double integ;
 	int secs;
-	char buf[8];
+	char buf[9];
 
 	frac = modf(jdn,&integ);
 	sprintf(buf,"%.6f",frac);
