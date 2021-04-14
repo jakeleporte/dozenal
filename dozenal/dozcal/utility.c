@@ -242,7 +242,7 @@ int upper_str(char *s)
 int add_event(int starttime, int endtime, int thisdate,
 	char *title, char *class, char *categories, char
 	*location, char transp, char *attendees, char *url,
-	char *description)
+	char *description, char *organizer)
 {
 	event_list = realloc(event_list,(recordnums * 
 		sizeof(struct event)));
@@ -263,6 +263,8 @@ int add_event(int starttime, int endtime, int thisdate,
 	event_list[recordnums-1].transp = 1;
 	event_list[recordnums-1].attendees = NULL;
 	addto_str(&event_list[recordnums-1].attendees,attendees);
+	event_list[recordnums-1].organizer = NULL;
+	addto_str(&event_list[recordnums-1].organizer,organizer);
 	event_list[recordnums-1].url = NULL;
 	addto_str(&event_list[recordnums-1].url,url);
 	event_list[recordnums-1].description = NULL;
@@ -274,7 +276,7 @@ int add_event(int starttime, int endtime, int thisdate,
 
 int add_to_event(char *title, int datenum, char *cat)
 {
-	add_event(-1,-1,datenum,title,"",cat,"",1,"","","");
+	add_event(-1,-1,datenum,title,"",cat,"",1,"","","","");
 	return 0;
 }
 

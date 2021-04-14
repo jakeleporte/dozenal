@@ -23,96 +23,87 @@ int strip_value(char *s);
 int clean_str(char *s);
 int parse_freq(char *s);
 int parse_attendee(char *s);
+int parse_line(char *s);
 
 #define START_DATE 0
 #define END_DATE 1
 
 int main(int argc, char *argv[])
 {
-	FILE *fp; char *line = NULL; size_t len = 0; ssize_t read;
-	char *icalfile;
-	char *nline;
 	char c;
 	char *bline;
-	char flag = 0;
-	int linect = 0;
 
-	opterr = 0;
-	while ((c = getopt(argc,argv,"f:")) != -1) {
-		if (c == 'f')
-			icalfile = optarg;
-	}
-	if ((fp = fopen(icalfile,"r")) == NULL) {
-		fprintf(stderr,"dozcal:  unable to open file "
-			"\"%s\", with this error:\n\t%d: "
-			"%s\n",icalfile,errno,strerror(errno));
-		return 0;
-	}
-	bline = malloc(sizeof(char));
-	while ((read = getline(&line, &len, fp)) != -1) {
-		clean_str(line);
-		++linect;
-		fprintf(stderr,"Processing line %d, of %d chars...\n",linect,(int)read);
-		if (flag == 0)
-			bline[0] = '\0';
-		if ((c = fgetc(fp)) == '\t') {
-			flag = 1;
-			bline = realloc(bline,(strlen(bline) + strlen(line) + 1)
-					* sizeof(char));
-			line[strlen(line)-1] = '\0';
-			strcat(bline,line);
-			continue;
+	bline = malloc(sizeof(char) * 100000000);
+	bline[0] = '\0';
+	int numchars = 0;
+	while ((c = getchar()) != EOF) {
+		if (c == '\n') {
+			if (((c = getchar()) != EOF) && ((c == ' ') || (c == '\t'))) {
+				while (((c = getchar()) != EOF) && ((c == ' ') || (c == '\t')));
+				if (c == EOF)
+					break;
+				bline[numchars++] = c;
+			} else {
+				bline[numchars] = '\0';
+				parse_line(bline);
+				numchars = 0;
+				bline[numchars++] = c;
+			}
 		} else {
-			ungetc(c,fp);
-			bline = realloc(bline,(strlen(bline) + strlen(line) + 1)
-					* sizeof(char));
-			line[strlen(line)-1] = '\0';
-			strcat(bline,line);
-			flag = 0;
-		}
-		if (strstr(bline,"BEGIN:VEVENT")) {
-			printf("\n\n[EVENT]\n");
-		} else if (strstr(bline,"DTSTART")) {
-			printf("START_DATE:\t");
-			parse_date(strstr(bline,":")+1,START_DATE);
-		} else if (strstr(bline,"DTEND")) {
-			printf("END_DATE:\t");
-			parse_date(strstr(bline,":")+1,END_DATE);
-		} else if (strstr(bline,"SUMMARY")) {
-			printf("TITLE:\t");
-			strip_value(nline = strstr(bline,":")+1);
-			printf("%s\n",nline);
-		} else if (strstr(bline,"CLASS")) {
-			printf("CLASS:\t");
-			strip_value(nline = strstr(bline,":")+1);
-			printf("%s\n",nline);
-		} else if (strstr(bline,"CATEGORIES")) {
-			printf("CATEGORY:\t");
-			strip_value(nline = strstr(bline,":")+1);
-			printf("%s\n",nline);
-		} else if (strstr(bline,"LOCATION") || strstr(bline,"GEO:")) {
-			printf("LOCATION:\t");
-			strip_value(nline = strstr(bline,":")+1);
-			printf("%s\n",nline);
-		} else if (strstr(bline,"URL:")) {
-			printf("URL:\t");
-			strip_value(nline = strstr(bline,":")+1);
-			printf("%s\n",nline);
-		} else if (strstr(bline,"ATTENDEE")) {
-			printf("ATTENDEES:  ");
-			strip_value(nline = strstr(bline,":")+1);
-			parse_attendee(nline);
-		} else if (strstr(bline,"TRANSPARENT:")) {
-			printf("TRANSPARENT:\t");
-			strip_value(nline = strstr(bline,":")+1);
-			printf("%s\n",nline);
-		} else if (strstr(bline,"FREQ=")) {
-			parse_freq(bline);
+			bline[numchars++] = c;
 		}
 	}
-	free(line);
 	free(bline);
-	fclose(fp);
+	return 0;
+}
+
+int parse_line(char *s)
+{
+	char *nline;
+
+	if (strstr(s,"BEGIN:VEVENT")) {
+		printf("\n\n[EVENT]\n");
+	} else if (strstr(s,"DTSTART")) {
+		printf("START_DATE:\t");
+		parse_date(strstr(s,":")+1,START_DATE);
+	} else if (strstr(s,"DTEND")) {
+		printf("END_DATE:\t");
+		parse_date(strstr(s,":")+1,END_DATE);
+	} else if (strstr(s,"SUMMARY")) {
+		printf("TITLE:\t");
+		strip_value(nline = strstr(s,":")+1);
+		printf("%s\n",nline);
+	} else if (strstr(s,"DESCRIPTION")) {
+		printf("DESCRIPTION:\t");
+		strip_value(nline = strstr(s,":")+1);
+		printf("%s\n",nline);
+	} else if (strstr(s,"CLASS")) {
+		printf("CLASS:\t");
+		strip_value(nline = strstr(s,":")+1);
+		printf("%s\n",nline);
+	} else if (strstr(s,"CATEGORIES")) {
+		printf("CATEGORY:\t");
+		strip_value(nline = strstr(s,":")+1);
+		printf("%s\n",nline);
+	} else if (strstr(s,"LOCATION") || strstr(s,"GEO:")) {
+		printf("LOCATION:\t");
+		strip_value(nline = strstr(s,":")+1);
+		printf("%s\n",nline);
+	} else if (strstr(s,"URL:")) {
+		printf("URL:\t");
+		strip_value(nline = strstr(s,":")+1);
+		printf("%s\n",nline);
+	} else if (strstr(s,"ATTENDEE")) {
+		printf("ATTENDEES:  ");
+		strip_value(nline = strstr(s,":")+1);
+		parse_attendee(nline);
+	} else if (strstr(s,"TRANSPARENT:")) {
+		printf("TRANSPARENT:\t");
+		strip_value(nline = strstr(s,":")+1);
+		printf("%s\n",nline);
+	} else if (strstr(s,"FREQ=")) {
+		parse_freq(s);
+	}
 	return 0;
 }
 
@@ -163,6 +154,10 @@ int parse_freq(char *s)
 		printf("FREQ:\tmonthly");
 	if (strstr(eq,"YEARLY"))
 		printf("FREQ:\tyearly");
+	if (strstr(eq,"UNTIL=")) {
+		printf("END_DATE:\t");
+		parse_date(strstr(s,":")+1,END_DATE);
+	}
 	if (strstr(eq,"WEEKLY")) {
 		printf("FREQ:\t");
 		if (strstr(eq,"BYDAY=SU")) {
@@ -231,5 +226,26 @@ int parse_date(char *s, int sorend)
 	else if (sorend == 1)
 		printf("END_TIME:\t");
 	printf("%02d:%02d\n",hr,min);
+	return 0;
+}
+
+int unfold(char *s)
+{
+	char c;
+
+	while ((c = getchar()) != EOF) {
+		if (c == '\n') {
+			if (((c = getchar()) != EOF) && ((c == ' ') || (c == '\t'))) {
+				while (((c = getchar()) != EOF) && ((c == ' ') || (c == '\t')));
+				if (c == EOF)
+					break;
+				printf(" %c",c);
+			} else {
+				printf("\n%c",c);
+			}
+		} else {
+			printf("%c",c);
+		}
+	}
 	return 0;
 }

@@ -46,7 +46,7 @@ int get_impstr(char *s);
 int add_event(int starttime, int endtime, int thisdate,
 	char *title, char *class, char *categories, char
 	*location, char transp, char *attendees, char *url,
-	char *description);
+	char *description, char *organizer);
 int add_todo(int duedate,int starttime,int priority,
 	int compflag, int pergross, char *title, char *class,
 	char *categories, char *location, char *url,

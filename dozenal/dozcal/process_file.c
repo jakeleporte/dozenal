@@ -136,6 +136,7 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 	int numfreq = 0;
 	int transp = 0;
 	char *attendees;
+	char *organizer;
 	char *categories;
 	char *url;
 	char *description;
@@ -143,6 +144,7 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 
 	init_str(&categories);
 	init_str(&attendees);
+	init_str(&organizer);
 	init_str(&location);
 	init_str(&url);
 	init_str(&title);
@@ -200,6 +202,9 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 		} if (strstr(buffer[i],"ATTENDEES")) {
 			holder = get_impstr(buffer[i]);
 			addto_str(&attendees,buffer[i]+holder);
+		} if (strstr(buffer[i],"ORGANIZER")) {
+			holder = get_impstr(buffer[i]);
+			addto_str(&organizer,buffer[i]+holder);
 		} if (strstr(buffer[i],"URL")) {
 			holder = get_impstr(buffer[i]);
 			addto_str(&url,buffer[i]+holder);
@@ -246,7 +251,8 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 							if (strstr(buffer[0],"EVENT")) {
 								add_event(starttime, endtime, holder, title, class, 
 									categories, location, transp,
-									attendees, url, description);
+									attendees, url, description,
+									organizer);
 							} if (strstr(buffer[0],"TODO")) {
 								add_todo(holder, starttime, priority, 
 									compflag, pergross, title, class, 
@@ -273,7 +279,8 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 							if (strstr(buffer[0],"EVENT")) {
 								add_event(starttime, endtime, holder, title, class, 
 									categories, location, transp,
-									attendees, url, description);
+									attendees, url, description,
+									organizer);
 							} if (strstr(buffer[0],"TODO")) {
 								add_todo(holder, starttime, priority, 
 									compflag, pergross, title, class, 
@@ -306,7 +313,7 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 									add_event(starttime, endtime, holder, title,
 										class, categories, location,
 										transp, attendees, url,
-										description);
+										description, organizer);
 								} if (strstr(buffer[0],"TODO")) {
 									add_todo(holder, starttime, priority, 
 										compflag, pergross, title, class, 
@@ -332,7 +339,8 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 							if (strstr(buffer[0],"EVENT")) {
 								add_event(starttime, endtime, holder, title, class, 
 									categories, location, transp,
-									attendees, url, description);
+									attendees, url, description,
+									organizer);
 							} if (strstr(buffer[0],"TODO")) {
 								add_todo(holder, starttime, priority, 
 									compflag, pergross, title, class, 
@@ -356,7 +364,7 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 					if (strstr(buffer[0],"EVENT")) {
 						add_event(starttime, endtime, holder, title, class, 
 							categories, location, transp,
-							attendees, url, description);
+							attendees, url, description,organizer);
 					} if (strstr(buffer[0],"TODO")) {
 						add_todo(holder, starttime, priority, compflag, pergross,
 							title, class, categories, location,
@@ -372,7 +380,7 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 					if (strstr(buffer[0],"EVENT")) {
 						add_event(starttime, endtime, holder, title, class, 
 							categories, location,transp,attendees,url,
-							description);
+							description, organizer);
 					} if (strstr(buffer[0],"TODO")) {
 						add_todo(holder, starttime, priority, compflag, pergross,
 							title, class, categories, location,
@@ -383,8 +391,9 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 				}
 			} else {
 				fprintf(stderr,"dozcal:  \"FREQ\" directive \"%s\" "
-					"cannot be interpreted\n",freq[i]);
-				exit(BAD_FREQ);
+					"cannot be interpreted; skipping...\n",freq[i]);
+				continue;
+//				exit(BAD_FREQ);
 			}
 		}
 		goto cleanup;
@@ -395,7 +404,7 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 			if (strstr(buffer[0],"EVENT")) {
 				add_event(starttime, endtime, holder, title, class, 
 					categories, location, transp, attendees, url,
-					description);
+					description, organizer);
 			} if (strstr(buffer[0],"TODO")) {
 				add_todo(holder, starttime, priority, compflag, pergross,
 					title, class, categories, location, url,

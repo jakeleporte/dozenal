@@ -12,24 +12,24 @@ BEGIN {
 }
 
 // {
-	currdate = $1
+	currdate = $2
 	if (currdate != lastdate) {
 		printf "-------------------------------------------------"
 		printf "------------\n"
 		printf "%-13.13s%-30.30s%-18.18s\n","DATE","EVENT","LOCATION"
 		printf "-------------------------------------------------"
 		printf "------------\n"
-		printf "%-13.13s",$1
-		lastdate = $1
+		printf "%-13.13s",$3
+		lastdate = $2
 	} else {
 		printf "%-13.13s"," "
 	}
 	printf "%-30.28s%-18.18s\n",$4,$9
-	if ($2 != "") {
-		printf "%13.13s\t%7.7s"," ",$2
+	if ($3 != "") {
+		printf "%13.13s\t%7.7s"," ",$3
 	} if ($3 != "") {
 		printf "--%7.7s",$3
-	} if (($2 != "") || ($3 != "")) {
+	} if (($3 != "") || ($3 != "")) {
 		printf("\n")
 	}
 	if ($5 != "") {

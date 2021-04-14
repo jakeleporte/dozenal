@@ -89,7 +89,7 @@ int main(int argc, char **argv)
 	int moonphases = 0;		/* if 0, no phases; if 1, yes */
 	int startdate = -1; int enddate = -1;
 	char *ev_form;
-	const char *def_form = "%N | %d | %s | %c | %e | %t | %D | %C | %l | %a | %u";
+	const char *def_form = "%N | %d | %s | %c | %e | %t | %D | %C | %l | %a | %u | %o";
 	char *date_form;
 	const char *def_date = "%Y-%m-%d";
 	char *time_form;
@@ -418,6 +418,8 @@ int main(int argc, char **argv)
 			free(event_list[i].title);
 		if (event_list[i].attendees != NULL)
 			free(event_list[i].attendees);
+		if (event_list[i].organizer != NULL)
+			free(event_list[i].organizer);
 		if (event_list[i].url != NULL)
 			free(event_list[i].url);
 		if (event_list[i].description != NULL)
@@ -663,6 +665,8 @@ int fill_event(char *s, int index, char *date_format, char
 				add_part(&buffer,len,event_list[index].url);
 			} else if (s[i] == 'D') {
 				add_part(&buffer,len,event_list[index].description);
+			} else if (s[i] == 'o') {
+				add_part(&buffer,len,event_list[index].organizer);
 			} else {
 				fprintf(stderr,"dozcal:  unrecognized conversion "
 					"character \"%%%c\" in event form string, "

@@ -26,29 +26,29 @@ BEGIN {
 }
 
 // {
-	currdate = $1
+	currdate = $2
 	if (currdate != lastdate) {
 		heading_line = heading_line  "<th>" currdate "</th>"
 		if (ind != 0) {
 			events[ind] = events[ind] "</ul></td>"
 		}
 		ind = ind + 1
-		events[ind] = "<td><ul><li>"$4
-		if ($2 != "")
-			events[ind] = events[ind] " ("$2
+		events[ind] = "<td><ul><li>"$5
 		if ($3 != "")
-			events[ind] = events[ind] "--"$3
-		if (($2 != "") || ($3 != ""))
+			events[ind] = events[ind] " ("$3
+		if ($4 != "")
+			events[ind] = events[ind] "--"$4
+		if (($3 != "") || ($4 != ""))
 			events[ind] = events[ind] ") "
 		events[ind] = events[ind] "</li>"
-		lastdate = $1
+		lastdate = $2
 	} else {
-		events[ind] = events[ind] "<li>"$4
-		if ($2 != "")
-			events[ind] = events[ind] " ("$2
+		events[ind] = events[ind] "<li>"$5
 		if ($3 != "")
-			events[ind] = events[ind] "--"$3
-		if (($2 != "") || ($3 != ""))
+			events[ind] = events[ind] " ("$3
+		if ($3 != "")
+			events[ind] = events[ind] "--"$4
+		if (($3 != "") || ($4 != ""))
 			events[ind] = events[ind] ") "
 		events[ind] = events[ind] "</li>"
 		#fill in stuff

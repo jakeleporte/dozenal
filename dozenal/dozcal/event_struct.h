@@ -47,6 +47,7 @@ struct event {
 	char *attendees;
 	char *url;					/* URL associated with event */
 	char *description;		/* description of event */
+	char *organizer;
 };
 
 struct todo {
