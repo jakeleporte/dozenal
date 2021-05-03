@@ -202,6 +202,50 @@ int last_wday_of_month(int datenum, int wday)
 	return get_datenum(date);
 }
 
+int last_workday_of_month(int datenum)
+{
+	time_t datesecs;
+	struct tm *date;
+	int i;
+	int holder;
+
+	datesecs = datenum * 86400;
+	date = localtime(&datesecs);
+	holder = date->tm_mon;
+	for (i = 27; date->tm_mon == holder; ++i) {
+		date->tm_mday++;
+		mktime(date);
+	}
+	date->tm_mday--;
+	mktime(date);
+	for (i = date->tm_mday; (date->tm_wday < 1) ||
+			(date->tm_wday > 5); --i) {
+		date->tm_mday--;
+		mktime(date);
+	}
+	mktime(date);
+	return get_datenum(date);
+}
+
+int last_day_of_month(int datenum)
+{
+	time_t datesecs;
+	struct tm *date;
+	int i;
+	int holder;
+
+	datesecs = datenum * 86400;
+	date = localtime(&datesecs);
+	holder = date->tm_mon;
+	for (i = 27; date->tm_mon == holder; ++i) {
+		date->tm_mday++;
+		mktime(date);
+	}
+	date->tm_mday--;
+	mktime(date);
+	return get_datenum(date);
+}
+
 int get_datenum(struct tm *date)
 {
 	time_t rawtime;

@@ -61,6 +61,8 @@ int get_datenum(struct tm *date);
 int not_in(int date, int exceptions[], int len);
 int first_of_next(struct tm *date);
 int last_wday_of_month(int datenum, int wday);
+int last_workday_of_month(int datenum);
+int last_day_of_month(int datenum);
 int wday_of_month(int datenum, int wday, int num);
 int countchars(char *s, char c);
 int __sunriset__( int year, int month, int day, double lon, double lat,
