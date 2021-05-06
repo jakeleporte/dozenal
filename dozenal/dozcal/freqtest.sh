@@ -19,6 +19,18 @@ if [ $NUM -eq 13 ]; then
 else
 	echo "[FAILURE]:  Weekly, Enddate"
 fi
+NUM=`./dozcal -f freqdata | grep "Weekly, with the actual word, Noenddate" | wc -l`
+if [ $NUM -eq 526 ]; then
+	echo "[SUCCESS]:  Weekly, actual word, Noenddate:  $NUM"
+else
+	echo "[FAILURE]:  Weekly, actual word, Noenddate:  $NUM"
+fi
+NUM=`./dozcal -f freqdata | grep "Weekly, with the actual word, Enddate" | wc -l`
+if [ $NUM -eq 23 ]; then
+	echo "[SUCCESS]:  Weekly, actual word, Enddate:  $NUM"
+else
+	echo "[FAILURE]:  Weekly, actual word, Enddate:  $NUM"
+fi
 NUM=`./dozcal -f freqdata | grep "Noenddate, Weekday, No Ordinal, No Monthname" | wc -l`
 if [ $NUM -eq 525 ]; then
 	echo "[SUCCESS]:  Weekly, Noenddate, No Ordinal, No Monthname"

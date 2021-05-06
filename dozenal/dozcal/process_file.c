@@ -356,6 +356,27 @@ int proc_rec(char buffer[][MAXLEN+1],int lines)
 						}
 					}
 				}
+			} else if (strstr(freq[i],"weekly")) {
+				date = broken_date(startday);
+				holder = get_datenum(date);
+				if (endday <= holder) {
+					endday = first_of_next(date);
+					endday += 3650;
+					date = broken_date(startday);
+				}
+				while (holder < endday) {
+					if (strstr(buffer[0],"EVENT")) {
+						add_event(starttime, endtime, holder, title, class, 
+							categories, location, transp,
+							attendees, url, description,organizer);
+					} if (strstr(buffer[0],"TODO")) {
+						add_todo(holder, starttime, priority, compflag, pergross,
+							title, class, categories, location,
+							url, description);
+					}
+					date->tm_mday += (7 * interval); mktime(date);
+					holder = get_datenum(date);
+				}
 			} else if (strstr(freq[i],"monthly")) {
 				date = broken_date(startday);
 				holder = get_datenum(date);
