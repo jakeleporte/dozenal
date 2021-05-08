@@ -35,7 +35,7 @@
 #ifdef TARGGNU
 	#define _POSIX_C_SOURCE 200809L
 	#define _XOPEN_SOURCE 700
-	#define _GNU_SOURCE
+//	#define _GNU_SOURCE
 #endif
 
 #include<stdio.h>
@@ -48,8 +48,6 @@
 #include"utility.h"
 #include"proc_date.h"
 #include"conv.h"
-
-#define NUM_EVENTS (sizeof(*event_list) / sizeof(*event_list[0]))
 
 extern struct event *event_list;
 extern int recordnums;
@@ -99,7 +97,7 @@ int process_file(char *s)
 				strcpy(buffer[currlineno++],"TODO");
 			}
 		} else if (!strstr(line,"[EVENT]") && !strstr(line,"[TODO]") && 
-		(currlineno < MAXLINES)) {
+					(currlineno < MAXLINES)) {
 			strncpy(buffer[currlineno],line,MAXLEN);
 			buffer[currlineno][MAXLEN] = '\0';
 			++currlineno;

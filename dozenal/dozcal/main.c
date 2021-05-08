@@ -50,8 +50,6 @@
 #include"event_struct.h"
 #include"proc_date.h"
 
-#define NUM_EVENTS (sizeof(event_list) / sizeof(event_list[0]))
-
 struct event *event_list;
 int recordnums = 0;
 struct todo *todo_list;
@@ -367,7 +365,10 @@ int main(int argc, char **argv)
 		} if (strstr(relig,"east")) {
 			east_holidays(event_list[0].thisdate);
 		} if (strstr(relig,"jew")) {
-			jew_holidays(event_list[0].thisdate);
+			if (startdate == 0)
+				jew_holidays(event_list[0].thisdate);
+			else
+				jew_holidays(startdate);
 		} if (strstr(relig,"isl")) {
 			islamic_holidays(event_list[0].thisdate);
 		}

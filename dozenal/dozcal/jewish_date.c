@@ -34,7 +34,8 @@
 #include<stdio.h>
 #include<string.h>
 #include<time.h>
-#include<hdate.h>
+#include<math.h>
+/*#include<hdate.h>*/
 #include"utility.h"
 
 int get_israel_holydays(int daynum);
@@ -49,125 +50,49 @@ int get_israel_holydays(int daynum)
 {
 	struct tm *date;
 	time_t datesecs;
-	int hebyear;
-	hdate_struct *h;
-	int i;
+	int a; int A; int b; int M;
+	double m; double y; double x;
+	int c;
 
 	datesecs = daynum * 86400;
 	date = localtime(&datesecs);
-	h = new_hdate();
-	hebyear = hdate_get_hyear(h);
-	h = hdate_set_hdate(h,15,7,hebyear);
-	date->tm_mon = hdate_get_gmonth(h) - 1;
-	date->tm_mday = hdate_get_gday(h);
-	for (i = 0; i <= 7; ++i) {
-		add_to_event("Passover",get_datenum(date) + i,"religious");
+	A = date->tm_year + 1900 + 3760;
+	a = (12 * A + 17) % 19;
+	b = A % 4;
+	y = 32 + (4343.0 / 98496.0) + ((1 + (272953.0 / 492480.0)) * (double)a)
+		+ ((double)b / 4.0) - ((313.0 / 98496.0) * (double)A);
+	m = modf(y,&x);
+	M = (int)x;
+	c = ((3 * A) + (5 * b) + M + 5) % 7;
+	if ((c == 2) || (c == 4) || (c == 6)) {
+		date->tm_mday = M + 1 + 13-1;
+	} else if ((c == 1) && (a > 6) && (m >= (1367/2160))) {
+		date->tm_mday = M + 2 + 13-1;
+	} else if ((c == 0) && (a > 11) && (m >= 23269/25920)) {
+		date->tm_mday = M + 1 + 13-1;
+	} else {
+		date->tm_mday = M + 13-1;
 	}
-	hebyear -= 1; date->tm_year -= 1;
-	h = hdate_set_hdate(h,15,7,hebyear);
-	date->tm_mon = hdate_get_gmonth(h) - 1;
-	date->tm_mday = hdate_get_gday(h);
-	for (i = 0; i <= 7; ++i)
-		add_to_event("Passover",get_datenum(date) + i,"religious");
-	hebyear += 2; date->tm_year += 2;
-	h = hdate_set_hdate(h,15,7,hebyear);
-	date->tm_mon = hdate_get_gmonth(h) - 1;
-	date->tm_mday = hdate_get_gday(h);
-	for (i = 0; i <= 7; ++i)
-		add_to_event("Passover",get_datenum(date) + i,"religious");
-	delete_hdate(h);
-	h = new_hdate();
-	h = hdate_set_hdate(h,1,1,hebyear);
-	date->tm_mon = hdate_get_gmonth(h) - 1;
-	date->tm_mday = hdate_get_gday(h);
-	date->tm_year = hdate_get_gyear(h) - 1900;
-	for (i = 0; i <= 1; ++i)
-		add_to_event("Rosh Hashanah",get_datenum(date) + i,"religious");
-	hebyear -= 1; date->tm_year -= 1;
-	h = hdate_set_hdate(h,1,1,hebyear);
-	date->tm_mon = hdate_get_gmonth(h) - 1;
-	date->tm_mday = hdate_get_gday(h);
-	date->tm_year = hdate_get_gyear(h) - 1900;
-	for (i = 0; i <= 1; ++i)
-		add_to_event("Rosh Hashanah",get_datenum(date) + i,"religious");
-	hebyear += 2; date->tm_year += 2;
-	h = hdate_set_hdate(h,1,1,hebyear);
-	date->tm_mon = hdate_get_gmonth(h) - 1;
-	date->tm_mday = hdate_get_gday(h);
-	date->tm_year = hdate_get_gyear(h) - 1900;
-	for (i = 0; i <= 1; ++i)
-		add_to_event("Rosh Hashanah",get_datenum(date) + i,"religious");
-	delete_hdate(h);
-	h = new_hdate();
-	hebyear -= 1;
-	h = hdate_set_hdate(h,10,1,hebyear);
-	date->tm_mon = hdate_get_gmonth(h) - 1;
-	date->tm_mday = hdate_get_gday(h);
-	date->tm_year = hdate_get_gyear(h) - 1900;
-	add_to_event("Yom Kippur",get_datenum(date),"religious");
-	hebyear -= 1;
-	h = hdate_set_hdate(h,10,1,hebyear);
-	date->tm_mon = hdate_get_gmonth(h) - 1;
-	date->tm_mday = hdate_get_gday(h);
-	date->tm_year = hdate_get_gyear(h) - 1900;
-	add_to_event("Yom Kippur",get_datenum(date),"religious");
-	hebyear += 2;
-	h = hdate_set_hdate(h,10,1,hebyear);
-	date->tm_mon = hdate_get_gmonth(h) - 1;
-	date->tm_mday = hdate_get_gday(h);
-	date->tm_year = hdate_get_gyear(h) - 1900;
-	add_to_event("Yom Kippur",get_datenum(date),"religious");
-	hebyear -= 1;
-	delete_hdate(h);
-	h = new_hdate();
-	h = hdate_set_hdate(h,15,1,hebyear);
-	date->tm_mon = hdate_get_gmonth(h) - 1;
-	date->tm_mday = hdate_get_gday(h);
-	date->tm_year = hdate_get_gyear(h) - 1900;
-	for (i = 0; i <= 6; ++i)
-		add_to_event("Sukkot",get_datenum(date) + i,"religious");
-	hebyear -= 1;
-	h = hdate_set_hdate(h,15,1,hebyear);
-	date->tm_mon = hdate_get_gmonth(h) - 1;
-	date->tm_mday = hdate_get_gday(h);
-	date->tm_year = hdate_get_gyear(h) - 1900;
-	for (i = 0; i <= 6; ++i)
-		add_to_event("Sukkot",get_datenum(date) + i,"religious");
-	hebyear += 2;
-	h = hdate_set_hdate(h,15,1,hebyear);
-	date->tm_mon = hdate_get_gmonth(h) - 1;
-	date->tm_mday = hdate_get_gday(h);
-	date->tm_year = hdate_get_gyear(h) - 1900;
-	for (i = 0; i <= 6; ++i)
-		add_to_event("Sukkot",get_datenum(date) + i,"religious");
-	hebyear -= 1;
-	delete_hdate(h);
-	h = new_hdate();
-	h = hdate_set_hdate(h,25,3,hebyear);
-	date->tm_mon = hdate_get_gmonth(h) - 1;
-	date->tm_mday = hdate_get_gday(h);
-	date->tm_year = hdate_get_gyear(h) - 1900;
-	for (i = 0; i <= 7; ++i)
-		add_to_event("Hanukkah",get_datenum(date) + i,"religious");
-	hebyear -= 1;
-	delete_hdate(h);
-	h = new_hdate();
-	h = hdate_set_hdate(h,25,3,hebyear);
-	date->tm_mon = hdate_get_gmonth(h) - 1;
-	date->tm_mday = hdate_get_gday(h);
-	date->tm_year = hdate_get_gyear(h) - 1900;
-	for (i = 0; i <= 7; ++i)
-		add_to_event("Hanukkah",get_datenum(date) + i,"religious");
-	hebyear += 2;
-	delete_hdate(h);
-	h = new_hdate();
-	h = hdate_set_hdate(h,25,3,hebyear);
-	date->tm_mon = hdate_get_gmonth(h) - 1;
-	date->tm_mday = hdate_get_gday(h);
-	date->tm_year = hdate_get_gyear(h) - 1900;
-	for (i = 0; i <= 7; ++i)
-		add_to_event("Hanukkah",get_datenum(date) + i,"religious");
-	hebyear -= 1;
-	delete_hdate(h);
+	date->tm_mon = 2;
+	mktime(date);
+	mktime(date);
+	add_to_event("Passover (sundown)", get_datenum(date), "religious");
+	add_to_event("Passover", get_datenum(date)+1, "religious");
+	add_to_event("Passover", get_datenum(date)+2, "religious");
+	add_to_event("Passover", get_datenum(date)+3, "religious");
+	add_to_event("Passover", get_datenum(date)+4, "religious");
+	add_to_event("Passover", get_datenum(date)+5, "religious");
+	add_to_event("Passover", get_datenum(date)+6, "religious");
+	add_to_event("Passover", get_datenum(date)+7, "religious");
+	add_to_event("Passover", get_datenum(date)+8, "religious");
+	date->tm_mday = date->tm_mday - 30;
+	mktime(date);
+	add_to_event("Purim (sundown)", get_datenum(date), "religious");
+	date->tm_mday = date->tm_mday + 163 + 30;
+	mktime(date);
+	add_to_event("Rosh Hashanah (sundown)", get_datenum(date), "religious");
+	add_to_event("Rosh Hashanah", get_datenum(date)+1, "religious");
+	add_to_event("Rosh Hashanah", get_datenum(date)+2, "religious");
+	add_to_event("Yom Kippur (sundown)",get_datenum(date)+11,"religious");
 	return 0;
 }
