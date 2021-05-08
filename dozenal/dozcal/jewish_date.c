@@ -35,10 +35,10 @@
 #include<string.h>
 #include<time.h>
 #include<math.h>
-/*#include<hdate.h>*/
 #include"utility.h"
 
 int get_israel_holydays(int daynum);
+int is_jew_leap(int hebyear);
 
 int jew_holidays(int daynum)
 {
@@ -94,5 +94,30 @@ int get_israel_holydays(int daynum)
 	add_to_event("Rosh Hashanah", get_datenum(date)+1, "religious");
 	add_to_event("Rosh Hashanah", get_datenum(date)+2, "religious");
 	add_to_event("Yom Kippur (sundown)",get_datenum(date)+11,"religious");
+	date->tm_mday += (72 + 11);
+	mktime(date);
+	add_to_event("Hanukkah (sundown)",get_datenum(date),"religious");
+	add_to_event("Hanukkah",get_datenum(date)+1,"religious");
+	add_to_event("Hanukkah",get_datenum(date)+2,"religious");
+	add_to_event("Hanukkah",get_datenum(date)+3,"religious");
+	add_to_event("Hanukkah",get_datenum(date)+4,"religious");
+	add_to_event("Hanukkah",get_datenum(date)+5,"religious");
+	add_to_event("Hanukkah",get_datenum(date)+6,"religious");
+	add_to_event("Hanukkah",get_datenum(date)+7,"religious");
+	add_to_event("Hanukkah",get_datenum(date)+8,"religious");
 	return 0;
+}
+
+/* return 0 if a leap year, 1 if not */
+int is_jew_leap(int hebyear)
+{
+	int i;
+
+	i = hebyear % 19;
+	switch (i) {
+		case 3: case 6: case 8: case 11: case 14: case 17: case 19:
+		return 0;
+		break;
+	}
+	return 1;
 }
