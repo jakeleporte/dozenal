@@ -126,13 +126,10 @@ int call_lua(char *s)
 					s,key);
 				exit(LUA_ERROR);
 			}
-			if (cnt == 9) {
-				add_event(starttime, endtime, thisdate, title, evclass, 
-					categories, location, transp, attendees, url,
-					description, organizer);
-				cnt = 0;
-			}
 		}
+		add_event(starttime, endtime, thisdate, title, evclass, 
+			categories, location, transp, attendees, url,
+			description, organizer);
 		lua_pushnil(L);
 	}
 	lua_close(L);

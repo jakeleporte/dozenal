@@ -58,6 +58,7 @@ double latitude = 0.0;
 double longitude = 0.0;
 double tzoffset = -999.0;
 int utc = 0; /* if 1, use UTC time */
+int output = 0; /* if 1, output in dcal format */
 char **evlines; int numevs = 1;
 char **todolines; int numtodos = 1;
 struct globopts *allopts;
@@ -79,6 +80,7 @@ int print_events();
 int clear_events();
 int build_globopts_struct();
 int add_part(char **buf,int len, char *text);
+int output_internal(struct event *e);
 
 int main(int argc, char **argv)
 {
@@ -194,8 +196,7 @@ int main(int argc, char **argv)
 	}
 	relig[0] = '\0';
 	opterr = 0;
-	while ((c = getopt(argc,argv,"VCETwuvR:m:f:s:e:d:t:r:c:n:h:l:W:a:g:z:")) 
-	!= -1) {
+	while ((c = getopt(argc,argv,"VCETowuvR:m:f:s:e:d:t:r:c:n:h:l:W:a:g:z:")) != -1) {
 		switch(c) {
 		case 'V':
 			printf("dozcal v1.6\n");
@@ -224,6 +225,9 @@ int main(int argc, char **argv)
 			break;
 		case 'u':
 			utc = 1;
+			break;
+		case 'o':
+			output = 1;
 			break;
 		case 'w':
 			weekout = 1;
@@ -394,12 +398,19 @@ int main(int argc, char **argv)
 		build_tui(ev_form,date_form,time_form,todo_form);
 		goto clean;
 	}
-	if (ifevent == 1) {
+	if ((ifevent == 1) && (output == 0)) {
 		for (i = 0; i < (recordnums-1); ++i) {
 			if ((event_list[i].thisdate >= startdate) &&
 			(event_list[i].thisdate <= enddate)) {
 				fill_event(ev_form,i,date_form,time_form,outfile);
 				print_events();
+			}
+		}
+	} else if ((ifevent == 1) && (output == 1)) {
+		for (i = 0; i < (recordnums-1); ++i) {
+			if ((event_list[i].thisdate >= startdate) &&
+					(event_list[i].thisdate <= enddate)) {
+				output_internal(&event_list[i]);
 			}
 		}
 	}
@@ -466,6 +477,32 @@ int main(int argc, char **argv)
 		free(*(todolines+i));
 	free(todolines);
 	free(allopts);
+	return 0;
+}
+
+int output_internal(struct event *e)
+{
+	/* FFF */
+	char datestr[MAXLEN+1];
+
+	printf("\n[EVENT]\n");
+	printf("TITLE:  %s\n",e->title);
+	num_to_date(e->thisdate,datestr,"%Y-%m-%d");
+	printf("START_DATE:  %s\n",datestr);
+	datestr[0] = '\0';
+	secs_to_Tims(e->starttime,datestr,"%h;%b");
+	printf("START_TIME:  %s\n",datestr);
+	datestr[0] = '\0';
+	secs_to_Tims(e->endtime,datestr,"%h;%b");
+	printf("END_TIME:  %s\n",datestr);
+	printf("LOCATION:  %s\n",e->location);
+	printf("CLASS:  %s\n",e->evclass);
+	printf("CATEGORIES:  %s\n",e->categories);
+//	printf("TRANSPARENT:  %c\n",e->transp);
+	printf("ATTENDEES:  %s\n",e->attendees);
+	printf("URL:  %s\n",e->url);
+	printf("DESCRIPTION:  %s\n",e->description);
+	printf("ORGANIZER:  %s\n",e->organizer);
 	return 0;
 }
 

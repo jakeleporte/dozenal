@@ -128,8 +128,6 @@ function easter(y)
 	local m = math.floor((a + 11 * h + 22 * L) / 451)
 	eastermonth = math.floor((h + L - 7 * m + 114) / 31)
 	easterday = ((h + L - 7 * m + 114) % 31) + 1
---	print("Easter: "..dozenize(y).."-"..dozenize(eastermonth)..
---		"-"..dozenize(easterday))
 	return y, eastermonth, easterday
 end
 
@@ -1926,3 +1924,8 @@ end
 function dozcal_return_ev_num()
 	return fill_year(2021,returntab,index)
 end
+
+fill_year(2021,returntab,index)
+
+--local inspect = require('inspect')
+--print(inspect(returntab))

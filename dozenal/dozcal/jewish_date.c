@@ -46,6 +46,8 @@ int jew_holidays(int daynum)
 	return 0;
 }
 
+/* Uses Gauss's algorithm, converting to Gregorian, and
+ * calculates all others from there */
 int get_israel_holydays(int daynum)
 {
 	struct tm *date;
