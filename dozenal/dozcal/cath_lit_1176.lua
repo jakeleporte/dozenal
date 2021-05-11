@@ -1924,8 +1924,3 @@ end
 function dozcal_return_ev_num()
 	return fill_year(2021,returntab,index)
 end
-
-fill_year(2021,returntab,index)
-
---local inspect = require('inspect')
---print(inspect(returntab))
