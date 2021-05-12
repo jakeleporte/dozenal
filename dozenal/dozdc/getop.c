@@ -282,7 +282,8 @@ double operate(int operator, int *places, char *print)
 		angletype = 2;
 		break;
 	case POW:
-		push(pow(pop(),pop()));
+		tmp = pop();
+		push(pow(pop(),tmp));
 		break;
 	case SQRT:
 		tmp = pop();
