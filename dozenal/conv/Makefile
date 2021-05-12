@@ -20,7 +20,7 @@
 #
 
 IDIR =../include
-CC=gcc
+CC=tcc
 GCCFLAGS=-Wall -std=c99 -pedantic
 
 all: conv.o

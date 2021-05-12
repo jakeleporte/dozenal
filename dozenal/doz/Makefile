@@ -14,7 +14,7 @@ bindir ?= $(prefix)/bin
 binmode = 755
 dirmode = 755
 IDIR =../include
-CC = gcc
+CC = tcc
 GCCFLAGS = -Wall -std=c99 -pedantic
 objects = main.o doz.o
 binobjects = doz
@@ -25,7 +25,7 @@ doz : $(objects) ../conv/conv.o ../dec/dec.o
 	$(CC) $(GCCFLAGS) -g -o doz  main.o ../conv/conv.o doz.o ../dec/dec.o -lm
 
 main.o : main.c ../conv/conv.o doz.o ../dec/dec.o
-	$(CC) $(GCCFLAGS) -I$(IDIR) -g -c main.c -lm
+	$(CC) $(GCCFLAGS) -I$(IDIR) -g -c main.c
 
 ../dec/dec.o:
 	$(MAKE) -C ../dec
@@ -34,7 +34,7 @@ main.o : main.c ../conv/conv.o doz.o ../dec/dec.o
 	$(MAKE) -C ../conv
 
 doz.o : ../conv/conv.o doz.c
-	$(CC) $(GCCFLAGS) -I$(IDIR) -g -std=c99 -c doz.c -lm
+	$(CC) $(GCCFLAGS) -I$(IDIR) -g -std=c99 -c doz.c
 
 bin: $(binobjects)
 

@@ -30,26 +30,23 @@ dozdc : main.o ../dec/dec.o $(IDIR)/dozdc.h getop.o stack.o vars.o \
 	$(XFORM_OBJS)
 	$(CC) $(GCCFLAGS) $(XFORMS_FLAGS) -I$(IDIR) -g -o dozdc main.o \
 		../conv/conv.o ../doz/doz.o ../dec/dec.o getop.o stack.o \
-		$(IDIR)/stack.h vars.o $(IDIR)/vars.h $(XFORM_OBJS) \
-		$(XFORM_LIBS) -lm
+		vars.o $(XFORM_OBJS) $(XFORM_LIBS) -lm
 
 main.o : main.c ../dec/dec.o $(IDIR)/dozdc.h stack.o vars.o
 	$(CC) $(GCCFLAGS) $(XFORMS_FLAGS) -I$(IDIR) -g -c main.c
 
 xdozbc.o : dozbc.o dozbc.h xdozbc.c shunt.c
-	$(CC) $(GCCFLAGS) $(XFORMS_FLAGS) -I$(IDIR) -g -c xdozbc.c \
-		$(XFORM_LIBS) -lm
+	$(CC) $(GCCFLAGS) $(XFORMS_FLAGS) -I$(IDIR) -g -c xdozbc.c
 
 dozbc.o : dozbc.c dozbc.h
-	$(CC) $(GCCFLAGS) $(XFORMS_FLAGS) -I$(DIR) -g -c dozbc.c -lm \
-		$(XFORM_LIBS)
+	$(CC) $(GCCFLAGS) $(XFORMS_FLAGS) -I$(DIR) -g -c dozbc.c
 
 shunt.o : shunt.c
 	$(CC) $(GCCFLAGS) $(XFORMS_FLAGS) -I$(DIR) -g -c shunt.c
 
 getop.o : getop.c ../conv/conv.o ../doz/doz.o ../dec/dec.o \
 		$(IDIR)/dozdc.h stack.o vars.o
-	$(CC) $(GCCFLAGS) $(XFORMS_FLAGS) -I$(IDIR) -g -c getop.c -lm
+	$(CC) $(GCCFLAGS) $(XFORMS_FLAGS) -I$(IDIR) -g -c getop.c
 
 ../doz/doz.o: ../conv/conv.o ../doz/doz.c
 	$(MAKE) -C ../doz

@@ -16,7 +16,7 @@ dirmode = 755
 IDIR =../include
 LUALIB = -llua5.2
 CURSLIB = -lncurses
-CC = gcc
+CC = tcc
 GCCFLAGS = -Wall -std=c99 -pedantic
 GNUFLAG = -DTARGGNU
 LOCALLIBS = errcodes.h event_struct.h julday.h libholidays.h \
@@ -33,57 +33,56 @@ ical: icaltodcal.c
 
 dozcal: $(objects) ../doz/doz.o ../dec/dec.o ../conv/conv.o event_struct.h $(LOCALLIBS)
 	$(CC) $(GCCFLAGS) -I$(IDIR) -std=c99 -g -o dozcal ../conv/conv.o \
-		../doz/doz.o ../dec/dec.o $(objects) $(LUALIB) $(CURSLIB) -lm -lhdate 
+		../doz/doz.o ../dec/dec.o $(objects) $(LUALIB) $(CURSLIB) -lm
 
 main.o: main.c tui.o ../conv/conv.o ../doz/doz.o ../dec/dec.o ../conv/conv.o $(LOCALLIBS)
-	$(CC) $(GCCFLAGS) -I$(IDIR) -g -lm -c main.c ../dec/dec.c ../conv/conv.c \
-		$(LUALIB) $(CURSLIB)
+	$(CC) $(GCCFLAGS) -I$(IDIR) -g -c main.c ../dec/dec.c ../conv/conv.c
 
 tui.o: tui.c utility.o ../conv/conv.o ../doz/doz.o ../conv/conv.o $(LOCALLIBS)
-	gcc -I$(IDIR) -g -lm -c tui.c julday.c utility.c ../doz/doz.c \
-		../conv/conv.c ../dec/dec.c -lncurses
+	$(CC) -I$(IDIR) -g -c tui.c julday.c utility.c ../doz/doz.c \
+		../conv/conv.c ../dec/dec.c
 
 call_lua.o: call_lua.c $(LOCALLIBS)
-	$(CC) $(GCCFLAGS) -I$(IDIR) -g -c call_lua.c -lm $(LUALIB)
+	$(CC) $(GCCFLAGS) -I$(IDIR) -g -c call_lua.c
 
 moon.o: moon.c ../doz/doz.o $(LOCALLIBS)
-	$(CC) $(GCCFLAGS) -I$(IDIR) -g -lm -c moon.c ../doz/doz.c
+	$(CC) $(GCCFLAGS) -I$(IDIR) -g -c moon.c ../doz/doz.c
 
 jewish_date.o: jewish_date.c $(LOCALLIBS)
-	$(CC) $(GCCFLAGS) -I$(IDIR) -g -lm -lhdate -c jewish_date.c
+	$(CC) $(GCCFLAGS) -I$(IDIR) -g -c jewish_date.c
 
 islamic.o: islamic.c $(LOCALLIBS)
-	$(CC) $(GCCFLAGS) -I$(IDIR) -g -lm -c islamic.c
+	$(CC) $(GCCFLAGS) -I$(IDIR) -g -c islamic.c
 
 nat_holidays.o: nat_holidays.c $(LOCALLIBS)
-	$(CC) $(GCCFLAGS) -I$(IDIR) -g -lm -c nat_holidays.c
+	$(CC) $(GCCFLAGS) -I$(IDIR) -g -c nat_holidays.c
 
 easter.o: easter.c $(LOCALLIBS)
-	$(CC) $(GCCFLAGS) -I$(IDIR) -g -lm -c easter.c
+	$(CC) $(GCCFLAGS) -I$(IDIR) -g -c easter.c
 
 astron.o: astron.c utility.c julday.c sunriset.c $(LOCALLIBS)
-	$(CC) $(GCCFLAGS) -I$(IDIR) -g -lm -c astron.c utility.c sunriset.c
+	$(CC) $(GCCFLAGS) -I$(IDIR) -g -c astron.c utility.c sunriset.c
 
 sunriset.o: sunriset.c
-	$(CC) $(GCCFLAGS) -g -lm -c sunriset.c
+	$(CC) $(GCCFLAGS) -g -c sunriset.c
 
 geog.o: geog.c utility.c julday.c $(LOCALLIBS)
-	$(CC) $(GCCFLAGS) -I$(IDIR) -g -lm -c geog.c utility.c ../conv/conv.c ../dec/dec.c
+	$(CC) $(GCCFLAGS) -I$(IDIR) -g -c geog.c utility.c ../conv/conv.c ../dec/dec.c
 
 julday.o: julday.c utility.c $(LOCALLIBS)
-	$(CC) $(GCCFLAGS) -I$(IDIR) -g -lm -c julday.c utility.c
+	$(CC) $(GCCFLAGS) -I$(IDIR) -g -c julday.c utility.c
 
 process_file.o: process_file.c utility.c ../conv/conv.o ../doz/doz.o ../dec/dec.o $(LOCALLIBS)
-	$(CC) $(GCCFLAGS) $(GNUFLAG) -I$(IDIR) -g -lm -c process_file.c utility.c ../dec/dec.c ../conv/conv.c
+	$(CC) $(GCCFLAGS) $(GNUFLAG) -I$(IDIR) -g -c process_file.c utility.c ../dec/dec.c ../conv/conv.c
 
 proc_date.o:  proc_date.c utility.c ../conv/conv.o ../doz/doz.o ../dec/dec.o $(LOCALLIBS)
-	$(CC) $(GCCFLAGS) -I$(IDIR) -g -lm -c proc_date.c utility.c ../dec/dec.c ../conv/conv.c ../doz/doz.c
+	$(CC) $(GCCFLAGS) -I$(IDIR) -g -c proc_date.c utility.c ../dec/dec.c ../conv/conv.c ../doz/doz.c
 
 opt_file.o: opt_file.c utility.c ../conv/conv.o ../dec/dec.o $(LOCALLIBS)
-	$(CC) $(GCCFLAGS) $(GNUFLAG) -I$(IDIR) -g -lm -c opt_file.c utility.c ../dec/dec.c ../conv/conv.c
+	$(CC) $(GCCFLAGS) $(GNUFLAG) -I$(IDIR) -g -c opt_file.c utility.c ../dec/dec.c ../conv/conv.c
 
 utility.o: utility.c $(LOCALLIBS)
-	$(CC) $(GCCFLAGS) -I$(IDIR) -g -lm -c utility.c
+	$(CC) $(GCCFLAGS) -I$(IDIR) -g -c utility.c
 
 ../doz/doz.o: ../conv/conv.o ../doz/doz.c
 	$(MAKE) -C ../doz
