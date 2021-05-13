@@ -12,7 +12,7 @@ binmode = 755
 dirmode = 755
 IDIR =../include
 XFORMS_FLAGS =-DXFORMS
-CC = gcc
+CC = tcc
 GCCFLAGS = -Wall -std=c99 -pedantic
 objects = main.o getop.o vars.o stack.o shunt.o xdozbc.o dozbc.o
 binobjects = dozdc gdozdc

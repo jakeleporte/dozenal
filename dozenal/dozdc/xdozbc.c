@@ -31,7 +31,7 @@
 #include"getop.h"
 #include"conv.h"
 
-#define LINELEN 256
+#define LINELEN 512 
 
 char line[LINELEN];
 char memline[LINELEN];
