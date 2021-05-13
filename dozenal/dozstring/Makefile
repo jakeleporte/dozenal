@@ -11,7 +11,7 @@ bindir ?= $(prefix)/bin
 binmode = 755
 dirmode = 755
 IDIR = ../include
-CC = gcc
+CC = tcc
 objects = main.o
 binobjects = dozstring
 

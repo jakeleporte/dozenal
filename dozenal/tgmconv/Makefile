@@ -5,7 +5,7 @@ bindir ?= $(prefix)/bin
 binmode = 755
 dirmode = 755
 IDIR = ../include
-CC = gcc
+CC = tcc
 GCCFLAGS = -Wall -std=c99 -pedantic
 objects = main.o tgm.o
 binobjects = tgmconv
