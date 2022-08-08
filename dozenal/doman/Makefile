@@ -9,7 +9,7 @@ bindir ?= $(prefix)/bin
 binmode = 755
 dirmode = 755
 IDIR =../include
-CC = tcc
+CC = gcc
 GCCFLAGS = -Wall -std=c99 -pedantic
 binobjects = doman
 

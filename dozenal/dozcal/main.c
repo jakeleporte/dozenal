@@ -818,7 +818,7 @@ int todocomp(const void *todoone, const void *todotwo)
 int comparator(const void *evone, const void *evtwo)
 {
 	int dateone = 0; int datetwo = 0;
-	int timeone = 0; int timetwo = 0;
+	int timeone = 1; int timetwo = 0;
 	char *itemone; char *itemtwo;
 
 	dateone = ((struct event*) evone)->thisdate;

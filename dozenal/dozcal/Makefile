@@ -16,7 +16,7 @@ dirmode = 755
 IDIR =../include
 LUALIB = -llua5.2
 CURSLIB = -lncurses
-CC = tcc
+CC = gcc
 GCCFLAGS = -Wall -std=c99 -pedantic
 GNUFLAG = -DTARGGNU
 LOCALLIBS = errcodes.h event_struct.h julday.h libholidays.h \
