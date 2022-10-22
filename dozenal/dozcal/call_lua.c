@@ -38,9 +38,9 @@
 #include"utility.h"
 #include"conv.h"
 #include"proc_date.h"
-#include<lua5.2/lua.h>
-#include<lua5.2/lauxlib.h>
-#include<lua5.2/lualib.h>
+#include<lua.h>
+#include<lauxlib.h>
+#include<lualib.h>
 
 void bail(lua_State *L, int err_code, char *filename);
 int file_prefix(char **s, char *t);
