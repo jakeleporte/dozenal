@@ -18,7 +18,8 @@ objects = main.o getop.o vars.o stack.o shunt.o xdozbc.o dozbc.o
 binobjects = dozdc gdozdc
 ifeq ($(XFORMS_FLAGS),-DXFORMS)
 	XFORM_OBJS = shunt.o dozbc.o xdozbc.o
-	XFORM_LIBS = -lforms -lX11
+	XFORM_LIBS = -lforms -L/usr/X11R6/lib -lX11
+	XFORM_INC = -I/usr/local/include -I/usr/X11R6/include
 else
 	XFORM_OBJS = 
 	XFORM_LIBS = 
@@ -28,18 +29,18 @@ all: bin
 
 dozdc : main.o ../dec/dec.o $(IDIR)/dozdc.h getop.o stack.o vars.o \
 	$(XFORM_OBJS)
-	$(CC) $(GCCFLAGS) $(XFORMS_FLAGS) -I$(IDIR) -g -o dozdc main.o \
+	$(CC) $(GCCFLAGS) $(XFORMS_FLAGS) $(XFORM_INC) -I$(IDIR) -g -o dozdc main.o \
 		../conv/conv.o ../doz/doz.o ../dec/dec.o getop.o stack.o \
 		vars.o $(XFORM_OBJS) $(XFORM_LIBS) -lm
 
 main.o : main.c ../dec/dec.o $(IDIR)/dozdc.h stack.o vars.o
-	$(CC) $(GCCFLAGS) $(XFORMS_FLAGS) -I$(IDIR) -g -c main.c
+	$(CC) $(GCCFLAGS) $(XFORMS_FLAGS) $(XFORM_INC) -I$(IDIR) -g -c main.c
 
 xdozbc.o : dozbc.o dozbc.h xdozbc.c shunt.c
-	$(CC) $(GCCFLAGS) $(XFORMS_FLAGS) -I$(IDIR) -g -c xdozbc.c
+	$(CC) $(GCCFLAGS) $(XFORMS_FLAGS) $(XFORM_INC) -I$(IDIR) -g -c xdozbc.c
 
 dozbc.o : dozbc.c dozbc.h
-	$(CC) $(GCCFLAGS) $(XFORMS_FLAGS) -I$(DIR) -g -c dozbc.c
+	$(CC) $(GCCFLAGS) $(XFORMS_FLAGS) $(XFORM_INC) -I$(DIR) -g -c dozbc.c
 
 shunt.o : shunt.c
 	$(CC) $(GCCFLAGS) $(XFORMS_FLAGS) -I$(DIR) -g -c shunt.c
