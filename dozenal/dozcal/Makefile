@@ -14,8 +14,8 @@ bindir ?= $(prefix)/bin
 binmode = 755
 dirmode = 755
 IDIR =../include
-LUADIR = /usr/local/include/lua-5.2
-LUALIB = -llua5.2
+LUADIR = -I/usr/include/lua5.2
+LUALIB = -L/usr/lib/lua5.2 -llua
 CURSLIB = -lncurses
 CC = gcc
 GCCFLAGS = -Wall -std=c99 -pedantic
@@ -44,7 +44,7 @@ tui.o: tui.c utility.o ../conv/conv.o ../doz/doz.o ../conv/conv.o $(LOCALLIBS)
 		../conv/conv.c ../dec/dec.c
 
 call_lua.o: call_lua.c $(LOCALLIBS)
-	$(CC) $(GCCFLAGS) -I$(LUADIR) -I$(IDIR) -g -c call_lua.c
+	$(CC) $(GCCFLAGS) $(LUADIR) -I$(IDIR) -g -c call_lua.c
 
 moon.o: moon.c ../doz/doz.o $(LOCALLIBS)
 	$(CC) $(GCCFLAGS) -I$(IDIR) -g -c moon.c ../doz/doz.c

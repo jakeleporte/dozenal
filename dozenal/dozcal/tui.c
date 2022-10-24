@@ -397,6 +397,7 @@ int clear_evconts(WINDOW *evconts)
 			mvwprintw(evconts,i,j," ");
 		}
 	}
+	return 0;
 }
 
 WINDOW *switch_win(WINDOW *cal, WINDOW *ev, WINDOW *todo,WINDOW *currwin,

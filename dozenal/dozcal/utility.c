@@ -445,4 +445,5 @@ int first_dow(char *s)
 			exit(BAD_FDOW);
 		}
 	}
+	return 0;
 }

@@ -339,15 +339,15 @@ int proc_color(char *s, char *t, int ind)
 				allopts[ind].b = 0;
 			}
 		} else {						/* match */
-			sprintf(holder,"%.*s",pmatch[1].rm_eo - pmatch[1].rm_so, 
+			sprintf(holder,"%.*s",(int)pmatch[1].rm_eo - (int)pmatch[1].rm_so, 
 				s+pmatch[1].rm_so);
 			allopts[ind].r = (int) doztodec(holder);
 			holder[0] = '\0';
-			sprintf(holder,"%.*s",pmatch[2].rm_eo - pmatch[2].rm_so, 
+			sprintf(holder,"%.*s",(int)pmatch[2].rm_eo - (int)pmatch[2].rm_so, 
 				s+pmatch[2].rm_so);
 			allopts[ind].g = (int) doztodec(holder);
 			holder[0] = '\0';
-			sprintf(holder,"%.*s",pmatch[3].rm_eo - pmatch[3].rm_so, 
+			sprintf(holder,"%.*s",(int)pmatch[3].rm_eo - (int)pmatch[3].rm_so, 
 				s+pmatch[3].rm_so);
 			allopts[ind].b = (int) doztodec(holder);
 		}

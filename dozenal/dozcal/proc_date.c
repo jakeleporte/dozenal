@@ -82,47 +82,47 @@ time_t proc_date(char *s)
 		if (result == 0) {
 			switch (i) {
 			case 0:
-				sprintf(holder,"%.*s",pmatch[1].rm_eo - pmatch[1].rm_so, 
-					s+pmatch[1].rm_so);
+				sprintf(holder,"%.*s",(int)pmatch[1].rm_eo -
+						(int)pmatch[1].rm_so, s+pmatch[1].rm_so);
 				date->tm_year = (int)doztodec(holder) - 1900;
-				sprintf(holder,"%.*s",pmatch[2].rm_eo - pmatch[2].rm_so, 
-					s+pmatch[2].rm_so);
+				sprintf(holder,"%.*s",(int)pmatch[2].rm_eo -
+						(int)pmatch[2].rm_so, s+pmatch[2].rm_so);
 				date->tm_mon = (int)doztodec(holder) - 1;
-				sprintf(holder,"%.*s",pmatch[3].rm_eo - pmatch[3].rm_so, 
-					s+pmatch[3].rm_so);
+				sprintf(holder,"%.*s",(int)pmatch[3].rm_eo -
+						(int) pmatch[3].rm_so, s+pmatch[3].rm_so);
 				date->tm_mday = (int)doztodec(holder);
 				break;
 			case 1:
-				sprintf(holder,"%.*s",pmatch[1].rm_eo - pmatch[1].rm_so, 
-					s+pmatch[1].rm_so);
+				sprintf(holder,"%.*s",(int)pmatch[1].rm_eo -
+						(int)pmatch[1].rm_so, s+pmatch[1].rm_so);
 				date->tm_mon = (int)doztodec(holder) - 1;
-				sprintf(holder,"%.*s",pmatch[2].rm_eo - pmatch[2].rm_so, 
-					s+pmatch[2].rm_so);
+				sprintf(holder,"%.*s",(int)pmatch[2].rm_eo -
+						(int)pmatch[2].rm_so, s+pmatch[2].rm_so);
 				date->tm_mday = (int)doztodec(holder);
-				sprintf(holder,"%.*s",pmatch[3].rm_eo - pmatch[3].rm_so, 
-					s+pmatch[3].rm_so);
+				sprintf(holder,"%.*s",(int)pmatch[3].rm_eo -
+						(int)pmatch[3].rm_so, s+pmatch[3].rm_so);
 				date->tm_year = (int)doztodec(holder) - 1900;
 				break;
 			case 2:
-				sprintf(holder,"%.*s",pmatch[1].rm_eo - pmatch[1].rm_so, 
-					s+pmatch[1].rm_so);
+				sprintf(holder,"%.*s",(int)pmatch[1].rm_eo -
+						(int)pmatch[1].rm_so, s+pmatch[1].rm_so);
 				date->tm_mday = (int)doztodec(holder);
-				sprintf(holder,"%.*s",pmatch[2].rm_eo - pmatch[2].rm_so, 
-					s+pmatch[2].rm_so);
+				sprintf(holder,"%.*s",(int)pmatch[2].rm_eo -
+						(int)pmatch[2].rm_so, s+pmatch[2].rm_so);
 				date->tm_mon = month_string(holder);
-				sprintf(holder,"%.*s",pmatch[3].rm_eo - pmatch[3].rm_so, 
-					s+pmatch[3].rm_so);
+				sprintf(holder,"%.*s",(int)pmatch[3].rm_eo -
+						(int)pmatch[3].rm_so, s+pmatch[3].rm_so);
 				date->tm_year = (int)doztodec(holder) - 1900;
 				break;
 			case 3:
-				sprintf(holder,"%.*s",pmatch[1].rm_eo - pmatch[1].rm_so, 
-					s+pmatch[1].rm_so);
+				sprintf(holder,"%.*s",(int)pmatch[1].rm_eo -
+						(int)pmatch[1].rm_so, s+pmatch[1].rm_so);
 				date->tm_mon = month_string(holder);
-				sprintf(holder,"%.*s",pmatch[2].rm_eo - pmatch[2].rm_so, 
-					s+pmatch[2].rm_so);
+				sprintf(holder,"%.*s",(int)pmatch[2].rm_eo -
+						(int)pmatch[2].rm_so, s+pmatch[2].rm_so);
 				date->tm_mday = (int)doztodec(holder);
-				sprintf(holder,"%.*s",pmatch[3].rm_eo - pmatch[3].rm_so, 
-					s+pmatch[3].rm_so);
+				sprintf(holder,"%.*s",(int)pmatch[3].rm_eo -
+						(int)pmatch[3].rm_so, s+pmatch[3].rm_so);
 				date->tm_year = (int)doztodec(holder) - 1900;
 				break;
 			}
@@ -176,13 +176,13 @@ int proc_time(char *s)
 		result = regexec(&regone,s,4,pmatch,0);
 		regfree(&regone);
 		if (result == 0) {
-			sprintf(holder,"%.*s",pmatch[1].rm_eo - pmatch[1].rm_so, 
+			sprintf(holder,"%.*s",(int)pmatch[1].rm_eo - (int)pmatch[1].rm_so, 
 				s+pmatch[1].rm_so);
 			hours = ((int) doztodec(holder) * tims);
 			switch (i) {
 			case 0:
-				sprintf(holder,"%.*s",pmatch[2].rm_eo - pmatch[2].rm_so, 
-					s+pmatch[2].rm_so);
+				sprintf(holder,"%.*s",(int)pmatch[2].rm_eo -
+						(int)pmatch[2].rm_so, s+pmatch[2].rm_so);
 				holdnum = atoi(holder);
 				if (holdnum == 30) {
 					hours += 10368;
@@ -195,14 +195,14 @@ int proc_time(char *s)
 				}
 				break;
 			case 1: case 3:
-				sprintf(holder,"%.*s",pmatch[2].rm_eo - pmatch[2].rm_so, 
-					s+pmatch[2].rm_so);
+				sprintf(holder,"%.*s",(int)pmatch[2].rm_eo -
+						(int)pmatch[2].rm_so, s+pmatch[2].rm_so);
 				holdnum = (int) doztodec(holder);
 				hours += (holdnum * 144);
 				break;
 			case 2:
-				sprintf(holder,"%.*s",pmatch[2].rm_eo - pmatch[2].rm_so, 
-					s+pmatch[2].rm_so);
+				sprintf(holder,"%.*s",(int)pmatch[2].rm_eo -
+						(int)pmatch[2].rm_so, s+pmatch[2].rm_so);
 				hours += (int)doztodec(holder);
 				break;
 			}
