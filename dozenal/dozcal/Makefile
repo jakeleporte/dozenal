@@ -14,8 +14,8 @@ bindir ?= $(prefix)/bin
 binmode = 755
 dirmode = 755
 IDIR =../include
-LUADIR = -I/usr/include/lua5.2
-LUALIB = -L/usr/lib/lua5.2 -llua
+LUADIR = `pkg-config --cflags lua5.2`
+LUALIB = `pkg-config --libs lua5.2`
 CURSLIB = -lncurses
 CC = gcc
 GCCFLAGS = -Wall -std=c99 -pedantic
