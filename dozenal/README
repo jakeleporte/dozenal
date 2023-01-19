@@ -1,5 +1,10 @@
 dozenal
 
+NOTE:  I've recently become aware that integer overflows can
+cause security issues.  I have neither the bandwidth nor the
+expertise to fix any such issues in these programs.
+Therefore, as always, use at your own risk.
+
 A complete suite of dozenal (base twelve) programs, including a converter
 from decimal to dozenal and vice-versa, a complete scientific calculator
 which operates in dozenal, and a converter for the TGM dozenal metric
