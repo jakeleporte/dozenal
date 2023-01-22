@@ -33,6 +33,7 @@
 #include<stdlib.h>
 #include<string.h>
 #include<float.h>
+#include "vars.h"
 #include "stack.h"
 
 #define MAXVARS 50

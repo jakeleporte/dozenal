@@ -32,6 +32,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<float.h>
+#include"stack.h"
 #include"conv.h"
 
 #define INCREMENT 100			/* maximum depth of val stack */

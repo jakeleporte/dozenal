@@ -50,7 +50,7 @@ void operator( FL_OBJECT * button, long arg );
 void proc_num( FL_OBJECT * button, long arg );
 int in_curr_word(char c);
 
-int xdozbc(int num, char *args[])
+int main(int num, char *args[])
 {
 	FD_calculator *calc;
 

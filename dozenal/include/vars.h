@@ -29,5 +29,5 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-double dealvar(char *s);
+int dealvar(char *s);
 int newvar(char *s);

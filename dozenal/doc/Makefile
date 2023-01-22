@@ -52,6 +52,7 @@ install: installdirs
 	for prog in $(progs) ; do \
 		install -m $(manmode) $${prog}.1 $(mandir)/man1 ; done
 	ln -sf dozdc.1 $(mandir)/man1/gdozdc.1
+	ln -sf dozdc.1 $(mandir)/man1/xdozdc.1
 
 installhtml: htmldoc installhtmldirs
 	for prog in $(progs) ; do \

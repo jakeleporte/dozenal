@@ -91,5 +91,7 @@
 #define SWAP 47
 #define PRINTSTACK 48
 
-int xdozbc(int num, char *args[]);
 int shunt(char *postfix, char *infix);
+int runcalc(int places, char expnot);
+double operate(int operator, int *places, char *print);
+double commandcalc(char *word, int type, int places, char expnot);

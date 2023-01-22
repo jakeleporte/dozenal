@@ -18,8 +18,8 @@ normal arithmetic functions, plus trigonometry, some basic
 constants (pi, euler, phi), logarithms, and other functions.
 Supports variables of arbitrary user-defined names.
 .PP
-There is a graphical version, opened by running \fBdozdc\fR
-with the \fI\-v\fR option.  It's pretty self-explanatory for
+There is a graphical version, opened by running \fBxdozdc\fR.
+It's pretty self-explanatory for
 the most part, and each button has a tooltip explaining its
 function which appears on mouseover.  This works in
 \fIinfix\fR notation, not RPN.
@@ -31,13 +31,6 @@ its differences are described below.
 .SH OPTIONS
 .IP \-V
 Print version and licensing information and quit successfully.
-.IP \-v
-Run the visual version of the calculator.  Works in infix
-notation and can be operated by keyboard, mouse, or a
-combination.  If you don't have the
-\fIxforms\fR library, or don't want the graphical program,
-change the "-DXFORMS" to "-UXFORMS" in the makefile when
-compiling.
 .IP -z
 Indicates that those functions which take angles as
 arguments (trigonometric functions in particular) will take
@@ -327,7 +320,7 @@ we're doing examples here.)
 .SH OTHER COMMANDS
 .IP quit
 Quits the program.  'Nuff said.
-.SH GRAPHICAL VERSIONS, \fBdozdc -v\fR and \fBgdozdc\fR
+.SH GRAPHICAL VERSIONS, \fBxdozdc\fR and \fBgdozdc\fR
 These are the graphical versions of dozdc, and they differ in
 some significant points.  Specifically, they're
 \fIinfix\fR,
@@ -344,7 +337,7 @@ These graphical calculators therefore offer the usual infix
 disambiguation operators, parentheses, which can be used to
 group operations however might be necessary.
 .PP
-In \fBdozdc \-v\fR, functions simply have their arguments in
+In \fBxdozdc\fR, functions simply have their arguments in
 parentheses, separated by commas if there are more than one.
 For example, \fIsin(0;3)\fR or \fIlogb(2,3)\fR.  This
 shouldn't surprise anyone.
