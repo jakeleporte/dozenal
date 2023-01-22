@@ -1,5 +1,8 @@
 # +AMDG
 
+LUADIR = `pkg-config --cflags lua52`
+LUALIB = `pkg-config --libs lua52`
+
 dozlua : main.o conv.h doz.o dec.o conv.o
 	gcc -g -llua5.2 -lm -o dozlua main.o conv.o doz.o dec.o
 
